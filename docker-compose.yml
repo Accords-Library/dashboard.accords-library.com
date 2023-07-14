@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  payload:
+    image: node:18-alpine
+    ports:
+      - "${PAYLOAD_PORT}:${PAYLOAD_PORT}"
+    volumes:
+      - .:/home/node/app
+      - node_modules:/home/node/app/node_modules
+    working_dir: /home/node/app/
+    command: sh -c "npm install && npm run dev"
+    depends_on:
+      - mongo
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET}
+      PORT: ${PAYLOAD_PORT}
+      NODE_ENV: development
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "${MONGODB_PORT}:27017"
+    command:
+      - --storageEngine=wiredTiger
+    volumes:
+      - ./mongo:/data/db
+    logging:
+      driver: none
+
+volumes:
+  node_modules:
