@@ -38,6 +38,7 @@ export interface Language {
 }
 export interface Recorder {
   id: string;
+  avatar?: string | Image;
   username: string;
   anonymize: boolean;
   languages?: string[] | Language[];

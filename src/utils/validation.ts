@@ -1,2 +1,1 @@
-export const hasDuplicates = <T>(list: T[]): boolean =>
-  list.length !== new Set(list).size;
+export const hasDuplicates = <T>(list: T[]): boolean => list.length !== new Set(list).size;

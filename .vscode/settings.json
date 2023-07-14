@@ -1,0 +1,5 @@
+{
+  "css.lint.unknownAtRules": "ignore",
+  "editor.rulers": [100],
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+}

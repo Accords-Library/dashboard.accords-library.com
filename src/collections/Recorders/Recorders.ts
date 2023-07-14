@@ -1,11 +1,9 @@
 import { CollectionConfig } from "payload/types";
-import { localizedFields } from "../../utils/fields";
+import { localizedFields } from "../../elements/translatedFields/translatedFields";
 import { Languages } from "../Languages";
-import { Images } from "../Images";
-import { ImageCell } from "../../components/ImageCell";
-import { BiographiesCell } from "./components/BiographiesCell";
+import { Images } from "../Images/Images";
+import { ImageCell } from "../Images/components/ImageCell";
 import { beforeDuplicate } from "./hooks/beforeDuplicate";
-import { BiographiesRowLabel } from "./components/BiographiesRowLabel";
 
 const fields = {
   username: "username",
@@ -31,12 +29,7 @@ export const Recorders: CollectionConfig = {
     hooks: { beforeDuplicate },
     description:
       "Recorders are contributors of the Accord's Library project. Create a Recorder here to be able to credit them in other collections",
-    defaultColumns: [
-      fields.username,
-      fields.anonymize,
-      fields.biographies,
-      fields.languages,
-    ],
+    defaultColumns: [fields.username, fields.anonymize, fields.biographies, fields.languages],
   },
   timestamps: false,
   fields: [
@@ -87,8 +80,9 @@ export const Recorders: CollectionConfig = {
       name: fields.biographies,
       interfaceName: "RecorderBiographies",
       admin: {
-        initCollapsed: true,
-        components: { RowLabel: BiographiesRowLabel, Cell: BiographiesCell },
+        useAsTitle: fields.biography,
+        description:
+          "A short personal description about you or your involvement with this project or the franchise",
       },
       fields: [{ name: fields.biography, type: "textarea" }],
     }),
