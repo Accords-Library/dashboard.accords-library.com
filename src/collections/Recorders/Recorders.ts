@@ -1,9 +1,12 @@
 import { CollectionConfig } from "payload/types";
-import { localizedFields } from "../../elements/translatedFields/translatedFields";
+import { localizedFields } from "../../fields/translatedFields/translatedFields";
 import { Languages } from "../Languages";
 import { Images } from "../Images/Images";
-import { ImageCell } from "../Images/components/ImageCell";
+import { Cell } from "../../fields/imageField/Cell";
 import { beforeDuplicate } from "./hooks/beforeDuplicate";
+import { imageField } from "../../fields/imageField/imageField";
+import { CollectionGroup } from "../../constants";
+import { collectionSlug } from "../../utils/string";
 
 const fields = {
   username: "username",
@@ -20,7 +23,7 @@ const labels = {
 } as const satisfies { singular: string; plural: string };
 
 export const Recorders: CollectionConfig = {
-  slug: labels.plural,
+  slug: collectionSlug(labels.plural),
   labels,
   typescript: { interface: labels.singular },
   defaultSort: fields.username,
@@ -30,22 +33,14 @@ export const Recorders: CollectionConfig = {
     description:
       "Recorders are contributors of the Accord's Library project. Create a Recorder here to be able to credit them in other collections",
     defaultColumns: [fields.username, fields.anonymize, fields.biographies, fields.languages],
+    group: CollectionGroup.Meta,
   },
   timestamps: false,
   fields: [
     {
       type: "row",
       fields: [
-        {
-          name: fields.avatar,
-          type: "upload",
-          relationTo: Images.slug,
-          admin: {
-            components: {
-              Cell: ImageCell,
-            },
-          },
-        },
+        imageField({ name: fields.avatar }),
         {
           name: fields.username,
           type: "text",

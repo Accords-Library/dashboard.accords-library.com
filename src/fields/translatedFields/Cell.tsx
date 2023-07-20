@@ -11,7 +11,7 @@ export const Cell = ({ cellData }: Props): JSX.Element => (
   <div style={{ display: "flex", gap: "6px" }}>
     {cellData.map(({ language, title }, index) => (
       <div key={index} className="pill">
-        <abbr title={title} style={{textDecorationColor: "var(--color-base-500)"}}>
+        <abbr title={title} style={{ textDecorationColor: "var(--color-base-500)" }}>
           <div style={{ position: "relative" }}>
             {isDefined(language) && typeof language === "string"
               ? formatLanguageCode(language)

@@ -1,21 +1,40 @@
-import { ArrayField } from "payload/types";
+import { ArrayField, Field } from "payload/types";
 import { hasDuplicates } from "../../utils/validation";
 import { isDefined, isUndefined } from "../../utils/asserts";
 import { Languages } from "../../collections/Languages";
 import { RowLabel } from "./RowLabel";
 import { Cell } from "./Cell";
 
-const LANGUAGE_FIELD_NAME = "language";
+const fieldsNames = {
+  language: "language",
+  sourceLanguage: "sourceLanguage",
+} as const satisfies Record<string, string>;
 
 type LocalizedFieldsProps = Omit<ArrayField, "type" | "admin"> & {
-  admin?: ArrayField["admin"] & { useAsTitle?: string };
+  admin?: ArrayField["admin"] & { useAsTitle?: string; hasSourceLanguage?: boolean };
 };
-type ArrayData = { [LANGUAGE_FIELD_NAME]?: string }[] | number | undefined;
+type ArrayData = { [fieldsNames.language]?: string }[] | number | undefined;
+
+const languageField: Field = {
+  name: fieldsNames.language,
+  type: "relationship",
+  relationTo: Languages.slug,
+  required: true,
+  admin: { allowCreate: false, width: "50%" },
+};
+
+const sourceLanguageField: Field = {
+  name: fieldsNames.sourceLanguage,
+  type: "relationship",
+  relationTo: Languages.slug,
+  required: true,
+  admin: { allowCreate: false, width: "50%" },
+};
 
 export const localizedFields = ({
   fields,
   validate,
-  admin: { useAsTitle, ...admin },
+  admin: { useAsTitle, hasSourceLanguage, ...admin },
   ...otherProps
 }: LocalizedFieldsProps): ArrayField => ({
   ...otherProps,
@@ -45,19 +64,15 @@ export const localizedFields = ({
 
     const languages = data.map((biography) => biography.language);
     if (hasDuplicates(languages)) {
-      return `There cannot be multiple ${otherProps.name} with the same ${LANGUAGE_FIELD_NAME}`;
+      return `There cannot be multiple ${otherProps.name} with the same ${fieldsNames.language}`;
     }
 
     return isDefined(validate) ? validate(value, options) : true;
   },
   fields: [
-    {
-      name: LANGUAGE_FIELD_NAME,
-      type: "relationship",
-      relationTo: Languages.slug,
-      required: true,
-      admin: { allowCreate: false },
-    },
+    hasSourceLanguage
+      ? { type: "row", fields: [languageField, sourceLanguageField] }
+      : languageField,
     ...fields,
   ],
 });

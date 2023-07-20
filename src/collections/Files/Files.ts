@@ -1,20 +1,18 @@
 import { CollectionConfig } from "payload/types";
-import { CollectionGroup } from "../../constants";
+import { CollectionGroup, FileTypes } from "../../constants";
 import { collectionSlug } from "../../utils/string";
 
 const fields = {
   filename: "filename",
-  mimeType: "mimeType",
-  filesize: "filesize",
-  alt: "alt",
+  type: "type",
 } as const satisfies Record<string, string>;
 
 const labels = {
-  singular: "Image",
-  plural: "Images",
+  singular: "File",
+  plural: "Files",
 } as const satisfies { singular: string; plural: string };
 
-export const Images: CollectionConfig = {
+export const Files: CollectionConfig = {
   slug: collectionSlug(labels.plural),
   labels,
   typescript: { interface: labels.singular },
@@ -24,16 +22,17 @@ export const Images: CollectionConfig = {
     group: CollectionGroup.Media,
   },
 
-  upload: {
-    staticDir: `../uploads/${labels.plural}`,
-    mimeTypes: ["image/*"],
-  },
-
   fields: [
     {
-      name: fields.alt,
-      label: "Alt Text",
+      name: fields.filename,
+      required: true,
       type: "text",
+    },
+    {
+      name: fields.type,
+      type: "select",
+      required: true,
+      options: Object.entries(FileTypes).map(([value, label]) => ({ label, value })),
     },
   ],
 };

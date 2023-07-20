@@ -1,4 +1,6 @@
 import { CollectionConfig } from "payload/types";
+import { CollectionGroup } from "../constants";
+import { collectionSlug } from "../utils/string";
 
 const fields = {
   id: "id",
@@ -11,13 +13,14 @@ const labels = {
 } as const satisfies { singular: string; plural: string };
 
 export const Languages: CollectionConfig = {
-  slug: labels.plural,
+  slug: collectionSlug(labels.plural),
   labels,
   typescript: { interface: labels.singular },
   defaultSort: fields.name,
   admin: {
     useAsTitle: fields.name,
     defaultColumns: [fields.name, fields.id],
+    group: CollectionGroup.Meta,
   },
   timestamps: false,
   fields: [

@@ -1,4 +1,6 @@
 import { CollectionConfig } from "payload/types";
+import { CollectionGroup } from "../constants";
+import { collectionSlug } from "../utils/string";
 
 const fields = {
   email: "email",
@@ -10,7 +12,7 @@ const labels = {
 } as const satisfies { singular: string; plural: string };
 
 export const Users: CollectionConfig = {
-  slug: labels.plural,
+  slug: collectionSlug(labels.plural),
   auth: true,
   labels,
   typescript: { interface: labels.singular },
@@ -18,7 +20,7 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: fields.email,
     defaultColumns: [fields.email],
-    group: "Administration",
+    group: CollectionGroup.Administration,
   },
   timestamps: false,
   fields: [],

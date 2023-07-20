@@ -2,7 +2,7 @@ import { Props } from "payload/components/views/Cell";
 import { useState, useEffect } from "react";
 import React from "react";
 
-export const ImageCell = ({ cellData, field }: Props): JSX.Element => {
+export const Cell = ({ cellData, field }: Props): JSX.Element => {
   const [imageURL, setImageURL] = useState<string>();
   useEffect(() => {
     const fetchUrl = async () => {
