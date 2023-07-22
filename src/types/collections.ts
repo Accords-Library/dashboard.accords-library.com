@@ -93,6 +93,7 @@ export interface LibraryItem {
         }[];
   };
   releaseDate?: string;
+  lastModifiedBy: string | User;
   updatedAt: string;
   createdAt: string;
   _status?: "draft" | "published";
@@ -154,6 +155,57 @@ export interface Language {
   id: string;
   name: string;
 }
+export interface User {
+  id: string;
+  recorder: string | Recorder;
+  name: string;
+  role: ("Admin" | "Recorder")[];
+  email: string;
+  resetPasswordToken?: string;
+  resetPasswordExpiration?: string;
+  salt?: string;
+  hash?: string;
+  loginAttempts?: number;
+  lockUntil?: string;
+  password?: string;
+}
+export interface Recorder {
+  id: string;
+  username: string;
+  avatar?: string | RecorderThumbnail;
+  languages?: string[] | Language[];
+  biographies?: RecorderBiographies;
+  anonymize: boolean;
+}
+export interface RecorderThumbnail {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string;
+  filename?: string;
+  mimeType?: string;
+  filesize?: number;
+  width?: number;
+  height?: number;
+  sizes?: {
+    og?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
+    small?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
+  };
+}
 export interface Content {
   id: string;
   slug: string;
@@ -188,6 +240,7 @@ export interface Content {
     audio?: string | File;
     id?: string;
   }[];
+  lastModifiedBy: string | User;
   updatedAt: string;
   createdAt: string;
   _status?: "draft" | "published";
@@ -212,43 +265,6 @@ export interface ContentThumbnail {
       filename?: string;
     };
     medium?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
-    };
-  };
-}
-export interface Recorder {
-  id: string;
-  username: string;
-  avatar?: string | RecorderThumbnail;
-  languages?: string[] | Language[];
-  biographies?: RecorderBiographies;
-  anonymize: boolean;
-}
-export interface RecorderThumbnail {
-  id: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string;
-  filename?: string;
-  mimeType?: string;
-  filesize?: number;
-  width?: number;
-  height?: number;
-  sizes?: {
-    og?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
-    };
-    small?: {
       url?: string;
       width?: number;
       height?: number;
@@ -511,6 +527,7 @@ export interface Post {
   }[];
   publishedDate: string;
   hidden?: boolean;
+  lastModifiedBy: string | User;
   updatedAt: string;
   createdAt: string;
   _status?: "draft" | "published";
@@ -543,15 +560,4 @@ export interface PostThumbnail {
       filename?: string;
     };
   };
-}
-export interface User {
-  id: string;
-  email: string;
-  resetPasswordToken?: string;
-  resetPasswordExpiration?: string;
-  salt?: string;
-  hash?: string;
-  loginAttempts?: number;
-  lockUntil?: string;
-  password?: string;
 }

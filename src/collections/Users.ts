@@ -1,27 +1,60 @@
-import { CollectionConfig } from "payload/types";
-import { CollectionGroup } from "../constants";
-import { collectionSlug } from "../utils/string";
+import { CollectionGroup, UserRoles } from "../constants";
+import { Recorders } from "./Recorders/Recorders";
+import { buildCollectionConfig } from "../utils/collectionConfig";
 
 const fields = {
+  recorder: "recorder",
+  name: "name",
   email: "email",
+  role: "role",
 } as const satisfies Record<string, string>;
 
-const labels = {
-  singular: "User",
-  plural: "Users",
-} as const satisfies { singular: string; plural: string };
-
-export const Users: CollectionConfig = {
-  slug: collectionSlug(labels.plural),
-  auth: true,
-  labels,
-  typescript: { interface: labels.singular },
-  defaultSort: fields.email,
-  admin: {
-    useAsTitle: fields.email,
-    defaultColumns: [fields.email],
-    group: CollectionGroup.Administration,
+export const Users = buildCollectionConfig(
+  {
+    singular: "User",
+    plural: "Users",
   },
-  timestamps: false,
-  fields: [],
-};
+  () => ({
+    auth: true,
+    defaultSort: fields.recorder,
+    admin: {
+      useAsTitle: fields.name,
+      defaultColumns: [fields.recorder, fields.name, fields.email, fields.role],
+      group: CollectionGroup.Administration,
+    },
+    timestamps: false,
+    fields: [
+      {
+        type: "row",
+        fields: [
+          {
+            name: fields.recorder,
+            type: "relationship",
+            relationTo: Recorders.slug,
+            required: true,
+            admin: { width: "33%" },
+          },
+          {
+            name: fields.name,
+            type: "text",
+            required: true,
+            unique: true,
+            admin: { width: "33%" },
+          },
+          {
+            name: fields.role,
+            required: true,
+            defaultValue: [UserRoles.Recorder],
+            type: "select",
+            hasMany: true,
+            options: Object.entries(UserRoles).map(([value, label]) => ({
+              label,
+              value,
+            })),
+            admin: { width: "33%" },
+          },
+        ],
+      },
+    ],
+  })
+);

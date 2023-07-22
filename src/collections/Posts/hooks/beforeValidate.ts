@@ -5,7 +5,7 @@ export const removeTranslatorsForTranscripts: CollectionBeforeValidateHook<Post>
   data: { translations, ...data },
 }) => ({
   ...data,
-  translations: translations.map(({ translators, ...translation }) => {
+  translations: translations?.map(({ translators, ...translation }) => {
     if (translation.language === translation.sourceLanguage) {
       return { ...translation, translators: [] };
     }

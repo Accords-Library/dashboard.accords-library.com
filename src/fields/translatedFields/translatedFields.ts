@@ -44,10 +44,11 @@ export const localizedFields = ({
     components: {
       Cell: ({ cellData }) =>
         Cell({
-          cellData: cellData.map((row) => ({
-            language: row.language,
-            title: isDefined(useAsTitle) ? row[useAsTitle] : undefined,
-          })),
+          cellData:
+            cellData?.map((row) => ({
+              language: row.language,
+              title: isDefined(useAsTitle) ? row[useAsTitle] : undefined,
+            })) ?? [],
         }),
       RowLabel: ({ data }) =>
         RowLabel({

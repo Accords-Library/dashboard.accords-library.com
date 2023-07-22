@@ -42,3 +42,8 @@ export enum LibraryItemsTextualPageOrders {
   LeftToRight = "Left to right",
   RightToLeft = "Right to left",
 }
+
+export enum UserRoles {
+  Admin = "Admin",
+  Recorder = "Recorder",
+}
