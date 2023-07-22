@@ -9,13 +9,21 @@ import { Tags } from "./collections/Tags/Tags";
 import { LibraryItems } from "./collections/LibraryItems/LibraryItems";
 import { Contents } from "./collections/Contents/Contents";
 import { Files } from "./collections/Files/Files";
+import { Logo } from "./components/Logo";
+import { Icon } from "./components/Icon";
 
 export default buildConfig({
   serverURL: "http://localhost:3000",
   admin: {
     user: Users.slug,
+    components: { graphics: { Logo, Icon } },
+    meta: {
+      favicon: "/public/favicon.ico",
+      ogImage: "og.jpg",
+      titleSuffix: "- Accord’s Library",
   },
-  collections: [LibraryItems, Contents, Posts, Images, Files, Languages, Recorders, Tags, Users],
+    css: path.resolve(__dirname, "styles.scss"),
+  },
   globals: [],
   telemetry: false,
   typescript: {
