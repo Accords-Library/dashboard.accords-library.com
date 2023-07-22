@@ -1,16 +1,18 @@
 import { CollectionConfig } from "payload/types";
 import { slugField } from "../../fields/slugField/slugField";
 import { imageField } from "../../fields/imageField/imageField";
-import { CollectionGroup, TagsTypes } from "../../constants";
+import { CollectionGroup, KeysTypes } from "../../constants";
 import { Recorders } from "../Recorders/Recorders";
 import { localizedFields } from "../../fields/translatedFields/translatedFields";
 import { isDefined, isUndefined } from "../../utils/asserts";
 import { removeTranslatorsForTranscripts } from "./hooks/beforeValidate";
-import { Tags } from "../Tags/Tags";
+import { Keys } from "../Keys/Keys";
 import { collectionSlug } from "../../utils/string";
+import { PostThumbnails } from "../PostThumbnails/PostThumbnails";
 
 const fields = {
   slug: "slug",
+  hidden: "hidden",
   thumbnail: "thumbnail",
   categories: "categories",
   authors: "authors",
@@ -44,13 +46,17 @@ export const Posts: CollectionConfig = {
     beforeValidate: [removeTranslatorsForTranscripts],
   },
   timestamps: true,
-  versions: { drafts: true },
+  versions: { drafts: { autosave: true } },
   fields: [
     {
       type: "row",
       fields: [
         slugField({ name: fields.slug, admin: { width: "50%" } }),
-        imageField({ name: fields.thumbnail, admin: { width: "50%" } }),
+        imageField({
+          name: fields.thumbnail,
+          relationTo: PostThumbnails.slug,
+          admin: { width: "50%" },
+        }),
       ],
     },
     {
@@ -63,15 +69,15 @@ export const Posts: CollectionConfig = {
           required: true,
           minRows: 1,
           hasMany: true,
-          admin: { width: "50%" },
+          admin: { width: "35%" },
         },
         {
           name: fields.categories,
           type: "relationship",
-          relationTo: [Tags.slug],
-          filterOptions: { type: { equals: TagsTypes.Categories } },
+          relationTo: [Keys.slug],
+          filterOptions: { type: { equals: KeysTypes.Categories } },
           hasMany: true,
-          admin: { allowCreate: false, width: "50%" },
+          admin: { allowCreate: false, width: "35%" },
         },
       ],
     },
@@ -137,6 +143,16 @@ export const Posts: CollectionConfig = {
         position: "sidebar",
       },
       required: true,
+    },
+    {
+      name: fields.hidden,
+      type: "checkbox",
+      required: false,
+      defaultValue: false,
+      admin: {
+        description: "If enabled, the post won't appear in the 'News' section",
+        position: "sidebar",
+      },
     },
   ],
 };

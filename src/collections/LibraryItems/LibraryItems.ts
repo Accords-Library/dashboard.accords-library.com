@@ -1,9 +1,19 @@
 import { CollectionConfig } from "payload/types";
-import { CollectionGroup } from "../../constants";
+import {
+  CollectionGroup,
+  KeysTypes,
+  LibraryItemsTextualBindingTypes,
+  LibraryItemsTextualPageOrders,
+  LibraryItemsTypes,
+} from "../../constants";
 import { slugField } from "../../fields/slugField/slugField";
 import { imageField } from "../../fields/imageField/imageField";
 import { collectionSlug } from "../../utils/string";
 import { isDefined, isUndefined } from "../../utils/asserts";
+import { LibraryItemThumbnails } from "../LibraryItemThumbnails/LibraryItemThumbnails";
+import { LibraryItem } from "../../types/collections";
+import { Keys } from "../Keys/Keys";
+import { Languages } from "../Languages";
 
 const fields = {
   status: "status",
@@ -20,6 +30,16 @@ const fields = {
   width: "width",
   height: "height",
   thickness: "thickness",
+  releaseDate: "releaseDate",
+  itemType: "itemType",
+  textual: "textual",
+  textualSubtype: "subtype",
+  textualBindingType: "bindingType",
+  textualPageCount: "pageCount",
+  textualPageOrder: "pageOrder",
+  textualLanguages: "languages",
+  audio: "audio",
+  audioSubtype: "audioSubtype",
 } as const satisfies Record<string, string>;
 
 const labels = {
@@ -50,13 +70,17 @@ export const LibraryItems: CollectionConfig = {
     preview: (doc) => `https://accords-library.com/library/${doc.slug}`,
   },
   timestamps: true,
-  versions: { drafts: true },
+  versions: { drafts: { autosave: true } },
   fields: [
     {
       type: "row",
       fields: [
         slugField({ name: fields.slug, admin: { width: "50%" } }),
-        imageField({ name: fields.thumbnail, admin: { width: "50%" } }),
+        imageField({
+          name: fields.thumbnail,
+          relationTo: LibraryItemThumbnails.slug,
+          admin: { width: "50%" },
+        }),
       ],
     },
     {
@@ -143,6 +167,107 @@ export const LibraryItems: CollectionConfig = {
           ],
         },
       ],
+    },
+    {
+      name: fields.itemType,
+      type: "radio",
+      options: Object.entries(LibraryItemsTypes).map(([value, label]) => ({ label, value })),
+      admin: {
+        layout: "horizontal",
+      },
+    },
+    {
+      name: fields.textual,
+      type: "group",
+      admin: {
+        condition: (data: Partial<LibraryItem>) => data.itemType === LibraryItemsTypes.Textual,
+      },
+      fields: [
+        {
+          type: "row",
+          fields: [
+            {
+              name: fields.textualSubtype,
+              label: "Subtype",
+              type: "relationship",
+              relationTo: [Keys.slug],
+              filterOptions: { type: { equals: KeysTypes.LibraryTextual } },
+              hasMany: true,
+              admin: { allowCreate: false, width: "50%" },
+            },
+            {
+              name: fields.textualLanguages,
+              type: "relationship",
+              relationTo: [Languages.slug],
+              hasMany: true,
+              admin: { allowCreate: false, width: "50%" },
+            },
+          ],
+        },
+        {
+          type: "row",
+          fields: [
+            { name: fields.textualPageCount, type: "number", min: 1, admin: { width: "33%" } },
+            {
+              name: fields.textualBindingType,
+              label: "Binding Type",
+              type: "radio",
+              options: Object.entries(LibraryItemsTextualBindingTypes).map(([value, label]) => ({
+                label,
+                value,
+              })),
+              admin: {
+                layout: "horizontal",
+                width: "33%",
+              },
+            },
+            {
+              name: fields.textualPageOrder,
+              label: "Page Order",
+              type: "radio",
+              options: Object.entries(LibraryItemsTextualPageOrders).map(([value, label]) => ({
+                label,
+                value,
+              })),
+              admin: {
+                layout: "horizontal",
+                width: "33%",
+              },
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: fields.audio,
+      type: "group",
+      admin: {
+        condition: (data: Partial<LibraryItem>) => data.itemType === LibraryItemsTypes.Audio,
+      },
+      fields: [
+        {
+          type: "row",
+          fields: [
+            {
+              name: fields.audioSubtype,
+              label: "Subtype",
+              type: "relationship",
+              relationTo: [Keys.slug],
+              filterOptions: { type: { equals: KeysTypes.LibraryAudio } },
+              hasMany: true,
+              admin: { allowCreate: false, width: "50%" },
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: fields.releaseDate,
+      type: "date",
+      admin: {
+        date: { pickerAppearance: "dayOnly", displayFormat: "yyyy-MM-dd" },
+        position: "sidebar",
+      },
     },
   ],
 };

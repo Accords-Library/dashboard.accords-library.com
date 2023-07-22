@@ -3,12 +3,16 @@ import path from "path";
 import { Users } from "./collections/Users";
 import { Languages } from "./collections/Languages";
 import { Recorders } from "./collections/Recorders/Recorders";
-import { Images } from "./collections/Images/Images";
 import { Posts } from "./collections/Posts/Posts";
-import { Tags } from "./collections/Tags/Tags";
+import { Keys } from "./collections/Keys/Keys";
 import { LibraryItems } from "./collections/LibraryItems/LibraryItems";
 import { Contents } from "./collections/Contents/Contents";
 import { Files } from "./collections/Files/Files";
+import { RecorderThumbnails } from "./collections/RecorderThumbnails/RecorderThumbnails";
+import { PostThumbnails } from "./collections/PostThumbnails/PostThumbnails";
+import { LibraryItemThumbnails } from "./collections/LibraryItemThumbnails/LibraryItemThumbnails";
+import { ContentThumbnails } from "./collections/ContentThumbnails/ContentThumbnails";
+import { ContentFolders } from "./collections/ContentFolders/ContentFolders";
 import { Logo } from "./components/Logo";
 import { Icon } from "./components/Icon";
 
@@ -21,15 +25,30 @@ export default buildConfig({
       favicon: "/public/favicon.ico",
       ogImage: "og.jpg",
       titleSuffix: "- Accord’s Library",
-  },
+    },
     css: path.resolve(__dirname, "styles.scss"),
   },
+  collections: [
+    LibraryItems,
+    Contents,
+    ContentFolders,
+    Posts,
+    ContentThumbnails,
+    LibraryItemThumbnails,
+    RecorderThumbnails,
+    PostThumbnails,
+    Files,
+    Languages,
+    Recorders,
+    Keys,
+    Users,
+  ],
   globals: [],
   telemetry: false,
   typescript: {
     outputFile: path.resolve(__dirname, "types/collections.ts"),
   },
   graphQL: {
-    schemaOutputFile: path.resolve(__dirname, "generated-schema.graphql"),
+    disable: true,
   },
 });

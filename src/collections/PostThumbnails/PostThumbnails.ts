@@ -6,15 +6,14 @@ const fields = {
   filename: "filename",
   mimeType: "mimeType",
   filesize: "filesize",
-  alt: "alt",
 } as const satisfies Record<string, string>;
 
 const labels = {
-  singular: "Image",
-  plural: "Images",
+  singular: "Post Thumbnail",
+  plural: "Post Thumbnails",
 } as const satisfies { singular: string; plural: string };
 
-export const Images: CollectionConfig = {
+export const PostThumbnails: CollectionConfig = {
   slug: collectionSlug(labels.plural),
   labels,
   typescript: { interface: labels.singular },
@@ -27,13 +26,27 @@ export const Images: CollectionConfig = {
   upload: {
     staticDir: `../uploads/${labels.plural}`,
     mimeTypes: ["image/*"],
+    imageSizes: [
+      {
+        name: "og",
+        height: 750,
+        width: 1125,
+        formatOptions: {
+          format: "jpg",
+          options: { progressive: true, mozjpeg: true, compressionLevel: 9, quality: 80 },
+        },
+      },
+      {
+        name: "medium",
+        height: 1000,
+        width: 1500,
+        formatOptions: {
+          format: "webp",
+          options: { effort: 6, quality: 80, alphaQuality: 80 },
+        },
+      },
+    ],
   },
 
-  fields: [
-    {
-      name: fields.alt,
-      label: "Alt Text",
-      type: "text",
-    },
-  ],
+  fields: [],
 };

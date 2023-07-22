@@ -1,12 +1,11 @@
 import { CollectionConfig } from "payload/types";
 import { localizedFields } from "../../fields/translatedFields/translatedFields";
 import { Languages } from "../Languages";
-import { Images } from "../Images/Images";
-import { Cell } from "../../fields/imageField/Cell";
 import { beforeDuplicate } from "./hooks/beforeDuplicate";
-import { imageField } from "../../fields/imageField/imageField";
 import { CollectionGroup } from "../../constants";
 import { collectionSlug } from "../../utils/string";
+import { RecorderThumbnails } from "../RecorderThumbnails/RecorderThumbnails";
+import { imageField } from "../../fields/imageField/imageField";
 
 const fields = {
   username: "username",
@@ -32,7 +31,13 @@ export const Recorders: CollectionConfig = {
     hooks: { beforeDuplicate },
     description:
       "Recorders are contributors of the Accord's Library project. Create a Recorder here to be able to credit them in other collections",
-    defaultColumns: [fields.username, fields.anonymize, fields.biographies, fields.languages],
+    defaultColumns: [
+      fields.username,
+      fields.avatar,
+      fields.anonymize,
+      fields.biographies,
+      fields.languages,
+    ],
     group: CollectionGroup.Meta,
   },
   timestamps: false,
@@ -40,25 +45,18 @@ export const Recorders: CollectionConfig = {
     {
       type: "row",
       fields: [
-        imageField({ name: fields.avatar }),
         {
           name: fields.username,
           type: "text",
           unique: true,
           required: true,
-          admin: { description: "The username must be unique" },
+          admin: { description: "The username must be unique", width: "33%" },
         },
-        {
-          name: fields.anonymize,
-          type: "checkbox",
-          required: true,
-          defaultValue: false,
-          admin: {
-            width: "50%",
-            description:
-              "If enabled, this recorder's username will not be made public. Instead they will be referred to as 'Recorder#0000' where '0000' is a random four digit number",
-          },
-        },
+        imageField({
+          name: fields.avatar,
+          relationTo: RecorderThumbnails.slug,
+          admin: { width: "66%" },
+        }),
       ],
     },
     {
@@ -81,5 +79,16 @@ export const Recorders: CollectionConfig = {
       },
       fields: [{ name: fields.biography, type: "textarea" }],
     }),
+    {
+      name: fields.anonymize,
+      type: "checkbox",
+      required: true,
+      defaultValue: false,
+      admin: {
+        description:
+          "If enabled, this recorder's username will not be made public. Instead they will be referred to as 'Recorder#0000' where '0000' is a random four digit number",
+        position: "sidebar",
+      },
+    },
   ],
 };

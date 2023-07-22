@@ -1,22 +1,27 @@
 import { CollectionConfig } from "payload/types";
 import { slugField } from "../../fields/slugField/slugField";
-import { CollectionGroup, TagsTypes } from "../../constants";
+import { CollectionGroup, KeysTypes } from "../../constants";
 import { localizedFields } from "../../fields/translatedFields/translatedFields";
 import { collectionSlug } from "../../utils/string";
+import { Key } from "../../types/collections";
+import { isDefined } from "../../utils/asserts";
 
 const fields = {
   slug: "slug",
   translations: "translations",
   type: "type",
   name: "name",
+  short: "short",
 } as const satisfies Record<string, string>;
 
 const labels = {
-  singular: "Tag",
-  plural: "Tags",
+  singular: "Key",
+  plural: "Keys",
 } as const satisfies { singular: string; plural: string };
 
-export const Tags: CollectionConfig = {
+const keysTypesWithShort: (keyof typeof KeysTypes)[] = ["Categories", "GamePlatforms"];
+
+export const Keys: CollectionConfig = {
   slug: collectionSlug(labels.plural),
   labels,
   typescript: { interface: labels.singular },
@@ -34,7 +39,7 @@ export const Tags: CollectionConfig = {
       name: fields.type,
       type: "select",
       required: true,
-      options: Object.entries(TagsTypes).map(([value, label]) => ({ label, value })),
+      options: Object.entries(KeysTypes).map(([value, label]) => ({ label, value })),
     },
     localizedFields({
       name: fields.translations,
@@ -42,7 +47,23 @@ export const Tags: CollectionConfig = {
       admin: {
         useAsTitle: fields.name,
       },
-      fields: [{ name: fields.name, type: "text", required: true }],
+      fields: [
+        {
+          type: "row",
+          fields: [
+            { name: fields.name, type: "text", required: true, admin: { width: "50%" } },
+            {
+              name: fields.short,
+              type: "text",
+              admin: {
+                condition: (data: Partial<Key>) =>
+                  isDefined(data.type) && keysTypesWithShort.includes(data.type),
+                width: "50%",
+              },
+            },
+          ],
+        },
+      ],
     }),
   ],
 };

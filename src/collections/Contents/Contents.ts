@@ -1,14 +1,15 @@
 import { CollectionConfig } from "payload/types";
 import { collectionSlug } from "../../utils/string";
-import { CollectionGroup, FileTypes, TagsTypes } from "../../constants";
+import { CollectionGroup, FileTypes, KeysTypes } from "../../constants";
 import { slugField } from "../../fields/slugField/slugField";
 import { imageField } from "../../fields/imageField/imageField";
-import { Tags } from "../Tags/Tags";
+import { Keys } from "../Keys/Keys";
 import { localizedFields } from "../../fields/translatedFields/translatedFields";
 import { Recorders } from "../Recorders/Recorders";
 import { isDefined } from "../../utils/asserts";
 import { fileField } from "../../fields/fileField/fileField";
-import { rootBlocks } from "./Blocks/blocks";
+import { contentBlocks } from "./Blocks/blocks";
+import { ContentThumbnails } from "../ContentThumbnails/ContentThumbnails";
 
 const fields = {
   slug: "slug",
@@ -29,6 +30,7 @@ const fields = {
   videoNotes: "videoNotes",
   audio: "audio",
   audioNotes: "videoNotes",
+  status: "status",
 } as const satisfies Record<string, string>;
 
 const labels = {
@@ -43,25 +45,30 @@ export const Contents: CollectionConfig = {
   defaultSort: fields.slug,
   admin: {
     useAsTitle: fields.slug,
-    defaultColumns: [fields.slug, fields.thumbnail, fields.categories],
+    defaultColumns: [
+      fields.slug,
+      fields.thumbnail,
+      fields.categories,
+      fields.type,
+      fields.translations,
+      fields.status,
+    ],
     group: CollectionGroup.Collections,
     preview: (doc) => `https://accords-library.com/contents/${doc.slug}`,
   },
   timestamps: true,
-  versions: { drafts: true },
+  versions: { drafts: { autosave: true } },
   fields: [
     {
       type: "row",
       fields: [
         slugField({ name: fields.slug, admin: { width: "50%" } }),
-        imageField({ name: fields.thumbnail, admin: { width: "50%" } }),
+        imageField({
+          name: fields.thumbnail,
+          relationTo: ContentThumbnails.slug,
+          admin: { width: "50%" },
+        }),
       ],
-    },
-    {
-      name: "testing",
-      type: "blocks",
-      admin: { initCollapsed: true },
-      blocks: rootBlocks,
     },
     {
       type: "row",
@@ -69,16 +76,16 @@ export const Contents: CollectionConfig = {
         {
           name: fields.categories,
           type: "relationship",
-          relationTo: [Tags.slug],
-          filterOptions: { type: { equals: TagsTypes.Categories } },
+          relationTo: [Keys.slug],
+          filterOptions: { type: { equals: KeysTypes.Categories } },
           hasMany: true,
           admin: { allowCreate: false, width: "50%" },
         },
         {
           name: fields.type,
           type: "relationship",
-          relationTo: [Tags.slug],
-          filterOptions: { type: { equals: TagsTypes.Contents } },
+          relationTo: [Keys.slug],
+          filterOptions: { type: { equals: KeysTypes.Contents } },
           admin: { allowCreate: false, width: "50%" },
         },
       ],
@@ -148,8 +155,10 @@ export const Contents: CollectionConfig = {
                 {
                   name: fields.textContent,
                   label: "Content",
-                  type: "richText",
-                  admin: { hideGutter: true },
+                  labels: { singular: "Block", plural: "Blocks" },
+                  type: "blocks",
+                  admin: { initCollapsed: true },
+                  blocks: contentBlocks,
                 },
                 {
                   name: fields.textNotes,

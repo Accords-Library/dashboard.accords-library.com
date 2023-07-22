@@ -5,7 +5,7 @@ export enum CollectionGroup {
   Administration = "Administration",
 }
 
-export enum TagsTypes {
+export enum KeysTypes {
   Contents = "Contents",
   LibraryAudio = "Library / Audio",
   LibraryVideo = "Library / Video",
@@ -15,6 +15,7 @@ export enum TagsTypes {
   Weapons = "Weapons",
   GamePlatforms = "Game Platforms",
   Categories = "Categories",
+  Wordings = "Wordings",
 }
 
 export enum FileTypes {
@@ -22,4 +23,22 @@ export enum FileTypes {
   LibrarySoundtracks = "Library / Soundtracks",
   ContentVideo = "Content / Video",
   ContentAudio = "Content / Audio",
+}
+
+export enum LibraryItemsTypes {
+  Textual = "Textual",
+  Audio = "Audio",
+  Video = "Video",
+  Game = "Game",
+  Other = "Other",
+}
+
+export enum LibraryItemsTextualBindingTypes {
+  Paperback = "Paperback",
+  Hardcover = "Hardcover",
+}
+
+export enum LibraryItemsTextualPageOrders {
+  LeftToRight = "Left to right",
+  RightToLeft = "Right to left",
 }
