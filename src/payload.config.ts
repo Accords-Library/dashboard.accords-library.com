@@ -17,7 +17,7 @@ import { Logo } from "./components/Logo";
 import { Icon } from "./components/Icon";
 
 export default buildConfig({
-  serverURL: "http://localhost:3000",
+  serverURL: "https://dashboard.accords-library.com",
   admin: {
     user: Users.slug,
     components: { graphics: { Logo, Icon } },
