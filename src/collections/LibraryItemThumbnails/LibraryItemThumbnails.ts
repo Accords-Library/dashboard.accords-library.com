@@ -12,14 +12,14 @@ export const LibraryItemThumbnails = buildCollectionConfig(
     singular: "Library Item Thumbnail",
     plural: "Library Item Thumbnails",
   },
-  ({ labels }) => ({
+  ({ uploadDir }) => ({
     defaultSort: fields.filename,
     admin: {
       useAsTitle: fields.filename,
       group: CollectionGroup.Media,
     },
     upload: {
-      staticDir: `../uploads/${labels.plural}`,
+      staticDir: uploadDir,
       mimeTypes: ["image/*"],
       imageSizes: [
         {

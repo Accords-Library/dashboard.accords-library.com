@@ -31,7 +31,6 @@ export const Users = buildCollectionConfig(
             name: fields.recorder,
             type: "relationship",
             relationTo: Recorders.slug,
-            required: true,
             admin: { width: "33%" },
           },
           {

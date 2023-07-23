@@ -4,8 +4,8 @@ import slugify from "slugify";
 export type BuildCollectionConfig = Omit<CollectionConfig, "slug" | "typescript" | "labels">;
 
 export type GenerationFunctionProps = {
-  labels: { singular: string; plural: string };
   slug: string;
+  uploadDir: string;
 };
 
 export const buildCollectionConfig = (
@@ -13,7 +13,8 @@ export const buildCollectionConfig = (
   generationFunction: (props: GenerationFunctionProps) => BuildCollectionConfig
 ): CollectionConfig => {
   const slug = slugify(labels.plural, { lower: true, strict: true, trim: true });
-  const config = generationFunction({ labels, slug });
+  const uploadDir = `../uploads/${slug}`;
+  const config = generationFunction({ slug, uploadDir });
   return {
     ...config,
     slug,
