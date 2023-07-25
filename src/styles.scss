@@ -47,16 +47,36 @@ html[data-theme="light"] {
 }
 
 .field-type.array-field.group-array {
-  .array-field__header-actions,
-  .collapsible__drag,
-  .collapsible__toggle,
-  .collapsible__header-wrap,
-  .collapsible__indicator,
-  .array-actions__add,
-  .array-actions__duplicate {
-    display: none;
+  > .array-field__header {
+    .array-field__header-actions {
+      display: none;
+    }
   }
-  .collapsible__actions-wrap {
-    z-index: 1;
+  > div {
+    > div {
+      > div {
+        > .collapsible__toggle-wrap {
+          .array-actions__duplicate {
+            display: none;
+          }
+
+          .collapsible__drag,
+          .collapsible__toggle,
+          .collapsible__header-wrap,
+          .collapsible__indicator {
+            display: none;
+          }
+
+          .collapsible__actions-wrap {
+            z-index: 1;
+
+            .array-actions__add,
+            .array-actions__duplicate {
+              display: none;
+            }
+          }
+        }
+      }
+    }
   }
 }
