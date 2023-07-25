@@ -1,7 +1,6 @@
 import { buildConfig } from "payload/config";
 import path from "path";
-import { Users } from "./collections/Users";
-import { Languages } from "./collections/Languages";
+import { Languages } from "./collections/Languages/Languages";
 import { Recorders } from "./collections/Recorders/Recorders";
 import { Posts } from "./collections/Posts/Posts";
 import { Keys } from "./collections/Keys/Keys";
@@ -15,11 +14,12 @@ import { ContentThumbnails } from "./collections/ContentThumbnails/ContentThumbn
 import { ContentFolders } from "./collections/ContentFolders/ContentFolders";
 import { Logo } from "./components/Logo";
 import { Icon } from "./components/Icon";
+import { Currencies } from "./collections/Currencies/Currencies";
 
 export default buildConfig({
   serverURL: "https://dashboard.accords-library.com",
   admin: {
-    user: Users.slug,
+    user: Recorders.slug,
     components: { graphics: { Logo, Icon } },
     meta: {
       favicon: "/public/favicon.ico",
@@ -39,9 +39,9 @@ export default buildConfig({
     PostThumbnails,
     Files,
     Languages,
+    Currencies,
     Recorders,
     Keys,
-    Users,
   ],
   globals: [],
   telemetry: false,

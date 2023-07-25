@@ -1,5 +1,6 @@
-import { CollectionGroup } from "../constants";
-import { buildCollectionConfig } from "../utils/collectionConfig";
+import { mustBeAdmin } from "../../accesses/mustBeAdmin";
+import { CollectionGroup } from "../../constants";
+import { buildCollectionConfig } from "../../utils/collectionConfig";
 
 const fields = {
   id: "id",
@@ -16,8 +17,10 @@ export const Languages = buildCollectionConfig(
     admin: {
       useAsTitle: fields.name,
       defaultColumns: [fields.name, fields.id],
+      disableDuplicate: true,
       group: CollectionGroup.Meta,
     },
+    access: { create: mustBeAdmin, update: mustBeAdmin },
     timestamps: false,
     fields: [
       {

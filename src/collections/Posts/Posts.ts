@@ -8,6 +8,9 @@ import { removeTranslatorsForTranscripts } from "./hooks/beforeValidate";
 import { Keys } from "../Keys/Keys";
 import { PostThumbnails } from "../PostThumbnails/PostThumbnails";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
+import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
+import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
+import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 
 const fields = {
   slug: "slug",
@@ -36,9 +39,15 @@ export const Posts = buildVersionedCollectionConfig(
       useAsTitle: fields.slug,
       description:
         "News articles written by our Recorders! Here you will find announcements about \
-new merch/items releases, guides, theories, unboxings, showcases...",
+         new merch/items releases, guides, theories, unboxings, showcases...",
       defaultColumns: [fields.slug, fields.thumbnail, fields.categories],
       group: CollectionGroup.Collections,
+      hooks: {
+        beforeDuplicate: beforeDuplicatePiping([
+          beforeDuplicateUnpublish,
+          beforeDuplicateAddCopyTo(fields.slug),
+        ]),
+      },
       preview: (doc) => `https://accords-library.com/news/${doc.slug}`,
     },
     hooks: {

@@ -1,29 +1,26 @@
 import { CollectionBeforeChangeHook, CollectionConfig, RelationshipField } from "payload/types";
-import { Users } from "../collections/Users";
 import {
   BuildCollectionConfig,
   GenerationFunctionProps,
   buildCollectionConfig,
 } from "./collectionConfig";
+import { Recorders } from "../collections/Recorders/Recorders";
 
 const fields = { lastModifiedBy: "lastModifiedBy" };
 
 const beforeChangeLastModifiedBy: CollectionBeforeChangeHook = async ({
   data: { updatedBy, ...data },
   req,
-}) => {
-  console.log(data, req.user);
-  return {
-    ...data,
-    [fields.lastModifiedBy]: req.user.id,
-  };
-};
+}) => ({
+  ...data,
+  [fields.lastModifiedBy]: req.user.id,
+});
 
 const lastModifiedByField = (): RelationshipField => ({
   name: fields.lastModifiedBy,
   type: "relationship",
   required: true,
-  relationTo: Users.slug,
+  relationTo: Recorders.slug,
   admin: { readOnly: true, position: "sidebar" },
 });
 

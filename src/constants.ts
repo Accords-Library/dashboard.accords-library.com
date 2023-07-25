@@ -2,7 +2,6 @@ export enum CollectionGroup {
   Collections = "Collections",
   Media = "Media",
   Meta = "Meta",
-  Administration = "Administration",
 }
 
 export enum KeysTypes {
@@ -43,7 +42,12 @@ export enum LibraryItemsTextualPageOrders {
   RightToLeft = "Right to left",
 }
 
-export enum UserRoles {
+export enum RecordersRoles {
   Admin = "Admin",
   Recorder = "Recorder",
+}
+
+export enum CollectionStatus {
+  Draft = "draft",
+  Published = "published",
 }

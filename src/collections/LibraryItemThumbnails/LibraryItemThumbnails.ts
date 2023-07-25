@@ -16,6 +16,7 @@ export const LibraryItemThumbnails = buildCollectionConfig(
     defaultSort: fields.filename,
     admin: {
       useAsTitle: fields.filename,
+      disableDuplicate: true,
       group: CollectionGroup.Media,
     },
     upload: {

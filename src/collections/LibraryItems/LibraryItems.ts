@@ -11,8 +11,13 @@ import { isDefined, isUndefined } from "../../utils/asserts";
 import { LibraryItemThumbnails } from "../LibraryItemThumbnails/LibraryItemThumbnails";
 import { LibraryItem } from "../../types/collections";
 import { Keys } from "../Keys/Keys";
-import { Languages } from "../Languages";
+import { Languages } from "../Languages/Languages";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
+import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
+import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
+import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
+import { Currencies } from "../Currencies/Currencies";
+import { optionalGroupField } from "../../fields/optionalGroupField/optionalGroupField";
 
 const fields = {
   status: "status",
@@ -29,6 +34,9 @@ const fields = {
   width: "width",
   height: "height",
   thickness: "thickness",
+  price: "price",
+  priceAmount: "amount",
+  priceCurrency: "currency",
   releaseDate: "releaseDate",
   itemType: "itemType",
   textual: "textual",
@@ -39,18 +47,23 @@ const fields = {
   textualLanguages: "languages",
   audio: "audio",
   audioSubtype: "audioSubtype",
+  scans: "scans",
+  scansCover: "cover",
+  scansCoverFront: "front",
+  scansCoverSpine: "spine",
+  scansCoverBack: "back",
+  scansDustjacket: "dustjacket",
+  scansDustjacketFront: "front",
+  scansDustjacketSpine: "spine",
+  scansDustjacketBack: "back",
+  scansObibelt: "obibelt",
+  scansObibeltFront: "front",
+  scansObibeltSpine: "spine",
+  scansObibeltBack: "back",
+  scansPages: "pages",
+  scansPagesPage: "page",
+  scansPagesImage: "image",
 } as const satisfies Record<string, string>;
-
-const validateSizeValue = (value?: number) => {
-  if (isDefined(value) && value <= 0) return "This value must be greater than 0";
-  return true;
-};
-
-const validateRequiredSizeValue = (value?: number) => {
-  if (isUndefined(value)) return "This field is required.";
-  if (value <= 0) return "This value must be greater than 0.";
-  return true;
-};
 
 export const LibraryItems = buildVersionedCollectionConfig(
   {
@@ -63,9 +76,15 @@ export const LibraryItems = buildVersionedCollectionConfig(
       useAsTitle: fields.slug,
       description:
         "A comprehensive list of all Yokoverse’s side materials (books, novellas, artbooks, \
-stage plays, manga, drama CDs, and comics).",
+         stage plays, manga, drama CDs, and comics).",
       defaultColumns: [fields.slug, fields.thumbnail, fields.status],
       group: CollectionGroup.Collections,
+      hooks: {
+        beforeDuplicate: beforeDuplicatePiping([
+          beforeDuplicateUnpublish,
+          beforeDuplicateAddCopyTo(fields.slug),
+        ]),
+      },
       preview: (doc) => `https://accords-library.com/library/${doc.slug}`,
     },
     fields: [
@@ -135,9 +154,115 @@ stage plays, manga, drama CDs, and comics).",
           },
         ],
       },
-      {
-        name: "size",
-        type: "group",
+      optionalGroupField({
+        name: fields.scans,
+        fields: [
+          optionalGroupField({
+            name: fields.scansCover,
+            fields: [
+              {
+                type: "row",
+                fields: [
+                  imageField({
+                    name: fields.scansCoverFront,
+                    relationTo: LibraryItemThumbnails.slug,
+                    admin: { width: "33%" },
+                  }),
+                  imageField({
+                    name: fields.scansCoverSpine,
+                    relationTo: LibraryItemThumbnails.slug,
+                    admin: { width: "33%" },
+                  }),
+                  imageField({
+                    name: fields.scansCoverBack,
+                    relationTo: LibraryItemThumbnails.slug,
+                    admin: { width: "33%" },
+                  }),
+                ],
+              },
+            ],
+          }),
+          optionalGroupField({
+            name: fields.scansDustjacket,
+            label: "Dust Jacket",
+            labels: { singular: "Dust Jacket", plural: "Dust Jackets" },
+            fields: [
+              {
+                type: "row",
+                fields: [
+                  imageField({
+                    name: fields.scansDustjacketFront,
+                    relationTo: LibraryItemThumbnails.slug,
+                    admin: { width: "33%" },
+                  }),
+                  imageField({
+                    name: fields.scansDustjacketSpine,
+                    relationTo: LibraryItemThumbnails.slug,
+                    admin: { width: "33%" },
+                  }),
+                  imageField({
+                    name: fields.scansDustjacketBack,
+                    relationTo: LibraryItemThumbnails.slug,
+                    admin: { width: "33%" },
+                  }),
+                ],
+              },
+            ],
+          }),
+          optionalGroupField({
+            name: fields.scansObibelt,
+            label: "Obi Belt",
+            labels: { singular: "Obi Belt", plural: "Obi Belts" },
+            fields: [
+              {
+                type: "row",
+                fields: [
+                  imageField({
+                    name: fields.scansObibeltFront,
+                    relationTo: LibraryItemThumbnails.slug,
+                    admin: { width: "33%" },
+                  }),
+                  imageField({
+                    name: fields.scansObibeltSpine,
+                    relationTo: LibraryItemThumbnails.slug,
+                    admin: { width: "33%" },
+                  }),
+                  imageField({
+                    name: fields.scansObibeltBack,
+                    relationTo: LibraryItemThumbnails.slug,
+                    admin: { width: "33%" },
+                  }),
+                ],
+              },
+            ],
+          }),
+          {
+            name: fields.scansPages,
+            type: "array",
+            fields: [
+              {
+                type: "row",
+                fields: [
+                  {
+                    name: fields.scansPagesPage,
+                    type: "number",
+                    required: true,
+                    admin: { width: "33%" },
+                  },
+                  imageField({
+                    name: fields.scansPagesImage,
+                    relationTo: LibraryItemThumbnails.slug,
+                    required: true,
+                    admin: { width: "66%" },
+                  }),
+                ],
+              },
+            ],
+          },
+        ],
+      }),
+      optionalGroupField({
+        name: fields.size,
         admin: { condition: (data) => !data.digital },
         fields: [
           {
@@ -146,25 +271,49 @@ stage plays, manga, drama CDs, and comics).",
               {
                 name: fields.width,
                 type: "number",
-                validate: validateRequiredSizeValue,
+                required: true,
                 admin: { step: 1, width: "33%", description: "in mm." },
               },
               {
                 name: fields.height,
                 type: "number",
-                validate: validateRequiredSizeValue,
+                required: true,
                 admin: { step: 1, width: "33%", description: "in mm." },
               },
               {
                 name: fields.thickness,
                 type: "number",
-                validate: validateSizeValue,
                 admin: { step: 1, width: "33%", description: "in mm." },
               },
             ],
           },
         ],
-      },
+      }),
+      optionalGroupField({
+        name: fields.price,
+        admin: { className: "group-array" },
+        fields: [
+          {
+            type: "row",
+            fields: [
+              {
+                name: fields.priceAmount,
+                type: "number",
+                required: true,
+                min: 0,
+                admin: { width: "50%" },
+              },
+              {
+                name: fields.priceCurrency,
+                type: "relationship",
+                relationTo: Currencies.slug,
+                required: true,
+                admin: { allowCreate: false, width: "50%" },
+              },
+            ],
+          },
+        ],
+      }),
       {
         name: fields.itemType,
         type: "radio",

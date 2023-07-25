@@ -45,3 +45,18 @@ html[data-theme="light"] {
   --color-base-950: #11100b;
   --color-base-1000: #000000;
 }
+
+.field-type.array-field.group-array {
+  .array-field__header-actions,
+  .collapsible__drag,
+  .collapsible__toggle,
+  .collapsible__header-wrap,
+  .collapsible__indicator,
+  .array-actions__add,
+  .array-actions__duplicate {
+    display: none;
+  }
+  .collapsible__actions-wrap {
+    z-index: 1;
+  }
+}

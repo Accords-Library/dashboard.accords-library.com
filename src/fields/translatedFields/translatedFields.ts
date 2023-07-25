@@ -1,7 +1,7 @@
 import { ArrayField, Field } from "payload/types";
 import { hasDuplicates } from "../../utils/validation";
 import { isDefined, isUndefined } from "../../utils/asserts";
-import { Languages } from "../../collections/Languages";
+import { Languages } from "../../collections/Languages/Languages";
 import { RowLabel } from "./RowLabel";
 import { Cell } from "./Cell";
 

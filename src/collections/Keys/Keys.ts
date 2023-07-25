@@ -5,6 +5,9 @@ import { localizedFields } from "../../fields/translatedFields/translatedFields"
 import { Key } from "../../types/collections";
 import { isDefined } from "../../utils/asserts";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { mustBeAdmin } from "../../accesses/mustBeAdmin";
+import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
+import { QuickFilters } from "../../components/QuickFilters";
 
 const fields = {
   slug: "slug",
@@ -27,6 +30,26 @@ export const Keys: CollectionConfig = buildCollectionConfig(
       useAsTitle: fields.slug,
       defaultColumns: [fields.slug, fields.type, fields.translations],
       group: CollectionGroup.Meta,
+      components: {
+        BeforeListTable: [
+          () =>
+            QuickFilters({
+              route: "/admin/collections/keys",
+              filters: [
+                { label: "Wordings", filter: "where[type][equals]=Wordings" },
+                { label: "∅ English", filter: "where[translations.language][not_equals]=en" },
+                { label: "∅ French", filter: "where[translations.language][not_equals]=fr" },
+              ],
+            }),
+        ],
+      },
+      hooks: {
+        beforeDuplicate: beforeDuplicateAddCopyTo(fields.slug),
+      },
+    },
+    access: {
+      create: mustBeAdmin,
+      delete: mustBeAdmin,
     },
     timestamps: false,
     versions: false,

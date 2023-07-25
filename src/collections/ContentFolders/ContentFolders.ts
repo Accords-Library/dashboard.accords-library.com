@@ -22,6 +22,7 @@ export const ContentFolders = buildCollectionConfig(
     admin: {
       useAsTitle: fields.slug,
       defaultColumns: [fields.slug, fields.translations],
+      disableDuplicate: true,
       group: CollectionGroup.Collections,
     },
     timestamps: false,

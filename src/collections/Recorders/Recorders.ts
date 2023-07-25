@@ -1,10 +1,13 @@
 import { localizedFields } from "../../fields/translatedFields/translatedFields";
-import { Languages } from "../Languages";
-import { beforeDuplicate } from "./hooks/beforeDuplicate";
-import { CollectionGroup } from "../../constants";
+import { Languages } from "../Languages/Languages";
+import { CollectionGroup, RecordersRoles } from "../../constants";
 import { RecorderThumbnails } from "../RecorderThumbnails/RecorderThumbnails";
 import { imageField } from "../../fields/imageField/imageField";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { mustBeAdmin } from "../../accesses/mustBeAdmin";
+import { mustBeAdminOrSelf } from "../../accesses/collections/mustBeAdminOrSelf";
+import { beforeLoginMustHaveAtLeastOneRole } from "./hooks/beforeLoginMustHaveAtLeastOneRole";
+import { QuickFilters } from "../../components/QuickFilters";
 
 const fields = {
   username: "username",
@@ -13,6 +16,7 @@ const fields = {
   biographies: "biographies",
   biography: "biography",
   avatar: "avatar",
+  role: "role",
 } as const satisfies Record<string, string>;
 
 export const Recorders = buildCollectionConfig(
@@ -24,17 +28,43 @@ export const Recorders = buildCollectionConfig(
     defaultSort: fields.username,
     admin: {
       useAsTitle: fields.username,
-      hooks: { beforeDuplicate },
       description:
-        "Recorders are contributors of the Accord's Library project. Create a Recorder here to be able to credit them in other collections",
+        "Recorders are contributors of the Accord's Library project. Ask an admin to create a \
+      Recorder here to be able to credit them in other collections.",
       defaultColumns: [
         fields.username,
         fields.avatar,
         fields.anonymize,
         fields.biographies,
         fields.languages,
+        fields.role,
       ],
+      disableDuplicate: true,
       group: CollectionGroup.Meta,
+      components: {
+        BeforeListTable: [
+          () =>
+            QuickFilters({
+              route: "/admin/collections/recorders",
+              filters: [
+                { label: "Admins", filter: "where[role][equals]=Admin" },
+                { label: "Recorders", filter: "where[role][equals]=Recorder" },
+                { label: "∅ Role", filter: "where[role][not_in]=Admin,Recorder" },
+                { label: "Anonymized", filter: "where[anonymize][equals]=true" },
+              ],
+            }),
+        ],
+      },
+    },
+    auth: true,
+    access: {
+      unlock: mustBeAdmin,
+      update: mustBeAdminOrSelf,
+      delete: mustBeAdmin,
+      create: mustBeAdmin,
+    },
+    hooks: {
+      beforeLogin: [beforeLoginMustHaveAtLeastOneRole],
     },
     timestamps: false,
     fields: [
@@ -75,6 +105,20 @@ export const Recorders = buildCollectionConfig(
         },
         fields: [{ name: fields.biography, type: "textarea" }],
       }),
+      {
+        name: fields.role,
+        type: "select",
+        access: {
+          update: mustBeAdmin,
+          create: mustBeAdmin,
+        },
+        hasMany: true,
+        options: Object.entries(RecordersRoles).map(([value, label]) => ({
+          label,
+          value,
+        })),
+        admin: { position: "sidebar" },
+      },
       {
         name: fields.anonymize,
         type: "checkbox",

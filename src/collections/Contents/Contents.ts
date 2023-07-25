@@ -9,6 +9,9 @@ import { fileField } from "../../fields/fileField/fileField";
 import { contentBlocks } from "./Blocks/blocks";
 import { ContentThumbnails } from "../ContentThumbnails/ContentThumbnails";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
+import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
+import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
+import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 
 const fields = {
   slug: "slug",
@@ -53,6 +56,12 @@ export const Contents = buildVersionedCollectionConfig(
         fields.status,
       ],
       group: CollectionGroup.Collections,
+      hooks: {
+        beforeDuplicate: beforeDuplicatePiping([
+          beforeDuplicateUnpublish,
+          beforeDuplicateAddCopyTo(fields.slug),
+        ]),
+      },
       preview: (doc) => `https://accords-library.com/contents/${doc.slug}`,
     },
     fields: [
