@@ -7,7 +7,6 @@ import {
 } from "../../constants";
 import { slugField } from "../../fields/slugField/slugField";
 import { imageField } from "../../fields/imageField/imageField";
-import { isDefined, isUndefined } from "../../utils/asserts";
 import { LibraryItemThumbnails } from "../LibraryItemThumbnails/LibraryItemThumbnails";
 import { LibraryItem } from "../../types/collections";
 import { Keys } from "../Keys/Keys";
@@ -18,6 +17,8 @@ import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
 import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
 import { Currencies } from "../Currencies/Currencies";
 import { optionalGroupField } from "../../fields/optionalGroupField/optionalGroupField";
+import { RowLabel } from "./components/RowLabel";
+import { getSlug } from "./endpoints/getSlug";
 
 const fields = {
   status: "status",
@@ -70,7 +71,7 @@ export const LibraryItems = buildVersionedCollectionConfig(
     singular: "Library Item",
     plural: "Library Items",
   },
-  () => ({
+  ({ slug }) => ({
     defaultSort: fields.slug,
     admin: {
       useAsTitle: fields.slug,
@@ -87,6 +88,7 @@ export const LibraryItems = buildVersionedCollectionConfig(
       },
       preview: (doc) => `https://accords-library.com/library/${doc.slug}`,
     },
+    endpoints: [getSlug(slug)],
     fields: [
       {
         type: "row",
@@ -239,6 +241,12 @@ export const LibraryItems = buildVersionedCollectionConfig(
           {
             name: fields.scansPages,
             type: "array",
+            admin: {
+              initCollapsed: true,
+              components: {
+                RowLabel: ({ data }) => RowLabel(data),
+              },
+            },
             fields: [
               {
                 type: "row",

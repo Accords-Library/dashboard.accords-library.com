@@ -25,16 +25,17 @@ export type ContentFoldersTranslation = {
 
 export interface Config {
   collections: {
-    'library-items': LibraryItem;
+    "library-items": LibraryItem;
     contents: Content;
-    'content-folders': ContentFolder;
+    "content-folders": ContentFolder;
     posts: Post;
-    'content-thumbnails': ContentThumbnail;
-    'library-item-thumbnails': LibraryItemThumbnail;
-    'recorder-thumbnails': RecorderThumbnail;
-    'post-thumbnails': PostThumbnail;
+    "content-thumbnails": ContentThumbnail;
+    "library-item-thumbnails": LibraryItemThumbnail;
+    "recorder-thumbnails": RecorderThumbnail;
+    "post-thumbnails": PostThumbnail;
     files: File;
     languages: Language;
+    currencies: Currency;
     recorders: Recorder;
     keys: Key;
   };
@@ -51,6 +52,32 @@ export interface LibraryItem {
   primary: boolean;
   digital: boolean;
   downloadable: boolean;
+  scans?: {
+    cover?: {
+      front?: string | LibraryItemThumbnail;
+      spine?: string | LibraryItemThumbnail;
+      back?: string | LibraryItemThumbnail;
+      id?: string;
+    }[];
+    dustjacket?: {
+      front?: string | LibraryItemThumbnail;
+      spine?: string | LibraryItemThumbnail;
+      back?: string | LibraryItemThumbnail;
+      id?: string;
+    }[];
+    obibelt?: {
+      front?: string | LibraryItemThumbnail;
+      spine?: string | LibraryItemThumbnail;
+      back?: string | LibraryItemThumbnail;
+      id?: string;
+    }[];
+    pages?: {
+      page: number;
+      image: string | LibraryItemThumbnail;
+      id?: string;
+    }[];
+    id?: string;
+  }[];
   size?: {
     width: number;
     height: number;
@@ -58,49 +85,50 @@ export interface LibraryItem {
     id?: string;
   }[];
   price?: {
-    priceAmount: number;
+    amount: number;
+    currency: string | Currency;
     id?: string;
   }[];
-  itemType?: 'Textual' | 'Audio' | 'Video' | 'Game' | 'Other';
+  itemType?: "Textual" | "Audio" | "Video" | "Game" | "Other";
   textual?: {
     subtype?:
       | {
           value: string;
-          relationTo: 'keys';
+          relationTo: "keys";
         }[]
       | {
           value: Key;
-          relationTo: 'keys';
+          relationTo: "keys";
         }[];
     languages?:
       | {
           value: string;
-          relationTo: 'languages';
+          relationTo: "languages";
         }[]
       | {
           value: Language;
-          relationTo: 'languages';
+          relationTo: "languages";
         }[];
     pageCount?: number;
-    bindingType?: 'Paperback' | 'Hardcover';
-    pageOrder?: 'LeftToRight' | 'RightToLeft';
+    bindingType?: "Paperback" | "Hardcover";
+    pageOrder?: "LeftToRight" | "RightToLeft";
   };
   audio?: {
     audioSubtype?:
       | {
           value: string;
-          relationTo: 'keys';
+          relationTo: "keys";
         }[]
       | {
           value: Key;
-          relationTo: 'keys';
+          relationTo: "keys";
         }[];
   };
   releaseDate?: string;
-  lastModifiedBy: string | Recorder;
+  updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: 'draft' | 'published';
+  _status?: "draft" | "published";
 }
 export interface LibraryItemThumbnail {
   id: string;
@@ -139,20 +167,23 @@ export interface LibraryItemThumbnail {
     };
   };
 }
+export interface Currency {
+  id: string;
+}
 export interface Key {
   id: string;
   slug: string;
   type:
-    | 'Contents'
-    | 'LibraryAudio'
-    | 'LibraryVideo'
-    | 'LibraryTextual'
-    | 'LibraryGroup'
-    | 'Library'
-    | 'Weapons'
-    | 'GamePlatforms'
-    | 'Categories'
-    | 'Wordings';
+    | "Contents"
+    | "LibraryAudio"
+    | "LibraryVideo"
+    | "LibraryTextual"
+    | "LibraryGroup"
+    | "Library"
+    | "Weapons"
+    | "GamePlatforms"
+    | "Categories"
+    | "Wordings";
   translations?: CategoryTranslations;
 }
 export interface Language {
@@ -165,7 +196,7 @@ export interface Recorder {
   avatar?: string | RecorderThumbnail;
   languages?: string[] | Language[];
   biographies?: RecorderBiographies;
-  role?: ('Admin' | 'Recorder')[];
+  role?: ("Admin" | "Recorder")[];
   anonymize: boolean;
   email: string;
   resetPasswordToken?: string;
@@ -212,15 +243,15 @@ export interface Content {
   categories?:
     | {
         value: string;
-        relationTo: 'keys';
+        relationTo: "keys";
       }[]
     | {
         value: Key;
-        relationTo: 'keys';
+        relationTo: "keys";
       }[];
   type?: {
     value: string | Key;
-    relationTo: 'keys';
+    relationTo: "keys";
   };
   translations: {
     language: string | Language;
@@ -239,10 +270,10 @@ export interface Content {
     audio?: string | File;
     id?: string;
   }[];
-  lastModifiedBy: string | Recorder;
+  updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: 'draft' | 'published';
+  _status?: "draft" | "published";
 }
 export interface ContentThumbnail {
   id: string;
@@ -279,19 +310,25 @@ export interface TextBlock {
   }[];
   id?: string;
   blockName?: string;
-  blockType: 'textBlock';
+  blockType: "textBlock";
 }
 export interface Section {
   content?: (Section_Section | Section_Tabs | TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface Section_Section {
-  content?: (Section_Section_Section | Section_Section_Tabs | TranscriptBlock | QuoteBlock | TextBlock)[];
+  content?: (
+    | Section_Section_Section
+    | Section_Section_Tabs
+    | TranscriptBlock
+    | QuoteBlock
+    | TextBlock
+  )[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface Section_Section_Section {
   content?: (
@@ -303,25 +340,25 @@ export interface Section_Section_Section {
   )[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface Section_Section_Section_Section {
   content?: (Section_Section_Section_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface Section_Section_Section_Section_Section {
   content?: (TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface TranscriptBlock {
   lines: (LineBlock | CueBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'transcriptBlock';
+  blockType: "transcriptBlock";
 }
 export interface LineBlock {
   content: {
@@ -329,13 +366,13 @@ export interface LineBlock {
   }[];
   id?: string;
   blockName?: string;
-  blockType: 'lineBlock';
+  blockType: "lineBlock";
 }
 export interface CueBlock {
   content: string;
   id?: string;
   blockName?: string;
-  blockType: 'cueBlock';
+  blockType: "cueBlock";
 }
 export interface QuoteBlock {
   from: string;
@@ -344,120 +381,120 @@ export interface QuoteBlock {
   }[];
   id?: string;
   blockName?: string;
-  blockType: 'quoteBlock';
+  blockType: "quoteBlock";
 }
 export interface Section_Section_Section_Tabs {
   tabs?: Section_Section_Section_Tabs_Tab[];
   id?: string;
   blockName?: string;
-  blockType: 'tabs';
+  blockType: "tabs";
 }
 export interface Section_Section_Section_Tabs_Tab {
   content?: (Section_Section_Section_Tabs_Tab_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'tab';
+  blockType: "tab";
 }
 export interface Section_Section_Section_Tabs_Tab_Section {
   content?: (TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface Section_Section_Tabs {
   tabs?: Section_Section_Tabs_Tab[];
   id?: string;
   blockName?: string;
-  blockType: 'tabs';
+  blockType: "tabs";
 }
 export interface Section_Section_Tabs_Tab {
   content?: (Section_Section_Tabs_Tab_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'tab';
+  blockType: "tab";
 }
 export interface Section_Section_Tabs_Tab_Section {
   content?: (Section_Section_Tabs_Tab_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface Section_Section_Tabs_Tab_Section_Section {
   content?: (TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface Section_Tabs {
   tabs?: Section_Tabs_Tab[];
   id?: string;
   blockName?: string;
-  blockType: 'tabs';
+  blockType: "tabs";
 }
 export interface Section_Tabs_Tab {
   content?: (Section_Tabs_Tab_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'tab';
+  blockType: "tab";
 }
 export interface Section_Tabs_Tab_Section {
   content?: (Section_Tabs_Tab_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface Section_Tabs_Tab_Section_Section {
   content?: (Section_Tabs_Tab_Section_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface Section_Tabs_Tab_Section_Section_Section {
   content?: (TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface Tabs {
   tabs?: Tabs_Tab[];
   id?: string;
   blockName?: string;
-  blockType: 'tabs';
+  blockType: "tabs";
 }
 export interface Tabs_Tab {
   content?: (Tabs_Tab_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'tab';
+  blockType: "tab";
 }
 export interface Tabs_Tab_Section {
   content?: (Tabs_Tab_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface Tabs_Tab_Section_Section {
   content?: (Tabs_Tab_Section_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface Tabs_Tab_Section_Section_Section {
   content?: (Tabs_Tab_Section_Section_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface Tabs_Tab_Section_Section_Section_Section {
   content?: (TranscriptBlock | QuoteBlock | TextBlock)[];
   id?: string;
   blockName?: string;
-  blockType: 'section';
+  blockType: "section";
 }
 export interface File {
   id: string;
   filename: string;
-  type: 'LibraryScans' | 'LibrarySoundtracks' | 'ContentVideo' | 'ContentAudio';
+  type: "LibraryScans" | "LibrarySoundtracks" | "ContentVideo" | "ContentAudio";
   updatedAt: string;
   createdAt: string;
 }
@@ -468,20 +505,20 @@ export interface ContentFolder {
   subfolders?:
     | {
         value: string;
-        relationTo: 'content-folders';
+        relationTo: "content-folders";
       }[]
     | {
         value: ContentFolder;
-        relationTo: 'content-folders';
+        relationTo: "content-folders";
       }[];
   contents?:
     | {
         value: string;
-        relationTo: 'contents';
+        relationTo: "contents";
       }[]
     | {
         value: Content;
-        relationTo: 'contents';
+        relationTo: "contents";
       }[];
 }
 export interface Post {
@@ -491,20 +528,20 @@ export interface Post {
   authors:
     | {
         value: string;
-        relationTo: 'recorders';
+        relationTo: "recorders";
       }[]
     | {
         value: Recorder;
-        relationTo: 'recorders';
+        relationTo: "recorders";
       }[];
   categories?:
     | {
         value: string;
-        relationTo: 'keys';
+        relationTo: "keys";
       }[]
     | {
         value: Key;
-        relationTo: 'keys';
+        relationTo: "keys";
       }[];
   translations: {
     language: string | Language;
@@ -520,10 +557,10 @@ export interface Post {
   }[];
   publishedDate: string;
   hidden?: boolean;
-  lastModifiedBy: string | Recorder;
+  updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: 'draft' | 'published';
+  _status?: "draft" | "published";
 }
 export interface PostThumbnail {
   id: string;

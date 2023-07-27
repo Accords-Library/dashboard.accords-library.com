@@ -6,18 +6,15 @@ import {
 } from "./collectionConfig";
 import { Recorders } from "../collections/Recorders/Recorders";
 
-const fields = { lastModifiedBy: "lastModifiedBy" };
+const fields = { updatedBy: "updatedBy" };
 
-const beforeChangeLastModifiedBy: CollectionBeforeChangeHook = async ({
-  data: { updatedBy, ...data },
-  req,
-}) => ({
+const beforeChangeUpdatedBy: CollectionBeforeChangeHook = async ({ data, req }) => ({
   ...data,
-  [fields.lastModifiedBy]: req.user.id,
+  [fields.updatedBy]: req.user.id,
 });
 
-const lastModifiedByField = (): RelationshipField => ({
-  name: fields.lastModifiedBy,
+const updatedByField = (): RelationshipField => ({
+  name: fields.updatedBy,
   type: "relationship",
   required: true,
   relationTo: Recorders.slug,
@@ -42,8 +39,8 @@ export const buildVersionedCollectionConfig = (
     versions: { drafts: { autosave: { interval: 2000 } } },
     hooks: {
       ...otherHooks,
-      beforeChange: [...(beforeChange ?? []), beforeChangeLastModifiedBy],
+      beforeChange: [...(beforeChange ?? []), beforeChangeUpdatedBy],
     },
-    fields: [...fields, lastModifiedByField()],
+    fields: [...fields, updatedByField()],
   };
 };
