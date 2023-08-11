@@ -1,16 +1,14 @@
-import { slugField } from "../../fields/slugField/slugField";
+import { QuickFilters, publishStatusFilters } from "../../components/QuickFilters";
+import { CollectionGroups, Collections, KeysTypes } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
-import { CollectionGroup, KeysTypes } from "../../constants";
-import { Recorders } from "../Recorders/Recorders";
+import { slugField } from "../../fields/slugField/slugField";
 import { localizedFields } from "../../fields/translatedFields/translatedFields";
-import { isDefined, isUndefined } from "../../utils/asserts";
-import { removeTranslatorsForTranscripts } from "./hooks/beforeValidate";
-import { Keys } from "../Keys/Keys";
-import { PostThumbnails } from "../PostThumbnails/PostThumbnails";
-import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
+import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
 import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
-import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
+import { isDefined, isUndefined } from "../../utils/asserts";
+import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
+import { removeTranslatorsForTranscripts } from "./hooks/beforeValidate";
 
 const fields = {
   slug: "slug",
@@ -29,6 +27,7 @@ const fields = {
 } as const satisfies Record<string, string>;
 
 export const Posts = buildVersionedCollectionConfig(
+  Collections.Posts,
   {
     singular: "Post",
     plural: "Posts",
@@ -41,7 +40,16 @@ export const Posts = buildVersionedCollectionConfig(
         "News articles written by our Recorders! Here you will find announcements about \
          new merch/items releases, guides, theories, unboxings, showcases...",
       defaultColumns: [fields.slug, fields.thumbnail, fields.categories],
-      group: CollectionGroup.Collections,
+      group: CollectionGroups.Collections,
+      components: {
+        BeforeListTable: [
+          () =>
+            QuickFilters({
+              slug: Collections.Posts,
+              filterGroups: [publishStatusFilters],
+            }),
+        ],
+      },
       hooks: {
         beforeDuplicate: beforeDuplicatePiping([
           beforeDuplicateUnpublish,
@@ -60,7 +68,7 @@ export const Posts = buildVersionedCollectionConfig(
           slugField({ name: fields.slug, admin: { width: "50%" } }),
           imageField({
             name: fields.thumbnail,
-            relationTo: PostThumbnails.slug,
+            relationTo: Collections.PostsThumbnails,
             admin: { width: "50%" },
           }),
         ],
@@ -71,7 +79,7 @@ export const Posts = buildVersionedCollectionConfig(
           {
             name: fields.authors,
             type: "relationship",
-            relationTo: [Recorders.slug],
+            relationTo: [Collections.Recorders],
             required: true,
             minRows: 1,
             hasMany: true,
@@ -80,7 +88,7 @@ export const Posts = buildVersionedCollectionConfig(
           {
             name: fields.categories,
             type: "relationship",
-            relationTo: [Keys.slug],
+            relationTo: [Collections.Keys],
             filterOptions: { type: { equals: KeysTypes.Categories } },
             hasMany: true,
             admin: { allowCreate: false, width: "35%" },
@@ -101,7 +109,7 @@ export const Posts = buildVersionedCollectionConfig(
               {
                 name: fields.translators,
                 type: "relationship",
-                relationTo: Recorders.slug,
+                relationTo: Collections.Recorders,
                 hasMany: true,
                 admin: {
                   condition: (_, siblingData) => {
@@ -134,7 +142,7 @@ export const Posts = buildVersionedCollectionConfig(
               {
                 name: fields.proofreaders,
                 type: "relationship",
-                relationTo: Recorders.slug,
+                relationTo: Collections.Recorders,
                 hasMany: true,
                 admin: { width: "50%" },
               },

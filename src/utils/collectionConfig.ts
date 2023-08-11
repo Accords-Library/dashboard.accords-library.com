@@ -1,20 +1,19 @@
 import { CollectionConfig } from "payload/types";
-import slugify from "slugify";
+import { Collections } from "../constants";
 
 export type BuildCollectionConfig = Omit<CollectionConfig, "slug" | "typescript" | "labels">;
 
 export type GenerationFunctionProps = {
-  slug: string;
   uploadDir: string;
 };
 
 export const buildCollectionConfig = (
+  slug: Collections,
   labels: { singular: string; plural: string },
   generationFunction: (props: GenerationFunctionProps) => BuildCollectionConfig
 ): CollectionConfig => {
-  const slug = slugify(labels.plural, { lower: true, strict: true, trim: true });
   const uploadDir = `../uploads/${slug}`;
-  const config = generationFunction({ slug, uploadDir });
+  const config = generationFunction({ uploadDir });
   return {
     ...config,
     slug,

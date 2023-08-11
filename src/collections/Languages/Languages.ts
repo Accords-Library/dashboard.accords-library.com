@@ -1,6 +1,9 @@
+import { text } from "payload/dist/fields/validations";
 import { mustBeAdmin } from "../../accesses/mustBeAdmin";
-import { CollectionGroup } from "../../constants";
+import { publicAccess } from "../../accesses/publicAccess";
+import { CollectionGroups, Collections } from "../../constants";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { importFromStrapi } from "./endpoints/importFromStrapi";
 
 const fields = {
   id: "id",
@@ -8,6 +11,7 @@ const fields = {
 } as const satisfies Record<string, string>;
 
 export const Languages = buildCollectionConfig(
+  Collections.Languages,
   {
     singular: "Language",
     plural: "Languages",
@@ -18,21 +22,23 @@ export const Languages = buildCollectionConfig(
       useAsTitle: fields.name,
       defaultColumns: [fields.name, fields.id],
       disableDuplicate: true,
-      group: CollectionGroup.Meta,
+      group: CollectionGroups.Meta,
+      pagination: { defaultLimit: 100 },
     },
-    access: { create: mustBeAdmin, update: mustBeAdmin },
+    access: { create: mustBeAdmin, update: mustBeAdmin, read: publicAccess },
     timestamps: false,
+    endpoints: [importFromStrapi],
     fields: [
       {
         name: fields.id,
         type: "text",
         unique: true,
         required: true,
-        validate: (value) => {
-          if (/^[a-z]{2}(-[a-z]{2})?$/g.test(value)) {
-            return true;
+        validate: (value, options) => {
+          if (!/^[a-z]{2}(-[a-z]{2})?$/g.test(value)) {
+            return "The code must be a valid BCP 47 language tag and lowercase (i.e: en, pt-pt, fr, zh-tw...)";
           }
-          return "The code must be a valid IETF language tag and lowercase (i.e: en, pt-pt, fr, zh-tw...)";
+          return text(value, options);
         },
       },
       {

@@ -1,25 +1,33 @@
-import { buildConfig } from "payload/config";
 import path from "path";
-import { Languages } from "./collections/Languages/Languages";
-import { Recorders } from "./collections/Recorders/Recorders";
-import { Posts } from "./collections/Posts/Posts";
-import { Keys } from "./collections/Keys/Keys";
-import { LibraryItems } from "./collections/LibraryItems/LibraryItems";
+import { buildConfig } from "payload/config";
+import { ChronologyEras } from "./collections/ChronologyEras/ChronologyEras";
+import { ChronologyItems } from "./collections/ChronologyItems/ChronologyItems";
 import { Contents } from "./collections/Contents/Contents";
-import { Files } from "./collections/Files/Files";
-import { RecorderThumbnails } from "./collections/RecorderThumbnails/RecorderThumbnails";
-import { PostThumbnails } from "./collections/PostThumbnails/PostThumbnails";
-import { LibraryItemThumbnails } from "./collections/LibraryItemThumbnails/LibraryItemThumbnails";
-import { ContentThumbnails } from "./collections/ContentThumbnails/ContentThumbnails";
-import { ContentFolders } from "./collections/ContentFolders/ContentFolders";
-import { Logo } from "./components/Logo";
-import { Icon } from "./components/Icon";
+import { ContentsFolders } from "./collections/ContentsFolders/ContentsFolders";
+import { ContentsThumbnails } from "./collections/ContentsThumbnails/ContentsThumbnails";
 import { Currencies } from "./collections/Currencies/Currencies";
+import { Files } from "./collections/Files/Files";
+import { Keys } from "./collections/Keys/Keys";
+import { Languages } from "./collections/Languages/Languages";
+import { LibraryItems } from "./collections/LibraryItems/LibraryItems";
+import { LibraryItemsThumbnails } from "./collections/LibraryItemsThumbnails/LibraryItemsThumbnails";
+import { Posts } from "./collections/Posts/Posts";
+import { PostsThumbnails } from "./collections/PostsThumbnails/PostsThumbnails";
+import { Recorders } from "./collections/Recorders/Recorders";
+import { RecordersThumbnails } from "./collections/RecordersThumbnails/RecordersThumbnails";
+import { Videos } from "./collections/Videos/Videos";
+import { VideosChannels } from "./collections/VideosChannels/VideosChannels";
+import { Weapons } from "./collections/Weapons/Weapons";
+import { WeaponsGroups } from "./collections/WeaponsGroups/WeaponsGroups";
+import { WeaponsThumbnails } from "./collections/WeaponsThumbnails/WeaponsThumbnails";
+import { Icon } from "./components/Icon";
+import { Logo } from "./components/Logo";
+import { Collections } from "./constants";
 
 export default buildConfig({
-  serverURL: "https://dashboard.accords-library.com",
+  serverURL: process.env.PAYLOAD_URI,
   admin: {
-    user: Recorders.slug,
+    user: Collections.Recorders,
     components: { graphics: { Logo, Icon } },
     meta: {
       favicon: "/public/favicon.ico",
@@ -31,13 +39,20 @@ export default buildConfig({
   collections: [
     LibraryItems,
     Contents,
-    ContentFolders,
+    ContentsFolders,
     Posts,
-    ContentThumbnails,
-    LibraryItemThumbnails,
-    RecorderThumbnails,
-    PostThumbnails,
+    ChronologyItems,
+    ChronologyEras,
+    Weapons,
+    WeaponsGroups,
+    WeaponsThumbnails,
+    ContentsThumbnails,
+    LibraryItemsThumbnails,
+    RecordersThumbnails,
+    PostsThumbnails,
     Files,
+    Videos,
+    VideosChannels,
     Languages,
     Currencies,
     Recorders,

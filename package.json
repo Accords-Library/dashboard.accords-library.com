@@ -16,27 +16,34 @@
     "prettier": "prettier --list-different --end-of-line auto --write src",
     "tsc": "tsc --noEmit",
     "precommit": "npm run generate:types && npm run prettier && npm run tsc",
-    "upgrade": "ncu"
+    "upgrade": "ncu",
+    "clean": "sudo rm -r uploads mongo",
+    "start": "sudo docker compose up"
   },
   "dependencies": {
-    "@fontsource/vollkorn": "^5.0.5",
+    "@fontsource/vollkorn": "^5.0.8",
     "clean-deep": "^3.4.0",
     "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "iso-639-1": "^2.1.15",
-    "payload": "^1.11.7",
+    "language-tags": "^1.0.8",
+    "luxon": "^3.4.0",
+    "payload": "^1.13.3",
+    "qs": "^6.11.2",
     "slugify": "^1.6.6",
-    "styled-components": "^6.0.5",
+    "styled-components": "^6.0.7",
     "unset-value": "^2.0.1"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.17",
+    "@types/language-tags": "^1.0.1",
+    "@types/luxon": "^3.3.1",
+    "@types/qs": "^6.9.7",
     "@types/react-router-dom": "^5.3.3",
     "copyfiles": "^2.4.1",
     "nodemon": "^3.0.1",
-    "prettier": "^3.0.0",
+    "prettier": "^3.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"
   }

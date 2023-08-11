@@ -1,41 +1,45 @@
-import { CollectionGroup } from "../../constants";
+import { CollectionGroups, Collections } from "../../constants";
+import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 
 const fields = {
   filename: "filename",
   mimeType: "mimeType",
   filesize: "filesize",
+  recorder: "recorder",
 } as const satisfies Record<string, string>;
 
-export const PostThumbnails = buildCollectionConfig(
+export const RecordersThumbnails = buildCollectionConfig(
+  Collections.RecordersThumbnails,
   {
-    singular: "Post Thumbnail",
-    plural: "Post Thumbnails",
+    singular: "Recorders Thumbnail",
+    plural: "Recorders Thumbnails",
   },
   ({ uploadDir }) => ({
     defaultSort: fields.filename,
     admin: {
       useAsTitle: fields.filename,
       disableDuplicate: true,
-      group: CollectionGroup.Media,
+      group: CollectionGroups.Media,
     },
     upload: {
       staticDir: uploadDir,
+      adminThumbnail: "small",
       mimeTypes: ["image/*"],
       imageSizes: [
         {
           name: "og",
-          height: 750,
-          width: 1125,
+          height: 256,
+          width: 256,
           formatOptions: {
             format: "jpg",
             options: { progressive: true, mozjpeg: true, compressionLevel: 9, quality: 80 },
           },
         },
         {
-          name: "medium",
-          height: 1000,
-          width: 1500,
+          name: "small",
+          height: 128,
+          width: 128,
           formatOptions: {
             format: "webp",
             options: { effort: 6, quality: 80, alphaQuality: 80 },
@@ -43,6 +47,13 @@ export const PostThumbnails = buildCollectionConfig(
         },
       ],
     },
-    fields: [],
+    fields: [
+      backPropagationField({
+        name: fields.recorder,
+        hasMany: false,
+        relationTo: Collections.Recorders,
+        where: (id) => ({ avatar: { equals: id } }),
+      }),
+    ],
   })
 );

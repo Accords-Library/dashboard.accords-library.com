@@ -1,17 +1,14 @@
-import { CollectionGroup, FileTypes, KeysTypes } from "../../constants";
-import { slugField } from "../../fields/slugField/slugField";
-import { imageField } from "../../fields/imageField/imageField";
-import { Keys } from "../Keys/Keys";
-import { localizedFields } from "../../fields/translatedFields/translatedFields";
-import { Recorders } from "../Recorders/Recorders";
-import { isDefined } from "../../utils/asserts";
+import { CollectionGroups, Collections, FileTypes, KeysTypes } from "../../constants";
 import { fileField } from "../../fields/fileField/fileField";
-import { contentBlocks } from "./Blocks/blocks";
-import { ContentThumbnails } from "../ContentThumbnails/ContentThumbnails";
-import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
+import { imageField } from "../../fields/imageField/imageField";
+import { slugField } from "../../fields/slugField/slugField";
+import { localizedFields } from "../../fields/translatedFields/translatedFields";
+import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
 import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
-import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
+import { isDefined } from "../../utils/asserts";
+import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
+import { contentBlocks } from "./Blocks/blocks";
 
 const fields = {
   slug: "slug",
@@ -37,6 +34,7 @@ const fields = {
 } as const satisfies Record<string, string>;
 
 export const Contents = buildVersionedCollectionConfig(
+  Collections.Contents,
   {
     singular: "Content",
     plural: "Contents",
@@ -55,7 +53,7 @@ export const Contents = buildVersionedCollectionConfig(
         fields.translations,
         fields.status,
       ],
-      group: CollectionGroup.Collections,
+      group: CollectionGroups.Collections,
       hooks: {
         beforeDuplicate: beforeDuplicatePiping([
           beforeDuplicateUnpublish,
@@ -71,7 +69,7 @@ export const Contents = buildVersionedCollectionConfig(
           slugField({ name: fields.slug, admin: { width: "50%" } }),
           imageField({
             name: fields.thumbnail,
-            relationTo: ContentThumbnails.slug,
+            relationTo: Collections.ContentsThumbnails,
             admin: { width: "50%" },
           }),
         ],
@@ -82,7 +80,7 @@ export const Contents = buildVersionedCollectionConfig(
           {
             name: fields.categories,
             type: "relationship",
-            relationTo: [Keys.slug],
+            relationTo: [Collections.Keys],
             filterOptions: { type: { equals: KeysTypes.Categories } },
             hasMany: true,
             admin: { allowCreate: false, width: "50%" },
@@ -90,7 +88,7 @@ export const Contents = buildVersionedCollectionConfig(
           {
             name: fields.type,
             type: "relationship",
-            relationTo: [Keys.slug],
+            relationTo: [Collections.Keys],
             filterOptions: { type: { equals: KeysTypes.Contents } },
             admin: { allowCreate: false, width: "50%" },
           },
@@ -128,7 +126,7 @@ export const Contents = buildVersionedCollectionConfig(
                         name: fields.textTranscribers,
                         label: "Transcribers",
                         type: "relationship",
-                        relationTo: Recorders.slug,
+                        relationTo: Collections.Recorders,
                         hasMany: true,
                         admin: {
                           condition: (_, siblingData) =>
@@ -140,7 +138,7 @@ export const Contents = buildVersionedCollectionConfig(
                         name: fields.textTranslators,
                         label: "Translators",
                         type: "relationship",
-                        relationTo: Recorders.slug,
+                        relationTo: Collections.Recorders,
                         hasMany: true,
                         admin: {
                           condition: (_, siblingData) =>
@@ -152,7 +150,7 @@ export const Contents = buildVersionedCollectionConfig(
                         name: fields.textProofreaders,
                         label: "Proofreaders",
                         type: "relationship",
-                        relationTo: Recorders.slug,
+                        relationTo: Collections.Recorders,
                         hasMany: true,
                         admin: { width: "50%" },
                       },

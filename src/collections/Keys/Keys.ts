@@ -1,60 +1,86 @@
-import { CollectionConfig } from "payload/types";
-import { slugField } from "../../fields/slugField/slugField";
-import { CollectionGroup, KeysTypes } from "../../constants";
+import payload from "payload";
+import { mustBeAdmin } from "../../accesses/mustBeAdmin";
+import { QuickFilters } from "../../components/QuickFilters";
+import { CollectionGroups, Collections, KeysTypes, LanguageCodes } from "../../constants";
 import { localizedFields } from "../../fields/translatedFields/translatedFields";
+import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { Key } from "../../types/collections";
 import { isDefined } from "../../utils/asserts";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
-import { mustBeAdmin } from "../../accesses/mustBeAdmin";
-import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
-import { QuickFilters } from "../../components/QuickFilters";
+import { importFromStrapi } from "./endpoints/importFromStrapi";
 
 const fields = {
-  slug: "slug",
-  translations: "translations",
-  type: "type",
   name: "name",
-  short: "short",
+  type: "type",
+  translations: "translations",
+  translationsName: "name",
+  translationsShort: "short",
 } as const satisfies Record<string, string>;
 
 const keysTypesWithShort: (keyof typeof KeysTypes)[] = ["Categories", "GamePlatforms"];
 
-export const Keys: CollectionConfig = buildCollectionConfig(
+export const Keys = buildCollectionConfig(
+  Collections.Keys,
   {
     singular: "Key",
     plural: "Keys",
   },
   () => ({
-    defaultSort: fields.slug,
+    defaultSort: fields.name,
     admin: {
-      useAsTitle: fields.slug,
-      defaultColumns: [fields.slug, fields.type, fields.translations],
-      group: CollectionGroup.Meta,
+      useAsTitle: fields.name,
+      defaultColumns: [fields.name, fields.type, fields.translations],
+      group: CollectionGroups.Meta,
       components: {
         BeforeListTable: [
           () =>
             QuickFilters({
-              route: "/admin/collections/keys",
-              filters: [
-                { label: "Wordings", filter: "where[type][equals]=Wordings" },
-                { label: "∅ English", filter: "where[translations.language][not_equals]=en" },
-                { label: "∅ French", filter: "where[translations.language][not_equals]=fr" },
+              slug: Collections.Keys,
+              filterGroups: [
+                Object.entries(KeysTypes).map(([key, value]) => ({
+                  label: value,
+                  filter: { where: { type: { equals: key } } },
+                })),
+                Object.entries(LanguageCodes).map(([key, value]) => ({
+                  label: `∅ ${value}`,
+                  filter: { where: { "translations.language": { not_equals: key } } },
+                })),
               ],
             }),
         ],
       },
       hooks: {
-        beforeDuplicate: beforeDuplicateAddCopyTo(fields.slug),
+        beforeDuplicate: beforeDuplicateAddCopyTo(fields.name),
       },
     },
     access: {
       create: mustBeAdmin,
       delete: mustBeAdmin,
     },
+    hooks: {
+      beforeValidate: [
+        async ({ data: { name, type } }) => {
+          const result = await payload.find({
+            collection: Collections.Keys,
+            where: { name: { equals: name }, type: { equals: type } },
+          });
+          if (result.docs.length > 0) {
+            throw new Error(
+              `A Key of type "${KeysTypes[type]}" already exists with the name "${name}"`
+            );
+          }
+        },
+      ],
+    },
+    endpoints: [importFromStrapi],
     timestamps: false,
     versions: false,
     fields: [
-      slugField({ name: fields.slug }),
+      {
+        name: fields.name,
+        type: "text",
+        required: true,
+      },
       {
         name: fields.type,
         type: "select",
@@ -65,15 +91,20 @@ export const Keys: CollectionConfig = buildCollectionConfig(
         name: fields.translations,
         interfaceName: "CategoryTranslations",
         admin: {
-          useAsTitle: fields.name,
+          useAsTitle: fields.translationsName,
         },
         fields: [
           {
             type: "row",
             fields: [
-              { name: fields.name, type: "text", required: true, admin: { width: "50%" } },
               {
-                name: fields.short,
+                name: fields.translationsName,
+                type: "text",
+                required: true,
+                admin: { width: "50%" },
+              },
+              {
+                name: fields.translationsShort,
                 type: "text",
                 admin: {
                   condition: (data: Partial<Key>) =>

@@ -1,7 +1,6 @@
+import { CollectionGroups, Collections } from "../../constants";
 import { slugField } from "../../fields/slugField/slugField";
-import { CollectionGroup } from "../../constants";
 import { localizedFields } from "../../fields/translatedFields/translatedFields";
-import { Contents } from "../Contents/Contents";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 
 const fields = {
@@ -12,18 +11,19 @@ const fields = {
   contents: "contents",
 } as const satisfies Record<string, string>;
 
-export const ContentFolders = buildCollectionConfig(
+export const ContentsFolders = buildCollectionConfig(
+  Collections.ContentsFolders,
   {
-    singular: "Content Folder",
-    plural: "Content Folders",
+    singular: "Contents Folder",
+    plural: "Contents Folders",
   },
-  ({ slug }) => ({
+  () => ({
     defaultSort: fields.slug,
     admin: {
       useAsTitle: fields.slug,
       defaultColumns: [fields.slug, fields.translations],
       disableDuplicate: true,
-      group: CollectionGroup.Collections,
+      group: CollectionGroups.Collections,
     },
     timestamps: false,
     versions: false,
@@ -43,14 +43,14 @@ export const ContentFolders = buildCollectionConfig(
           {
             type: "relationship",
             name: fields.subfolders,
-            relationTo: [slug],
+            relationTo: Collections.ContentsFolders,
             hasMany: true,
             admin: { width: "50%" },
           },
           {
             type: "relationship",
             name: fields.contents,
-            relationTo: [Contents.slug],
+            relationTo: Collections.Contents,
             hasMany: true,
             admin: { width: "50%" },
           },

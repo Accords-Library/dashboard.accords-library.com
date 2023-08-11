@@ -1,4 +1,4 @@
-import { CollectionGroup, FileTypes } from "../../constants";
+import { CollectionGroups, Collections, FileTypes } from "../../constants";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 
 const fields = {
@@ -7,6 +7,7 @@ const fields = {
 } as const satisfies Record<string, string>;
 
 export const Files = buildCollectionConfig(
+  Collections.Files,
   {
     singular: "File",
     plural: "Files",
@@ -16,7 +17,7 @@ export const Files = buildCollectionConfig(
     admin: {
       useAsTitle: fields.filename,
       disableDuplicate: true,
-      group: CollectionGroup.Media,
+      group: CollectionGroups.Media,
     },
     fields: [
       {

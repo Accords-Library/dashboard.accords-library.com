@@ -1,13 +1,12 @@
-import { localizedFields } from "../../fields/translatedFields/translatedFields";
-import { Languages } from "../Languages/Languages";
-import { CollectionGroup, RecordersRoles } from "../../constants";
-import { RecorderThumbnails } from "../RecorderThumbnails/RecorderThumbnails";
-import { imageField } from "../../fields/imageField/imageField";
-import { buildCollectionConfig } from "../../utils/collectionConfig";
-import { mustBeAdmin } from "../../accesses/mustBeAdmin";
 import { mustBeAdminOrSelf } from "../../accesses/collections/mustBeAdminOrSelf";
-import { beforeLoginMustHaveAtLeastOneRole } from "./hooks/beforeLoginMustHaveAtLeastOneRole";
+import { mustBeAdmin } from "../../accesses/mustBeAdmin";
 import { QuickFilters } from "../../components/QuickFilters";
+import { CollectionGroups, Collections, RecordersRoles } from "../../constants";
+import { imageField } from "../../fields/imageField/imageField";
+import { localizedFields } from "../../fields/translatedFields/translatedFields";
+import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { importFromStrapi } from "./endpoints/importFromStrapi";
+import { beforeLoginMustHaveAtLeastOneRole } from "./hooks/beforeLoginMustHaveAtLeastOneRole";
 
 const fields = {
   username: "username",
@@ -20,6 +19,7 @@ const fields = {
 } as const satisfies Record<string, string>;
 
 export const Recorders = buildCollectionConfig(
+  Collections.Recorders,
   {
     singular: "Recorder",
     plural: "Recorders",
@@ -40,17 +40,25 @@ export const Recorders = buildCollectionConfig(
         fields.role,
       ],
       disableDuplicate: true,
-      group: CollectionGroup.Meta,
+      group: CollectionGroups.Meta,
       components: {
         BeforeListTable: [
           () =>
             QuickFilters({
-              route: "/admin/collections/recorders",
-              filters: [
-                { label: "Admins", filter: "where[role][equals]=Admin" },
-                { label: "Recorders", filter: "where[role][equals]=Recorder" },
-                { label: "∅ Role", filter: "where[role][not_in]=Admin,Recorder" },
-                { label: "Anonymized", filter: "where[anonymize][equals]=true" },
+              slug: Collections.Recorders,
+              filterGroups: [
+                [
+                  ...Object.entries(RecordersRoles).map(([key, value]) => ({
+                    label: value,
+                    filter: { where: { role: { equals: key } } },
+                  })),
+                  {
+                    label: "∅ Role",
+                    filter: { where: { role: { not_in: Object.keys(RecordersRoles).join(",") } } },
+                  },
+                  ,
+                ],
+                [{ label: "Anonymized", filter: { where: { anonymize: { equals: true } } } }],
               ],
             }),
         ],
@@ -66,6 +74,7 @@ export const Recorders = buildCollectionConfig(
     hooks: {
       beforeLogin: [beforeLoginMustHaveAtLeastOneRole],
     },
+    endpoints: [importFromStrapi],
     timestamps: false,
     fields: [
       {
@@ -80,7 +89,7 @@ export const Recorders = buildCollectionConfig(
           },
           imageField({
             name: fields.avatar,
-            relationTo: RecorderThumbnails.slug,
+            relationTo: Collections.RecordersThumbnails,
             admin: { width: "66%" },
           }),
         ],
@@ -88,7 +97,7 @@ export const Recorders = buildCollectionConfig(
       {
         name: fields.languages,
         type: "relationship",
-        relationTo: Languages.slug,
+        relationTo: Collections.Languages,
         hasMany: true,
         admin: {
           allowCreate: false,

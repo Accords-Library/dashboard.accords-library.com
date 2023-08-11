@@ -1,24 +1,21 @@
 import {
-  CollectionGroup,
+  CollectionGroups,
+  Collections,
   KeysTypes,
   LibraryItemsTextualBindingTypes,
   LibraryItemsTextualPageOrders,
   LibraryItemsTypes,
 } from "../../constants";
-import { slugField } from "../../fields/slugField/slugField";
 import { imageField } from "../../fields/imageField/imageField";
-import { LibraryItemThumbnails } from "../LibraryItemThumbnails/LibraryItemThumbnails";
-import { LibraryItem } from "../../types/collections";
-import { Keys } from "../Keys/Keys";
-import { Languages } from "../Languages/Languages";
-import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
-import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
-import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
-import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
-import { Currencies } from "../Currencies/Currencies";
 import { optionalGroupField } from "../../fields/optionalGroupField/optionalGroupField";
+import { slugField } from "../../fields/slugField/slugField";
+import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
+import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
+import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
+import { LibraryItem } from "../../types/collections";
+import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { RowLabel } from "./components/RowLabel";
-import { getSlug } from "./endpoints/getSlug";
+import { getBySlug } from "./endpoints/getBySlug";
 
 const fields = {
   status: "status",
@@ -57,21 +54,29 @@ const fields = {
   scansDustjacketFront: "front",
   scansDustjacketSpine: "spine",
   scansDustjacketBack: "back",
-  scansObibelt: "obibelt",
-  scansObibeltFront: "front",
-  scansObibeltSpine: "spine",
-  scansObibeltBack: "back",
+  scansObi: "obi",
+  scansObiFront: "front",
+  scansObiSpine: "spine",
+  scansObiBack: "back",
   scansPages: "pages",
   scansPagesPage: "page",
   scansPagesImage: "image",
+  contents: "contents",
+  contentsContent: "content",
+  contentsPageStart: "pageStart",
+  contentsPageEnd: "pageEnd",
+  contentsTimeStart: "timeStart",
+  contentsTimeEnd: "timeEnd",
+  contentsNote: "note",
 } as const satisfies Record<string, string>;
 
 export const LibraryItems = buildVersionedCollectionConfig(
+  Collections.LibraryItems,
   {
     singular: "Library Item",
     plural: "Library Items",
   },
-  ({ slug }) => ({
+  () => ({
     defaultSort: fields.slug,
     admin: {
       useAsTitle: fields.slug,
@@ -79,7 +84,7 @@ export const LibraryItems = buildVersionedCollectionConfig(
         "A comprehensive list of all Yokoverse’s side materials (books, novellas, artbooks, \
          stage plays, manga, drama CDs, and comics).",
       defaultColumns: [fields.slug, fields.thumbnail, fields.status],
-      group: CollectionGroup.Collections,
+      group: CollectionGroups.Collections,
       hooks: {
         beforeDuplicate: beforeDuplicatePiping([
           beforeDuplicateUnpublish,
@@ -88,7 +93,7 @@ export const LibraryItems = buildVersionedCollectionConfig(
       },
       preview: (doc) => `https://accords-library.com/library/${doc.slug}`,
     },
-    endpoints: [getSlug(slug)],
+    endpoints: [getBySlug],
     fields: [
       {
         type: "row",
@@ -96,7 +101,7 @@ export const LibraryItems = buildVersionedCollectionConfig(
           slugField({ name: fields.slug, admin: { width: "50%" } }),
           imageField({
             name: fields.thumbnail,
-            relationTo: LibraryItemThumbnails.slug,
+            relationTo: Collections.LibraryItemsThumbnails,
             admin: { width: "50%" },
           }),
         ],
@@ -167,17 +172,17 @@ export const LibraryItems = buildVersionedCollectionConfig(
                 fields: [
                   imageField({
                     name: fields.scansCoverFront,
-                    relationTo: LibraryItemThumbnails.slug,
+                    relationTo: Collections.LibraryItemsThumbnails,
                     admin: { width: "33%" },
                   }),
                   imageField({
                     name: fields.scansCoverSpine,
-                    relationTo: LibraryItemThumbnails.slug,
+                    relationTo: Collections.LibraryItemsThumbnails,
                     admin: { width: "33%" },
                   }),
                   imageField({
                     name: fields.scansCoverBack,
-                    relationTo: LibraryItemThumbnails.slug,
+                    relationTo: Collections.LibraryItemsThumbnails,
                     admin: { width: "33%" },
                   }),
                 ],
@@ -188,23 +193,28 @@ export const LibraryItems = buildVersionedCollectionConfig(
             name: fields.scansDustjacket,
             label: "Dust Jacket",
             labels: { singular: "Dust Jacket", plural: "Dust Jackets" },
+            admin: {
+              description:
+                "The dust jacket of a book is the detachable outer cover with folded \
+              flaps that hold it to the front and back book covers",
+            },
             fields: [
               {
                 type: "row",
                 fields: [
                   imageField({
                     name: fields.scansDustjacketFront,
-                    relationTo: LibraryItemThumbnails.slug,
+                    relationTo: Collections.LibraryItemsThumbnails,
                     admin: { width: "33%" },
                   }),
                   imageField({
                     name: fields.scansDustjacketSpine,
-                    relationTo: LibraryItemThumbnails.slug,
+                    relationTo: Collections.LibraryItemsThumbnails,
                     admin: { width: "33%" },
                   }),
                   imageField({
                     name: fields.scansDustjacketBack,
-                    relationTo: LibraryItemThumbnails.slug,
+                    relationTo: Collections.LibraryItemsThumbnails,
                     admin: { width: "33%" },
                   }),
                 ],
@@ -212,26 +222,31 @@ export const LibraryItems = buildVersionedCollectionConfig(
             ],
           }),
           optionalGroupField({
-            name: fields.scansObibelt,
-            label: "Obi Belt",
+            name: fields.scansObi,
+            label: "Obi",
             labels: { singular: "Obi Belt", plural: "Obi Belts" },
+            admin: {
+              description:
+                "An obi is a strip of paper looped around a book or other product. \
+                it typically add marketing claims, or other relevant information about the product.",
+            },
             fields: [
               {
                 type: "row",
                 fields: [
                   imageField({
-                    name: fields.scansObibeltFront,
-                    relationTo: LibraryItemThumbnails.slug,
+                    name: fields.scansObiFront,
+                    relationTo: Collections.LibraryItemsThumbnails,
                     admin: { width: "33%" },
                   }),
                   imageField({
-                    name: fields.scansObibeltSpine,
-                    relationTo: LibraryItemThumbnails.slug,
+                    name: fields.scansObiSpine,
+                    relationTo: Collections.LibraryItemsThumbnails,
                     admin: { width: "33%" },
                   }),
                   imageField({
-                    name: fields.scansObibeltBack,
-                    relationTo: LibraryItemThumbnails.slug,
+                    name: fields.scansObiBack,
+                    relationTo: Collections.LibraryItemsThumbnails,
                     admin: { width: "33%" },
                   }),
                 ],
@@ -243,6 +258,9 @@ export const LibraryItems = buildVersionedCollectionConfig(
             type: "array",
             admin: {
               initCollapsed: true,
+              description:
+                "Make sure the page number corresponds to the page number written on \
+              the scan. You can use negative page numbers if necessary.",
               components: {
                 RowLabel: ({ data }) => RowLabel(data),
               },
@@ -259,7 +277,7 @@ export const LibraryItems = buildVersionedCollectionConfig(
                   },
                   imageField({
                     name: fields.scansPagesImage,
-                    relationTo: LibraryItemThumbnails.slug,
+                    relationTo: Collections.LibraryItemsThumbnails,
                     required: true,
                     admin: { width: "66%" },
                   }),
@@ -314,7 +332,7 @@ export const LibraryItems = buildVersionedCollectionConfig(
               {
                 name: fields.priceCurrency,
                 type: "relationship",
-                relationTo: Currencies.slug,
+                relationTo: Collections.Currencies,
                 required: true,
                 admin: { allowCreate: false, width: "50%" },
               },
@@ -344,7 +362,7 @@ export const LibraryItems = buildVersionedCollectionConfig(
                 name: fields.textualSubtype,
                 label: "Subtype",
                 type: "relationship",
-                relationTo: [Keys.slug],
+                relationTo: [Collections.Keys],
                 filterOptions: { type: { equals: KeysTypes.LibraryTextual } },
                 hasMany: true,
                 admin: { allowCreate: false, width: "50%" },
@@ -352,7 +370,7 @@ export const LibraryItems = buildVersionedCollectionConfig(
               {
                 name: fields.textualLanguages,
                 type: "relationship",
-                relationTo: [Languages.slug],
+                relationTo: [Collections.Languages],
                 hasMany: true,
                 admin: { allowCreate: false, width: "50%" },
               },
@@ -406,12 +424,63 @@ export const LibraryItems = buildVersionedCollectionConfig(
                 name: fields.audioSubtype,
                 label: "Subtype",
                 type: "relationship",
-                relationTo: [Keys.slug],
+                relationTo: [Collections.Keys],
                 filterOptions: { type: { equals: KeysTypes.LibraryAudio } },
                 hasMany: true,
                 admin: { allowCreate: false, width: "50%" },
               },
             ],
+          },
+        ],
+      },
+      {
+        name: fields.contents,
+        type: "array",
+        fields: [
+          {
+            name: fields.contentsContent,
+            type: "relationship",
+            relationTo: Collections.Contents,
+            required: true,
+          },
+          {
+            type: "row",
+            admin: {
+              condition: ({ itemType }) => {
+                return itemType === LibraryItemsTypes.Textual;
+              },
+            },
+            fields: [
+              {
+                name: fields.contentsPageStart,
+                type: "number",
+              },
+              { name: fields.contentsPageEnd, type: "number" },
+            ],
+          },
+          {
+            type: "row",
+            admin: {
+              condition: ({ itemType }) => {
+                return itemType === LibraryItemsTypes.Audio || itemType === LibraryItemsTypes.Video;
+              },
+            },
+            fields: [
+              {
+                name: fields.contentsTimeStart,
+                type: "number",
+              },
+              { name: fields.contentsTimeEnd, type: "number" },
+            ],
+          },
+          {
+            name: fields.contentsNote,
+            type: "textarea",
+            admin: {
+              condition: ({ itemType }) => {
+                return itemType === LibraryItemsTypes.Game || itemType === LibraryItemsTypes.Other;
+              },
+            },
           },
         ],
       },

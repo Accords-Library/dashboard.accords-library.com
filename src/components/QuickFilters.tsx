@@ -1,22 +1,34 @@
 import React from "react";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
+import QueryString from "qs";
+import { Options } from "payload/dist/collections/operations/local/find";
+import { LanguageCodes } from "../constants";
 
 type Props = {
-  route: string;
-  filters: { label: string; filter: string }[];
+  slug: string;
+  filterGroups: { label: string; filter: Omit<Options<any>, "collection"> }[][];
 };
 
-export const QuickFilters = ({ route, filters }: Props) => {
+export const QuickFilters = ({ slug, filterGroups }: Props) => {
+  const route = `/admin/collections/${slug}`;
   return (
     <Container>
       <div>Quick Filters:</div>
-      <FilterContainer>
-        <FilterCell label="None" to={route} />
-        {filters.map(({ label, filter }, index) => (
-          <FilterCell key={index} label={label} to={`${route}?${filter}`} />
+      <GroupContainer>
+        {filterGroups.map((filtersGroup, groupIndex) => (
+          <FilterContainer key={groupIndex}>
+            <FilterCell label="None" to={route} />
+            {filtersGroup.map(({ label, filter }, index) => (
+              <FilterCell
+                key={index}
+                label={label}
+                to={`${route}?${QueryString.stringify(filter)}`}
+              />
+            ))}
+          </FilterContainer>
         ))}
-      </FilterContainer>
+      </GroupContainer>
     </Container>
   );
 };
@@ -32,6 +44,11 @@ const FilterCell = ({ label, to }: FilterProps) => (
   </Link>
 );
 
+const GroupContainer = styled.div`
+  display: grid;
+  gap: 4px;
+`;
+
 const Container = styled.div`
   display: flex;
   place-items: center;
@@ -42,6 +59,18 @@ const Container = styled.div`
 
 const FilterContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   place-items: center;
   gap: 0.5rem;
 `;
+
+export const languageBasedFilters = (field: string): Props["filterGroups"][number] =>
+  Object.entries(LanguageCodes).map(([key, value]) => ({
+    label: `∅ ${value}`,
+    filter: { where: { [field]: { not_equals: key } } },
+  }));
+
+export const publishStatusFilters: Props["filterGroups"][number] = [
+  { label: "Draft", filter: { where: { _status: { equals: "draft" } } } },
+  { label: "Published", filter: { where: { _status: { equals: "published" } } } },
+];

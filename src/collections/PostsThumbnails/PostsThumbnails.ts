@@ -1,4 +1,4 @@
-import { CollectionGroup } from "../../constants";
+import { CollectionGroups, Collections } from "../../constants";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 
 const fields = {
@@ -7,17 +7,18 @@ const fields = {
   filesize: "filesize",
 } as const satisfies Record<string, string>;
 
-export const LibraryItemThumbnails = buildCollectionConfig(
+export const PostsThumbnails = buildCollectionConfig(
+  Collections.PostsThumbnails,
   {
-    singular: "Library Item Thumbnail",
-    plural: "Library Item Thumbnails",
+    singular: "Post Thumbnail",
+    plural: "Post Thumbnails",
   },
   ({ uploadDir }) => ({
     defaultSort: fields.filename,
     admin: {
       useAsTitle: fields.filename,
       disableDuplicate: true,
-      group: CollectionGroup.Media,
+      group: CollectionGroups.Media,
     },
     upload: {
       staticDir: uploadDir,
@@ -25,9 +26,8 @@ export const LibraryItemThumbnails = buildCollectionConfig(
       imageSizes: [
         {
           name: "og",
-          height: 1024,
-          width: 1024,
-          fit: "contain",
+          height: 750,
+          width: 1125,
           formatOptions: {
             format: "jpg",
             options: { progressive: true, mozjpeg: true, compressionLevel: 9, quality: 80 },
@@ -35,19 +35,8 @@ export const LibraryItemThumbnails = buildCollectionConfig(
         },
         {
           name: "medium",
-          height: 1024,
-          width: 1024,
-          fit: "contain",
-          formatOptions: {
-            format: "webp",
-            options: { effort: 6, quality: 80, alphaQuality: 80 },
-          },
-        },
-        {
-          name: "large",
-          height: 2048,
-          width: 2048,
-          fit: "contain",
+          height: 1000,
+          width: 1500,
           formatOptions: {
             format: "webp",
             options: { effort: 6, quality: 80, alphaQuality: 80 },

@@ -1,7 +1,10 @@
-import express from "express";
-import payload from "payload";
 import "dotenv/config";
+import express from "express";
 import path from "path";
+import payload from "payload";
+import { Collections, RecordersRoles } from "./constants";
+import { Recorder } from "./types/collections";
+import { PayloadCreateData } from "./utils/types";
 
 const app = express();
 
@@ -18,11 +21,33 @@ const start = async () => {
     express: app,
     onInit: async () => {
       payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
+      const recorders = await payload.find({ collection: Collections.Recorders });
+
+      // If no recorders, we seed some initial data
+      if (recorders.docs.length === 0) {
+        payload.logger.info("Seeding some initial data");
+        const recorder: PayloadCreateData<Recorder> = {
+          email: process.env.SEEDING_ADMIN_EMAIL,
+          password: process.env.SEEDING_ADMIN_PASSWORD,
+          username: process.env.SEEDING_ADMIN_USERNAME,
+          role: [RecordersRoles.Admin],
+          anonymize: false,
+        };
+        await payload.create({
+          collection: Collections.Recorders,
+          data: recorder,
+        });
+      }
     },
   });
 
   // Add your own express routes here
   app.use("/public", express.static(path.join(__dirname, "../public")));
+
+  app.get("/robots.txt", (_, res) => {
+    res.type("text/plain");
+    res.send("User-agent: *\nDisallow: /");
+  });
 
   app.listen(process.env.PAYLOAD_PORT);
 };

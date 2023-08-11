@@ -1,4 +1,27 @@
-export enum CollectionGroup {
+export enum Collections {
+  ChronologyEras = "chronology-eras",
+  ChronologyItems = "chronology-items",
+  ContentsFolders = "contents-folders",
+  Contents = "contents",
+  ContentsThumbnails = "contents-thumbnails",
+  Currencies = "currencies",
+  Files = "files",
+  Keys = "keys",
+  Languages = "languages",
+  LibraryItems = "library-items",
+  LibraryItemsThumbnails = "library-items-thumbnails",
+  Posts = "posts",
+  PostsThumbnails = "posts-thumbnails",
+  Recorders = "recorders",
+  RecordersThumbnails = "recorders-thumbnails",
+  VideosChannels = "videos-channels",
+  Videos = "videos",
+  Weapons = "weapons",
+  WeaponsGroups = "weapons-groups",
+  WeaponsThumbnails = "weapons-thumbnails",
+}
+
+export enum CollectionGroups {
   Collections = "Collections",
   Media = "Media",
   Meta = "Meta",
@@ -15,6 +38,15 @@ export enum KeysTypes {
   GamePlatforms = "Game Platforms",
   Categories = "Categories",
   Wordings = "Wordings",
+}
+
+export enum LanguageCodes {
+  en = "English",
+  fr = "French",
+  ja = "Japan",
+  es = "Spanish",
+  "pt-br" = "Portuguese",
+  "zh" = "Chinese",
 }
 
 export enum FileTypes {
@@ -50,4 +82,9 @@ export enum RecordersRoles {
 export enum CollectionStatus {
   Draft = "draft",
   Published = "published",
+}
+
+export enum VideoSources {
+  YouTube = "YouTube",
+  NicoNico = "NicoNico",
 }

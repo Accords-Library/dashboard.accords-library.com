@@ -1,20 +1,22 @@
-import { LibraryItems } from "../LibraryItems";
-import { LibraryItem } from "../../../types/collections";
 import cleanDeep from "clean-deep";
-import { createBySlugEndpoint } from "../../../endpoints/createBySlugEndpoint";
+import { Collections } from "../../../constants";
+import { createGetByEndpoint } from "../../../endpoints/createByEndpoint";
+import { LibraryItem } from "../../../types/collections";
 
 type ProcessedLibraryItem = Omit<LibraryItem, "size" | "price" | "scans" | "id"> & {
   size?: Omit<LibraryItem["size"][number], "id">;
   price?: Omit<LibraryItem["price"][number], "id" | "currency"> & { currency: string };
-  scans?: Omit<LibraryItem["scans"][number], "id" | "obibelt" | "cover" | "dustjacket"> & {
-    obibelt: Omit<LibraryItem["scans"][number]["obibelt"][number], "id">;
-    cover: Omit<LibraryItem["scans"][number]["obibelt"][number], "id">;
-    dustjacket: Omit<LibraryItem["scans"][number]["obibelt"][number], "id">;
+  scans?: Omit<LibraryItem["scans"][number], "id" | "obi" | "cover" | "dustjacket"> & {
+    obi: Omit<LibraryItem["scans"][number]["obi"][number], "id">;
+    cover: Omit<LibraryItem["scans"][number]["obi"][number], "id">;
+    dustjacket: Omit<LibraryItem["scans"][number]["obi"][number], "id">;
   };
 };
 
-export const getSlug = (collectionSlug: string) =>
-  createBySlugEndpoint<LibraryItem>(collectionSlug, ({ id, size, price, scans, ...otherProps }) => {
+export const getBySlug = createGetByEndpoint<LibraryItem, Partial<ProcessedLibraryItem>>(
+  Collections.LibraryItems,
+  "slug",
+  async ({ id, size, price, scans, ...otherProps }) => {
     const processedLibraryItem: ProcessedLibraryItem = {
       size: processOptionalGroup(size),
       price: processPrice(price),
@@ -30,15 +32,16 @@ export const getSlug = (collectionSlug: string) =>
       undefinedValues: true,
       NaNValues: false,
     });
-  });
+  }
+);
 
 const processScans = (scans: LibraryItem["scans"]): ProcessedLibraryItem["scans"] => {
   if (!scans || scans.length === 0) return undefined;
-  const { cover, dustjacket, id, obibelt, ...otherProps } = scans[0];
+  const { cover, dustjacket, id, obi, ...otherProps } = scans[0];
   return {
     cover: processOptionalGroup(cover),
     dustjacket: processOptionalGroup(dustjacket),
-    obibelt: processOptionalGroup(obibelt),
+    obi: processOptionalGroup(obi),
     ...otherProps,
   };
 };
