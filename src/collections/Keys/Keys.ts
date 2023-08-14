@@ -2,7 +2,7 @@ import payload from "payload";
 import { mustBeAdmin } from "../../accesses/mustBeAdmin";
 import { QuickFilters } from "../../components/QuickFilters";
 import { CollectionGroups, Collections, KeysTypes, LanguageCodes } from "../../constants";
-import { localizedFields } from "../../fields/translatedFields/translatedFields";
+import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { Key } from "../../types/collections";
 import { isDefined } from "../../utils/asserts";
@@ -19,103 +19,101 @@ const fields = {
 
 const keysTypesWithShort: (keyof typeof KeysTypes)[] = ["Categories", "GamePlatforms"];
 
-export const Keys = buildCollectionConfig(
-  Collections.Keys,
-  {
+export const Keys = buildCollectionConfig({
+  slug: Collections.Keys,
+  labels: {
     singular: "Key",
     plural: "Keys",
   },
-  () => ({
-    defaultSort: fields.name,
-    admin: {
-      useAsTitle: fields.name,
-      defaultColumns: [fields.name, fields.type, fields.translations],
-      group: CollectionGroups.Meta,
-      components: {
-        BeforeListTable: [
-          () =>
-            QuickFilters({
-              slug: Collections.Keys,
-              filterGroups: [
-                Object.entries(KeysTypes).map(([key, value]) => ({
-                  label: value,
-                  filter: { where: { type: { equals: key } } },
-                })),
-                Object.entries(LanguageCodes).map(([key, value]) => ({
-                  label: `∅ ${value}`,
-                  filter: { where: { "translations.language": { not_equals: key } } },
-                })),
-              ],
-            }),
-        ],
-      },
-      hooks: {
-        beforeDuplicate: beforeDuplicateAddCopyTo(fields.name),
-      },
-    },
-    access: {
-      create: mustBeAdmin,
-      delete: mustBeAdmin,
-    },
-    hooks: {
-      beforeValidate: [
-        async ({ data: { name, type } }) => {
-          const result = await payload.find({
-            collection: Collections.Keys,
-            where: { name: { equals: name }, type: { equals: type } },
-          });
-          if (result.docs.length > 0) {
-            throw new Error(
-              `A Key of type "${KeysTypes[type]}" already exists with the name "${name}"`
-            );
-          }
-        },
+  defaultSort: fields.name,
+  admin: {
+    useAsTitle: fields.name,
+    defaultColumns: [fields.name, fields.type, fields.translations],
+    group: CollectionGroups.Meta,
+    components: {
+      BeforeListTable: [
+        () =>
+          QuickFilters({
+            slug: Collections.Keys,
+            filterGroups: [
+              Object.entries(KeysTypes).map(([key, value]) => ({
+                label: value,
+                filter: { where: { type: { equals: key } } },
+              })),
+              Object.entries(LanguageCodes).map(([key, value]) => ({
+                label: `∅ ${value}`,
+                filter: { where: { "translations.language": { not_equals: key } } },
+              })),
+            ],
+          }),
       ],
     },
-    endpoints: [importFromStrapi],
-    timestamps: false,
-    versions: false,
-    fields: [
-      {
-        name: fields.name,
-        type: "text",
-        required: true,
+    hooks: {
+      beforeDuplicate: beforeDuplicateAddCopyTo(fields.name),
+    },
+  },
+  access: {
+    create: mustBeAdmin,
+    delete: mustBeAdmin,
+  },
+  hooks: {
+    beforeValidate: [
+      async ({ data: { name, type } }) => {
+        const result = await payload.find({
+          collection: Collections.Keys,
+          where: { name: { equals: name }, type: { equals: type } },
+        });
+        if (result.docs.length > 0) {
+          throw new Error(
+            `A Key of type "${KeysTypes[type]}" already exists with the name "${name}"`
+          );
+        }
       },
-      {
-        name: fields.type,
-        type: "select",
-        required: true,
-        options: Object.entries(KeysTypes).map(([value, label]) => ({ label, value })),
-      },
-      localizedFields({
-        name: fields.translations,
-        interfaceName: "CategoryTranslations",
-        admin: {
-          useAsTitle: fields.translationsName,
-        },
-        fields: [
-          {
-            type: "row",
-            fields: [
-              {
-                name: fields.translationsName,
-                type: "text",
-                required: true,
-                admin: { width: "50%" },
-              },
-              {
-                name: fields.translationsShort,
-                type: "text",
-                admin: {
-                  condition: (data: Partial<Key>) =>
-                    isDefined(data.type) && keysTypesWithShort.includes(data.type),
-                  width: "50%",
-                },
-              },
-            ],
-          },
-        ],
-      }),
     ],
-  })
-);
+  },
+  endpoints: [importFromStrapi],
+  timestamps: false,
+  versions: false,
+  fields: [
+    {
+      name: fields.name,
+      type: "text",
+      required: true,
+    },
+    {
+      name: fields.type,
+      type: "select",
+      required: true,
+      options: Object.entries(KeysTypes).map(([value, label]) => ({ label, value })),
+    },
+    translatedFields({
+      name: fields.translations,
+      interfaceName: "CategoryTranslations",
+      admin: {
+        useAsTitle: fields.translationsName,
+      },
+      fields: [
+        {
+          type: "row",
+          fields: [
+            {
+              name: fields.translationsName,
+              type: "text",
+              required: true,
+              admin: { width: "50%" },
+            },
+            {
+              name: fields.translationsShort,
+              type: "text",
+              admin: {
+                condition: (data: Partial<Key>) =>
+                  isDefined(data.type) && keysTypesWithShort.includes(data.type),
+                width: "50%",
+              },
+            },
+          ],
+        },
+      ],
+    }),
+  ],
+});

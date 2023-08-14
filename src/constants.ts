@@ -10,6 +10,8 @@ export enum Collections {
   Languages = "languages",
   LibraryItems = "library-items",
   LibraryItemsThumbnails = "library-items-thumbnails",
+  LibraryItemsScans = "library-items-scans",
+  LibraryItemsGallery = "library-items-gallery",
   Posts = "posts",
   PostsThumbnails = "posts-thumbnails",
   Recorders = "recorders",
@@ -87,4 +89,5 @@ export enum CollectionStatus {
 export enum VideoSources {
   YouTube = "YouTube",
   NicoNico = "NicoNico",
+  Tumblr = "Tumblr",
 }

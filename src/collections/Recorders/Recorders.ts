@@ -3,7 +3,7 @@ import { mustBeAdmin } from "../../accesses/mustBeAdmin";
 import { QuickFilters } from "../../components/QuickFilters";
 import { CollectionGroups, Collections, RecordersRoles } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
-import { localizedFields } from "../../fields/translatedFields/translatedFields";
+import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 import { beforeLoginMustHaveAtLeastOneRole } from "./hooks/beforeLoginMustHaveAtLeastOneRole";
@@ -18,127 +18,125 @@ const fields = {
   role: "role",
 } as const satisfies Record<string, string>;
 
-export const Recorders = buildCollectionConfig(
-  Collections.Recorders,
-  {
+export const Recorders = buildCollectionConfig({
+  slug: Collections.Recorders,
+  labels: {
     singular: "Recorder",
     plural: "Recorders",
   },
-  () => ({
-    defaultSort: fields.username,
-    admin: {
-      useAsTitle: fields.username,
-      description:
-        "Recorders are contributors of the Accord's Library project. Ask an admin to create a \
+  defaultSort: fields.username,
+  admin: {
+    useAsTitle: fields.username,
+    description:
+      "Recorders are contributors of the Accord's Library project. Ask an admin to create a \
       Recorder here to be able to credit them in other collections.",
-      defaultColumns: [
-        fields.username,
-        fields.avatar,
-        fields.anonymize,
-        fields.biographies,
-        fields.languages,
-        fields.role,
-      ],
-      disableDuplicate: true,
-      group: CollectionGroups.Meta,
-      components: {
-        BeforeListTable: [
-          () =>
-            QuickFilters({
-              slug: Collections.Recorders,
-              filterGroups: [
-                [
-                  ...Object.entries(RecordersRoles).map(([key, value]) => ({
-                    label: value,
-                    filter: { where: { role: { equals: key } } },
-                  })),
-                  {
-                    label: "∅ Role",
-                    filter: { where: { role: { not_in: Object.keys(RecordersRoles).join(",") } } },
-                  },
-                  ,
-                ],
-                [{ label: "Anonymized", filter: { where: { anonymize: { equals: true } } } }],
-              ],
-            }),
-        ],
-      },
-    },
-    auth: true,
-    access: {
-      unlock: mustBeAdmin,
-      update: mustBeAdminOrSelf,
-      delete: mustBeAdmin,
-      create: mustBeAdmin,
-    },
-    hooks: {
-      beforeLogin: [beforeLoginMustHaveAtLeastOneRole],
-    },
-    endpoints: [importFromStrapi],
-    timestamps: false,
-    fields: [
-      {
-        type: "row",
-        fields: [
-          {
-            name: fields.username,
-            type: "text",
-            unique: true,
-            required: true,
-            admin: { description: "The username must be unique", width: "33%" },
-          },
-          imageField({
-            name: fields.avatar,
-            relationTo: Collections.RecordersThumbnails,
-            admin: { width: "66%" },
-          }),
-        ],
-      },
-      {
-        name: fields.languages,
-        type: "relationship",
-        relationTo: Collections.Languages,
-        hasMany: true,
-        admin: {
-          allowCreate: false,
-          description: "List of language(s) that this recorder is familiar with",
-        },
-      },
-      localizedFields({
-        name: fields.biographies,
-        interfaceName: "RecorderBiographies",
-        admin: {
-          useAsTitle: fields.biography,
-          description:
-            "A short personal description about you or your involvement with this project or the franchise",
-        },
-        fields: [{ name: fields.biography, type: "textarea" }],
-      }),
-      {
-        name: fields.role,
-        type: "select",
-        access: {
-          update: mustBeAdmin,
-          create: mustBeAdmin,
-        },
-        hasMany: true,
-        options: Object.entries(RecordersRoles).map(([value, label]) => ({
-          label,
-          value,
-        })),
-        admin: { position: "sidebar" },
-      },
-      {
-        name: fields.anonymize,
-        type: "checkbox",
-        required: true,
-        defaultValue: false,
-        admin: {
-          description:
-            "If enabled, this recorder's username will not be made public. Instead they will be referred to as 'Recorder#0000' where '0000' is a random four digit number",
-          position: "sidebar",
-        },
-      },
+    defaultColumns: [
+      fields.username,
+      fields.avatar,
+      fields.anonymize,
+      fields.biographies,
+      fields.languages,
+      fields.role,
     ],
-  })
-);
+    disableDuplicate: true,
+    group: CollectionGroups.Meta,
+    components: {
+      BeforeListTable: [
+        () =>
+          QuickFilters({
+            slug: Collections.Recorders,
+            filterGroups: [
+              [
+                ...Object.entries(RecordersRoles).map(([key, value]) => ({
+                  label: value,
+                  filter: { where: { role: { equals: key } } },
+                })),
+                {
+                  label: "∅ Role",
+                  filter: { where: { role: { not_in: Object.keys(RecordersRoles).join(",") } } },
+                },
+                ,
+              ],
+              [{ label: "Anonymized", filter: { where: { anonymize: { equals: true } } } }],
+            ],
+          }),
+      ],
+    },
+  },
+  auth: true,
+  access: {
+    unlock: mustBeAdmin,
+    update: mustBeAdminOrSelf,
+    delete: mustBeAdmin,
+    create: mustBeAdmin,
+  },
+  hooks: {
+    beforeLogin: [beforeLoginMustHaveAtLeastOneRole],
+  },
+  endpoints: [importFromStrapi],
+  timestamps: false,
+  fields: [
+    {
+      type: "row",
+      fields: [
+        {
+          name: fields.username,
+          type: "text",
+          unique: true,
+          required: true,
+          admin: { description: "The username must be unique", width: "33%" },
+        },
+        imageField({
+          name: fields.avatar,
+          relationTo: Collections.RecordersThumbnails,
+          admin: { width: "66%" },
+        }),
+      ],
+    },
+    {
+      name: fields.languages,
+      type: "relationship",
+      relationTo: Collections.Languages,
+      hasMany: true,
+      admin: {
+        allowCreate: false,
+        description: "List of language(s) that this recorder is familiar with",
+      },
+    },
+    translatedFields({
+      name: fields.biographies,
+      interfaceName: "RecorderBiographies",
+      admin: {
+        useAsTitle: fields.biography,
+        description:
+          "A short personal description about you or your involvement with this project or the franchise",
+      },
+      fields: [{ name: fields.biography, type: "textarea" }],
+    }),
+    {
+      name: fields.role,
+      type: "select",
+      access: {
+        update: mustBeAdmin,
+        create: mustBeAdmin,
+      },
+      hasMany: true,
+      options: Object.entries(RecordersRoles).map(([value, label]) => ({
+        label,
+        value,
+      })),
+      admin: { position: "sidebar" },
+    },
+    {
+      name: fields.anonymize,
+      type: "checkbox",
+      required: true,
+      defaultValue: false,
+      admin: {
+        description:
+          "If enabled, this recorder's username will not be made public. Instead they will be referred to as 'Recorder#0000' where '0000' is a random four digit number",
+        position: "sidebar",
+      },
+    },
+  ],
+});

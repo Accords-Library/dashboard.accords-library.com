@@ -1,8 +1,7 @@
 import { array } from "payload/dist/fields/validations";
 import { ArrayField, Field } from "payload/types";
 import { Collections } from "../../constants";
-import { isDefined, isUndefined } from "../../utils/asserts";
-import { hasDuplicates } from "../../utils/validation";
+import { hasDuplicates, isDefined, isUndefined } from "../../utils/asserts";
 import { Cell } from "./Cell";
 import { RowLabel } from "./RowLabel";
 
@@ -14,7 +13,7 @@ const fieldsNames = {
   proofreaders: "proofreaders",
 } as const satisfies Record<string, string>;
 
-type LocalizedFieldsProps = Omit<ArrayField, "type" | "admin" | "validate"> & {
+type LocalizedFieldsProps = Omit<ArrayField, "type" | "admin"> & {
   admin?: ArrayField["admin"] & {
     useAsTitle?: string;
     hasSourceLanguage?: boolean;
@@ -43,7 +42,8 @@ const creditFields: Field = {
   type: "row",
   admin: {
     condition: (_, siblingData) =>
-      isDefined(siblingData.language) && isDefined(siblingData.sourceLanguage),
+      isDefined(siblingData[fieldsNames.language]) &&
+      isDefined(siblingData[fieldsNames.sourceLanguage]),
   },
   fields: [
     {
@@ -52,18 +52,28 @@ const creditFields: Field = {
       type: "relationship",
       relationTo: "recorders",
       hasMany: true,
+      hooks: {
+        beforeChange: [
+          ({ siblingData }) => {
+            if (siblingData[fieldsNames.language] !== siblingData[fieldsNames.sourceLanguage]) {
+              delete siblingData[fieldsNames.transcribers];
+            }
+          },
+        ],
+      },
       admin: {
         condition: (_, siblingData) => siblingData.language === siblingData.sourceLanguage,
         width: "50%",
       },
       validate: (count, { siblingData }) => {
-        if (siblingData.language !== siblingData.sourceLanguage) {
+        if (siblingData[fieldsNames.language] !== siblingData[fieldsNames.sourceLanguage]) {
           return true;
         }
         if (isDefined(count) && count.length > 0) {
           return true;
         }
-        return "This field is required when the language is the same as the source language.";
+        return `This field is required when the ${fieldsNames.language} \
+        is the same as the ${fieldsNames.sourceLanguage}.`;
       },
     },
     {
@@ -72,18 +82,29 @@ const creditFields: Field = {
       type: "relationship",
       relationTo: "recorders",
       hasMany: true,
+      hooks: {
+        beforeChange: [
+          ({ siblingData }) => {
+            if (siblingData[fieldsNames.language] === siblingData[fieldsNames.sourceLanguage]) {
+              delete siblingData[fieldsNames.translators];
+            }
+          },
+        ],
+      },
       admin: {
-        condition: (_, siblingData) => siblingData.language !== siblingData.sourceLanguage,
+        condition: (_, siblingData) =>
+          siblingData[fieldsNames.language] !== siblingData[fieldsNames.sourceLanguage],
         width: "50%",
       },
       validate: (count, { siblingData }) => {
-        if (siblingData.language === siblingData.sourceLanguage) {
+        if (siblingData[fieldsNames.language] === siblingData[fieldsNames.sourceLanguage]) {
           return true;
         }
         if (isDefined(count) && count.length > 0) {
           return true;
         }
-        return "This field is required when the language is different from the source language.";
+        return `This field is required when the ${fieldsNames.language} \
+        is different from the ${fieldsNames.sourceLanguage}.`;
       },
     },
     {
@@ -97,8 +118,9 @@ const creditFields: Field = {
   ],
 };
 
-export const localizedFields = ({
+export const translatedFields = ({
   fields,
+  validate,
   admin: { useAsTitle, hasSourceLanguage, hasCredits, ...admin } = {},
   ...otherProps
 }: LocalizedFieldsProps): ArrayField => ({
@@ -111,13 +133,13 @@ export const localizedFields = ({
         Cell({
           cellData:
             cellData?.map((row) => ({
-              language: row.language,
+              language: row[fieldsNames.language],
               title: isDefined(useAsTitle) ? row[useAsTitle] : undefined,
             })) ?? [],
         }),
       RowLabel: ({ data }) =>
         RowLabel({
-          language: data.language,
+          language: data[fieldsNames.language],
           title: isDefined(useAsTitle) ? data[useAsTitle] : undefined,
         }),
     },
@@ -127,11 +149,16 @@ export const localizedFields = ({
     const defaultValidation = array(value, options);
     if (defaultValidation !== true) return defaultValidation;
 
+    if (isDefined(validate)) {
+      const propsValidation = validate(value, options);
+      if (propsValidation !== true) return propsValidation;
+    }
+
     const data = options.data[otherProps.name] as ArrayData;
     if (isUndefined(data)) return true;
     if (typeof data === "number") return true;
 
-    const languages = data.map((biography) => biography.language);
+    const languages = data.map((rows) => rows[fieldsNames.language]);
     if (hasDuplicates(languages)) {
       return `There cannot be multiple ${otherProps.name} with the same ${fieldsNames.language}`;
     }

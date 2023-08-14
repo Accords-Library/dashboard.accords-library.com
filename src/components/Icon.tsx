@@ -1,4 +1,3 @@
-import React from "react";
 import { styled } from "styled-components";
 
 export const Icon = styled.div`
@@ -9,4 +8,8 @@ export const Icon = styled.div`
   mask-size: contain;
   mask-repeat: no-repeat;
   mask-position: center;
+  -webkit-mask: url("/public/accords.svg");
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
 `;

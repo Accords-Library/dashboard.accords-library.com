@@ -10,43 +10,42 @@ const fields = {
   name: "name",
 } as const satisfies Record<string, string>;
 
-export const Languages = buildCollectionConfig(
-  Collections.Languages,
-  {
+export const Languages = buildCollectionConfig({
+  slug: Collections.Languages,
+  labels: {
     singular: "Language",
     plural: "Languages",
   },
-  () => ({
-    defaultSort: fields.name,
-    admin: {
-      useAsTitle: fields.name,
-      defaultColumns: [fields.name, fields.id],
-      disableDuplicate: true,
-      group: CollectionGroups.Meta,
-      pagination: { defaultLimit: 100 },
+  defaultSort: fields.name,
+  admin: {
+    useAsTitle: fields.name,
+    defaultColumns: [fields.name, fields.id],
+    disableDuplicate: true,
+    group: CollectionGroups.Meta,
+    pagination: { defaultLimit: 100 },
+  },
+  access: { create: mustBeAdmin, update: mustBeAdmin, read: publicAccess },
+  timestamps: false,
+  endpoints: [importFromStrapi],
+  fields: [
+    {
+      name: fields.id,
+      type: "text",
+      unique: true,
+      required: true,
+      validate: (value, options) => {
+        if (!/^[a-z]{2}(-[a-z]{2})?$/g.test(value)) {
+          return "The code must be a valid BCP 47 language \
+          tag and lowercase (i.e: en, pt-pt, fr, zh-tw...)";
+        }
+        return text(value, options);
+      },
     },
-    access: { create: mustBeAdmin, update: mustBeAdmin, read: publicAccess },
-    timestamps: false,
-    endpoints: [importFromStrapi],
-    fields: [
-      {
-        name: fields.id,
-        type: "text",
-        unique: true,
-        required: true,
-        validate: (value, options) => {
-          if (!/^[a-z]{2}(-[a-z]{2})?$/g.test(value)) {
-            return "The code must be a valid BCP 47 language tag and lowercase (i.e: en, pt-pt, fr, zh-tw...)";
-          }
-          return text(value, options);
-        },
-      },
-      {
-        name: fields.name,
-        type: "text",
-        unique: true,
-        required: true,
-      },
-    ],
-  })
-);
+    {
+      name: fields.name,
+      type: "text",
+      unique: true,
+      required: true,
+    },
+  ],
+});

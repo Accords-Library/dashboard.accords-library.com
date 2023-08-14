@@ -1,7 +1,8 @@
 import { CollectionGroups, Collections, KeysTypes } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
+import { keysField } from "../../fields/keysField/keysField";
 import { slugField } from "../../fields/slugField/slugField";
-import { localizedFields } from "../../fields/translatedFields/translatedFields";
+import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { AppearanceRowLabel } from "./components/AppearanceRowLabel";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
@@ -23,141 +24,135 @@ const fields = {
   status: "_status",
 };
 
-export const Weapons = buildVersionedCollectionConfig(
-  Collections.Weapons,
-  { singular: "Weapon", plural: "Weapons" },
-  () => ({
-    defaultSort: fields.slug,
-    admin: {
-      useAsTitle: fields.slug,
-      defaultColumns: [
-        fields.slug,
-        fields.thumbnail,
-        fields.group,
-        fields.type,
-        fields.appearances,
-        fields.status,
-      ],
-      group: CollectionGroups.Collections,
-    },
-    endpoints: [importFromStrapi],
-    fields: [
-      {
-        type: "row",
-        fields: [
-          slugField({ name: fields.slug, admin: { width: "50%" } }),
-          imageField({
-            name: fields.thumbnail,
-            relationTo: Collections.WeaponsThumbnails,
-            admin: { width: "50%" },
-          }),
-        ],
-      },
-      {
-        type: "row",
-        fields: [
-          {
-            name: fields.type,
-            type: "relationship",
-            relationTo: Collections.Keys,
-            required: true,
-            filterOptions: { type: { equals: KeysTypes.Weapons } },
-            admin: { allowCreate: false, width: "50%" },
-          },
-          {
-            name: fields.group,
-            type: "relationship",
-            relationTo: Collections.WeaponsGroups,
-            admin: { width: "50%" },
-          },
-        ],
-      },
-      {
-        name: fields.appearances,
-        type: "array",
-        required: true,
-        minRows: 1,
-        admin: {
-          initCollapsed: true,
-          components: {
-            RowLabel: ({ data }) =>
-              AppearanceRowLabel({ keyIds: data[fields.appearancesCategories] ?? [] }),
-          },
-        },
-        fields: [
-          {
-            name: fields.appearancesCategories,
-            type: "relationship",
-            required: true,
-            hasMany: true,
-            relationTo: Collections.Keys,
-            filterOptions: { type: { equals: KeysTypes.Categories } },
-            admin: { allowCreate: false },
-          },
-          localizedFields({
-            name: fields.appearancesTranslations,
-            required: true,
-            minRows: 1,
-            admin: {
-              useAsTitle: fields.appearancesTranslationsName,
-              hasSourceLanguage: true,
-              hasCredits: true,
-            },
-            fields: [
-              {
-                type: "row",
-                fields: [
-                  {
-                    name: fields.appearancesTranslationsName,
-                    type: "text",
-                    required: true,
-                    admin: { width: "50%" },
-                  },
-                  {
-                    name: fields.appearancesTranslationsDescription,
-                    type: "textarea",
-                    admin: { width: "50%" },
-                  },
-                ],
-              },
-              {
-                type: "row",
-                fields: [
-                  {
-                    name: fields.appearancesTranslationsLevel1,
-                    label: "Level 1",
-                    type: "textarea",
-                    admin: { width: "50%" },
-                  },
-                  {
-                    name: fields.appearancesTranslationsLevel2,
-                    label: "Level 2",
-                    type: "textarea",
-                    admin: { width: "50%" },
-                  },
-                ],
-              },
-              {
-                type: "row",
-                fields: [
-                  {
-                    name: fields.appearancesTranslationsLevel3,
-                    label: "Level 3",
-                    type: "textarea",
-                    admin: { width: "50%" },
-                  },
-                  {
-                    name: fields.appearancesTranslationsLevel4,
-                    label: "Level 4",
-                    type: "textarea",
-                    admin: { width: "50%" },
-                  },
-                ],
-              },
-            ],
-          }),
-        ],
-      },
+export const Weapons = buildVersionedCollectionConfig({
+  slug: Collections.Weapons,
+  labels: { singular: "Weapon", plural: "Weapons" },
+  defaultSort: fields.slug,
+  admin: {
+    useAsTitle: fields.slug,
+    defaultColumns: [
+      fields.slug,
+      fields.thumbnail,
+      fields.group,
+      fields.type,
+      fields.appearances,
+      fields.status,
     ],
-  })
-);
+    group: CollectionGroups.Collections,
+  },
+  endpoints: [importFromStrapi],
+  fields: [
+    {
+      type: "row",
+      fields: [
+        slugField({ name: fields.slug, admin: { width: "50%" } }),
+        imageField({
+          name: fields.thumbnail,
+          relationTo: Collections.WeaponsThumbnails,
+          admin: { width: "50%" },
+        }),
+      ],
+    },
+    {
+      type: "row",
+      fields: [
+        keysField({
+          name: fields.type,
+          relationTo: KeysTypes.Weapons,
+          required: true,
+          admin: { allowCreate: false, width: "50%" },
+        }),
+        {
+          name: fields.group,
+          type: "relationship",
+          relationTo: Collections.WeaponsGroups,
+          admin: { width: "50%" },
+        },
+      ],
+    },
+    {
+      name: fields.appearances,
+      type: "array",
+      required: true,
+      minRows: 1,
+      admin: {
+        initCollapsed: true,
+        components: {
+          RowLabel: ({ data }) =>
+            AppearanceRowLabel({ keyIds: data[fields.appearancesCategories] ?? [] }),
+        },
+      },
+      fields: [
+        keysField({
+          name: fields.appearancesCategories,
+          required: true,
+          hasMany: true,
+          relationTo: KeysTypes.Categories,
+          admin: { allowCreate: false },
+        }),
+        translatedFields({
+          name: fields.appearancesTranslations,
+          required: true,
+          minRows: 1,
+          admin: {
+            useAsTitle: fields.appearancesTranslationsName,
+            hasSourceLanguage: true,
+            hasCredits: true,
+          },
+          fields: [
+            {
+              type: "row",
+              fields: [
+                {
+                  name: fields.appearancesTranslationsName,
+                  type: "text",
+                  required: true,
+                  admin: { width: "50%" },
+                },
+                {
+                  name: fields.appearancesTranslationsDescription,
+                  type: "textarea",
+                  admin: { width: "50%" },
+                },
+              ],
+            },
+            {
+              type: "row",
+              fields: [
+                {
+                  name: fields.appearancesTranslationsLevel1,
+                  label: "Level 1",
+                  type: "textarea",
+                  admin: { width: "50%" },
+                },
+                {
+                  name: fields.appearancesTranslationsLevel2,
+                  label: "Level 2",
+                  type: "textarea",
+                  admin: { width: "50%" },
+                },
+              ],
+            },
+            {
+              type: "row",
+              fields: [
+                {
+                  name: fields.appearancesTranslationsLevel3,
+                  label: "Level 3",
+                  type: "textarea",
+                  admin: { width: "50%" },
+                },
+                {
+                  name: fields.appearancesTranslationsLevel4,
+                  label: "Level 4",
+                  type: "textarea",
+                  admin: { width: "50%" },
+                },
+              ],
+            },
+          ],
+        }),
+      ],
+    },
+  ],
+});

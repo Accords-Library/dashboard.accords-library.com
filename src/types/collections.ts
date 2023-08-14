@@ -36,6 +36,8 @@ export interface Config {
     "weapons-thumbnails": WeaponsThumbnail;
     "contents-thumbnails": ContentsThumbnail;
     "library-items-thumbnails": LibraryItemThumbnail;
+    "library-items-scans": LibraryItemScans;
+    "library-items-gallery": LibraryItemGallery;
     "recorders-thumbnails": RecordersThumbnail;
     "posts-thumbnails": PostThumbnail;
     files: File;
@@ -50,6 +52,7 @@ export interface Config {
 }
 export interface LibraryItem {
   id: string;
+  itemType?: "Textual" | "Audio" | "Video" | "Game" | "Other";
   slug: string;
   thumbnail?: string | LibraryItemThumbnail;
   pretitle?: string;
@@ -59,30 +62,70 @@ export interface LibraryItem {
   primary: boolean;
   digital: boolean;
   downloadable: boolean;
+  gallery?: {
+    image?: string | LibraryItemGallery;
+    id?: string;
+  }[];
   scans?: {
     cover?: {
-      front?: string | LibraryItemThumbnail;
-      spine?: string | LibraryItemThumbnail;
-      back?: string | LibraryItemThumbnail;
+      front?: string | LibraryItemScans;
+      spine?: string | LibraryItemScans;
+      back?: string | LibraryItemScans;
+      insideFront?: string | LibraryItemScans;
+      flapFront?: string | LibraryItemScans;
+      flapBack?: string | LibraryItemScans;
+      insideFlapFront?: string | LibraryItemScans;
+      insideFlapBack?: string | LibraryItemScans;
       id?: string;
     }[];
     dustjacket?: {
-      front?: string | LibraryItemThumbnail;
-      spine?: string | LibraryItemThumbnail;
-      back?: string | LibraryItemThumbnail;
+      front?: string | LibraryItemScans;
+      spine?: string | LibraryItemScans;
+      back?: string | LibraryItemScans;
+      insideFront?: string | LibraryItemScans;
+      insideSpine?: string | LibraryItemScans;
+      insideBack?: string | LibraryItemScans;
+      flapFront?: string | LibraryItemScans;
+      flapBack?: string | LibraryItemScans;
+      insideFlapFront?: string | LibraryItemScans;
+      insideFlapBack?: string | LibraryItemScans;
       id?: string;
     }[];
     obi?: {
-      front?: string | LibraryItemThumbnail;
-      spine?: string | LibraryItemThumbnail;
-      back?: string | LibraryItemThumbnail;
+      front?: string | LibraryItemScans;
+      spine?: string | LibraryItemScans;
+      back?: string | LibraryItemScans;
+      insideFront?: string | LibraryItemScans;
+      insideSpine?: string | LibraryItemScans;
+      insideBack?: string | LibraryItemScans;
+      flapFront?: string | LibraryItemScans;
+      flapBack?: string | LibraryItemScans;
+      insideFlapFront?: string | LibraryItemScans;
+      insideFlapBack?: string | LibraryItemScans;
       id?: string;
     }[];
     pages?: {
       page: number;
-      image: string | LibraryItemThumbnail;
+      image: string | LibraryItemScans;
       id?: string;
     }[];
+    id?: string;
+  }[];
+  textual?: {
+    subtype?: string[] | Key[];
+    languages?: string[] | Language[];
+    pageCount?: number;
+    bindingType?: "Paperback" | "Hardcover";
+    pageOrder?: "LeftToRight" | "RightToLeft";
+  };
+  audio?: {
+    audioSubtype?: string[] | Key[];
+  };
+  releaseDate?: string;
+  categories?: string[] | Key[];
+  translations?: {
+    language: string | Language;
+    description: string;
     id?: string;
   }[];
   size?: {
@@ -96,41 +139,10 @@ export interface LibraryItem {
     currency: string | Currency;
     id?: string;
   }[];
-  itemType?: "Textual" | "Audio" | "Video" | "Game" | "Other";
-  textual?: {
-    subtype?:
-      | {
-          value: string;
-          relationTo: "keys";
-        }[]
-      | {
-          value: Key;
-          relationTo: "keys";
-        }[];
-    languages?:
-      | {
-          value: string;
-          relationTo: "languages";
-        }[]
-      | {
-          value: Language;
-          relationTo: "languages";
-        }[];
-    pageCount?: number;
-    bindingType?: "Paperback" | "Hardcover";
-    pageOrder?: "LeftToRight" | "RightToLeft";
-  };
-  audio?: {
-    audioSubtype?:
-      | {
-          value: string;
-          relationTo: "keys";
-        }[]
-      | {
-          value: Key;
-          relationTo: "keys";
-        }[];
-  };
+  urls?: {
+    url: string;
+    id?: string;
+  }[];
   contents?: {
     content: string | Content;
     pageStart?: number;
@@ -140,7 +152,6 @@ export interface LibraryItem {
     note?: string;
     id?: string;
   }[];
-  releaseDate?: string;
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
@@ -157,6 +168,96 @@ export interface LibraryItemThumbnail {
   width?: number;
   height?: number;
   sizes?: {
+    thumb?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
+    og?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
+    square?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
+    max?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
+  };
+}
+export interface LibraryItemGallery {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string;
+  filename?: string;
+  mimeType?: string;
+  filesize?: number;
+  width?: number;
+  height?: number;
+  sizes?: {
+    thumb?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
+    small?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
+    max?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
+  };
+}
+export interface LibraryItemScans {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string;
+  filename?: string;
+  mimeType?: string;
+  filesize?: number;
+  width?: number;
+  height?: number;
+  sizes?: {
+    thumb?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
     og?: {
       url?: string;
       width?: number;
@@ -183,9 +284,6 @@ export interface LibraryItemThumbnail {
     };
   };
 }
-export interface Currency {
-  id: string;
-}
 export interface Key {
   id: string;
   name: string;
@@ -206,23 +304,15 @@ export interface Language {
   id: string;
   name: string;
 }
+export interface Currency {
+  id: string;
+}
 export interface Content {
   id: string;
   slug: string;
   thumbnail?: string | ContentsThumbnail;
-  categories?:
-    | {
-        value: string;
-        relationTo: "keys";
-      }[]
-    | {
-        value: Key;
-        relationTo: "keys";
-      }[];
-  type?: {
-    value: string | Key;
-    relationTo: "keys";
-  };
+  categories?: string[] | Key[];
+  type?: string | Key;
   translations: {
     language: string | Language;
     sourceLanguage: string | Language;
@@ -256,6 +346,14 @@ export interface ContentsThumbnail {
   width?: number;
   height?: number;
   sizes?: {
+    thumb?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
     og?: {
       url?: string;
       width?: number;
@@ -303,6 +401,14 @@ export interface RecordersThumbnail {
   width?: number;
   height?: number;
   sizes?: {
+    thumb?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
     og?: {
       url?: string;
       width?: number;
@@ -574,6 +680,14 @@ export interface PostThumbnail {
   width?: number;
   height?: number;
   sizes?: {
+    thumb?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
     og?: {
       url?: string;
       width?: number;
@@ -600,12 +714,25 @@ export interface ChronologyItem {
     month?: number;
     day?: number;
   };
-  events?: {
-    translations?: {
+  events: {
+    source?:
+      | {
+          value: string | Content;
+          relationTo: "contents";
+        }
+      | {
+          value: string | LibraryItem;
+          relationTo: "library-items";
+        };
+    translations: {
       language: string | Language;
+      sourceLanguage: string | Language;
       title?: string;
       description?: string;
       notes?: string;
+      transcribers?: string[] | Recorder[];
+      translators?: string[] | Recorder[];
+      proofreaders?: string[] | Recorder[];
       id?: string;
     }[];
     id?: string;
@@ -626,6 +753,7 @@ export interface ChronologyEra {
     description?: string;
     id?: string;
   }[];
+  events?: string[] | ChronologyItem[];
   updatedAt: string;
   createdAt: string;
 }
@@ -669,6 +797,14 @@ export interface WeaponsThumbnail {
   width?: number;
   height?: number;
   sizes?: {
+    thumb?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
     og?: {
       url?: string;
       width?: number;
@@ -678,6 +814,22 @@ export interface WeaponsThumbnail {
       filename?: string;
     };
     small?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
+    medium?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
+    max?: {
       url?: string;
       width?: number;
       height?: number;
@@ -701,7 +853,7 @@ export interface Video {
   id: string;
   uid: string;
   gone: boolean;
-  source: "YouTube" | "NicoNico";
+  source: "YouTube" | "NicoNico" | "Tumblr";
   title: string;
   description?: string;
   likes?: number;

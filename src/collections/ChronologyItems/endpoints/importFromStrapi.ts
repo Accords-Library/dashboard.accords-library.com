@@ -11,7 +11,7 @@ export const importFromStrapi = createStrapiImportEndpoint<ChronologyItem>({
   },
   payload: {
     collection: Collections.ChronologyItems,
-    convert: ({ year, month, day, events }) => ({
+    convert: ({ year, month, day, events }, user) => ({
       date: { year, month, day },
       events: events.map((event) => ({
         translations: event.translations.map(({ title, description, note, language }) => ({
@@ -19,6 +19,10 @@ export const importFromStrapi = createStrapiImportEndpoint<ChronologyItem>({
           description,
           note,
           language: language.data.attributes.code,
+          sourceLanguage: "en",
+          ...(language.data.attributes.code === "en"
+            ? { transcribers: [user.id] }
+            : { translators: [user.id] }),
         })),
       })),
     }),

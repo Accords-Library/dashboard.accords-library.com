@@ -39,7 +39,7 @@ type Params<T> = {
   payload: {
     collection: string;
     import?: (strapiObject: any, user: any) => Promise<void>;
-    convert?: (strapiObject: any) => PayloadCreateData<T>;
+    convert?: (strapiObject: any, user: any) => PayloadCreateData<T>;
   };
 };
 
@@ -60,7 +60,7 @@ export const importStrapiEntries = async <T>({
         } else if (isDefined(payloadParams.convert)) {
           await payload.create({
             collection: payloadParams.collection,
-            data: payloadParams.convert(attributes),
+            data: payloadParams.convert(attributes, user),
             user,
           });
         } else {

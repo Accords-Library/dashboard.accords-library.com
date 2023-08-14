@@ -1,9 +1,23 @@
 import { Props } from "payload/components/views/Cell";
-import { useState, useEffect } from "react";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { styled } from "styled-components";
 import { isUndefined } from "../../utils/asserts";
 
-export const Cell = ({ cellData, field }: Props): JSX.Element => {
+const Image = styled.img`
+  height: 3rem;
+  width: 3rem;
+  object-fit: contain;
+  transition: 0.2s transform;
+  transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  position: absolute;
+  transform: translateY(-50%) scale(1);
+  &:hover {
+    transform: translateY(-50%) scale(3);
+  }
+`;
+
+export const Cell = ({ cellData, field, rowData, collection }: Props): JSX.Element => {
   const [imageURL, setImageURL] = useState<string>();
   useEffect(() => {
     const fetchUrl = async () => {
@@ -11,18 +25,14 @@ export const Cell = ({ cellData, field }: Props): JSX.Element => {
       if (typeof cellData !== "string") return;
       if (field.type !== "upload") return;
       const result = await (await fetch(`/api/${field.relationTo}/${cellData}`)).json();
-      setImageURL(result.url);
+      setImageURL(result.sizes.thumb.url);
     };
     fetchUrl();
   }, [cellData]);
-
-  return (
-    <>
-      {imageURL ? (
-        <img style={{ height: "3rem", borderRadius: "100%", aspectRatio: "1/1" }} src={imageURL} />
-      ) : (
-        "<No Image>"
-      )}
-    </>
+  const link = useMemo(
+    () => `/admin/collections/${collection.slug}/${rowData.id}`,
+    [collection.slug, rowData.id]
   );
+
+  return <Link to={link}>{imageURL ? <Image src={imageURL} /> : "<No Image>"}</Link>;
 };
