@@ -1,14 +1,14 @@
 import payload from "payload";
-import { CollectionConfig } from "payload/types";
 import { Collections } from "../../../constants";
 import {
   getAllStrapiEntries,
   importStrapiEntries,
 } from "../../../endpoints/createStrapiImportEndpoint";
 import { Key } from "../../../types/collections";
-import { isDefined } from "../../../utils/asserts";
+import { CollectionEndpoint, PayloadCreateData } from "../../../types/payload";
+import { StrapiLanguage } from "../../../types/strapi";
+import { isDefined, isUndefined } from "../../../utils/asserts";
 import { formatToCamelCase } from "../../../utils/string";
-import { PayloadCreateData } from "../../../utils/types";
 
 const importStrapiWordings: typeof importStrapiEntries = async ({
   payload: payloadParams,
@@ -30,7 +30,7 @@ const importStrapiWordings: typeof importStrapiEntries = async ({
       .filter(({ name }) => isDefined(name) && name !== ""),
   }));
 
-  const errors = [];
+  const errors: string[] = [];
 
   await Promise.all(
     entries.map(async (entry) => {
@@ -42,7 +42,9 @@ const importStrapiWordings: typeof importStrapiEntries = async ({
         });
       } catch (e) {
         console.warn(e);
-        errors.push(`${e.name} with ${entry.name}`);
+        if (typeof e === "object" && isDefined(e) && "name" in e) {
+          errors.push(`${e.name} with ${entry.name}`);
+        }
       }
     })
   );
@@ -50,7 +52,7 @@ const importStrapiWordings: typeof importStrapiEntries = async ({
   return { count: entries.length, errors };
 };
 
-export const importFromStrapi: CollectionConfig["endpoints"][number] = {
+export const importFromStrapi: CollectionEndpoint = {
   method: "get",
   path: "/strapi",
   handler: async (req, res) => {
@@ -64,7 +66,15 @@ export const importFromStrapi: CollectionConfig["endpoints"][number] = {
       });
     }
 
-    const { count: categoriesCount, errors: categoriesErrors } = await importStrapiEntries<Key>({
+    type StrapiCategories = {
+      slug: string;
+      titles: { title?: string; short?: string; language: StrapiLanguage }[];
+    };
+
+    const { count: categoriesCount, errors: categoriesErrors } = await importStrapiEntries<
+      Key,
+      StrapiCategories
+    >({
       strapi: {
         collection: "categories",
         params: { populate: { titles: { populate: "language" } } },
@@ -74,59 +84,96 @@ export const importFromStrapi: CollectionConfig["endpoints"][number] = {
         convert: ({ slug, titles }) => ({
           name: slug,
           type: "Categories",
-          translations: titles.map(({ title, short, language }) => ({
-            name: title,
-            short,
-            language: language.data.attributes.code,
-          })),
+          translations: titles.map(({ title, short, language }) => {
+            if (isUndefined(language.data))
+              throw new Error("A language is required for a Keys title translation");
+            if (isUndefined(title))
+              throw new Error("A title is required for a Keys title translation");
+            return {
+              name: title,
+              short,
+              language: language.data.attributes.code,
+            };
+          }),
         }),
       },
       user: req.user,
     });
 
-    const { count: contentTypesCount, errors: contentTypesErrors } = await importStrapiEntries<Key>(
-      {
-        strapi: {
-          collection: "content-types",
-          params: { populate: { titles: { populate: "language" } } },
-        },
-        payload: {
-          collection: Collections.Keys,
-          convert: ({ slug, titles }) => ({
-            name: slug,
-            type: "Contents",
-            translations: titles.map(({ title, language }) => ({
+    type StrapiContentType = {
+      slug: string;
+      titles: { title: string; language: StrapiLanguage }[];
+    };
+
+    const { count: contentTypesCount, errors: contentTypesErrors } = await importStrapiEntries<
+      Key,
+      StrapiContentType
+    >({
+      strapi: {
+        collection: "content-types",
+        params: { populate: { titles: { populate: "language" } } },
+      },
+      payload: {
+        collection: Collections.Keys,
+        convert: ({ slug, titles }) => ({
+          name: slug,
+          type: "Contents",
+          translations: titles.map(({ title, language }) => {
+            if (isUndefined(language.data))
+              throw new Error("A language is required for a Keys title translation");
+            return {
               name: title,
               language: language.data.attributes.code,
-            })),
+            };
           }),
-        },
-        user: req.user,
-      }
-    );
+        }),
+      },
+      user: req.user,
+    });
 
-    const { count: gamePlatformsCount, errors: gamePlatformsErrors } =
-      await importStrapiEntries<Key>({
-        strapi: {
-          collection: "game-platforms",
-          params: { populate: { titles: { populate: "language" } } },
-        },
-        payload: {
-          collection: Collections.Keys,
-          convert: ({ slug, titles }) => ({
-            name: slug,
-            type: "GamePlatforms",
-            translations: titles.map(({ title, short, language }) => ({
+    type StrapiGamePlatform = {
+      slug: string;
+      titles: { title?: string; short?: string; language: StrapiLanguage }[];
+    };
+
+    const { count: gamePlatformsCount, errors: gamePlatformsErrors } = await importStrapiEntries<
+      Key,
+      StrapiGamePlatform
+    >({
+      strapi: {
+        collection: "game-platforms",
+        params: { populate: { titles: { populate: "language" } } },
+      },
+      payload: {
+        collection: Collections.Keys,
+        convert: ({ slug, titles }) => ({
+          name: slug,
+          type: "GamePlatforms",
+          translations: titles.map(({ title, short, language }) => {
+            if (isUndefined(language.data))
+              throw new Error("A language is required for a Keys title translation");
+            if (isUndefined(title))
+              throw new Error("A title is required for a Keys title translation");
+            return {
               name: title,
               short,
               language: language.data.attributes.code,
-            })),
+            };
           }),
-        },
-        user: req.user,
-      });
+        }),
+      },
+      user: req.user,
+    });
 
-    const { count: libraryCount, errors: libraryErrors } = await importStrapiEntries<Key>({
+    type StrapiMetadataTypes = {
+      slug: string;
+      titles: { title: string; language: StrapiLanguage }[];
+    };
+
+    const { count: libraryCount, errors: libraryErrors } = await importStrapiEntries<
+      Key,
+      StrapiMetadataTypes
+    >({
       strapi: {
         collection: "metadata-types",
         params: { populate: { titles: { populate: "language" } } },
@@ -136,99 +183,152 @@ export const importFromStrapi: CollectionConfig["endpoints"][number] = {
         convert: ({ slug, titles }) => ({
           name: slug,
           type: "Library",
-          translations: titles.map(({ title, language }) => ({
-            name: title,
-            language: language.data.attributes.code,
-          })),
+          translations: titles.map(({ title, language }) => {
+            if (isUndefined(language.data))
+              throw new Error("A language is required for a Keys title translation");
+            return {
+              name: title,
+              language: language.data.attributes.code,
+            };
+          }),
         }),
       },
       user: req.user,
     });
 
-    const { count: libraryAudioCount, errors: libraryAudioErrors } = await importStrapiEntries<Key>(
-      {
-        strapi: {
-          collection: "audio-subtypes",
-          params: { populate: { titles: { populate: "language" } } },
-        },
-        payload: {
-          collection: Collections.Keys,
-          convert: ({ slug, titles }) => ({
-            name: slug,
-            type: "LibraryAudio",
-            translations: titles.map(({ title, language }) => ({
+    type StrapiAudioSubtypes = {
+      slug: string;
+      titles: { title: string; language: StrapiLanguage }[];
+    };
+
+    const { count: libraryAudioCount, errors: libraryAudioErrors } = await importStrapiEntries<
+      Key,
+      StrapiAudioSubtypes
+    >({
+      strapi: {
+        collection: "audio-subtypes",
+        params: { populate: { titles: { populate: "language" } } },
+      },
+      payload: {
+        collection: Collections.Keys,
+        convert: ({ slug, titles }) => ({
+          name: slug,
+          type: "LibraryAudio",
+          translations: titles.map(({ title, language }) => {
+            if (isUndefined(language.data))
+              throw new Error("A language is required for a Keys title translation");
+            return {
               name: title,
               language: language.data.attributes.code,
-            })),
+            };
           }),
-        },
-        user: req.user,
-      }
-    );
+        }),
+      },
+      user: req.user,
+    });
 
-    const { count: libraryGroupCount, errors: libraryGroupErrors } = await importStrapiEntries<Key>(
-      {
-        strapi: {
-          collection: "group-subtypes",
-          params: { populate: { titles: { populate: "language" } } },
-        },
-        payload: {
-          collection: Collections.Keys,
-          convert: ({ slug, titles }) => ({
-            name: slug,
-            type: "LibraryGroup",
-            translations: titles.map(({ title, language }) => ({
+    type StrapiGroupSubtypes = {
+      slug: string;
+      titles: { title: string; language: StrapiLanguage }[];
+    };
+
+    const { count: libraryGroupCount, errors: libraryGroupErrors } = await importStrapiEntries<
+      Key,
+      StrapiGroupSubtypes
+    >({
+      strapi: {
+        collection: "group-subtypes",
+        params: { populate: { titles: { populate: "language" } } },
+      },
+      payload: {
+        collection: Collections.Keys,
+        convert: ({ slug, titles }) => ({
+          name: slug,
+          type: "LibraryGroup",
+          translations: titles.map(({ title, language }) => {
+            if (isUndefined(language.data))
+              throw new Error("A language is required for a Keys title translation");
+            return {
               name: title,
               language: language.data.attributes.code,
-            })),
+            };
           }),
-        },
-        user: req.user,
-      }
-    );
+        }),
+      },
+      user: req.user,
+    });
 
-    const { count: libraryTextualCount, errors: libraryTextualErrors } =
-      await importStrapiEntries<Key>({
-        strapi: {
-          collection: "textual-subtypes",
-          params: { populate: { titles: { populate: "language" } } },
-        },
-        payload: {
-          collection: Collections.Keys,
-          convert: ({ slug, titles }) => ({
-            name: slug,
-            type: "LibraryTextual",
-            translations: titles.map(({ title, language }) => ({
+    type StrapiTextualSubtypes = {
+      slug: string;
+      titles: { title: string; language: StrapiLanguage }[];
+    };
+
+    const { count: libraryTextualCount, errors: libraryTextualErrors } = await importStrapiEntries<
+      Key,
+      StrapiTextualSubtypes
+    >({
+      strapi: {
+        collection: "textual-subtypes",
+        params: { populate: { titles: { populate: "language" } } },
+      },
+      payload: {
+        collection: Collections.Keys,
+        convert: ({ slug, titles }) => ({
+          name: slug,
+          type: "LibraryTextual",
+          translations: titles.map(({ title, language }) => {
+            if (isUndefined(language.data))
+              throw new Error("A language is required for a Keys title translation");
+            return {
               name: title,
               language: language.data.attributes.code,
-            })),
+            };
           }),
-        },
-        user: req.user,
-      });
+        }),
+      },
+      user: req.user,
+    });
 
-    const { count: libraryVideoCount, errors: libraryVideoErrors } = await importStrapiEntries<Key>(
-      {
-        strapi: {
-          collection: "video-subtypes",
-          params: { populate: { titles: { populate: "language" } } },
-        },
-        payload: {
-          collection: Collections.Keys,
-          convert: ({ slug, titles }) => ({
-            name: slug,
-            type: "LibraryVideo",
-            translations: titles.map(({ title, language }) => ({
+    type StrapiVideoSubtypes = {
+      slug: string;
+      titles: { title: string; language: StrapiLanguage }[];
+    };
+
+    const { count: libraryVideoCount, errors: libraryVideoErrors } = await importStrapiEntries<
+      Key,
+      StrapiVideoSubtypes
+    >({
+      strapi: {
+        collection: "video-subtypes",
+        params: { populate: { titles: { populate: "language" } } },
+      },
+      payload: {
+        collection: Collections.Keys,
+        convert: ({ slug, titles }) => ({
+          name: slug,
+          type: "LibraryVideo",
+          translations: titles.map(({ title, language }) => {
+            if (isUndefined(language.data))
+              throw new Error("A language is required for a Keys title translation");
+            return {
               name: title,
               language: language.data.attributes.code,
-            })),
+            };
           }),
-        },
-        user: req.user,
-      }
-    );
+        }),
+      },
+      user: req.user,
+    });
 
-    const { count: weaponsCount, errors: weaponsErrors } = await importStrapiEntries<Key>({
+    type StrapiWeaponTypes = {
+      slug: string;
+      translations: { name?: string; language: StrapiLanguage }[];
+    };
+
+    const { count: weaponsCount, errors: weaponsErrors } = await importStrapiEntries<
+      Key,
+      StrapiWeaponTypes
+    >({
       strapi: {
         collection: "weapon-story-types",
         params: { populate: { translations: { populate: "language" } } },
@@ -238,16 +338,22 @@ export const importFromStrapi: CollectionConfig["endpoints"][number] = {
         convert: ({ slug, translations }) => ({
           name: slug,
           type: "Weapons",
-          translations: translations.map(({ name, language }) => ({
-            name,
-            language: language.data.attributes.code,
-          })),
+          translations: translations.map(({ name, language }) => {
+            if (isUndefined(language.data))
+              throw new Error("A language is required for a Keys title translation");
+            if (isUndefined(name))
+              throw new Error("A name is required for a Keys title translation");
+            return {
+              name,
+              language: language.data.attributes.code,
+            };
+          }),
         }),
       },
       user: req.user,
     });
 
-    const { count: wordingsCount, errors: wordingsErrors } = await importStrapiWordings({
+    const { count: wordingsCount, errors: wordingsErrors } = await importStrapiWordings<Key, Key>({
       strapi: { collection: "website-interfaces", params: { populate: "ui_language" } },
       payload: { collection: Collections.Keys, convert: (strapiObject) => strapiObject },
       user: req.user,

@@ -1,5 +1,5 @@
 import { text } from "payload/dist/fields/validations";
-import { mustBeAdmin } from "../../accesses/mustBeAdmin";
+import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { publicAccess } from "../../accesses/publicAccess";
 import { CollectionGroups, Collections } from "../../constants";
 import { buildCollectionConfig } from "../../utils/collectionConfig";

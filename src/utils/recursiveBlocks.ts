@@ -1,4 +1,5 @@
 import { Block, BlockField } from "payload/types";
+import { capitalize } from "./string";
 
 const isDefined = <T>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined;
@@ -26,11 +27,6 @@ export const generateBlocks = <T extends string>(blocksConfig: BlocksConfig<T>):
     recursionFieldName in block;
 
   const getInterfaceName = (parents: T[], currentBlockName: T): string => {
-    const capitalize = (text: string): string => {
-      if (text.length === 0) return text;
-      const [firstLetter, ...rest] = text;
-      return [firstLetter.toUpperCase(), ...rest].join("");
-    };
     return [...parents, currentBlockName]
       .map((blockName) => blocksConfig[blockName].block.slug)
       .map(capitalize)

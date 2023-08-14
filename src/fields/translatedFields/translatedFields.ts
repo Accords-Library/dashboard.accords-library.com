@@ -1,3 +1,4 @@
+import { RowLabelArgs } from "payload/dist/admin/components/forms/RowLabel/types";
 import { array } from "payload/dist/fields/validations";
 import { ArrayField, Field } from "payload/types";
 import { Collections } from "../../constants";
@@ -118,6 +119,8 @@ const creditFields: Field = {
   ],
 };
 
+type FieldData = Record<string, any> & { [fieldsNames.language]: string };
+
 export const translatedFields = ({
   fields,
   validate,
@@ -129,7 +132,7 @@ export const translatedFields = ({
   admin: {
     initCollapsed: true,
     components: {
-      Cell: ({ cellData }) =>
+      Cell: ({ cellData }: { cellData: FieldData[] }) =>
         Cell({
           cellData:
             cellData?.map((row) => ({
@@ -137,7 +140,7 @@ export const translatedFields = ({
               title: isDefined(useAsTitle) ? row[useAsTitle] : undefined,
             })) ?? [],
         }),
-      RowLabel: ({ data }) =>
+      RowLabel: ({ data }: RowLabelArgs) =>
         RowLabel({
           language: data[fieldsNames.language],
           title: isDefined(useAsTitle) ? data[useAsTitle] : undefined,
@@ -162,6 +165,8 @@ export const translatedFields = ({
     if (hasDuplicates(languages)) {
       return `There cannot be multiple ${otherProps.name} with the same ${fieldsNames.language}`;
     }
+
+    return true;
   },
   fields: [
     hasSourceLanguage

@@ -1,5 +1,5 @@
 import { CollectionConfig } from "payload/types";
-import { mustBeAdmin } from "../../accesses/mustBeAdmin";
+import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { CollectionGroups, Collections } from "../../constants";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { slugField } from "../../fields/slugField/slugField";

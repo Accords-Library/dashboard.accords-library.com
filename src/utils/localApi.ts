@@ -1,5 +1,6 @@
 import payload from "payload";
 import { Collections, KeysTypes } from "../constants";
+import { StrapiImage } from "../types/strapi";
 import { isDefined } from "./asserts";
 
 export const findWeaponType = async (name: string): Promise<string> => {
@@ -23,20 +24,10 @@ type UploadStrapiImage = {
   collection: Collections;
 };
 
-type StrapiImage = {
-  data?: {
-    attributes: {
-      url: string;
-      mime: string;
-      name: string;
-      size: number;
-    };
-  };
-};
 export const uploadStrapiImage = async ({
   collection,
   image,
-}: UploadStrapiImage): Promise<string> => {
+}: UploadStrapiImage): Promise<string | undefined> => {
   if (isDefined(image.data)) {
     const url = `${process.env.STRAPI_URI}${image.data.attributes.url}`;
 

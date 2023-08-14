@@ -6,8 +6,12 @@ export const beforeValidatePopulateNameField: FieldHook<
   ChronologyItem,
   ChronologyItem["name"],
   ChronologyItem
-> = ({ data: { date } }) => {
-  if (isUndefined(date?.year)) return "????-??-??";
+> = ({ data }) => {
+  if (isUndefined(data)) {
+    return "????-??-??";
+  }
+  const { date } = data;
+  if (isUndefined(date) || isUndefined(date?.year)) return "????-??-??";
   const { year, month, day } = date;
   let result = String(year).padStart(5, " ");
   if (isDefined(month)) {

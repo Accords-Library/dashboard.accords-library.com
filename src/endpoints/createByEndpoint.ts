@@ -1,11 +1,11 @@
 import payload from "payload";
-import { CollectionConfig } from "payload/types";
+import { CollectionEndpoint } from "../types/payload";
 
 export const createGetByEndpoint = <T, R>(
   collection: string,
   attribute: string,
   handler: (doc: T) => Promise<R>
-): CollectionConfig["endpoints"][number] => ({
+): CollectionEndpoint => ({
   path: `/${attribute}/:${attribute}`,
   method: "get",
   handler: async (req, res) => {

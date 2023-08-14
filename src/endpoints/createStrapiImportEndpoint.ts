@@ -1,9 +1,8 @@
 import payload from "payload";
-import { CollectionConfig } from "payload/types";
 import QueryString from "qs";
 import { Recorder } from "../types/collections";
+import { CollectionEndpoint, PayloadCreateData } from "../types/payload";
 import { isDefined } from "../utils/asserts";
-import { PayloadCreateData } from "../utils/types";
 
 export const getAllStrapiEntries = async <T>(
   collectionSlug: string,
@@ -31,26 +30,26 @@ export const getAllStrapiEntries = async <T>(
   return result;
 };
 
-type Params<T> = {
+type Params<T, S> = {
   strapi: {
     collection: string;
     params: any;
   };
   payload: {
     collection: string;
-    import?: (strapiObject: any, user: any) => Promise<void>;
-    convert?: (strapiObject: any, user: any) => PayloadCreateData<T>;
+    import?: (strapiObject: S, user: any) => Promise<void>;
+    convert?: (strapiObject: S, user: any) => PayloadCreateData<T>;
   };
 };
 
-export const importStrapiEntries = async <T>({
+export const importStrapiEntries = async <T, S>({
   strapi: strapiParams,
   payload: payloadParams,
   user,
-}: Params<T> & { user: Recorder }) => {
+}: Params<T, S> & { user: Recorder }) => {
   const entries = await getAllStrapiEntries<any>(strapiParams.collection, strapiParams.params);
 
-  const errors = [];
+  const errors: string[] = [];
 
   await Promise.all(
     entries.map(async ({ attributes, id }) => {
@@ -68,7 +67,9 @@ export const importStrapiEntries = async <T>({
         }
       } catch (e) {
         console.warn(e);
-        errors.push(`${e.name} with ${id}`);
+        if (typeof e === "object" && isDefined(e) && "name" in e) {
+          errors.push(`${e.name} with ${id}`);
+        }
       }
     })
   );
@@ -76,9 +77,7 @@ export const importStrapiEntries = async <T>({
   return { count: entries.length, errors };
 };
 
-export const createStrapiImportEndpoint = <T>(
-  params: Params<T>
-): CollectionConfig["endpoints"][number] => ({
+export const createStrapiImportEndpoint = <T, S>(params: Params<T, S>): CollectionEndpoint => ({
   method: "get",
   path: "/strapi",
   handler: async (req, res) => {

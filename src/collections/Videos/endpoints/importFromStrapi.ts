@@ -2,9 +2,26 @@ import payload from "payload";
 import { Collections } from "../../../constants";
 import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImportEndpoint";
 import { Video, VideosChannel } from "../../../types/collections";
-import { PayloadCreateData } from "../../../utils/types";
+import { PayloadCreateData } from "../../../types/payload";
+import { isUndefined } from "../../../utils/asserts";
 
-export const importFromStrapi = createStrapiImportEndpoint<Video>({
+type StapiVideo = {
+  uid: string;
+  title: string;
+  description: string;
+  published_date: {
+    year?: number;
+    month?: number;
+    day?: number;
+  };
+  views: number;
+  likes: number;
+  source?: "YouTube" | "NicoNico" | "Tumblr";
+  gone: boolean;
+  channel: { data?: { attributes: { uid: string; title: string; subscribers: number } } };
+};
+
+export const importFromStrapi = createStrapiImportEndpoint<Video, StapiVideo>({
   strapi: {
     collection: "videos",
     params: { populate: "published_date,channel" },
@@ -25,6 +42,9 @@ export const importFromStrapi = createStrapiImportEndpoint<Video>({
       },
       user
     ) => {
+      if (isUndefined(source)) throw new Error("A source is required to create a Video");
+      if (isUndefined(channel.data)) throw new Error("A channel is required to create a Video");
+
       try {
         const videoChannel: PayloadCreateData<VideosChannel> = {
           uid: channel.data.attributes.uid,

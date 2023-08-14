@@ -8,7 +8,6 @@ import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
 import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
 import { isDefined, isUndefined } from "../../utils/asserts";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
-import { removeTranslatorsForTranscripts } from "./hooks/beforeValidate";
 
 const fields = {
   slug: "slug",
@@ -56,9 +55,6 @@ export const Posts = buildVersionedCollectionConfig({
       ]),
     },
     preview: (doc) => `https://accords-library.com/news/${doc.slug}`,
-  },
-  hooks: {
-    beforeValidate: [removeTranslatorsForTranscripts],
   },
   fields: [
     {
@@ -110,6 +106,15 @@ export const Posts = buildVersionedCollectionConfig({
               type: "relationship",
               relationTo: Collections.Recorders,
               hasMany: true,
+              hooks: {
+                beforeChange: [
+                  ({ siblingData }) => {
+                    if (siblingData.language === siblingData.sourceLanguage) {
+                      delete siblingData.translators;
+                    }
+                  },
+                ],
+              },
               admin: {
                 condition: (_, siblingData) => {
                   if (

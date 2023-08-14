@@ -19,5 +19,5 @@ export const keysField = ({
   filterOptions: { type: { equals: getKeysTypesKey(relationTo) } },
 });
 
-const getKeysTypesKey = (keyType: KeysTypes): string =>
-  Object.entries(KeysTypes).find(([, value]) => value === keyType)[0];
+const getKeysTypesKey = (keyType: KeysTypes): string | undefined =>
+  Object.entries(KeysTypes).find(([, value]) => value === keyType)?.[0];

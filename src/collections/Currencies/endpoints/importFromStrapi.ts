@@ -2,7 +2,12 @@ import { Collections } from "../../../constants";
 import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImportEndpoint";
 import { Language } from "../../../types/collections";
 
-export const importFromStrapi = createStrapiImportEndpoint<Language>({
+type StrapiLanguage = {
+  code: string;
+  name: string;
+};
+
+export const importFromStrapi = createStrapiImportEndpoint<Language, StrapiLanguage>({
   strapi: {
     collection: "currencies",
     params: {},

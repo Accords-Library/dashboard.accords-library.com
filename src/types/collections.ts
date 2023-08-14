@@ -14,7 +14,7 @@ export type CategoryTranslations = {
 }[];
 export type RecorderBiographies = {
   language: string | Language;
-  biography?: string;
+  biography: string;
   id?: string;
 }[];
 export type ContentFoldersTranslation = {

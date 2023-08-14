@@ -30,7 +30,7 @@ export const backPropagationField = ({
     afterRead: [
       ...afterRead,
       async ({ data }) => {
-        if (isNotEmpty(data.id)) {
+        if (isNotEmpty(data?.id)) {
           const result = await payload.find({
             collection: params.relationTo,
             where: where(data),

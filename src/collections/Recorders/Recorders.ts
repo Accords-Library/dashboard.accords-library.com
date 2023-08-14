@@ -1,5 +1,6 @@
+import { mustBeAdmin as mustBeAdminForCollections } from "../../accesses/collections/mustBeAdmin";
 import { mustBeAdminOrSelf } from "../../accesses/collections/mustBeAdminOrSelf";
-import { mustBeAdmin } from "../../accesses/mustBeAdmin";
+import { mustBeAdmin as mustBeAdminForFields } from "../../accesses/fields/mustBeAdmin";
 import { QuickFilters } from "../../components/QuickFilters";
 import { CollectionGroups, Collections, RecordersRoles } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
@@ -55,7 +56,6 @@ export const Recorders = buildCollectionConfig({
                   label: "∅ Role",
                   filter: { where: { role: { not_in: Object.keys(RecordersRoles).join(",") } } },
                 },
-                ,
               ],
               [{ label: "Anonymized", filter: { where: { anonymize: { equals: true } } } }],
             ],
@@ -65,10 +65,10 @@ export const Recorders = buildCollectionConfig({
   },
   auth: true,
   access: {
-    unlock: mustBeAdmin,
+    unlock: mustBeAdminForCollections,
     update: mustBeAdminOrSelf,
-    delete: mustBeAdmin,
-    create: mustBeAdmin,
+    delete: mustBeAdminForCollections,
+    create: mustBeAdminForCollections,
   },
   hooks: {
     beforeLogin: [beforeLoginMustHaveAtLeastOneRole],
@@ -111,14 +111,14 @@ export const Recorders = buildCollectionConfig({
         description:
           "A short personal description about you or your involvement with this project or the franchise",
       },
-      fields: [{ name: fields.biography, type: "textarea" }],
+      fields: [{ name: fields.biography, required: true, type: "textarea" }],
     }),
     {
       name: fields.role,
       type: "select",
       access: {
-        update: mustBeAdmin,
-        create: mustBeAdmin,
+        update: mustBeAdminForFields,
+        create: mustBeAdminForFields,
       },
       hasMany: true,
       options: Object.entries(RecordersRoles).map(([value, label]) => ({

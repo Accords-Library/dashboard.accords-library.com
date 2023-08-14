@@ -1,11 +1,11 @@
 import payload from "payload";
-import { mustBeAdmin } from "../../accesses/mustBeAdmin";
+import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { QuickFilters } from "../../components/QuickFilters";
 import { CollectionGroups, Collections, KeysTypes, LanguageCodes } from "../../constants";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { Key } from "../../types/collections";
-import { isDefined } from "../../utils/asserts";
+import { isDefined, isUndefined } from "../../utils/asserts";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 
@@ -58,15 +58,15 @@ export const Keys = buildCollectionConfig({
   },
   hooks: {
     beforeValidate: [
-      async ({ data: { name, type } }) => {
+      async ({ data }) => {
+        if (isUndefined(data)) return;
+        const { name, type } = data;
         const result = await payload.find({
           collection: Collections.Keys,
           where: { name: { equals: name }, type: { equals: type } },
         });
         if (result.docs.length > 0) {
-          throw new Error(
-            `A Key of type "${KeysTypes[type]}" already exists with the name "${name}"`
-          );
+          throw new Error(`A Key of type "${type}" already exists with the name "${name}"`);
         }
       },
     ],

@@ -72,6 +72,7 @@ export const ChronologyItems: CollectionConfig = buildVersionedCollectionConfig(
         if (!DateTime.fromObject({ year, month, day }).isValid) {
           return `The given date (${stringDate}) is not a valid date.`;
         }
+        return true;
       },
       fields: [
         {

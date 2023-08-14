@@ -4,7 +4,8 @@ import path from "path";
 import payload from "payload";
 import { Collections, RecordersRoles } from "./constants";
 import { Recorder } from "./types/collections";
-import { PayloadCreateData } from "./utils/types";
+import { PayloadCreateData } from "./types/payload";
+import { isDefined, isUndefined } from "./utils/asserts";
 
 const app = express();
 
@@ -15,6 +16,15 @@ app.get("/", (_, res) => {
 
 const start = async () => {
   // Initialize Payload
+
+  if (isUndefined(process.env.PAYLOAD_SECRET)) {
+    throw new Error("Missing required env variable: PAYLOAD_SECRET");
+  }
+
+  if (isUndefined(process.env.MONGODB_URI)) {
+    throw new Error("Missing required env variable: MONGODB_URI");
+  }
+
   await payload.init({
     secret: process.env.PAYLOAD_SECRET,
     mongoURL: process.env.MONGODB_URI,
@@ -24,19 +34,26 @@ const start = async () => {
       const recorders = await payload.find({ collection: Collections.Recorders });
 
       // If no recorders, we seed some initial data
-      if (recorders.docs.length === 0) {
-        payload.logger.info("Seeding some initial data");
-        const recorder: PayloadCreateData<Recorder> = {
-          email: process.env.SEEDING_ADMIN_EMAIL,
-          password: process.env.SEEDING_ADMIN_PASSWORD,
-          username: process.env.SEEDING_ADMIN_USERNAME,
-          role: [RecordersRoles.Admin],
-          anonymize: false,
-        };
-        await payload.create({
-          collection: Collections.Recorders,
-          data: recorder,
-        });
+      if (
+        isDefined(process.env.SEEDING_ADMIN_EMAIL) &&
+        isDefined(process.env.SEEDING_ADMIN_PASSWORD) &&
+        isDefined(process.env.SEEDING_ADMIN_USERNAME)
+      ) {
+        if (recorders.docs.length === 0) {
+          payload.logger.info("Seeding some initial data");
+
+          const recorder: PayloadCreateData<Recorder> = {
+            email: process.env.SEEDING_ADMIN_EMAIL,
+            password: process.env.SEEDING_ADMIN_PASSWORD,
+            username: process.env.SEEDING_ADMIN_USERNAME,
+            role: [RecordersRoles.Admin],
+            anonymize: false,
+          };
+          await payload.create({
+            collection: Collections.Recorders,
+            data: recorder,
+          });
+        }
       }
     },
   });

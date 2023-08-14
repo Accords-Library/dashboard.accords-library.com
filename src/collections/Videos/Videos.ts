@@ -1,5 +1,5 @@
 import { CollectionConfig } from "payload/types";
-import { mustBeAdmin } from "../../accesses/mustBeAdmin";
+import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { CollectionGroups, Collections, VideoSources } from "../../constants";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { importFromStrapi } from "./endpoints/importFromStrapi";

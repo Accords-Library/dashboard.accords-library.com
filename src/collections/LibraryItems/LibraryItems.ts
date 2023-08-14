@@ -1,3 +1,4 @@
+import { RowLabelArgs } from "payload/dist/admin/components/forms/RowLabel/types";
 import {
   CollectionGroups,
   Collections,
@@ -18,7 +19,6 @@ import { LibraryItem } from "../../types/collections";
 import { isDefined } from "../../utils/asserts";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { RowLabel } from "./components/RowLabel";
-import { getBySlug } from "./endpoints/getBySlug";
 
 const fields = {
   status: "_status",
@@ -139,7 +139,6 @@ export const LibraryItems = buildVersionedCollectionConfig({
     },
     preview: (doc) => `https://accords-library.com/library/${doc.slug}`,
   },
-  endpoints: [getBySlug],
   fields: [
     {
       name: fields.itemType,
@@ -480,7 +479,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                       "Make sure the page number corresponds to the page number written on \
                   the scan. You can use negative page numbers if necessary.",
                     components: {
-                      RowLabel: ({ data }) => RowLabel(data),
+                      RowLabel: ({ data }: RowLabelArgs) => RowLabel(data),
                     },
                   },
                   fields: [

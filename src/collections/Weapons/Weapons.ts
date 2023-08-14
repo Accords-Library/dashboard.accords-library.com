@@ -1,3 +1,4 @@
+import { RowLabelArgs } from "payload/dist/admin/components/forms/RowLabel/types";
 import { CollectionGroups, Collections, KeysTypes } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
 import { keysField } from "../../fields/keysField/keysField";
@@ -78,7 +79,7 @@ export const Weapons = buildVersionedCollectionConfig({
       admin: {
         initCollapsed: true,
         components: {
-          RowLabel: ({ data }) =>
+          RowLabel: ({ data }: RowLabelArgs) =>
             AppearanceRowLabel({ keyIds: data[fields.appearancesCategories] ?? [] }),
         },
       },
