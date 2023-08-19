@@ -1,10 +1,13 @@
-import { CollectionGroups, Collections } from "../../constants";
+import { Collections } from "../../constants";
+import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { buildImageCollectionConfig } from "../../utils/imageCollectionConfig";
 
 const fields = {
   filename: "filename",
   mimeType: "mimeType",
   filesize: "filesize",
+  weapon: "weapon",
+  updatedAt: "updatedAt",
 } as const satisfies Record<string, string>;
 
 export const WeaponsThumbnails = buildImageCollectionConfig({
@@ -13,12 +16,7 @@ export const WeaponsThumbnails = buildImageCollectionConfig({
     singular: "Weapons Thumbnail",
     plural: "Weapons Thumbnails",
   },
-  defaultSort: fields.filename,
-  admin: {
-    useAsTitle: fields.filename,
-    disableDuplicate: true,
-    group: CollectionGroups.Media,
-  },
+  admin: { defaultColumns: [fields.filename, fields.weapon, fields.updatedAt] },
   upload: {
     imageSizes: [
       {
@@ -62,5 +60,12 @@ export const WeaponsThumbnails = buildImageCollectionConfig({
       },
     ],
   },
-  fields: [],
+  fields: [
+    backPropagationField({
+      name: fields.weapon,
+      hasMany: false,
+      relationTo: Collections.Weapons,
+      where: ({ id }) => ({ thumbnail: { equals: id } }),
+    }),
+  ],
 });

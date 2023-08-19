@@ -4,7 +4,7 @@ import { CollectionEndpoint } from "../types/payload";
 export const createGetByEndpoint = <T, R>(
   collection: string,
   attribute: string,
-  handler: (doc: T) => Promise<R>
+  handler: (doc: T) => Promise<R> | R = (doc) => doc as unknown as R
 ): CollectionEndpoint => ({
   path: `/${attribute}/:${attribute}`,
   method: "get",

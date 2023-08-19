@@ -1,9 +1,9 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
+import { Collections, VideoSources } from "../../../constants";
 import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImportEndpoint";
 import { Video, VideosChannel } from "../../../types/collections";
 import { PayloadCreateData } from "../../../types/payload";
-import { isUndefined } from "../../../utils/asserts";
+import { isDefined, isUndefined } from "../../../utils/asserts";
 
 type StapiVideo = {
   uid: string;
@@ -16,7 +16,7 @@ type StapiVideo = {
   };
   views: number;
   likes: number;
-  source?: "YouTube" | "NicoNico" | "Tumblr";
+  source?: VideoSources;
   gone: boolean;
   channel: { data?: { attributes: { uid: string; title: string; subscribers: number } } };
 };
@@ -43,31 +43,34 @@ export const importFromStrapi = createStrapiImportEndpoint<Video, StapiVideo>({
       user
     ) => {
       if (isUndefined(source)) throw new Error("A source is required to create a Video");
-      if (isUndefined(channel.data)) throw new Error("A channel is required to create a Video");
+      if (source === VideoSources.YouTube && isUndefined(channel.data))
+        throw new Error("A channel is required to create a YouTube Video");
 
-      try {
-        const videoChannel: PayloadCreateData<VideosChannel> = {
-          uid: channel.data.attributes.uid,
-          title: channel.data.attributes.title,
-          subscribers: channel.data.attributes.subscribers,
-        };
-        await payload.create({
+      let videoChannelId;
+      if (isDefined(channel.data)) {
+        try {
+          const videoChannel: PayloadCreateData<VideosChannel> = {
+            uid: channel.data.attributes.uid,
+            title: channel.data.attributes.title,
+            subscribers: channel.data.attributes.subscribers,
+          };
+          await payload.create({
+            collection: Collections.VideosChannels,
+            data: videoChannel,
+            user,
+          });
+        } catch (e) {}
+
+        const result = await payload.find({
           collection: Collections.VideosChannels,
-          data: videoChannel,
-          user,
+          where: { uid: { equals: channel.data.attributes.uid } },
         });
-      } catch (e) {}
 
-      const result = await payload.find({
-        collection: Collections.VideosChannels,
-        where: { uid: { equals: channel.data.attributes.uid } },
-      });
-
-      if (result.docs.length === 0) {
-        throw new Error("A video channel is required to create a video");
+        if (result.docs.length > 0) {
+          videoChannelId = result.docs[0].id;
+        }
       }
 
-      const videoChannel = result.docs[0] as VideosChannel;
       const video: PayloadCreateData<Video> = {
         uid,
         title,
@@ -77,7 +80,7 @@ export const importFromStrapi = createStrapiImportEndpoint<Video, StapiVideo>({
         gone,
         source,
         publishedDate: `${year}-${month}-${day}`,
-        channel: videoChannel.id,
+        channel: videoChannelId,
       };
 
       await payload.create({

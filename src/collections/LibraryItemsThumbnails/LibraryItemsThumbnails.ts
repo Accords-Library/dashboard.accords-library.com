@@ -1,10 +1,13 @@
-import { CollectionGroups, Collections } from "../../constants";
+import { Collections } from "../../constants";
+import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { buildImageCollectionConfig } from "../../utils/imageCollectionConfig";
 
 const fields = {
   filename: "filename",
   mimeType: "mimeType",
   filesize: "filesize",
+  libraryItem: "libraryItem",
+  updatedAt: "updatedAt",
 } as const satisfies Record<string, string>;
 
 export const LibraryItemsThumbnails = buildImageCollectionConfig({
@@ -13,12 +16,7 @@ export const LibraryItemsThumbnails = buildImageCollectionConfig({
     singular: "Library Item Thumbnail",
     plural: "Library Item Thumbnails",
   },
-  defaultSort: fields.filename,
-  admin: {
-    useAsTitle: fields.filename,
-    disableDuplicate: true,
-    group: CollectionGroups.Media,
-  },
+  admin: { defaultColumns: [fields.filename, fields.libraryItem, fields.updatedAt] },
   upload: {
     imageSizes: [
       {
@@ -51,5 +49,12 @@ export const LibraryItemsThumbnails = buildImageCollectionConfig({
       },
     ],
   },
-  fields: [],
+  fields: [
+    backPropagationField({
+      name: fields.libraryItem,
+      hasMany: true,
+      relationTo: Collections.LibraryItems,
+      where: ({ id }) => ({ thumbnail: { equals: id } }),
+    }),
+  ],
 });

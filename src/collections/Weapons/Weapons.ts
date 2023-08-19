@@ -1,5 +1,7 @@
 import { RowLabelArgs } from "payload/dist/admin/components/forms/RowLabel/types";
 import { CollectionGroups, Collections, KeysTypes } from "../../constants";
+import { createGetByEndpoint } from "../../endpoints/createGetByEndpoint";
+import { createGetSlugsEndpoint } from "../../endpoints/createGetSlugsEndpoint";
 import { imageField } from "../../fields/imageField/imageField";
 import { keysField } from "../../fields/keysField/keysField";
 import { slugField } from "../../fields/slugField/slugField";
@@ -32,8 +34,8 @@ export const Weapons = buildVersionedCollectionConfig({
   admin: {
     useAsTitle: fields.slug,
     defaultColumns: [
-      fields.slug,
       fields.thumbnail,
+      fields.slug,
       fields.group,
       fields.type,
       fields.appearances,
@@ -41,7 +43,11 @@ export const Weapons = buildVersionedCollectionConfig({
     ],
     group: CollectionGroups.Collections,
   },
-  endpoints: [importFromStrapi],
+  endpoints: [
+    importFromStrapi,
+    createGetSlugsEndpoint(Collections.Weapons),
+    createGetByEndpoint(Collections.Weapons, "slug"),
+  ],
   fields: [
     {
       type: "row",

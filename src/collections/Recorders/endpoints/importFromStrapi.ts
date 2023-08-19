@@ -4,7 +4,7 @@ import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImpor
 import { Recorder } from "../../../types/collections";
 import { PayloadCreateData } from "../../../types/payload";
 import { StrapiImage, StrapiLanguage } from "../../../types/strapi";
-import { isUndefined } from "../../../utils/asserts";
+import { isDefined, isUndefined } from "../../../utils/asserts";
 import { uploadStrapiImage } from "../../../utils/localApi";
 
 type StrapiRecorder = {
@@ -31,9 +31,7 @@ export const importFromStrapi = createStrapiImportEndpoint<Recorder, StrapiRecor
         image: avatar,
       });
 
-      const data: PayloadCreateData<Recorder> = {
-        email: `${anonymous_code}@accords-library.com`,
-        password: process.env.RECORDER_DEFAULT_PASSWORD,
+      const data: Omit<PayloadCreateData<Recorder>, "password" | "email"> = {
         username,
         anonymize,
         languages: languages.data?.map((language) => language.attributes.code),
@@ -49,7 +47,26 @@ export const importFromStrapi = createStrapiImportEndpoint<Recorder, StrapiRecor
         }),
       };
 
-      await payload.create({ collection: Collections.Recorders, data, user });
+      const recorder = (
+        await payload.find({
+          collection: Collections.Recorders,
+          where: { username: { equals: username } },
+        })
+      ).docs[0] as Recorder | undefined;
+
+      if (isDefined(recorder)) {
+        await payload.update({ collection: Collections.Recorders, id: recorder.id, data, user });
+      } else {
+        await payload.create({
+          collection: Collections.Recorders,
+          data: {
+            ...data,
+            email: `${anonymous_code}@accords-library.com`,
+            password: process.env.RECORDER_DEFAULT_PASSWORD,
+          },
+          user,
+        });
+      }
     },
   },
 });

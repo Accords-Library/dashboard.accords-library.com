@@ -79,6 +79,7 @@ export enum LibraryItemsTextualPageOrders {
 export enum RecordersRoles {
   Admin = "Admin",
   Recorder = "Recorder",
+  Api = "Api",
 }
 
 export enum CollectionStatus {

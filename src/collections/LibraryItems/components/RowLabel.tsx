@@ -1,7 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
 import { isDefined } from "../../../utils/asserts";
-import { formatLanguageCode, shortenEllipsis } from "../../../utils/string";
 
 interface Props {
   page?: number;

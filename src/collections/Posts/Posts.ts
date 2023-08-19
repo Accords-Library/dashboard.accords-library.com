@@ -37,7 +37,7 @@ export const Posts = buildVersionedCollectionConfig({
     description:
       "News articles written by our Recorders! Here you will find announcements about \
          new merch/items releases, guides, theories, unboxings, showcases...",
-    defaultColumns: [fields.slug, fields.thumbnail, fields.categories],
+    defaultColumns: [fields.thumbnail, fields.slug, fields.categories],
     group: CollectionGroups.Collections,
     components: {
       BeforeListTable: [

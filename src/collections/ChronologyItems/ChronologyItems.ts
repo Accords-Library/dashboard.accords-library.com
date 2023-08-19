@@ -1,4 +1,3 @@
-import { DateTime } from "luxon";
 import { CollectionConfig } from "payload/types";
 import {
   QuickFilters,
@@ -7,10 +6,12 @@ import {
 } from "../../components/QuickFilters";
 import { CollectionGroups, Collections } from "../../constants";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
-import { isEmpty, isUndefined } from "../../utils/asserts";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 import { beforeValidatePopulateNameField } from "./hooks/beforeValidatePopulateNameField";
+import { validateDate } from "./validations/validateDate";
+import { validateEventsTranslationsDescription } from "./validations/validateEventsTranslationsDescription";
+import { validateEventsTranslationsTitle } from "./validations/validateEventsTranslationsTitle";
 
 const fields = {
   name: "name",
@@ -65,15 +66,7 @@ export const ChronologyItems: CollectionConfig = buildVersionedCollectionConfig(
     {
       type: "group",
       name: fields.date,
-      validate: ({ year, month, day } = {}) => {
-        if (isUndefined(day)) return true;
-        if (isUndefined(month)) return "A month is required if a day is set";
-        const stringDate = `${year}/${month}/${day}`;
-        if (!DateTime.fromObject({ year, month, day }).isValid) {
-          return `The given date (${stringDate}) is not a valid date.`;
-        }
-        return true;
-      },
+      validate: validateDate,
       fields: [
         {
           type: "row",
@@ -116,22 +109,12 @@ export const ChronologyItems: CollectionConfig = buildVersionedCollectionConfig(
           fields: [
             {
               name: fields.eventsTranslationsTitle,
-              validate: (_, { siblingData: { description, title } }) => {
-                if (isEmpty(description) && isEmpty(title)) {
-                  return "This field is required if no description is set.";
-                }
-                return true;
-              },
+              validate: validateEventsTranslationsTitle,
               type: "text",
             },
             {
               name: fields.eventsTranslationsDescription,
-              validate: (_, { siblingData: { description, title } }) => {
-                if (isEmpty(description) && isEmpty(title)) {
-                  return "This field is required if no title is set.";
-                }
-                return true;
-              },
+              validate: validateEventsTranslationsDescription,
               type: "textarea",
             },
             { name: fields.eventsTranslationsNotes, type: "textarea" },

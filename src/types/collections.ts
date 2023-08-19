@@ -120,6 +120,11 @@ export interface LibraryItem {
   };
   audio?: {
     audioSubtype?: string[] | Key[];
+    tracks?: {
+      title: string;
+      file: string | File;
+      id?: string;
+    }[];
   };
   releaseDate?: string;
   categories?: string[] | Key[];
@@ -159,6 +164,7 @@ export interface LibraryItem {
 }
 export interface LibraryItemThumbnail {
   id: string;
+  libraryItem?: string[] | LibraryItem[];
   updatedAt: string;
   createdAt: string;
   url?: string;
@@ -304,6 +310,13 @@ export interface Language {
   id: string;
   name: string;
 }
+export interface File {
+  id: string;
+  filename: string;
+  type: "LibraryScans" | "LibrarySoundtracks" | "ContentVideo" | "ContentAudio";
+  updatedAt: string;
+  createdAt: string;
+}
 export interface Currency {
   id: string;
 }
@@ -337,6 +350,7 @@ export interface Content {
 }
 export interface ContentsThumbnail {
   id: string;
+  contents?: string[] | Content[];
   updatedAt: string;
   createdAt: string;
   url?: string;
@@ -370,6 +384,14 @@ export interface ContentsThumbnail {
       filesize?: number;
       filename?: string;
     };
+    max?: {
+      url?: string;
+      width?: number;
+      height?: number;
+      mimeType?: string;
+      filesize?: number;
+      filename?: string;
+    };
   };
 }
 export interface Recorder {
@@ -378,7 +400,7 @@ export interface Recorder {
   avatar?: string | RecordersThumbnail;
   languages?: string[] | Language[];
   biographies?: RecorderBiographies;
-  role?: ("Admin" | "Recorder")[];
+  role?: ("Admin" | "Recorder" | "Api")[];
   anonymize: boolean;
   email: string;
   resetPasswordToken?: string;
@@ -409,15 +431,7 @@ export interface RecordersThumbnail {
       filesize?: number;
       filename?: string;
     };
-    og?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
-    };
-    small?: {
+    square?: {
       url?: string;
       width?: number;
       height?: number;
@@ -614,13 +628,6 @@ export interface Tabs_Tab_Section_Section_Section_Section {
   blockName?: string;
   blockType: "section";
 }
-export interface File {
-  id: string;
-  filename: string;
-  type: "LibraryScans" | "LibrarySoundtracks" | "ContentVideo" | "ContentAudio";
-  updatedAt: string;
-  createdAt: string;
-}
 export interface ContentsFolder {
   id: string;
   slug: string;
@@ -671,6 +678,7 @@ export interface Post {
 }
 export interface PostThumbnail {
   id: string;
+  posts?: string[] | Post[];
   updatedAt: string;
   createdAt: string;
   url?: string;
@@ -788,6 +796,7 @@ export interface Weapon {
 }
 export interface WeaponsThumbnail {
   id: string;
+  weapon?: string | Weapon;
   updatedAt: string;
   createdAt: string;
   url?: string;
@@ -859,7 +868,7 @@ export interface Video {
   likes?: number;
   views?: number;
   publishedDate: string;
-  channel: string | VideosChannel;
+  channel?: string | VideosChannel;
 }
 export interface VideosChannel {
   id: string;

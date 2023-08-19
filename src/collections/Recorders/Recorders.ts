@@ -32,8 +32,8 @@ export const Recorders = buildCollectionConfig({
       "Recorders are contributors of the Accord's Library project. Ask an admin to create a \
       Recorder here to be able to credit them in other collections.",
     defaultColumns: [
-      fields.username,
       fields.avatar,
+      fields.username,
       fields.anonymize,
       fields.biographies,
       fields.languages,

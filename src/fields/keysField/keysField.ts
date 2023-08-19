@@ -4,7 +4,7 @@ import { Collections, KeysTypes } from "../../constants";
 type KeysField = FieldBase & {
   relationTo: KeysTypes;
   hasMany?: boolean;
-  admin: RelationshipField["admin"];
+  admin?: RelationshipField["admin"];
 };
 
 export const keysField = ({

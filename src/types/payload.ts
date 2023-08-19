@@ -1,4 +1,4 @@
-import { CollectionConfig } from "payload/types";
+import { CollectionConfig, PayloadRequest } from "payload/types";
 
 export type PayloadCreateData<T> = Omit<
   T,
@@ -6,3 +6,5 @@ export type PayloadCreateData<T> = Omit<
 >;
 
 export type CollectionEndpoint = NonNullable<CollectionConfig["endpoints"]>[number];
+
+export type EndpointAccess<U> = (req: PayloadRequest<U>) => boolean;

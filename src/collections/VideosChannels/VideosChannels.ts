@@ -2,7 +2,6 @@ import { CollectionConfig } from "payload/types";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { CollectionGroups, Collections } from "../../constants";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
-import { importFromStrapi } from "./endpoints/importFromStrapi";
 
 const fields = {
   uid: "uid",
@@ -28,7 +27,6 @@ export const VideosChannels: CollectionConfig = buildCollectionConfig({
     create: mustBeAdmin,
     delete: mustBeAdmin,
   },
-  endpoints: [importFromStrapi],
   timestamps: false,
   fields: [
     { name: fields.uid, type: "text", required: true, unique: true },

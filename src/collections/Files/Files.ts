@@ -1,5 +1,10 @@
 import { CollectionGroups, Collections, FileTypes } from "../../constants";
+import { File } from "../../types/collections";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
+import {
+  beforeValidateCheckFileExists,
+  generatePathForFile,
+} from "./hooks/beforeValidateCheckFileExists";
 
 const fields = {
   filename: "filename",
@@ -17,6 +22,13 @@ export const Files = buildCollectionConfig({
     useAsTitle: fields.filename,
     disableDuplicate: true,
     group: CollectionGroups.Media,
+    preview: (doc) => {
+      const { filename, type } = doc as unknown as File;
+      return generatePathForFile(type, filename);
+    },
+  },
+  hooks: {
+    beforeValidate: [beforeValidateCheckFileExists],
   },
   fields: [
     {

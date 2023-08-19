@@ -46,8 +46,8 @@ export const Contents = buildVersionedCollectionConfig({
     description:
       "All the contents (textual, audio, and video) from the Library or other online sources.",
     defaultColumns: [
-      fields.slug,
       fields.thumbnail,
+      fields.slug,
       fields.categories,
       fields.type,
       fields.translations,
@@ -175,7 +175,7 @@ export const Contents = buildVersionedCollectionConfig({
                   fields: [
                     fileField({
                       name: fields.video,
-                      filterOptions: { type: { equals: FileTypes.ContentVideo } },
+                      relationTo: FileTypes.ContentVideo,
                       admin: { width: "50%" },
                     }),
                     {
@@ -196,7 +196,7 @@ export const Contents = buildVersionedCollectionConfig({
                   fields: [
                     fileField({
                       name: fields.audio,
-                      filterOptions: { type: { equals: FileTypes.ContentAudio } },
+                      relationTo: FileTypes.ContentAudio,
                       admin: { width: "50%" },
                     }),
                     {

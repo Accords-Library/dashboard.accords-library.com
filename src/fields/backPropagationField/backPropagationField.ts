@@ -40,7 +40,7 @@ export const backPropagationField = ({
           if (hasMany) {
             return result.docs.map((doc) => doc.id);
           } else {
-            return result.docs[0].id;
+            return result.docs[0]?.id;
           }
         }
         return hasMany ? [] : undefined;

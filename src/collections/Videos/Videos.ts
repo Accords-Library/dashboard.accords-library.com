@@ -94,7 +94,6 @@ export const Videos: CollectionConfig = buildCollectionConfig({
       name: fields.channel,
       type: "relationship",
       relationTo: Collections.VideosChannels,
-      required: true,
       admin: { position: "sidebar" },
     },
   ],

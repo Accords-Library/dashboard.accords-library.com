@@ -1,10 +1,11 @@
-import { CollectionGroups, Collections } from "../../constants";
+import { Collections } from "../../constants";
 import { buildImageCollectionConfig } from "../../utils/imageCollectionConfig";
 
 const fields = {
   filename: "filename",
   mimeType: "mimeType",
   filesize: "filesize",
+  updatedAt: "updatedAt",
 } as const satisfies Record<string, string>;
 
 export const LibraryItemsGallery = buildImageCollectionConfig({
@@ -13,12 +14,7 @@ export const LibraryItemsGallery = buildImageCollectionConfig({
     singular: "Library Item Gallery",
     plural: "Library Item Gallery",
   },
-  defaultSort: fields.filename,
-  admin: {
-    useAsTitle: fields.filename,
-    disableDuplicate: true,
-    group: CollectionGroups.Media,
-  },
+  admin: { defaultColumns: [fields.filename, fields.updatedAt] },
   upload: {
     imageSizes: [
       {

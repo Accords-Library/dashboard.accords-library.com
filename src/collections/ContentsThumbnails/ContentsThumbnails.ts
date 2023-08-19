@@ -1,10 +1,13 @@
-import { CollectionGroups, Collections } from "../../constants";
+import { Collections } from "../../constants";
+import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { buildImageCollectionConfig } from "../../utils/imageCollectionConfig";
 
 const fields = {
   filename: "filename",
   mimeType: "mimeType",
   filesize: "filesize",
+  contents: "contents",
+  updatedAt: "updatedAt",
 } as const satisfies Record<string, string>;
 
 export const ContentsThumbnails = buildImageCollectionConfig({
@@ -13,12 +16,7 @@ export const ContentsThumbnails = buildImageCollectionConfig({
     singular: "Contents Thumbnail",
     plural: "Contents Thumbnails",
   },
-  defaultSort: fields.filename,
-  admin: {
-    useAsTitle: fields.filename,
-    disableDuplicate: true,
-    group: CollectionGroups.Media,
-  },
+  admin: { defaultColumns: [fields.filename, fields.contents, fields.updatedAt] },
   upload: {
     imageSizes: [
       {
@@ -39,7 +37,21 @@ export const ContentsThumbnails = buildImageCollectionConfig({
           options: { effort: 6, quality: 80, alphaQuality: 80 },
         },
       },
+      {
+        name: "max",
+        formatOptions: {
+          format: "webp",
+          options: { effort: 6, quality: 80, alphaQuality: 80 },
+        },
+      },
     ],
   },
-  fields: [],
+  fields: [
+    backPropagationField({
+      name: fields.contents,
+      hasMany: true,
+      relationTo: Collections.Contents,
+      where: ({ id }) => ({ thumbnail: { equals: id } }),
+    }),
+  ],
 });

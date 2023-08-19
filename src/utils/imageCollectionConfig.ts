@@ -1,5 +1,8 @@
 import { ImageSize } from "payload/dist/uploads/types";
 import { CollectionConfig } from "payload/types";
+import { UploadsGridView } from "../components/UploadsGridView/UploadsGridView";
+import { CollectionGroups } from "../constants";
+import { createImageRegenerationEndpoint } from "../endpoints/createImageRegenerationEndpoint";
 import { BuildCollectionConfig, buildCollectionConfig } from "./collectionConfig";
 
 type BuildImageCollectionConfig = Omit<BuildCollectionConfig, "upload"> & {
@@ -7,11 +10,21 @@ type BuildImageCollectionConfig = Omit<BuildCollectionConfig, "upload"> & {
 };
 
 export const buildImageCollectionConfig = ({
+  admin,
   upload: { imageSizes },
   ...otherConfig
 }: BuildImageCollectionConfig): CollectionConfig =>
   buildCollectionConfig({
     ...otherConfig,
+    defaultSort: "-updatedAt",
+    admin: {
+      disableDuplicate: true,
+      useAsTitle: "filename",
+      group: CollectionGroups.Media,
+      components: { views: { List: UploadsGridView } },
+      ...admin,
+    },
+    endpoints: [createImageRegenerationEndpoint(otherConfig.slug)],
     upload: {
       staticDir: `../uploads/${otherConfig.slug}`,
       mimeTypes: ["image/*"],

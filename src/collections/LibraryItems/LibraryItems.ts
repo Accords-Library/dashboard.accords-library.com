@@ -2,11 +2,13 @@ import { RowLabelArgs } from "payload/dist/admin/components/forms/RowLabel/types
 import {
   CollectionGroups,
   Collections,
+  FileTypes,
   KeysTypes,
   LibraryItemsTextualBindingTypes,
   LibraryItemsTextualPageOrders,
   LibraryItemsTypes,
 } from "../../constants";
+import { fileField } from "../../fields/fileField/fileField";
 import { imageField } from "../../fields/imageField/imageField";
 import { keysField } from "../../fields/keysField/keysField";
 import { optionalGroupField } from "../../fields/optionalGroupField/optionalGroupField";
@@ -66,6 +68,9 @@ const fields = {
 
   audio: "audio",
   audioSubtype: "audioSubtype",
+  audioTracks: "tracks",
+  audioTracksFile: "file",
+  audioTracksTitle: "title",
 
   scans: "scans",
 
@@ -129,7 +134,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
     description:
       "A comprehensive list of all Yokoverse’s side materials (books, novellas, artbooks, \
          stage plays, manga, drama CDs, and comics).",
-    defaultColumns: [fields.slug, fields.thumbnail, fields.status],
+    defaultColumns: [fields.thumbnail, fields.slug, fields.status],
     group: CollectionGroups.Collections,
     hooks: {
       beforeDuplicate: beforeDuplicatePiping([
@@ -594,6 +599,29 @@ export const LibraryItems = buildVersionedCollectionConfig({
                       hasMany: true,
                       admin: { allowCreate: false, width: "50%" },
                     }),
+                  ],
+                },
+                {
+                  name: fields.audioTracks,
+                  type: "array",
+                  fields: [
+                    {
+                      type: "row",
+                      fields: [
+                        {
+                          name: fields.audioTracksTitle,
+                          type: "text",
+                          required: true,
+                          admin: { width: "50%" },
+                        },
+                        fileField({
+                          name: fields.audioTracksFile,
+                          relationTo: FileTypes.LibrarySoundtracks,
+                          required: true,
+                          admin: { width: "50%" },
+                        }),
+                      ],
+                    },
                   ],
                 },
               ],
