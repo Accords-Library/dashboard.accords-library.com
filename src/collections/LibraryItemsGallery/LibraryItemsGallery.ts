@@ -27,13 +27,6 @@ export const LibraryItemsGallery = buildImageCollectionConfig({
           options: { effort: 6, quality: 60, alphaQuality: 60 },
         },
       },
-      {
-        name: "max",
-        formatOptions: {
-          format: "webp",
-          options: { effort: 6, quality: 80, alphaQuality: 80 },
-        },
-      },
     ],
   },
   fields: [],

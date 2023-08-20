@@ -37,13 +37,6 @@ export const ContentsThumbnails = buildImageCollectionConfig({
           options: { effort: 6, quality: 80, alphaQuality: 80 },
         },
       },
-      {
-        name: "max",
-        formatOptions: {
-          format: "webp",
-          options: { effort: 6, quality: 80, alphaQuality: 80 },
-        },
-      },
     ],
   },
   fields: [

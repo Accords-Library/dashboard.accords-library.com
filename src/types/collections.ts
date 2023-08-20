@@ -198,14 +198,6 @@ export interface LibraryItemThumbnail {
       filesize?: number;
       filename?: string;
     };
-    max?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
-    };
   };
 }
 export interface LibraryItemGallery {
@@ -228,14 +220,6 @@ export interface LibraryItemGallery {
       filename?: string;
     };
     small?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
-    };
-    max?: {
       url?: string;
       width?: number;
       height?: number;
@@ -377,14 +361,6 @@ export interface ContentsThumbnail {
       filename?: string;
     };
     medium?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
-    };
-    max?: {
       url?: string;
       width?: number;
       height?: number;
@@ -831,14 +807,6 @@ export interface WeaponsThumbnail {
       filename?: string;
     };
     medium?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
-    };
-    max?: {
       url?: string;
       width?: number;
       height?: number;
