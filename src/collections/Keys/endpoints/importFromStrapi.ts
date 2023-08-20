@@ -53,7 +53,7 @@ const importStrapiWordings: typeof importStrapiEntries = async ({
 };
 
 export const importFromStrapi: CollectionEndpoint = {
-  method: "get",
+  method: "post",
   path: "/strapi",
   handler: async (req, res) => {
     if (!req.user) {

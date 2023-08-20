@@ -19,7 +19,7 @@ export const getAllStrapiEntries = async <T>(
     });
     const uri = `${process.env.STRAPI_URI}/api/${collectionSlug}?${paramsWithPagination}`;
     const fetchResult = await fetch(uri, {
-      method: "GET",
+      method: "get",
       headers: { authorization: `Bearer ${process.env.STRAPI_TOKEN}` },
     });
     const { data, meta } = await fetchResult.json();
@@ -78,7 +78,7 @@ export const importStrapiEntries = async <T, S>({
 };
 
 export const createStrapiImportEndpoint = <T, S>(params: Params<T, S>): CollectionEndpoint => ({
-  method: "get",
+  method: "post",
   path: "/strapi",
   handler: async (req, res) => {
     if (!req.user) {

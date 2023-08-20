@@ -30,7 +30,7 @@ export const beforeValidateCheckFileExists: CollectionBeforeValidateHook<File> =
 
   const url = generatePathForFile(type, filename);
 
-  const result = await fetch(url, { method: "HEAD" });
+  const result = await fetch(url, { method: "head" });
 
   if (result.status !== 200) {
     throw new Error(`Unable to locate the file at the following address: ${url}`);

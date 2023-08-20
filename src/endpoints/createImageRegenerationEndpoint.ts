@@ -10,7 +10,7 @@ type Image = {
 };
 
 export const createImageRegenerationEndpoint = (collection: Collections): CollectionEndpoint => ({
-  method: "get",
+  method: "put",
   path: "/regenerate",
   handler: async (req, res) => {
     if (!mustBeAdmin(req)) {
