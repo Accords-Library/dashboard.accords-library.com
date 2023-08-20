@@ -1,9 +1,7 @@
-import { cueBlock } from "./cueBlock";
+import { BlocksConfig, generateBlocks } from "../../../utils/recursiveBlocks";
+import { quoteBlock } from "./quoteBlock";
 import { textBlock } from "./textBlock";
 import { transcriptBlock } from "./transcriptBlock";
-import { lineBlock } from "./lineBlock";
-import { quoteBlock } from "./quoteBlock";
-import { BlocksConfig, generateBlocks } from "../../../utils/recursiveBlocks";
 
 const enum BlockName {
   Text = "Text",
@@ -11,8 +9,6 @@ const enum BlockName {
   Tabs = "Tabs",
   Tab = "Tab",
   Transcript = "Transcript",
-  Line = "Line",
-  Cue = "Cue",
   Quote = "Quote",
 }
 
@@ -75,14 +71,6 @@ const blocksConfig: BlocksConfig<BlockName> = {
   Transcript: {
     root: true,
     block: transcriptBlock,
-  },
-  Cue: {
-    root: false,
-    block: cueBlock,
-  },
-  Line: {
-    root: false,
-    block: lineBlock,
   },
   Quote: {
     root: true,
