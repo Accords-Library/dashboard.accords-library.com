@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import { readFileSync } from "fs";
 import path from "path";
 import payload from "payload";
 import { Collections, RecordersRoles } from "./constants";
@@ -46,7 +47,7 @@ const start = async () => {
             email: process.env.SEEDING_ADMIN_EMAIL,
             password: process.env.SEEDING_ADMIN_PASSWORD,
             username: process.env.SEEDING_ADMIN_USERNAME,
-            role: [RecordersRoles.Admin],
+            role: [RecordersRoles.Admin, RecordersRoles.Api],
             anonymize: false,
           };
           await payload.create({
@@ -60,6 +61,22 @@ const start = async () => {
 
   // Add your own express routes here
   app.use("/public", express.static(path.join(__dirname, "../public")));
+
+  app.get("/api/sdk", (_, res) => {
+    const collections = readFileSync(path.join(__dirname, "types/collections.ts"), "utf-8");
+
+    const constantsHeader = "/////////////// CONSTANTS ///////////////\n";
+    const constants = readFileSync(path.join(__dirname, "constants.ts"), "utf-8");
+
+    const sdkHeader = "////////////////// SDK //////////////////\n";
+    const sdkLines = readFileSync(path.join(__dirname, "sdk.ts"), "utf-8").split("\n");
+    const endMockingLine = sdkLines.findIndex((line) => line === "// END MOCKING SECTION") ?? 0;
+    const sdk =
+      `import NodeCache from "node-cache";\n\n` + sdkLines.slice(endMockingLine + 1).join("\n");
+
+    res.type("text/plain");
+    res.send([collections, constantsHeader, constants, sdkHeader, sdk].join("\n\n"));
+  });
 
   app.get("/robots.txt", (_, res) => {
     res.type("text/plain");
