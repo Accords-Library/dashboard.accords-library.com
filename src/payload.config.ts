@@ -25,6 +25,7 @@ import { WeaponsThumbnails } from "./collections/WeaponsThumbnails/WeaponsThumbn
 import { Icon } from "./components/Icon";
 import { Logo } from "./components/Logo";
 import { Collections } from "./constants";
+import { gridViewPlugin } from "./plugins/payload-grid-view";
 
 export default buildConfig({
   serverURL: process.env.PAYLOAD_URI,
@@ -70,4 +71,5 @@ export default buildConfig({
   graphQL: {
     disable: true,
   },
+  plugins: [gridViewPlugin],
 });

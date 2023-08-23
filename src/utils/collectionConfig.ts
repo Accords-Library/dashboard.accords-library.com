@@ -1,7 +1,13 @@
 import { CollectionConfig } from "payload/types";
 import { Collections } from "../constants";
+import { CollectionConfigWithGridView } from "../plugins/payload-grid-view";
 
-export type BuildCollectionConfig = Omit<CollectionConfig, "slug" | "typescript" | "labels"> & {
+type CollectionConfigWithPlugins = CollectionConfig & CollectionConfigWithGridView;
+
+export type BuildCollectionConfig = Omit<
+  CollectionConfigWithPlugins,
+  "slug" | "typescript" | "labels"
+> & {
   slug: Collections;
   labels: { singular: string; plural: string };
 };
