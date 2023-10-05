@@ -1,7 +1,7 @@
 import { Plugin } from "payload/config";
 import { CollectionAdminOptions } from "payload/dist/collections/config/types";
 import { CollectionConfig } from "payload/types";
-import { UploadsGridView, UploadsGridViewOptions } from "./components/UploadsGridView/UploadsGridView";
+import { DefaultList, UploadsGridViewOptions } from "./components/List";
 
 type Components = Required<CollectionAdminOptions>["components"];
 type ViewsComponents = Required<Required<CollectionAdminOptions>["components"]>["views"];
@@ -15,7 +15,7 @@ export type CollectionConfigWithGridView = CollectionConfig & {
   custom?: { gridView?: UploadsGridViewOptions };
 };
 
-export const gridViewPlugin: Plugin = ({ collections, ...others }) => ({
+export const payloadGridView: Plugin = ({ collections, ...others }) => ({
   collections: collections?.map(handleCollection),
   ...others,
 });
@@ -49,5 +49,5 @@ const handleViewsComponents = (
   { isUploadEnabled, gridView }: Options
 ): ViewsComponents => ({
   ...others,
-  List: isUploadEnabled ? UploadsGridView(gridView) : List,
+  List: isUploadEnabled ? DefaultList(gridView) : List,
 });

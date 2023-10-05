@@ -21,8 +21,8 @@ import formatFilesize from "payload/dist/uploads/formatFilesize";
 import { getTranslation } from "payload/dist/utilities/getTranslation";
 import React, { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Grid from "./Grid";
-import ListControls, { ViewMode } from "./ListControls";
+import Grid from "../Grid";
+import ListControls, { ViewMode } from "../ListControls";
 
 const baseClass = "collection-list";
 
@@ -31,7 +31,7 @@ export type UploadsGridViewOptions = {
   grid?: boolean;
 };
 
-export const UploadsGridView =
+export const DefaultList =
   (options: UploadsGridViewOptions) =>
   (props: Props): JSX.Element => {
     const {

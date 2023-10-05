@@ -19,6 +19,8 @@ const fields = {
 
 const keysTypesWithShort: (keyof typeof KeysTypes)[] = ["Categories", "GamePlatforms"];
 
+// TODO: Maybe make sure there is at least one English translation as a fallback
+
 export const Keys = buildCollectionConfig({
   slug: Collections.Keys,
   labels: {

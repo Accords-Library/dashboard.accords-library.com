@@ -1,5 +1,4 @@
 import { Collections } from "./constants";
-import { WeaponsThumbnail } from "./types/collections";
 
 class NodeCache {
   constructor(_params: any) {}
@@ -118,7 +117,20 @@ export type EndpointBasicWeapon = {
   type: string;
   categories: string[];
   translations: { language: string; name: string; aliases: string[] }[];
-  thumbnail?: WeaponsThumbnail;
+  images?: {
+    previewCard: PayloadImage;
+    thumbnailHeader: PayloadImage;
+    lightBox: PayloadImage;
+    openGraph: PayloadImage;
+  };
+};
+
+export type PayloadImage = {
+  url: string;
+  width: number;
+  height: number;
+  mimeType: string;
+  filename: string;
 };
 
 export const payload = {

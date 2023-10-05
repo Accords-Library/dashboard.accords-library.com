@@ -21,25 +21,25 @@
     "start": "sudo docker compose up"
   },
   "dependencies": {
-    "@fontsource/vollkorn": "^5.0.9",
+    "@fontsource/vollkorn": "^5.0.12",
     "clean-deep": "^3.4.0",
     "cross-env": "^7.0.3",
     "language-tags": "^1.0.9",
-    "luxon": "^3.4.0",
-    "payload": "^1.14.0",
-    "styled-components": "^6.0.7"
+    "luxon": "^3.4.3",
+    "payload": "^1.15.6",
+    "styled-components": "^6.0.8"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
-    "@types/express": "^4.17.17",
-    "@types/language-tags": "^1.0.1",
-    "@types/luxon": "^3.3.1",
-    "@types/qs": "^6.9.7",
+    "@types/express": "^4.17.18",
+    "@types/language-tags": "^1.0.2",
+    "@types/luxon": "^3.3.2",
+    "@types/qs": "^6.9.8",
     "@types/react-router-dom": "^5.3.3",
     "copyfiles": "^2.4.1",
     "nodemon": "^3.0.1",
-    "prettier": "^3.0.2",
+    "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
-    "typescript": "^5.1.6"
+    "typescript": "^5.2.2"
   }
 }

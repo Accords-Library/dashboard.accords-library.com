@@ -1,5 +1,6 @@
 import { ImageSize } from "payload/dist/uploads/types";
 import { CollectionConfig } from "payload/types";
+import { publicAccess } from "../accesses/publicAccess";
 import { CollectionGroups } from "../constants";
 import { createImageRegenerationEndpoint } from "../endpoints/createImageRegenerationEndpoint";
 import { BuildCollectionConfig, buildCollectionConfig } from "./collectionConfig";
@@ -21,6 +22,9 @@ export const buildImageCollectionConfig = ({
       useAsTitle: "filename",
       group: CollectionGroups.Media,
       ...admin,
+    },
+    access: {
+      read: publicAccess,
     },
     endpoints: [createImageRegenerationEndpoint(otherConfig.slug)],
     upload: {

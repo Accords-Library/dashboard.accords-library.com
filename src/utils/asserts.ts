@@ -1,3 +1,5 @@
+import { PayloadImage } from "../sdk";
+
 export const isDefined = <T>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined;
 
@@ -24,3 +26,15 @@ export const hasNoIntersection = (a: Span, b: Span): boolean => {
 export const hasIntersection = (a: Span, b: Span): boolean => !hasNoIntersection(a, b);
 
 export const hasDuplicates = <T>(list: T[]): boolean => list.length !== new Set(list).size;
+
+export const isValidPayloadImage = (
+  image: Partial<PayloadImage> | undefined
+): image is PayloadImage => {
+  if (isUndefined(image)) return false;
+  if (isEmpty(image.filename)) return false;
+  if (isEmpty(image.url)) return false;
+  if (isEmpty(image.mimeType)) return false;
+  if (isUndefined(image.width)) return false;
+  if (isUndefined(image.height)) return false;
+  return true;
+};

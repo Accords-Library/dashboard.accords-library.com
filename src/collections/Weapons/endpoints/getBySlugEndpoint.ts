@@ -1,8 +1,8 @@
 import { Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointBasicWeapon, EndpointWeapon } from "../../../sdk";
+import { EndpointBasicWeapon, EndpointWeapon, PayloadImage } from "../../../sdk";
 import { Key, Language, Recorder, Weapon, WeaponsThumbnail } from "../../../types/collections";
-import { isDefined, isUndefined } from "../../../utils/asserts";
+import { isDefined, isUndefined, isValidPayloadImage } from "../../../utils/asserts";
 
 export const getBySlugEndpoint = createGetByEndpoint(
   Collections.Weapons,
@@ -78,9 +78,29 @@ const getThumbnail = (thumbnail?: string | WeaponsThumbnail): WeaponsThumbnail |
   return thumbnail;
 };
 
+const getPayloadImage = (
+  image: Partial<PayloadImage> | undefined,
+  fallback: PayloadImage
+): PayloadImage =>
+  isValidPayloadImage(image)
+    ? {
+        filename: image.filename,
+        height: image.height,
+        mimeType: image.mimeType,
+        width: image.width,
+        url: image.url,
+      }
+    : {
+        filename: fallback.filename,
+        height: fallback.height,
+        mimeType: fallback.mimeType,
+        width: fallback.width,
+        url: fallback.url,
+      };
+
 const convertWeaponToEndpointBasicWeapon = ({
   slug,
-  thumbnail,
+  thumbnail: rawThumbnail,
   type,
   appearances,
 }: Weapon): EndpointBasicWeapon => {
@@ -114,9 +134,20 @@ const convertWeaponToEndpointBasicWeapon = ({
     }
   );
 
+  const thumbnail = getThumbnail(rawThumbnail);
+  const images: EndpointBasicWeapon["images"] =
+    isValidPayloadImage(thumbnail) && isDefined(thumbnail.sizes)
+      ? {
+          openGraph: getPayloadImage(thumbnail.sizes.og, thumbnail),
+          previewCard: getPayloadImage(thumbnail.sizes.small, thumbnail),
+          thumbnailHeader: getPayloadImage(thumbnail.sizes.medium, thumbnail),
+          lightBox: getPayloadImage(thumbnail, thumbnail),
+        }
+      : undefined;
+
   return {
     slug,
-    thumbnail: getThumbnail(thumbnail),
+    images,
     type: getKeyId(type),
     categories: [...categories.values()],
     translations,
