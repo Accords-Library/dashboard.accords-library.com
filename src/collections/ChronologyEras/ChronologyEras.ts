@@ -5,6 +5,7 @@ import { backPropagationField } from "../../fields/backPropagationField/backProp
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 import { beforeValidateEndingGreaterThanStarting } from "./hooks/beforeValidateEndingGreaterThanStarting";
 import { beforeValidateNoIntersection } from "./hooks/beforeValidateNoIntersection";
@@ -38,7 +39,7 @@ export const ChronologyEras: CollectionConfig = buildCollectionConfig({
   hooks: {
     beforeValidate: [beforeValidateEndingGreaterThanStarting, beforeValidateNoIntersection],
   },
-  endpoints: [importFromStrapi],
+  endpoints: [importFromStrapi, getAllEndpoint],
   fields: [
     slugField({ name: fields.slug }),
     {

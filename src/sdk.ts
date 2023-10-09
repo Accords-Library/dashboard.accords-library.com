@@ -125,6 +125,39 @@ export type EndpointBasicWeapon = {
   };
 };
 
+export type EndpointEra = {
+  slug: string;
+  startingYear: number;
+  endingYear: number;
+  translations: {
+    language: string;
+    title: string;
+    description?: string;
+  }[];
+  items: {
+    date: {
+      year: number;
+      month?: number;
+      day?: number;
+    };
+    events: {
+      translations: {
+        language: string;
+        sourceLanguage: string;
+        title?: string;
+        description?: string;
+        notes?: string;
+        transcribers: string[];
+        translators: string[];
+        proofreaders: string[];
+      }[];
+    }[];
+    createdAt: Date;
+    updatedAt: Date;
+    updatedBy: string;
+  }[];
+};
+
 export type PayloadImage = {
   url: string;
   width: number;
@@ -138,4 +171,6 @@ export const payload = {
     await (await request(payloadApiUrl(Collections.Weapons, "slugs"))).json(),
   getWeapon: async (slug: string): Promise<EndpointWeapon> =>
     await (await request(payloadApiUrl(Collections.Weapons, `slug/${slug}`))).json(),
+  getEras: async (): Promise<EndpointEra[]> =>
+    await (await request(payloadApiUrl(Collections.ChronologyEras, `all`))).json(),
 };

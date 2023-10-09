@@ -38,3 +38,12 @@ export const isValidPayloadImage = (
   if (isUndefined(image.height)) return false;
   return true;
 };
+
+export const isString = <T extends Object>(value: string | T): value is string =>
+  typeof value === "string";
+
+export const isPayloadType = <T extends Object>(value: string | T): value is T =>
+  typeof value === "object";
+
+export const isPayloadArrayType = <T extends Object>(value: string[] | T[]): value is T[] =>
+  value.every(isPayloadType<T>);
