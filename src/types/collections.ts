@@ -694,22 +694,22 @@ declare module 'payload' {
     collections: {
       'library-items': LibraryItem
       'contents': Content
-      'contents-folders': Contents Folder
+      'contents-folders': ContentsFolder
       'posts': Post
       'chronology-items': ChronologyItem
-      'chronology-eras': Chronology Era
+      'chronology-eras': ChronologyEra
       'weapons': Weapon
-      'weapons-groups': Weapons Group
-      'weapons-thumbnails': Weapons Thumbnail
-      'contents-thumbnails': Contents Thumbnail
-      'library-items-thumbnails': Library Item Thumbnail
-      'library-items-scans': Library Item Scans
-      'library-items-gallery': Library Item Gallery
-      'recorders-thumbnails': Recorders Thumbnail
-      'posts-thumbnails': Post Thumbnail
+      'weapons-groups': WeaponsGroup
+      'weapons-thumbnails': WeaponsThumbnail
+      'contents-thumbnails': ContentsThumbnail
+      'library-items-thumbnails': LibraryItemThumbnail
+      'library-items-scans': LibraryItemScans
+      'library-items-gallery': LibraryItemGallery
+      'recorders-thumbnails': RecordersThumbnail
+      'posts-thumbnails': PostThumbnail
       'files': File
       'videos': Video
-      'videos-channels': Videos Channel
+      'videos-channels': VideosChannel
       'languages': Language
       'currencies': Currency
       'recorders': Recorder

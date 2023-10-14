@@ -19,3 +19,5 @@ export const formatToCamelCase = (name: string): string =>
     .split(/[ \_-]/g)
     .map((part, index) => (index > 0 ? capitalize(part) : part))
     .join("");
+
+export const formatToPascalCase = (name: string): string => capitalize(formatToCamelCase(name));

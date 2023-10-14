@@ -1,5 +1,6 @@
 import { CollectionConfig } from "payload/types";
 import { Collections } from "../constants";
+import { formatToPascalCase } from "./string";
 
 type CollectionConfigWithPlugins = CollectionConfig;
 
@@ -13,5 +14,5 @@ export type BuildCollectionConfig = Omit<
 
 export const buildCollectionConfig = (config: BuildCollectionConfig): CollectionConfig => ({
   ...config,
-  typescript: { interface: config.labels.singular },
+  typescript: { interface: formatToPascalCase(config.labels.singular) },
 });
