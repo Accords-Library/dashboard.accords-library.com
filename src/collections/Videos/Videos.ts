@@ -86,7 +86,6 @@ export const Videos: CollectionConfig = buildCollectionConfig({
       type: "date",
       admin: {
         date: { pickerAppearance: "dayOnly", displayFormat: "yyyy-MM-dd" },
-        position: "sidebar",
       },
       required: true,
     },
@@ -94,7 +93,6 @@ export const Videos: CollectionConfig = buildCollectionConfig({
       name: fields.channel,
       type: "relationship",
       relationTo: Collections.VideosChannels,
-      admin: { position: "sidebar" },
     },
   ],
 });

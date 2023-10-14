@@ -158,7 +158,6 @@ export const Posts = buildVersionedCollectionConfig({
       defaultValue: new Date().toISOString(),
       admin: {
         date: { pickerAppearance: "dayOnly", displayFormat: "yyyy-MM-dd" },
-        position: "sidebar",
       },
       required: true,
     },
@@ -169,7 +168,6 @@ export const Posts = buildVersionedCollectionConfig({
       defaultValue: false,
       admin: {
         description: "If enabled, the post won't appear in the 'News' section",
-        position: "sidebar",
       },
     },
   ],

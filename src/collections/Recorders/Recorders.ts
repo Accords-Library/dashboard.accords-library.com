@@ -125,7 +125,6 @@ export const Recorders = buildCollectionConfig({
         label,
         value,
       })),
-      admin: { position: "sidebar" },
     },
     {
       name: fields.anonymize,
@@ -135,7 +134,6 @@ export const Recorders = buildCollectionConfig({
       admin: {
         description:
           "If enabled, this recorder's username will not be made public. Instead they will be referred to as 'Recorder#0000' where '0000' is a random four digit number",
-        position: "sidebar",
       },
     },
   ],
