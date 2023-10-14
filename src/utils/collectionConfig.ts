@@ -1,8 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import { Collections } from "../constants";
-import { CollectionConfigWithGridView } from "../plugins/payload-grid-view";
 
-type CollectionConfigWithPlugins = CollectionConfig & CollectionConfigWithGridView;
+type CollectionConfigWithPlugins = CollectionConfig;
 
 export type BuildCollectionConfig = Omit<
   CollectionConfigWithPlugins,

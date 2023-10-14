@@ -1,10 +1,6 @@
-import { CollectionConfig, PayloadRequest } from "payload/types";
+import { Endpoint } from "payload/config";
+import { PayloadRequest } from "payload/types";
 
-export type PayloadCreateData<T> = Omit<
-  T,
-  "id" | "updatedAt" | "createdAt" | "sizes" | "updatedBy"
->;
-
-export type CollectionEndpoint = NonNullable<CollectionConfig["endpoints"]>[number];
+export type CollectionEndpoint = Omit<Endpoint, "root">;
 
 export type EndpointAccess<U> = (req: PayloadRequest<U>) => boolean;

@@ -1,7 +1,11 @@
+import { webpackBundler } from "@payloadcms/bundler-webpack";
+import { mongooseAdapter } from "@payloadcms/db-mongodb";
+import { BlocksFeature, lexicalEditor } from "@payloadcms/richtext-lexical";
 import path from "path";
 import { buildConfig } from "payload/config";
 import { ChronologyEras } from "./collections/ChronologyEras/ChronologyEras";
 import { ChronologyItems } from "./collections/ChronologyItems/ChronologyItems";
+import { transcriptBlock } from "./collections/Contents/Blocks/transcriptBlock";
 import { Contents } from "./collections/Contents/Contents";
 import { ContentsFolders } from "./collections/ContentsFolders/ContentsFolders";
 import { ContentsThumbnails } from "./collections/ContentsThumbnails/ContentsThumbnails";
@@ -25,7 +29,6 @@ import { WeaponsThumbnails } from "./collections/WeaponsThumbnails/WeaponsThumbn
 import { Icon } from "./components/Icon";
 import { Logo } from "./components/Logo";
 import { Collections } from "./constants";
-import { payloadGridView } from "./plugins/payload-grid-view";
 
 export default buildConfig({
   serverURL: process.env.PAYLOAD_URI,
@@ -38,7 +41,14 @@ export default buildConfig({
       titleSuffix: "- Accord’s Library",
     },
     css: path.resolve(__dirname, "styles.scss"),
+    bundler: webpackBundler(),
   },
+  editor: lexicalEditor({
+    features: ({ defaultFeatures }) => [
+      ...defaultFeatures,
+      BlocksFeature({ blocks: [transcriptBlock] }),
+    ],
+  }),
   collections: [
     LibraryItems,
     Contents,
@@ -63,6 +73,9 @@ export default buildConfig({
     Recorders,
     Keys,
   ],
+  db: mongooseAdapter({
+    url: process.env.MONGODB_URI ?? "mongodb://mongo:27017/payload",
+  }),
   globals: [],
   telemetry: false,
   typescript: {
@@ -71,5 +84,4 @@ export default buildConfig({
   graphQL: {
     disable: true,
   },
-  plugins: [payloadGridView],
 });

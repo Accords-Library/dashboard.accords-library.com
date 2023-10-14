@@ -9,7 +9,6 @@ import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
 import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
 import { isDefined } from "../../utils/asserts";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
-import { contentBlocks } from "./Blocks/blocks";
 
 const fields = {
   slug: "slug",
@@ -66,11 +65,11 @@ export const Contents = buildVersionedCollectionConfig({
     {
       type: "row",
       fields: [
-        slugField({ name: fields.slug, admin: { width: "50%" } }),
+        slugField({ name: fields.slug, admin: { width: "0%" } }),
         imageField({
           name: fields.thumbnail,
           relationTo: Collections.ContentsThumbnails,
-          admin: { width: "50%" },
+          admin: { width: "0%" },
         }),
       ],
     },
@@ -81,12 +80,12 @@ export const Contents = buildVersionedCollectionConfig({
           name: fields.categories,
           relationTo: KeysTypes.Categories,
           hasMany: true,
-          admin: { allowCreate: false, width: "50%" },
+          admin: { allowCreate: false, width: "0%" },
         }),
         keysField({
           name: fields.type,
           relationTo: KeysTypes.Contents,
-          admin: { allowCreate: false, width: "50%" },
+          admin: { allowCreate: false, width: "0%" },
         }),
       ],
     },
@@ -115,6 +114,7 @@ export const Contents = buildVersionedCollectionConfig({
             {
               label: "Text",
               fields: [
+                { name: fields.textContent, type: "richText" },
                 {
                   type: "row",
                   fields: [
@@ -127,7 +127,7 @@ export const Contents = buildVersionedCollectionConfig({
                       admin: {
                         condition: (_, siblingData) =>
                           siblingData.language === siblingData.sourceLanguage,
-                        width: "50%",
+                        width: "0%",
                       },
                     },
                     {
@@ -139,7 +139,7 @@ export const Contents = buildVersionedCollectionConfig({
                       admin: {
                         condition: (_, siblingData) =>
                           siblingData.language !== siblingData.sourceLanguage,
-                        width: "50%",
+                        width: "0%",
                       },
                     },
                     {
@@ -148,17 +148,9 @@ export const Contents = buildVersionedCollectionConfig({
                       type: "relationship",
                       relationTo: Collections.Recorders,
                       hasMany: true,
-                      admin: { width: "50%" },
+                      admin: { width: "0%" },
                     },
                   ],
-                },
-                {
-                  name: fields.textContent,
-                  label: "Content",
-                  labels: { singular: "Block", plural: "Blocks" },
-                  type: "blocks",
-                  admin: { initCollapsed: true },
-                  blocks: contentBlocks,
                 },
                 {
                   name: fields.textNotes,
@@ -176,13 +168,13 @@ export const Contents = buildVersionedCollectionConfig({
                     fileField({
                       name: fields.video,
                       relationTo: FileTypes.ContentVideo,
-                      admin: { width: "50%" },
+                      admin: { width: "0%" },
                     }),
                     {
                       name: fields.videoNotes,
                       label: "Notes",
                       type: "textarea",
-                      admin: { width: "50%" },
+                      admin: { width: "0%" },
                     },
                   ],
                 },
@@ -197,13 +189,13 @@ export const Contents = buildVersionedCollectionConfig({
                     fileField({
                       name: fields.audio,
                       relationTo: FileTypes.ContentAudio,
-                      admin: { width: "50%" },
+                      admin: { width: "0%" },
                     }),
                     {
                       name: fields.audioNotes,
                       label: "Notes",
                       type: "textarea",
-                      admin: { width: "50%" },
+                      admin: { width: "0%" },
                     },
                   ],
                 },

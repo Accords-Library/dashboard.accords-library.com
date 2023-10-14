@@ -10,11 +10,6 @@ export const lineBlock: Block = {
       label: false,
       type: "richText",
       required: true,
-      admin: {
-        hideGutter: true,
-        elements: [],
-        leaves: ["bold", "italic", "underline", "strikethrough", "code"],
-      },
     },
   ],
 };

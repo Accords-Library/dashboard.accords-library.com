@@ -1,8 +1,6 @@
 import payload from "payload";
 import { Collections, VideoSources } from "../../../constants";
 import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImportEndpoint";
-import { Video, VideosChannel } from "../../../types/collections";
-import { PayloadCreateData } from "../../../types/payload";
 import { isDefined, isUndefined } from "../../../utils/asserts";
 
 type StapiVideo = {
@@ -21,7 +19,7 @@ type StapiVideo = {
   channel: { data?: { attributes: { uid: string; title: string; subscribers: number } } };
 };
 
-export const importFromStrapi = createStrapiImportEndpoint<Video, StapiVideo>({
+export const importFromStrapi = createStrapiImportEndpoint<StapiVideo>({
   strapi: {
     collection: "videos",
     params: { populate: "published_date,channel" },
@@ -49,14 +47,13 @@ export const importFromStrapi = createStrapiImportEndpoint<Video, StapiVideo>({
       let videoChannelId;
       if (isDefined(channel.data)) {
         try {
-          const videoChannel: PayloadCreateData<VideosChannel> = {
-            uid: channel.data.attributes.uid,
-            title: channel.data.attributes.title,
-            subscribers: channel.data.attributes.subscribers,
-          };
           await payload.create({
             collection: Collections.VideosChannels,
-            data: videoChannel,
+            data: {
+              uid: channel.data.attributes.uid,
+              title: channel.data.attributes.title,
+              subscribers: channel.data.attributes.subscribers,
+            },
             user,
           });
         } catch (e) {}
@@ -66,26 +63,24 @@ export const importFromStrapi = createStrapiImportEndpoint<Video, StapiVideo>({
           where: { uid: { equals: channel.data.attributes.uid } },
         });
 
-        if (result.docs.length > 0) {
+        if (result.docs[0]) {
           videoChannelId = result.docs[0].id;
         }
       }
 
-      const video: PayloadCreateData<Video> = {
-        uid,
-        title,
-        description,
-        views,
-        likes,
-        gone,
-        source,
-        publishedDate: `${year}-${month}-${day}`,
-        channel: videoChannelId,
-      };
-
       await payload.create({
         collection: Collections.Videos,
-        data: video,
+        data: {
+          uid,
+          title,
+          description,
+          views,
+          likes,
+          gone,
+          source,
+          publishedDate: `${year}-${month}-${day}`,
+          channel: videoChannelId,
+        },
         user,
       });
     },

@@ -4,8 +4,6 @@ import { readFileSync } from "fs";
 import path from "path";
 import payload from "payload";
 import { Collections, RecordersRoles } from "./constants";
-import { Recorder } from "./types/collections";
-import { PayloadCreateData } from "./types/payload";
 import { isDefined, isUndefined } from "./utils/asserts";
 
 const app = express();
@@ -28,7 +26,6 @@ const start = async () => {
 
   await payload.init({
     secret: process.env.PAYLOAD_SECRET,
-    mongoURL: process.env.MONGODB_URI,
     express: app,
     onInit: async () => {
       payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
@@ -43,16 +40,15 @@ const start = async () => {
         if (recorders.docs.length === 0) {
           payload.logger.info("Seeding some initial data");
 
-          const recorder: PayloadCreateData<Recorder> = {
-            email: process.env.SEEDING_ADMIN_EMAIL,
-            password: process.env.SEEDING_ADMIN_PASSWORD,
-            username: process.env.SEEDING_ADMIN_USERNAME,
-            role: [RecordersRoles.Admin, RecordersRoles.Api],
-            anonymize: false,
-          };
           await payload.create({
             collection: Collections.Recorders,
-            data: recorder,
+            data: {
+              email: process.env.SEEDING_ADMIN_EMAIL,
+              password: process.env.SEEDING_ADMIN_PASSWORD,
+              username: process.env.SEEDING_ADMIN_USERNAME,
+              role: [RecordersRoles.Admin, RecordersRoles.Api],
+              anonymize: false,
+            },
           });
         }
       }

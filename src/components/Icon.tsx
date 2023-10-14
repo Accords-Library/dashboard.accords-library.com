@@ -1,8 +1,8 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 
 export const Icon = styled.div`
-  width: 46px;
-  height: 46px;
+  width: 18px;
+  height: 18px;
   mask: url("/public/accords.svg");
   background-color: var(--theme-elevation-1000);
   mask-size: contain;

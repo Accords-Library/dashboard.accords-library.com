@@ -102,7 +102,7 @@ export const Keys = buildCollectionConfig({
               name: fields.translationsName,
               type: "text",
               required: true,
-              admin: { width: "50%" },
+              admin: { width: "0%" },
             },
             {
               name: fields.translationsShort,
@@ -110,7 +110,7 @@ export const Keys = buildCollectionConfig({
               admin: {
                 condition: (data: Partial<Key>) =>
                   isDefined(data.type) && keysTypesWithShort.includes(data.type),
-                width: "50%",
+                width: "0%",
               },
             },
           ],

@@ -2,7 +2,6 @@ import payload from "payload";
 import { Collections } from "../../../constants";
 import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImportEndpoint";
 import { Recorder } from "../../../types/collections";
-import { PayloadCreateData } from "../../../types/payload";
 import { StrapiImage, StrapiLanguage } from "../../../types/strapi";
 import { isDefined, isUndefined } from "../../../utils/asserts";
 import { uploadStrapiImage } from "../../../utils/localApi";
@@ -16,7 +15,7 @@ type StrapiRecorder = {
   bio: { language: StrapiLanguage; bio?: string }[];
 };
 
-export const importFromStrapi = createStrapiImportEndpoint<Recorder, StrapiRecorder>({
+export const importFromStrapi = createStrapiImportEndpoint<StrapiRecorder>({
   strapi: {
     collection: "recorders",
     params: {
@@ -31,22 +30,6 @@ export const importFromStrapi = createStrapiImportEndpoint<Recorder, StrapiRecor
         image: avatar,
       });
 
-      const data: Omit<PayloadCreateData<Recorder>, "password" | "email"> = {
-        username,
-        anonymize,
-        languages: languages.data?.map((language) => language.attributes.code),
-        avatar: avatarId,
-        biographies: bios?.map(({ language, bio }) => {
-          if (isUndefined(language.data))
-            throw new Error("A language is required for a Recorder biography");
-          if (isUndefined(bio)) throw new Error("A bio is required for a Recorder biography");
-          return {
-            language: language.data.attributes.code,
-            biography: bio,
-          };
-        }),
-      };
-
       const recorder = (
         await payload.find({
           collection: Collections.Recorders,
@@ -55,12 +38,44 @@ export const importFromStrapi = createStrapiImportEndpoint<Recorder, StrapiRecor
       ).docs[0] as Recorder | undefined;
 
       if (isDefined(recorder)) {
-        await payload.update({ collection: Collections.Recorders, id: recorder.id, data, user });
+        await payload.update({
+          collection: Collections.Recorders,
+          id: recorder.id,
+          data: {
+            username,
+            anonymize,
+            languages: languages.data?.map((language) => language.attributes.code),
+            avatar: avatarId,
+            biographies: bios?.map(({ language, bio }) => {
+              if (isUndefined(language.data))
+                throw new Error("A language is required for a Recorder biography");
+              if (isUndefined(bio)) throw new Error("A bio is required for a Recorder biography");
+              return {
+                language: language.data.attributes.code,
+                biography: bio,
+              };
+            }),
+          },
+          user,
+        });
       } else {
         await payload.create({
           collection: Collections.Recorders,
           data: {
-            ...data,
+            username,
+            anonymize,
+            languages: languages.data?.map((language) => language.attributes.code),
+            avatar: avatarId,
+            biographies: bios?.map(({ language, bio }) => {
+              if (isUndefined(language.data))
+                throw new Error("A language is required for a Recorder biography");
+              if (isUndefined(bio)) throw new Error("A bio is required for a Recorder biography");
+              return {
+                language: language.data.attributes.code,
+                biography: bio,
+              };
+            }),
+
             email: `${anonymous_code}@accords-library.com`,
             password: process.env.RECORDER_DEFAULT_PASSWORD,
           },

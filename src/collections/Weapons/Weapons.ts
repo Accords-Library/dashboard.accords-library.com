@@ -1,6 +1,5 @@
 import { RowLabelArgs } from "payload/dist/admin/components/forms/RowLabel/types";
 import { CollectionGroups, Collections, KeysTypes } from "../../constants";
-import { createGetSlugsEndpoint } from "../../endpoints/createGetSlugsEndpoint";
 import { imageField } from "../../fields/imageField/imageField";
 import { keysField } from "../../fields/keysField/keysField";
 import { slugField } from "../../fields/slugField/slugField";
@@ -43,20 +42,16 @@ export const Weapons = buildVersionedCollectionConfig({
     ],
     group: CollectionGroups.Collections,
   },
-  endpoints: [
-    importFromStrapi,
-    createGetSlugsEndpoint(Collections.Weapons),
-    getBySlugEndpoint,
-  ],
+  endpoints: [importFromStrapi, getBySlugEndpoint],
   fields: [
     {
       type: "row",
       fields: [
-        slugField({ name: fields.slug, admin: { width: "50%" } }),
+        slugField({ name: fields.slug, admin: { width: "0%" } }),
         imageField({
           name: fields.thumbnail,
           relationTo: Collections.WeaponsThumbnails,
-          admin: { width: "50%" },
+          admin: { width: "0%" },
         }),
       ],
     },
@@ -67,13 +62,13 @@ export const Weapons = buildVersionedCollectionConfig({
           name: fields.type,
           relationTo: KeysTypes.Weapons,
           required: true,
-          admin: { allowCreate: false, width: "50%" },
+          admin: { allowCreate: false, width: "0%" },
         }),
         {
           name: fields.group,
           type: "relationship",
           relationTo: Collections.WeaponsGroups,
-          admin: { width: "50%" },
+          admin: { width: "0%" },
         },
       ],
     },
@@ -114,12 +109,12 @@ export const Weapons = buildVersionedCollectionConfig({
                   name: fields.appearancesTranslationsName,
                   type: "text",
                   required: true,
-                  admin: { width: "50%" },
+                  admin: { width: "0%" },
                 },
                 {
                   name: fields.appearancesTranslationsDescription,
                   type: "textarea",
-                  admin: { width: "50%" },
+                  admin: { width: "0%" },
                 },
               ],
             },
@@ -130,13 +125,13 @@ export const Weapons = buildVersionedCollectionConfig({
                   name: fields.appearancesTranslationsLevel1,
                   label: "Level 1",
                   type: "textarea",
-                  admin: { width: "50%" },
+                  admin: { width: "0%" },
                 },
                 {
                   name: fields.appearancesTranslationsLevel2,
                   label: "Level 2",
                   type: "textarea",
-                  admin: { width: "50%" },
+                  admin: { width: "0%" },
                 },
               ],
             },
@@ -147,13 +142,13 @@ export const Weapons = buildVersionedCollectionConfig({
                   name: fields.appearancesTranslationsLevel3,
                   label: "Level 3",
                   type: "textarea",
-                  admin: { width: "50%" },
+                  admin: { width: "0%" },
                 },
                 {
                   name: fields.appearancesTranslationsLevel4,
                   label: "Level 4",
                   type: "textarea",
-                  admin: { width: "50%" },
+                  admin: { width: "0%" },
                 },
               ],
             },

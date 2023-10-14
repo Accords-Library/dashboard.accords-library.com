@@ -1,6 +1,5 @@
 import { Collections } from "../../../constants";
 import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImportEndpoint";
-import { ChronologyEra } from "../../../types/collections";
 import { StrapiLanguage } from "../../../types/strapi";
 import { isUndefined } from "../../../utils/asserts";
 
@@ -11,7 +10,7 @@ type StrapiChronologyEra = {
   title: { title: string; language: StrapiLanguage; description?: string }[];
 };
 
-export const importFromStrapi = createStrapiImportEndpoint<ChronologyEra, StrapiChronologyEra>({
+export const importFromStrapi = createStrapiImportEndpoint<StrapiChronologyEra>({
   strapi: {
     collection: "chronology-eras",
     params: {

@@ -1,6 +1,5 @@
 import { Collections } from "../../../constants";
 import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImportEndpoint";
-import { ChronologyItem } from "../../../types/collections";
 import { StrapiLanguage } from "../../../types/strapi";
 import { isUndefined } from "../../../utils/asserts";
 
@@ -18,7 +17,7 @@ type StrapiChronologyItem = {
   }[];
 };
 
-export const importFromStrapi = createStrapiImportEndpoint<ChronologyItem, StrapiChronologyItem>({
+export const importFromStrapi = createStrapiImportEndpoint<StrapiChronologyItem>({
   strapi: {
     collection: "chronology-items",
     params: {

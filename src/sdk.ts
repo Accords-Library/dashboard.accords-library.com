@@ -167,8 +167,6 @@ export type PayloadImage = {
 };
 
 export const payload = {
-  getSlugsWeapons: async (): Promise<string[]> =>
-    await (await request(payloadApiUrl(Collections.Weapons, "slugs"))).json(),
   getWeapon: async (slug: string): Promise<EndpointWeapon> =>
     await (await request(payloadApiUrl(Collections.Weapons, `slug/${slug}`))).json(),
   getEras: async (): Promise<EndpointEra[]> =>

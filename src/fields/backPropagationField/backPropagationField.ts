@@ -1,11 +1,12 @@
 import payload from "payload";
 import { FieldBase } from "payload/dist/fields/config/types";
 import { RelationshipField, Where } from "payload/types";
+import { Collections } from "../../constants";
 import { isNotEmpty } from "../../utils/asserts";
 
 type BackPropagationField = FieldBase & {
   where: (data: any) => Where;
-  relationTo: string;
+  relationTo: Collections;
   hasMany?: boolean;
 };
 export const backPropagationField = ({

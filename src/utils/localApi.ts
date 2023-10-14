@@ -8,6 +8,7 @@ export const findWeaponType = async (name: string): Promise<string> => {
     collection: Collections.Keys,
     where: { name: { equals: name }, type: { equals: KeysTypes.Weapons } },
   });
+  if (!key.docs[0]) throw new Error(`Weapon type ${name} wasn't found`);
   return key.docs[0].id;
 };
 
@@ -16,7 +17,8 @@ export const findCategory = async (name: string): Promise<string> => {
     collection: Collections.Keys,
     where: { name: { equals: name }, type: { equals: KeysTypes.Categories } },
   });
-  return key.docs[0].id;
+  if (!key.docs[0]) throw new Error(`Category ${name} wasn't found`);
+  return key.docs[0]?.id;
 };
 
 type UploadStrapiImage = {

@@ -60,11 +60,11 @@ export const Posts = buildVersionedCollectionConfig({
     {
       type: "row",
       fields: [
-        slugField({ name: fields.slug, admin: { width: "50%" } }),
+        slugField({ name: fields.slug, admin: { width: "0%" } }),
         imageField({
           name: fields.thumbnail,
           relationTo: Collections.PostsThumbnails,
-          admin: { width: "50%" },
+          admin: { width: "0%" },
         }),
       ],
     },
@@ -78,7 +78,7 @@ export const Posts = buildVersionedCollectionConfig({
           required: true,
           minRows: 1,
           hasMany: true,
-          admin: { width: "35%" },
+          admin: { width: "0%" },
         },
         {
           name: fields.categories,
@@ -86,7 +86,7 @@ export const Posts = buildVersionedCollectionConfig({
           relationTo: [Collections.Keys],
           filterOptions: { type: { equals: KeysTypes.Categories } },
           hasMany: true,
-          admin: { allowCreate: false, width: "35%" },
+          admin: { allowCreate: false, width: "0%" },
         },
       ],
     },
@@ -125,7 +125,7 @@ export const Posts = buildVersionedCollectionConfig({
                   }
                   return siblingData.language !== siblingData.sourceLanguage;
                 },
-                width: "50%",
+                width: "0%",
               },
               validate: (translators, { siblingData }) => {
                 if (isUndefined(siblingData.language) || isUndefined(siblingData.sourceLanguage)) {
@@ -145,11 +145,11 @@ export const Posts = buildVersionedCollectionConfig({
               type: "relationship",
               relationTo: Collections.Recorders,
               hasMany: true,
-              admin: { width: "50%" },
+              admin: { width: "0%" },
             },
           ],
         },
-        { name: fields.content, type: "richText", admin: { hideGutter: true } },
+        { name: fields.content, type: "richText" },
       ],
     }),
     {

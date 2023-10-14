@@ -50,7 +50,7 @@ export const Videos: CollectionConfig = buildCollectionConfig({
     {
       type: "row",
       fields: [
-        { name: fields.uid, type: "text", required: true, unique: true, admin: { width: "33%" } },
+        { name: fields.uid, type: "text", required: true, unique: true, admin: { width: "0%" } },
         {
           name: fields.gone,
           type: "checkbox",
@@ -59,7 +59,7 @@ export const Videos: CollectionConfig = buildCollectionConfig({
           admin: {
             description:
               "Is the video no longer available (deleted, privatized, unlisted, blocked...)",
-            width: "33%",
+            width: "0%",
           },
         },
         {
@@ -67,7 +67,7 @@ export const Videos: CollectionConfig = buildCollectionConfig({
           type: "select",
           required: true,
           options: Object.entries(VideoSources).map(([value, label]) => ({ label, value })),
-          admin: { width: "33%" },
+          admin: { width: "0%" },
         },
       ],
     },
@@ -77,8 +77,8 @@ export const Videos: CollectionConfig = buildCollectionConfig({
     {
       type: "row",
       fields: [
-        { name: fields.likes, type: "number", admin: { width: "50%" } },
-        { name: fields.views, type: "number", admin: { width: "50%" } },
+        { name: fields.likes, type: "number", admin: { width: "0%" } },
+        { name: fields.views, type: "number", admin: { width: "0%" } },
       ],
     },
     {

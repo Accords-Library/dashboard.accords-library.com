@@ -46,6 +46,16 @@ html[data-theme="light"] {
   --color-base-1000: #000000;
 }
 
+.field-type.row {
+  padding: 1rem 0;
+}
+
+.field-type.radio-group {
+  > ul {
+    padding: 0.75rem 0;
+  }
+}
+
 .field-type.array-field.group-array {
   > .array-field__header {
     .array-field__header-actions {

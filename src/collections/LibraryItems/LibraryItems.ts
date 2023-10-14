@@ -170,12 +170,10 @@ export const LibraryItems = buildVersionedCollectionConfig({
               fields: [
                 slugField({
                   name: fields.slug,
-                  admin: { width: "50%" },
                 }),
                 imageField({
                   name: fields.thumbnail,
                   relationTo: Collections.LibraryItemsThumbnails,
-                  admin: { width: "50%" },
                 }),
               ],
             },
@@ -197,7 +195,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                   defaultValue: true,
                   admin: {
                     description: "Only items that can be sold separetely should be root items.",
-                    width: "25%",
+                    width: "0%",
                   },
                 },
                 {
@@ -208,7 +206,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                   admin: {
                     description:
                       "A primary item is an official item that focuses primarly on one or more of our Categories.",
-                    width: "25%",
+                    width: "0%",
                   },
                 },
                 {
@@ -219,7 +217,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                   admin: {
                     description:
                       "The item is the digital version of another item, or the item is sold only digitally.",
-                    width: "25%",
+                    width: "0%",
                   },
                 },
                 {
@@ -229,7 +227,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                   defaultValue: false,
                   admin: {
                     description: "Are the scans available for download?",
-                    width: "25%",
+                    width: "0%",
                   },
                 },
               ],
@@ -265,17 +263,17 @@ export const LibraryItems = buildVersionedCollectionConfig({
                         imageField({
                           name: fields.scansCoverFront,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansCoverSpine,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansCoverBack,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                       ],
                     },
@@ -285,12 +283,12 @@ export const LibraryItems = buildVersionedCollectionConfig({
                         imageField({
                           name: fields.scansCoverInsideFront,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "50%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansCoverBack,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "50%" },
+                          admin: { width: "0%" },
                         }),
                       ],
                     },
@@ -300,22 +298,22 @@ export const LibraryItems = buildVersionedCollectionConfig({
                         imageField({
                           name: fields.scansCoverFlapFront,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "25%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansCoverFlapBack,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "25%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansCoverInsideFlapFront,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "25%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansCoverInsideFlapBack,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "25%" },
+                          admin: { width: "0%" },
                         }),
                       ],
                     },
@@ -337,17 +335,17 @@ export const LibraryItems = buildVersionedCollectionConfig({
                         imageField({
                           name: fields.scansDustjacketFront,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansDustjacketSpine,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansDustjacketBack,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                       ],
                     },
@@ -357,17 +355,17 @@ export const LibraryItems = buildVersionedCollectionConfig({
                         imageField({
                           name: fields.scansDustjacketInsideFront,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansDustjacketInsideSpine,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansDustjacketInsideBack,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                       ],
                     },
@@ -377,22 +375,22 @@ export const LibraryItems = buildVersionedCollectionConfig({
                         imageField({
                           name: fields.scansDustjacketFlapFront,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "25%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansDustjacketFlapBack,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "25%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansDustjacketInsideFlapFront,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "25%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansDustjacketInsideFlapBack,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "25%" },
+                          admin: { width: "0%" },
                         }),
                       ],
                     },
@@ -414,17 +412,17 @@ export const LibraryItems = buildVersionedCollectionConfig({
                         imageField({
                           name: fields.scansObiFront,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansObiSpine,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansObiBack,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                       ],
                     },
@@ -434,17 +432,17 @@ export const LibraryItems = buildVersionedCollectionConfig({
                         imageField({
                           name: fields.scansObiInsideFront,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansObiInsideSpine,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansObiInsideBack,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         }),
                       ],
                     },
@@ -454,22 +452,22 @@ export const LibraryItems = buildVersionedCollectionConfig({
                         imageField({
                           name: fields.scansObiFlapFront,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "25%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansObiFlapBack,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "25%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansObiInsideFlapFront,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "25%" },
+                          admin: { width: "0%" },
                         }),
                         imageField({
                           name: fields.scansObiInsideFlapBack,
                           relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "25%" },
+                          admin: { width: "0%" },
                         }),
                       ],
                     },
@@ -495,13 +493,13 @@ export const LibraryItems = buildVersionedCollectionConfig({
                           name: fields.scansPagesPage,
                           type: "number",
                           required: true,
-                          admin: { width: "33%" },
+                          admin: { width: "0%" },
                         },
                         imageField({
                           name: fields.scansPagesImage,
                           relationTo: Collections.LibraryItemsScans,
                           required: true,
-                          admin: { width: "66%" },
+                          admin: { width: "0%" },
                         }),
                       ],
                     },
@@ -518,6 +516,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
             {
               name: fields.textual,
               type: "group",
+              label: false,
               admin: {
                 condition: (data: Partial<LibraryItem>) =>
                   data.itemType === LibraryItemsTypes.Textual,
@@ -530,14 +529,14 @@ export const LibraryItems = buildVersionedCollectionConfig({
                       name: fields.textualSubtype,
                       relationTo: KeysTypes.LibraryTextual,
                       hasMany: true,
-                      admin: { allowCreate: false, width: "50%" },
+                      admin: { allowCreate: false, width: "0%" },
                     }),
                     {
                       name: fields.textualLanguages,
                       type: "relationship",
                       relationTo: Collections.Languages,
                       hasMany: true,
-                      admin: { allowCreate: false, width: "50%" },
+                      admin: { allowCreate: false, width: "0%" },
                     },
                   ],
                 },
@@ -548,7 +547,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                       name: fields.textualPageCount,
                       type: "number",
                       min: 1,
-                      admin: { width: "33%" },
+                      admin: { width: "0%" },
                     },
                     {
                       name: fields.textualBindingType,
@@ -561,7 +560,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                       ),
                       admin: {
                         layout: "horizontal",
-                        width: "33%",
+                        width: "0%",
                       },
                     },
                     {
@@ -575,7 +574,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                       ),
                       admin: {
                         layout: "horizontal",
-                        width: "33%",
+                        width: "0%",
                       },
                     },
                   ],
@@ -585,6 +584,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
             {
               name: fields.audio,
               type: "group",
+              label: false,
               admin: {
                 condition: (data: Partial<LibraryItem>) =>
                   data.itemType === LibraryItemsTypes.Audio,
@@ -597,7 +597,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                       name: fields.audioSubtype,
                       relationTo: KeysTypes.LibraryAudio,
                       hasMany: true,
-                      admin: { allowCreate: false, width: "50%" },
+                      admin: { allowCreate: false, width: "0%" },
                     }),
                   ],
                 },
@@ -612,13 +612,13 @@ export const LibraryItems = buildVersionedCollectionConfig({
                           name: fields.audioTracksTitle,
                           type: "text",
                           required: true,
-                          admin: { width: "50%" },
+                          admin: { width: "0%" },
                         },
                         fileField({
                           name: fields.audioTracksFile,
                           relationTo: FileTypes.LibrarySoundtracks,
                           required: true,
-                          admin: { width: "50%" },
+                          admin: { width: "0%" },
                         }),
                       ],
                     },
@@ -639,21 +639,21 @@ export const LibraryItems = buildVersionedCollectionConfig({
                   type: "date",
                   admin: {
                     date: { pickerAppearance: "dayOnly", displayFormat: "yyyy-MM-dd" },
-                    width: "50%",
+                    width: "0%",
                   },
                 },
                 keysField({
                   name: fields.categories,
                   relationTo: KeysTypes.Categories,
                   hasMany: true,
-                  admin: { allowCreate: false, width: "50%" },
+                  admin: { allowCreate: false, width: "0%" },
                 }),
               ],
             },
             translatedFields({
               name: fields.translations,
               label: "Descriptions",
-              admin: { initCollapsed: true },
+              admin: { initCollapsed: true, useAsTitle: fields.translationsDescription },
               fields: [{ name: fields.translationsDescription, type: "textarea", required: true }],
             }),
             optionalGroupField({
@@ -667,18 +667,18 @@ export const LibraryItems = buildVersionedCollectionConfig({
                       name: fields.width,
                       type: "number",
                       required: true,
-                      admin: { step: 1, width: "33%", description: "in mm." },
+                      admin: { step: 1, width: "0%", description: "in mm." },
                     },
                     {
                       name: fields.height,
                       type: "number",
                       required: true,
-                      admin: { step: 1, width: "33%", description: "in mm." },
+                      admin: { step: 1, width: "0%", description: "in mm." },
                     },
                     {
                       name: fields.thickness,
                       type: "number",
-                      admin: { step: 1, width: "33%", description: "in mm." },
+                      admin: { step: 1, width: "0%", description: "in mm." },
                     },
                   ],
                 },
@@ -686,7 +686,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
             }),
             optionalGroupField({
               name: fields.price,
-              admin: { className: "group-array", width: "50%" },
+              admin: { className: "group-array", width: "0%" },
               fields: [
                 {
                   type: "row",
@@ -696,14 +696,14 @@ export const LibraryItems = buildVersionedCollectionConfig({
                       type: "number",
                       required: true,
                       min: 0,
-                      admin: { width: "50%" },
+                      admin: { width: "0%" },
                     },
                     {
                       name: fields.priceCurrency,
                       type: "relationship",
                       relationTo: Collections.Currencies,
                       required: true,
-                      admin: { allowCreate: false, width: "50%" },
+                      admin: { allowCreate: false, width: "0%" },
                     },
                   ],
                 },
@@ -715,7 +715,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
               type: "array",
               admin: {
                 description: "Links to official websites where to get/buy the item.",
-                width: "50%",
+                width: "0%",
               },
               fields: [{ name: fields.urlsUrl, type: "text", required: true }],
             },

@@ -1,16 +1,18 @@
-import payload from "payload";
+import payload, { GeneratedTypes } from "payload";
+import { BasePayload } from "payload/dist/payload";
 import QueryString from "qs";
+import { Collections } from "../constants";
 import { Recorder } from "../types/collections";
-import { CollectionEndpoint, PayloadCreateData } from "../types/payload";
+import { CollectionEndpoint } from "../types/payload";
 import { isDefined } from "../utils/asserts";
 
-export const getAllStrapiEntries = async <T>(
+export const getAllStrapiEntries = async (
   collectionSlug: string,
   params: Object
-): Promise<T[]> => {
+): Promise<any[]> => {
   let page = 1;
   let totalPage = 1;
-  const result: T[] = [];
+  const result: any[] = [];
 
   while (page <= totalPage) {
     const paramsWithPagination = QueryString.stringify({
@@ -30,24 +32,27 @@ export const getAllStrapiEntries = async <T>(
   return result;
 };
 
-type Params<T, S> = {
+type Params<S> = {
   strapi: {
     collection: string;
     params: any;
   };
   payload: {
-    collection: string;
+    collection: Collections;
     import?: (strapiObject: S, user: any) => Promise<void>;
-    convert?: (strapiObject: S, user: any) => PayloadCreateData<T>;
+    convert?: (
+      strapiObject: S,
+      user: any
+    ) => Parameters<BasePayload<GeneratedTypes>["create"]>[0]["data"];
   };
 };
 
-export const importStrapiEntries = async <T, S>({
+export const importStrapiEntries = async <S>({
   strapi: strapiParams,
   payload: payloadParams,
   user,
-}: Params<T, S> & { user: Recorder }) => {
-  const entries = await getAllStrapiEntries<any>(strapiParams.collection, strapiParams.params);
+}: Params<S> & { user: Recorder }) => {
+  const entries = await getAllStrapiEntries(strapiParams.collection, strapiParams.params);
 
   const errors: string[] = [];
 
@@ -77,7 +82,7 @@ export const importStrapiEntries = async <T, S>({
   return { count: entries.length, errors };
 };
 
-export const createStrapiImportEndpoint = <T, S>(params: Params<T, S>): CollectionEndpoint => ({
+export const createStrapiImportEndpoint = <S>(params: Params<S>): CollectionEndpoint => ({
   method: "post",
   path: "/strapi",
   handler: async (req, res) => {

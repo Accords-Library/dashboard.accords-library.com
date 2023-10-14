@@ -1,6 +1,6 @@
 import "@fontsource/vollkorn/700.css";
 import React from "react";
-import { styled } from "styled-components";
+import styled from "styled-components";
 
 export const Logo = (): JSX.Element => (
   <Container>

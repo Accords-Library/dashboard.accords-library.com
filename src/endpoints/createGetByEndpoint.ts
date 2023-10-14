@@ -1,10 +1,11 @@
-import payload from "payload";
+import payload, { GeneratedTypes } from "payload";
+import { Collections } from "../constants";
 import { CollectionEndpoint } from "../types/payload";
 
-export const createGetByEndpoint = <T, R>(
-  collection: string,
+export const createGetByEndpoint = <C extends Collections, R>(
+  collection: C,
   attribute: string,
-  handler: (doc: T) => Promise<R> | R = (doc) => doc as unknown as R
+  handler: (doc: GeneratedTypes["collections"][C]) => Promise<R> | R
 ): CollectionEndpoint => ({
   path: `/${attribute}/:${attribute}`,
   method: "get",
@@ -24,7 +25,7 @@ export const createGetByEndpoint = <T, R>(
       where: { [attribute]: { equals: req.params[attribute] } },
     });
 
-    if (result.docs.length === 0) {
+    if (!result.docs[0]) {
       return res.sendStatus(404);
     }
 

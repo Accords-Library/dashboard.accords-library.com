@@ -6,7 +6,7 @@ import { isDefined } from "../utils/asserts";
 
 type Image = {
   filename: string;
-  id: string | number;
+  id: string;
 };
 
 export const createImageRegenerationEndpoint = (collection: Collections): CollectionEndpoint => ({
@@ -36,7 +36,7 @@ export const createImageRegenerationEndpoint = (collection: Collections): Collec
       });
 
       await Promise.all(
-        images.docs.map(async (image: Image) => {
+        images.docs.filter(isImage).map(async (image: Image) => {
           try {
             await payload.update({
               collection,
@@ -64,3 +64,9 @@ export const createImageRegenerationEndpoint = (collection: Collections): Collec
       .json({ message: `${count} entries have been regenerated successfully.`, errors });
   },
 });
+
+const isImage = (item: Object): item is Image => {
+  if (!("id" in item) || typeof item.id !== "string") return false;
+  if (!("filename" in item) || typeof item.filename !== "string") return false;
+  return true;
+};

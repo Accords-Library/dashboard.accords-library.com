@@ -13,21 +13,25 @@
     "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png}\" dist/",
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
     "generate:graphQLSchema": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:graphQLSchema",
+    "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport='src/payload.config.ts;src/sdk.ts;src/types/collections.ts'",
     "prettier": "prettier --list-different --end-of-line auto --write src",
     "tsc": "tsc --noEmit",
-    "precommit": "npm run generate:types && npm run prettier && npm run tsc",
+    "precommit": "npm run generate:types && npm run prettier && npm run unused-exports && npm run tsc",
     "upgrade": "ncu",
     "clean": "sudo rm -r uploads mongo",
     "start": "sudo docker compose up"
   },
   "dependencies": {
     "@fontsource/vollkorn": "^5.0.14",
+    "@payloadcms/bundler-webpack": "^1.0.3",
+    "@payloadcms/db-mongodb": "^1.0.3",
+    "@payloadcms/richtext-lexical": "^0.1.8",
     "clean-deep": "^3.4.0",
     "cross-env": "^7.0.3",
     "language-tags": "^1.0.9",
     "luxon": "^3.4.3",
-    "payload": "^1.15.7",
-    "styled-components": "^6.0.8"
+    "payload": "^2.0.5",
+    "styled-components": "^6.0.9"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
@@ -36,10 +40,12 @@
     "@types/luxon": "^3.3.2",
     "@types/qs": "^6.9.8",
     "@types/react-router-dom": "^5.3.3",
+    "@types/styled-components": "^5.1.28",
     "copyfiles": "^2.4.1",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
+    "ts-unused-exports": "^10.0.1",
     "typescript": "^5.2.2"
   }
 }

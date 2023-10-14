@@ -28,7 +28,7 @@ const languageField: Field = {
   type: "relationship",
   relationTo: Collections.Languages,
   required: true,
-  admin: { allowCreate: false, width: "50%" },
+  admin: { allowCreate: false, width: "0%" },
 };
 
 const sourceLanguageField: Field = {
@@ -36,7 +36,7 @@ const sourceLanguageField: Field = {
   type: "relationship",
   relationTo: Collections.Languages,
   required: true,
-  admin: { allowCreate: false, width: "50%" },
+  admin: { allowCreate: false, width: "0%" },
 };
 
 const creditFields: Field = {
@@ -64,7 +64,7 @@ const creditFields: Field = {
       },
       admin: {
         condition: (_, siblingData) => siblingData.language === siblingData.sourceLanguage,
-        width: "50%",
+        width: "0%",
       },
       validate: (count, { siblingData }) => {
         if (siblingData[fieldsNames.language] !== siblingData[fieldsNames.sourceLanguage]) {
@@ -95,7 +95,7 @@ const creditFields: Field = {
       admin: {
         condition: (_, siblingData) =>
           siblingData[fieldsNames.language] !== siblingData[fieldsNames.sourceLanguage],
-        width: "50%",
+        width: "0%",
       },
       validate: (count, { siblingData }) => {
         if (siblingData[fieldsNames.language] === siblingData[fieldsNames.sourceLanguage]) {
@@ -114,7 +114,7 @@ const creditFields: Field = {
       type: "relationship",
       relationTo: "recorders",
       hasMany: true,
-      admin: { width: "50%" },
+      admin: { width: "0%" },
     },
   ],
 };

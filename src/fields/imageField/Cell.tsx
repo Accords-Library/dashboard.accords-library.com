@@ -1,7 +1,7 @@
 import { Props } from "payload/components/views/Cell";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { styled } from "styled-components";
+import styled from "styled-components";
 import { isUndefined } from "../../utils/asserts";
 
 const Image = styled.img`

@@ -25,34 +25,36 @@ export type ContentFoldersTranslation = {
 
 export interface Config {
   collections: {
-    "library-items": LibraryItem;
+    'library-items': LibraryItem;
     contents: Content;
-    "contents-folders": ContentsFolder;
+    'contents-folders': ContentsFolder;
     posts: Post;
-    "chronology-items": ChronologyItem;
-    "chronology-eras": ChronologyEra;
+    'chronology-items': ChronologyItem;
+    'chronology-eras': ChronologyEra;
     weapons: Weapon;
-    "weapons-groups": WeaponsGroup;
-    "weapons-thumbnails": WeaponsThumbnail;
-    "contents-thumbnails": ContentsThumbnail;
-    "library-items-thumbnails": LibraryItemThumbnail;
-    "library-items-scans": LibraryItemScans;
-    "library-items-gallery": LibraryItemGallery;
-    "recorders-thumbnails": RecordersThumbnail;
-    "posts-thumbnails": PostThumbnail;
+    'weapons-groups': WeaponsGroup;
+    'weapons-thumbnails': WeaponsThumbnail;
+    'contents-thumbnails': ContentsThumbnail;
+    'library-items-thumbnails': LibraryItemThumbnail;
+    'library-items-scans': LibraryItemScans;
+    'library-items-gallery': LibraryItemGallery;
+    'recorders-thumbnails': RecordersThumbnail;
+    'posts-thumbnails': PostThumbnail;
     files: File;
     videos: Video;
-    "videos-channels": VideosChannel;
+    'videos-channels': VideosChannel;
     languages: Language;
     currencies: Currency;
     recorders: Recorder;
     keys: Key;
+    'payload-preferences': PayloadPreference;
+    'payload-migrations': PayloadMigration;
   };
   globals: {};
 }
 export interface LibraryItem {
   id: string;
-  itemType?: "Textual" | "Audio" | "Video" | "Game" | "Other";
+  itemType?: 'Textual' | 'Audio' | 'Video' | 'Game' | 'Other';
   slug: string;
   thumbnail?: string | LibraryItemThumbnail;
   pretitle?: string;
@@ -115,8 +117,8 @@ export interface LibraryItem {
     subtype?: string[] | Key[];
     languages?: string[] | Language[];
     pageCount?: number;
-    bindingType?: "Paperback" | "Hardcover";
-    pageOrder?: "LeftToRight" | "RightToLeft";
+    bindingType?: 'Paperback' | 'Hardcover';
+    pageOrder?: 'LeftToRight' | 'RightToLeft';
   };
   audio?: {
     audioSubtype?: string[] | Key[];
@@ -160,7 +162,7 @@ export interface LibraryItem {
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: "draft" | "published";
+  _status?: 'draft' | 'published';
 }
 export interface LibraryItemThumbnail {
   id: string;
@@ -278,16 +280,16 @@ export interface Key {
   id: string;
   name: string;
   type:
-    | "Contents"
-    | "LibraryAudio"
-    | "LibraryVideo"
-    | "LibraryTextual"
-    | "LibraryGroup"
-    | "Library"
-    | "Weapons"
-    | "GamePlatforms"
-    | "Categories"
-    | "Wordings";
+    | 'Contents'
+    | 'LibraryAudio'
+    | 'LibraryVideo'
+    | 'LibraryTextual'
+    | 'LibraryGroup'
+    | 'Library'
+    | 'Weapons'
+    | 'GamePlatforms'
+    | 'Categories'
+    | 'Wordings';
   translations?: CategoryTranslations;
 }
 export interface Language {
@@ -297,7 +299,7 @@ export interface Language {
 export interface File {
   id: string;
   filename: string;
-  type: "LibraryScans" | "LibrarySoundtracks" | "ContentVideo" | "ContentAudio";
+  type: 'LibraryScans' | 'LibrarySoundtracks' | 'ContentVideo' | 'ContentAudio';
   updatedAt: string;
   createdAt: string;
 }
@@ -317,10 +319,12 @@ export interface Content {
     title: string;
     subtitle?: string;
     summary?: string;
+    textContent?: {
+      [k: string]: unknown;
+    }[];
     textTranscribers?: string[] | Recorder[];
     textTranslators?: string[] | Recorder[];
     textProofreaders?: string[] | Recorder[];
-    textContent?: (TextBlock | Section | Tabs | TranscriptBlock | QuoteBlock)[];
     textNotes?: string;
     video?: string | File;
     videoNotes?: string;
@@ -330,7 +334,7 @@ export interface Content {
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: "draft" | "published";
+  _status?: 'draft' | 'published';
 }
 export interface ContentsThumbnail {
   id: string;
@@ -376,7 +380,7 @@ export interface Recorder {
   avatar?: string | RecordersThumbnail;
   languages?: string[] | Language[];
   biographies?: RecorderBiographies;
-  role?: ("Admin" | "Recorder" | "Api")[];
+  role?: ('Admin' | 'Recorder' | 'Api')[];
   anonymize: boolean;
   email: string;
   resetPasswordToken?: string;
@@ -417,193 +421,6 @@ export interface RecordersThumbnail {
     };
   };
 }
-export interface TextBlock {
-  content: {
-    [k: string]: unknown;
-  }[];
-  id?: string;
-  blockName?: string;
-  blockType: "textBlock";
-}
-export interface Section {
-  content?: (Section_Section | Section_Tabs | TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface Section_Section {
-  content?: (
-    | Section_Section_Section
-    | Section_Section_Tabs
-    | TranscriptBlock
-    | QuoteBlock
-    | TextBlock
-  )[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface Section_Section_Section {
-  content?: (
-    | Section_Section_Section_Section
-    | Section_Section_Section_Tabs
-    | TranscriptBlock
-    | QuoteBlock
-    | TextBlock
-  )[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface Section_Section_Section_Section {
-  content?: (Section_Section_Section_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface Section_Section_Section_Section_Section {
-  content?: (TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface TranscriptBlock {
-  lines: (LineBlock | CueBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "transcriptBlock";
-}
-export interface LineBlock {
-  content: {
-    [k: string]: unknown;
-  }[];
-  id?: string;
-  blockName?: string;
-  blockType: "lineBlock";
-}
-export interface CueBlock {
-  content: string;
-  id?: string;
-  blockName?: string;
-  blockType: "cueBlock";
-}
-export interface QuoteBlock {
-  from: string;
-  content: {
-    [k: string]: unknown;
-  }[];
-  id?: string;
-  blockName?: string;
-  blockType: "quoteBlock";
-}
-export interface Section_Section_Section_Tabs {
-  tabs?: Section_Section_Section_Tabs_Tab[];
-  id?: string;
-  blockName?: string;
-  blockType: "tabs";
-}
-export interface Section_Section_Section_Tabs_Tab {
-  content?: (Section_Section_Section_Tabs_Tab_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "tab";
-}
-export interface Section_Section_Section_Tabs_Tab_Section {
-  content?: (TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface Section_Section_Tabs {
-  tabs?: Section_Section_Tabs_Tab[];
-  id?: string;
-  blockName?: string;
-  blockType: "tabs";
-}
-export interface Section_Section_Tabs_Tab {
-  content?: (Section_Section_Tabs_Tab_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "tab";
-}
-export interface Section_Section_Tabs_Tab_Section {
-  content?: (Section_Section_Tabs_Tab_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface Section_Section_Tabs_Tab_Section_Section {
-  content?: (TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface Section_Tabs {
-  tabs?: Section_Tabs_Tab[];
-  id?: string;
-  blockName?: string;
-  blockType: "tabs";
-}
-export interface Section_Tabs_Tab {
-  content?: (Section_Tabs_Tab_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "tab";
-}
-export interface Section_Tabs_Tab_Section {
-  content?: (Section_Tabs_Tab_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface Section_Tabs_Tab_Section_Section {
-  content?: (Section_Tabs_Tab_Section_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface Section_Tabs_Tab_Section_Section_Section {
-  content?: (TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface Tabs {
-  tabs?: Tabs_Tab[];
-  id?: string;
-  blockName?: string;
-  blockType: "tabs";
-}
-export interface Tabs_Tab {
-  content?: (Tabs_Tab_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "tab";
-}
-export interface Tabs_Tab_Section {
-  content?: (Tabs_Tab_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface Tabs_Tab_Section_Section {
-  content?: (Tabs_Tab_Section_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface Tabs_Tab_Section_Section_Section {
-  content?: (Tabs_Tab_Section_Section_Section_Section | TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
-export interface Tabs_Tab_Section_Section_Section_Section {
-  content?: (TranscriptBlock | QuoteBlock | TextBlock)[];
-  id?: string;
-  blockName?: string;
-  blockType: "section";
-}
 export interface ContentsFolder {
   id: string;
   slug: string;
@@ -617,21 +434,21 @@ export interface Post {
   thumbnail?: string | PostThumbnail;
   authors:
     | {
+        relationTo: 'recorders';
         value: string;
-        relationTo: "recorders";
       }[]
     | {
+        relationTo: 'recorders';
         value: Recorder;
-        relationTo: "recorders";
       }[];
   categories?:
     | {
+        relationTo: 'keys';
         value: string;
-        relationTo: "keys";
       }[]
     | {
+        relationTo: 'keys';
         value: Key;
-        relationTo: "keys";
       }[];
   translations: {
     language: string | Language;
@@ -650,7 +467,7 @@ export interface Post {
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: "draft" | "published";
+  _status?: 'draft' | 'published';
 }
 export interface PostThumbnail {
   id: string;
@@ -701,12 +518,12 @@ export interface ChronologyItem {
   events: {
     source?:
       | {
+          relationTo: 'contents';
           value: string | Content;
-          relationTo: "contents";
         }
       | {
+          relationTo: 'library-items';
           value: string | LibraryItem;
-          relationTo: "library-items";
         };
     translations: {
       language: string | Language;
@@ -724,7 +541,7 @@ export interface ChronologyItem {
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: "draft" | "published";
+  _status?: 'draft' | 'published';
 }
 export interface ChronologyEra {
   id: string;
@@ -768,7 +585,7 @@ export interface Weapon {
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: "draft" | "published";
+  _status?: 'draft' | 'published';
 }
 export interface WeaponsThumbnail {
   id: string;
@@ -830,7 +647,7 @@ export interface Video {
   id: string;
   uid: string;
   gone: boolean;
-  source: "YouTube" | "NicoNico" | "Tumblr";
+  source: 'YouTube' | 'NicoNico' | 'Tumblr';
   title: string;
   description?: string;
   likes?: number;
@@ -843,4 +660,63 @@ export interface VideosChannel {
   uid: string;
   title: string;
   subscribers?: number;
+}
+export interface PayloadPreference {
+  id: string;
+  user: {
+    relationTo: 'recorders';
+    value: string | Recorder;
+  };
+  key?: string;
+  value?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface PayloadMigration {
+  id: string;
+  name?: string;
+  batch?: number;
+  updatedAt: string;
+  createdAt: string;
+}
+
+
+declare module 'payload' {
+  export interface GeneratedTypes {
+    collections: {
+      'library-items': LibraryItem
+      'contents': Content
+      'contents-folders': Contents Folder
+      'posts': Post
+      'chronology-items': ChronologyItem
+      'chronology-eras': Chronology Era
+      'weapons': Weapon
+      'weapons-groups': Weapons Group
+      'weapons-thumbnails': Weapons Thumbnail
+      'contents-thumbnails': Contents Thumbnail
+      'library-items-thumbnails': Library Item Thumbnail
+      'library-items-scans': Library Item Scans
+      'library-items-gallery': Library Item Gallery
+      'recorders-thumbnails': Recorders Thumbnail
+      'posts-thumbnails': Post Thumbnail
+      'files': File
+      'videos': Video
+      'videos-channels': Videos Channel
+      'languages': Language
+      'currencies': Currency
+      'recorders': Recorder
+      'keys': Key
+      'payload-preferences': PayloadPreference
+      'payload-migrations': PayloadMigration
+    }
+
+  }
 }
