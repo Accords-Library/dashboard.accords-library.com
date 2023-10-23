@@ -7,6 +7,7 @@ import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
 import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
 import { isDefined, isUndefined } from "../../utils/asserts";
+import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 
 const fields = {
@@ -97,7 +98,11 @@ export const Posts = buildVersionedCollectionConfig({
       minRows: 1,
       fields: [
         { name: fields.title, type: "text", required: true },
-        { name: fields.summary, type: "textarea" },
+        {
+          name: fields.summary,
+          type: "richText",
+          editor: createEditor({ inlines: true, lists: true, links: true }),
+        },
         {
           type: "row",
           fields: [

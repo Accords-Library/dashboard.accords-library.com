@@ -19,6 +19,7 @@ import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
 import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
 import { LibraryItem } from "../../types/collections";
 import { isDefined } from "../../utils/asserts";
+import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { RowLabel } from "./components/RowLabel";
 
@@ -146,15 +147,32 @@ export const LibraryItems = buildVersionedCollectionConfig({
   },
   fields: [
     {
-      name: fields.itemType,
-      type: "radio",
-      options: Object.entries(LibraryItemsTypes).map(([value, label]) => ({
-        label,
-        value,
-      })),
-      admin: {
-        layout: "horizontal",
-      },
+      type: "row",
+      fields: [
+        {
+          name: fields.itemType,
+          type: "radio",
+          options: Object.entries(LibraryItemsTypes).map(([value, label]) => ({
+            label,
+            value,
+          })),
+          admin: {
+            layout: "horizontal",
+            width: "0%",
+          },
+        },
+        {
+          name: fields.digital,
+          type: "checkbox",
+          required: true,
+          defaultValue: false,
+          admin: {
+            description:
+              "The item is the digital version of another item, or the item is sold only digitally.",
+            width: "0%",
+          },
+        },
+      ],
     },
     {
       type: "tabs",
@@ -206,27 +224,6 @@ export const LibraryItems = buildVersionedCollectionConfig({
                   admin: {
                     description:
                       "A primary item is an official item that focuses primarly on one or more of our Categories.",
-                    width: "0%",
-                  },
-                },
-                {
-                  name: fields.digital,
-                  type: "checkbox",
-                  required: true,
-                  defaultValue: false,
-                  admin: {
-                    description:
-                      "The item is the digital version of another item, or the item is sold only digitally.",
-                    width: "0%",
-                  },
-                },
-                {
-                  name: fields.downloadable,
-                  type: "checkbox",
-                  required: true,
-                  defaultValue: false,
-                  admin: {
-                    description: "Are the scans available for download?",
                     width: "0%",
                   },
                 },
@@ -505,6 +502,16 @@ export const LibraryItems = buildVersionedCollectionConfig({
                     },
                   ],
                 },
+                {
+                  name: fields.downloadable,
+                  type: "checkbox",
+                  required: true,
+                  defaultValue: false,
+                  admin: {
+                    description: "Are the scans available for download?",
+                    width: "0%",
+                  },
+                },
               ],
             }),
           ],
@@ -559,6 +566,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                         })
                       ),
                       admin: {
+                        condition: (data: Partial<LibraryItem>) => !data.digital,
                         layout: "horizontal",
                         width: "0%",
                       },
@@ -654,11 +662,18 @@ export const LibraryItems = buildVersionedCollectionConfig({
               name: fields.translations,
               label: "Descriptions",
               admin: { initCollapsed: true, useAsTitle: fields.translationsDescription },
-              fields: [{ name: fields.translationsDescription, type: "textarea", required: true }],
+              fields: [
+                {
+                  name: fields.translationsDescription,
+                  required: true,
+                  type: "richText",
+                  editor: createEditor({ inlines: true, lists: true, links: true }),
+                },
+              ],
             }),
             optionalGroupField({
               name: fields.size,
-              admin: { condition: (data) => !data.digital },
+              admin: { condition: (data: Partial<LibraryItem>) => !data.digital },
               fields: [
                 {
                   type: "row",
@@ -763,7 +778,8 @@ export const LibraryItems = buildVersionedCollectionConfig({
                 },
                 {
                   name: fields.contentsNote,
-                  type: "textarea",
+                  type: "richText",
+                  editor: createEditor({ inlines: true, lists: true, links: true }),
                   admin: {
                     condition: ({ itemType }) =>
                       itemType === LibraryItemsTypes.Game || itemType === LibraryItemsTypes.Other,

@@ -1,4 +1,5 @@
 import { Block } from "payload/types";
+import { createEditor } from "../utils/editor";
 
 export const cueBlock: Block = {
   slug: "cueBlock",
@@ -8,12 +9,12 @@ export const cueBlock: Block = {
     {
       name: "content",
       label: false,
-      type: "textarea",
+      type: "richText",
       required: true,
       admin: {
-        description:
-          "Parenthesis will automatically be added around cues. You don't have to include them here.",
+        className: "reduced-margins",
       },
+      editor: createEditor({ inlines: true, lists: true, links: true }),
     },
   ],
 };

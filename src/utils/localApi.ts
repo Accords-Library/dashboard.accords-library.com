@@ -21,6 +21,24 @@ export const findCategory = async (name: string): Promise<string> => {
   return key.docs[0]?.id;
 };
 
+export const findRecorder = async (name: string): Promise<string> => {
+  const recorder = await payload.find({
+    collection: Collections.Recorders,
+    where: { username: { equals: name } },
+  });
+  if (!recorder.docs[0]) throw new Error(`Recorder ${name} wasn't found`);
+  return recorder.docs[0]?.id;
+};
+
+export const findContentType = async (name: string): Promise<string> => {
+  const key = await payload.find({
+    collection: Collections.Keys,
+    where: { name: { equals: name }, type: { equals: KeysTypes.Contents } },
+  });
+  if (!key.docs[0]) throw new Error(`Content type ${name} wasn't found`);
+  return key.docs[0]?.id;
+};
+
 type UploadStrapiImage = {
   image: StrapiImage;
   collection: Collections;
@@ -31,6 +49,16 @@ export const uploadStrapiImage = async ({
   image,
 }: UploadStrapiImage): Promise<string | undefined> => {
   if (isDefined(image.data)) {
+    const filename = image.data.attributes.hash + image.data.attributes.ext;
+
+    const existingImage = await payload.find({
+      collection,
+      where: { filename: { equals: filename } },
+    });
+    if (existingImage.docs[0]) {
+      return existingImage.docs[0].id;
+    }
+ 
     const url = `${process.env.STRAPI_URI}${image.data.attributes.url}`;
 
     const blob = await (await fetch(url)).blob();
@@ -41,7 +69,7 @@ export const uploadStrapiImage = async ({
       file: {
         data: buffer,
         mimetype: image.data.attributes.mime,
-        name: image.data.attributes.name,
+        name: filename,
         size: image.data.attributes.size,
       },
       data: {},

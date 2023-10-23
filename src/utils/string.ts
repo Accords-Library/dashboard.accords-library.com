@@ -21,3 +21,37 @@ export const formatToCamelCase = (name: string): string =>
     .join("");
 
 export const formatToPascalCase = (name: string): string => capitalize(formatToCamelCase(name));
+
+export const plainTextToLexical = (
+  text: string
+): {
+  [k: string]: unknown;
+}[] => ({
+  root: {
+    type: "root",
+    format: "",
+    indent: 0,
+    version: 1,
+    children: [
+      {
+        children: [
+          {
+            detail: 0,
+            format: 0,
+            mode: "normal",
+            style: "",
+            text,
+            type: "text",
+            version: 1,
+          },
+        ],
+        direction: "ltr",
+        format: "",
+        indent: 0,
+        type: "paragraph",
+        version: 1,
+      },
+    ],
+    direction: "ltr",
+  },
+});

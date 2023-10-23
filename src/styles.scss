@@ -56,6 +56,23 @@ html[data-theme="light"] {
   }
 }
 
+.field-type.no-label > header {
+  display: none;
+}
+
+.lexical-block__block-pill-transcriptBlock + .section-title {
+  display: none;
+}
+
+.blocks-field__block-pill-cueBlock + .section-title {
+  display: none;
+}
+
+.rich-text-lexical.field-type.reduced-margins {
+  margin-top: -0.75em;
+  margin-bottom: -2rem;
+}
+
 .field-type.array-field.group-array {
   > .array-field__header {
     .array-field__header-actions {

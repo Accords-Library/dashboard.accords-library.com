@@ -1,4 +1,5 @@
 import { Block } from "payload/types";
+import { createEditor } from "../utils/editor";
 
 export const lineBlock: Block = {
   slug: "lineBlock",
@@ -10,6 +11,10 @@ export const lineBlock: Block = {
       label: false,
       type: "richText",
       required: true,
+      admin: {
+        className: "reduced-margins",
+      },
+      editor: createEditor({ inlines: true, lists: true, links: true }),
     },
   ],
 };

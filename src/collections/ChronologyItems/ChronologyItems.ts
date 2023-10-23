@@ -6,6 +6,7 @@ import {
 } from "../../components/QuickFilters";
 import { CollectionGroups, Collections } from "../../constants";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
+import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 import { beforeValidatePopulateNameField } from "./hooks/beforeValidatePopulateNameField";
@@ -127,9 +128,14 @@ export const ChronologyItems: CollectionConfig = buildVersionedCollectionConfig(
             {
               name: fields.eventsTranslationsDescription,
               validate: validateEventsTranslationsDescription,
-              type: "textarea",
+              type: "richText",
+              editor: createEditor({ inlines: true, lists: true, links: true }),
             },
-            { name: fields.eventsTranslationsNotes, type: "textarea" },
+            {
+              name: fields.eventsTranslationsNotes,
+              type: "richText",
+              editor: createEditor({ inlines: true, lists: true, links: true }),
+            },
           ],
         }),
       ],

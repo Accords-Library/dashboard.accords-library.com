@@ -6,6 +6,7 @@ import { CollectionGroups, Collections, RecordersRoles } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { createEditor } from "../../utils/editor";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 import { beforeLoginMustHaveAtLeastOneRole } from "./hooks/beforeLoginMustHaveAtLeastOneRole";
 
@@ -107,11 +108,18 @@ export const Recorders = buildCollectionConfig({
       name: fields.biographies,
       interfaceName: "RecorderBiographies",
       admin: {
-        useAsTitle: fields.biography,
+        // TODO: Reenable when we can use rich text as titles  useAsTitle: fields.biography,
         description:
           "A short personal description about you or your involvement with this project or the franchise",
       },
-      fields: [{ name: fields.biography, required: true, type: "textarea" }],
+      fields: [
+        {
+          name: fields.biography,
+          required: true,
+          type: "richText",
+          editor: createEditor({ inlines: true, lists: true, links: true }),
+        },
+      ],
     }),
     {
       name: fields.role,

@@ -2,21 +2,22 @@ import { CollectionGroups, Collections } from "../../constants";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
-import { importFromStrapi } from "./endpoints/importFromStrapi";
+import { createEditor } from "../../utils/editor";
 
 const fields = {
   slug: "slug",
   translations: "translations",
   name: "name",
+  description: "description",
   subfolders: "subfolders",
-  contents: "contents",
+  items: "items",
 } as const satisfies Record<string, string>;
 
-export const ContentsFolders = buildCollectionConfig({
-  slug: Collections.ContentsFolders,
+export const LibraryFolders = buildCollectionConfig({
+  slug: Collections.LibraryFolders,
   labels: {
-    singular: "Contents Folder",
-    plural: "Contents Folders",
+    singular: "Library Folder",
+    plural: "Library Folders",
   },
   defaultSort: fields.slug,
   admin: {
@@ -25,7 +26,6 @@ export const ContentsFolders = buildCollectionConfig({
     disableDuplicate: true,
     group: CollectionGroups.Collections,
   },
-  endpoints: [importFromStrapi],
   timestamps: false,
   versions: false,
   fields: [
@@ -35,7 +35,14 @@ export const ContentsFolders = buildCollectionConfig({
       admin: {
         useAsTitle: fields.name,
       },
-      fields: [{ name: fields.name, type: "text", required: true }],
+      fields: [
+        { name: fields.name, type: "text", required: true },
+        {
+          name: fields.description,
+          type: "richText",
+          editor: createEditor({ inlines: true, lists: true, links: true }),
+        },
+      ],
     }),
     {
       type: "row",
@@ -43,14 +50,14 @@ export const ContentsFolders = buildCollectionConfig({
         {
           type: "relationship",
           name: fields.subfolders,
-          relationTo: Collections.ContentsFolders,
+          relationTo: Collections.LibraryFolders,
           hasMany: true,
           admin: { width: "0%" },
         },
         {
           type: "relationship",
-          name: fields.contents,
-          relationTo: Collections.Contents,
+          name: fields.items,
+          relationTo: Collections.LibraryItems,
           hasMany: true,
           admin: { width: "0%" },
         },

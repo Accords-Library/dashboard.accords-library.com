@@ -28,7 +28,7 @@ const languageField: Field = {
   type: "relationship",
   relationTo: Collections.Languages,
   required: true,
-  admin: { allowCreate: false, width: "0%" },
+  admin: { allowCreate: false  },
 };
 
 const sourceLanguageField: Field = {
@@ -36,7 +36,7 @@ const sourceLanguageField: Field = {
   type: "relationship",
   relationTo: Collections.Languages,
   required: true,
-  admin: { allowCreate: false, width: "0%" },
+  admin: { allowCreate: false },
 };
 
 const creditFields: Field = {

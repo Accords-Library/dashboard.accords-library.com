@@ -14,17 +14,15 @@ export type CategoryTranslations = {
 }[];
 export type RecorderBiographies = {
   language: string | Language;
-  biography: string;
-  id?: string;
-}[];
-export type ContentFoldersTranslation = {
-  language: string | Language;
-  name: string;
+  biography: {
+    [k: string]: unknown;
+  }[];
   id?: string;
 }[];
 
 export interface Config {
   collections: {
+    'library-folders': LibraryFolder;
     'library-items': LibraryItem;
     contents: Content;
     'contents-folders': ContentsFolder;
@@ -41,6 +39,7 @@ export interface Config {
     'recorders-thumbnails': RecordersThumbnail;
     'posts-thumbnails': PostThumbnail;
     files: File;
+    Notes: Note;
     videos: Video;
     'videos-channels': VideosChannel;
     languages: Language;
@@ -52,9 +51,28 @@ export interface Config {
   };
   globals: {};
 }
+export interface LibraryFolder {
+  id: string;
+  slug: string;
+  translations?: {
+    language: string | Language;
+    name: string;
+    description?: {
+      [k: string]: unknown;
+    }[];
+    id?: string;
+  }[];
+  subfolders?: string[] | LibraryFolder[];
+  items?: string[] | LibraryItem[];
+}
+export interface Language {
+  id: string;
+  name: string;
+}
 export interface LibraryItem {
   id: string;
   itemType?: 'Textual' | 'Audio' | 'Video' | 'Game' | 'Other';
+  digital: boolean;
   slug: string;
   thumbnail?: string | LibraryItemThumbnail;
   pretitle?: string;
@@ -62,8 +80,6 @@ export interface LibraryItem {
   subtitle?: string;
   rootItem: boolean;
   primary: boolean;
-  digital: boolean;
-  downloadable: boolean;
   gallery?: {
     image?: string | LibraryItemGallery;
     id?: string;
@@ -111,6 +127,7 @@ export interface LibraryItem {
       image: string | LibraryItemScans;
       id?: string;
     }[];
+    downloadable: boolean;
     id?: string;
   }[];
   textual?: {
@@ -132,7 +149,9 @@ export interface LibraryItem {
   categories?: string[] | Key[];
   translations?: {
     language: string | Language;
-    description: string;
+    description: {
+      [k: string]: unknown;
+    }[];
     id?: string;
   }[];
   size?: {
@@ -156,7 +175,9 @@ export interface LibraryItem {
     pageEnd?: number;
     timeStart?: number;
     timeEnd?: number;
-    note?: string;
+    note?: {
+      [k: string]: unknown;
+    }[];
     id?: string;
   }[];
   updatedBy: string | Recorder;
@@ -292,10 +313,6 @@ export interface Key {
     | 'Wordings';
   translations?: CategoryTranslations;
 }
-export interface Language {
-  id: string;
-  name: string;
-}
 export interface File {
   id: string;
   filename: string;
@@ -318,16 +335,22 @@ export interface Content {
     pretitle?: string;
     title: string;
     subtitle?: string;
-    summary?: string;
+    summary?: {
+      [k: string]: unknown;
+    }[];
     textContent?: {
       [k: string]: unknown;
     }[];
     textTranscribers?: string[] | Recorder[];
     textTranslators?: string[] | Recorder[];
     textProofreaders?: string[] | Recorder[];
-    textNotes?: string;
+    textNotes?: {
+      [k: string]: unknown;
+    }[];
     video?: string | File;
-    videoNotes?: string;
+    videoNotes?: {
+      [k: string]: unknown;
+    }[];
     audio?: string | File;
     id?: string;
   }[];
@@ -424,7 +447,11 @@ export interface RecordersThumbnail {
 export interface ContentsFolder {
   id: string;
   slug: string;
-  translations?: ContentFoldersTranslation;
+  translations?: {
+    language: string | Language;
+    name: string;
+    id?: string;
+  }[];
   subfolders?: string[] | ContentsFolder[];
   contents?: string[] | Content[];
 }
@@ -454,7 +481,9 @@ export interface Post {
     language: string | Language;
     sourceLanguage: string | Language;
     title: string;
-    summary?: string;
+    summary?: {
+      [k: string]: unknown;
+    }[];
     translators?: string[] | Recorder[];
     proofreaders?: string[] | Recorder[];
     content?: {
@@ -529,8 +558,12 @@ export interface ChronologyItem {
       language: string | Language;
       sourceLanguage: string | Language;
       title?: string;
-      description?: string;
-      notes?: string;
+      description?: {
+        [k: string]: unknown;
+      }[];
+      notes?: {
+        [k: string]: unknown;
+      }[];
       transcribers?: string[] | Recorder[];
       translators?: string[] | Recorder[];
       proofreaders?: string[] | Recorder[];
@@ -551,7 +584,9 @@ export interface ChronologyEra {
   translations?: {
     language: string | Language;
     title: string;
-    description?: string;
+    description?: {
+      [k: string]: unknown;
+    }[];
     id?: string;
   }[];
   events?: string[] | ChronologyItem[];
@@ -570,11 +605,21 @@ export interface Weapon {
       language: string | Language;
       sourceLanguage: string | Language;
       name: string;
-      description?: string;
-      level1?: string;
-      level2?: string;
-      level3?: string;
-      level4?: string;
+      description?: {
+        [k: string]: unknown;
+      }[];
+      level1?: {
+        [k: string]: unknown;
+      }[];
+      level2?: {
+        [k: string]: unknown;
+      }[];
+      level3?: {
+        [k: string]: unknown;
+      }[];
+      level4?: {
+        [k: string]: unknown;
+      }[];
       transcribers?: string[] | Recorder[];
       translators?: string[] | Recorder[];
       proofreaders?: string[] | Recorder[];
@@ -643,6 +688,14 @@ export interface WeaponsGroup {
   }[];
   weapons?: string[] | Weapon[];
 }
+export interface Note {
+  id: string;
+  note: {
+    [k: string]: unknown;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
 export interface Video {
   id: string;
   uid: string;
@@ -690,33 +743,5 @@ export interface PayloadMigration {
 
 
 declare module 'payload' {
-  export interface GeneratedTypes {
-    collections: {
-      'library-items': LibraryItem
-      'contents': Content
-      'contents-folders': ContentsFolder
-      'posts': Post
-      'chronology-items': ChronologyItem
-      'chronology-eras': ChronologyEra
-      'weapons': Weapon
-      'weapons-groups': WeaponsGroup
-      'weapons-thumbnails': WeaponsThumbnail
-      'contents-thumbnails': ContentsThumbnail
-      'library-items-thumbnails': LibraryItemThumbnail
-      'library-items-scans': LibraryItemScans
-      'library-items-gallery': LibraryItemGallery
-      'recorders-thumbnails': RecordersThumbnail
-      'posts-thumbnails': PostThumbnail
-      'files': File
-      'videos': Video
-      'videos-channels': VideosChannel
-      'languages': Language
-      'currencies': Currency
-      'recorders': Recorder
-      'keys': Key
-      'payload-preferences': PayloadPreference
-      'payload-migrations': PayloadMigration
-    }
-
-  }
+  export interface GeneratedTypes extends Config {}
 }

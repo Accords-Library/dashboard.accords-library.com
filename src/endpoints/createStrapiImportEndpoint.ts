@@ -43,7 +43,7 @@ type Params<S> = {
     convert?: (
       strapiObject: S,
       user: any
-    ) => Parameters<BasePayload<GeneratedTypes>["create"]>[0]["data"];
+    ) => Promise<Parameters<BasePayload<GeneratedTypes>["create"]>[0]["data"]>;
   };
 };
 
@@ -64,7 +64,7 @@ export const importStrapiEntries = async <S>({
         } else if (isDefined(payloadParams.convert)) {
           await payload.create({
             collection: payloadParams.collection,
-            data: payloadParams.convert(attributes, user),
+            data: await payloadParams.convert(attributes, user),
             user,
           });
         } else {

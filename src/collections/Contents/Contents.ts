@@ -1,3 +1,5 @@
+import { sectionBlock } from "../../blocks/sectionBlock";
+import { transcriptBlock } from "../../blocks/transcriptBlock";
 import { CollectionGroups, Collections, FileTypes, KeysTypes } from "../../constants";
 import { fileField } from "../../fields/fileField/fileField";
 import { imageField } from "../../fields/imageField/imageField";
@@ -8,7 +10,9 @@ import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
 import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
 import { isDefined } from "../../utils/asserts";
+import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
+import { importFromStrapi } from "./endpoints/importFromStrapi";
 
 const fields = {
   slug: "slug",
@@ -61,6 +65,7 @@ export const Contents = buildVersionedCollectionConfig({
     },
     preview: (doc) => `https://accords-library.com/contents/${doc.slug}`,
   },
+  endpoints: [importFromStrapi],
   fields: [
     {
       type: "row",
@@ -103,7 +108,11 @@ export const Contents = buildVersionedCollectionConfig({
             { name: fields.subtitle, type: "text" },
           ],
         },
-        { name: fields.summary, type: "textarea" },
+        {
+          name: fields.summary,
+          type: "richText",
+          editor: createEditor({ inlines: true, lists: true, links: true }),
+        },
         {
           type: "tabs",
           admin: {
@@ -114,7 +123,20 @@ export const Contents = buildVersionedCollectionConfig({
             {
               label: "Text",
               fields: [
-                { name: fields.textContent, type: "richText" },
+                {
+                  name: fields.textContent,
+                  type: "richText",
+                  label: false,
+                  editor: createEditor({
+                    blocks: [sectionBlock, transcriptBlock],
+                    images: true,
+                    inlines: true,
+                    lists: true,
+                    links: true,
+                    relations: true,
+                    alignment: true,
+                  }),
+                },
                 {
                   type: "row",
                   fields: [
@@ -155,7 +177,8 @@ export const Contents = buildVersionedCollectionConfig({
                 {
                   name: fields.textNotes,
                   label: "Notes",
-                  type: "textarea",
+                  type: "richText",
+                  editor: createEditor({ inlines: true, lists: true, links: true }),
                 },
               ],
             },
@@ -173,7 +196,8 @@ export const Contents = buildVersionedCollectionConfig({
                     {
                       name: fields.videoNotes,
                       label: "Notes",
-                      type: "textarea",
+                      type: "richText",
+                      editor: createEditor({ inlines: true, lists: true, links: true }),
                       admin: { width: "0%" },
                     },
                   ],
@@ -194,7 +218,8 @@ export const Contents = buildVersionedCollectionConfig({
                     {
                       name: fields.audioNotes,
                       label: "Notes",
-                      type: "textarea",
+                      type: "richText",
+                      editor: createEditor({ inlines: true, lists: true, links: true }),
                       admin: { width: "0%" },
                     },
                   ],

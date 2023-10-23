@@ -4,6 +4,7 @@ import { imageField } from "../../fields/imageField/imageField";
 import { keysField } from "../../fields/keysField/keysField";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
+import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { AppearanceRowLabel } from "./components/AppearanceRowLabel";
 import { getBySlugEndpoint } from "./endpoints/getBySlugEndpoint";
@@ -113,7 +114,8 @@ export const Weapons = buildVersionedCollectionConfig({
                 },
                 {
                   name: fields.appearancesTranslationsDescription,
-                  type: "textarea",
+                  type: "richText",
+                  editor: createEditor({ inlines: true }),
                   admin: { width: "0%" },
                 },
               ],
@@ -124,13 +126,15 @@ export const Weapons = buildVersionedCollectionConfig({
                 {
                   name: fields.appearancesTranslationsLevel1,
                   label: "Level 1",
-                  type: "textarea",
+                  type: "richText",
+                  editor: createEditor({ inlines: true }),
                   admin: { width: "0%" },
                 },
                 {
                   name: fields.appearancesTranslationsLevel2,
                   label: "Level 2",
-                  type: "textarea",
+                  type: "richText",
+                  editor: createEditor({ inlines: true }),
                   admin: { width: "0%" },
                 },
               ],
@@ -141,13 +145,15 @@ export const Weapons = buildVersionedCollectionConfig({
                 {
                   name: fields.appearancesTranslationsLevel3,
                   label: "Level 3",
-                  type: "textarea",
+                  type: "richText",
+                  editor: createEditor({ inlines: true }),
                   admin: { width: "0%" },
                 },
                 {
                   name: fields.appearancesTranslationsLevel4,
                   label: "Level 4",
-                  type: "textarea",
+                  type: "richText",
+                  editor: createEditor({ inlines: true }),
                   admin: { width: "0%" },
                 },
               ],

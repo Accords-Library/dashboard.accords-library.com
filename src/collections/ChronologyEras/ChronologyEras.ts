@@ -5,6 +5,7 @@ import { backPropagationField } from "../../fields/backPropagationField/backProp
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { createEditor } from "../../utils/editor";
 import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 import { beforeValidateEndingGreaterThanStarting } from "./hooks/beforeValidateEndingGreaterThanStarting";
@@ -68,7 +69,8 @@ export const ChronologyEras: CollectionConfig = buildCollectionConfig({
         { name: fields.translationsTitle, type: "text", required: true },
         {
           name: fields.translationsDescription,
-          type: "textarea",
+          type: "richText",
+          editor: createEditor({ inlines: true, lists: true, links: true }),
         },
       ],
     }),

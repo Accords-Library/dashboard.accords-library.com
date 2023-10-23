@@ -5,6 +5,7 @@ import { Recorder } from "../../../types/collections";
 import { StrapiImage, StrapiLanguage } from "../../../types/strapi";
 import { isDefined, isUndefined } from "../../../utils/asserts";
 import { uploadStrapiImage } from "../../../utils/localApi";
+import { plainTextToLexical } from "../../../utils/string";
 
 type StrapiRecorder = {
   username: string;
@@ -19,7 +20,7 @@ export const importFromStrapi = createStrapiImportEndpoint<StrapiRecorder>({
   strapi: {
     collection: "recorders",
     params: {
-      populate: "bio.language,languages,avatar",
+      populate: ["bio.language", "languages", "avatar"],
     },
   },
   payload: {
@@ -50,9 +51,9 @@ export const importFromStrapi = createStrapiImportEndpoint<StrapiRecorder>({
               if (isUndefined(language.data))
                 throw new Error("A language is required for a Recorder biography");
               if (isUndefined(bio)) throw new Error("A bio is required for a Recorder biography");
-              return {
+              return {    
                 language: language.data.attributes.code,
-                biography: bio,
+                biography: plainTextToLexical(bio),
               };
             }),
           },
@@ -72,10 +73,9 @@ export const importFromStrapi = createStrapiImportEndpoint<StrapiRecorder>({
               if (isUndefined(bio)) throw new Error("A bio is required for a Recorder biography");
               return {
                 language: language.data.attributes.code,
-                biography: bio,
+                biography: plainTextToLexical(bio),
               };
             }),
-
             email: `${anonymous_code}@accords-library.com`,
             password: process.env.RECORDER_DEFAULT_PASSWORD,
           },
