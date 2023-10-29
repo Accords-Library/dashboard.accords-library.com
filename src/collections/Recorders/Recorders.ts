@@ -4,6 +4,7 @@ import { mustBeAdmin as mustBeAdminForFields } from "../../accesses/fields/mustB
 import { QuickFilters } from "../../components/QuickFilters";
 import { CollectionGroups, Collections, RecordersRoles } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
+import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { createEditor } from "../../utils/editor";
@@ -77,23 +78,19 @@ export const Recorders = buildCollectionConfig({
   endpoints: [importFromStrapi],
   timestamps: false,
   fields: [
-    {
-      type: "row",
-      fields: [
-        {
-          name: fields.username,
-          type: "text",
-          unique: true,
-          required: true,
-          admin: { description: "The username must be unique", width: "0%" },
-        },
-        imageField({
-          name: fields.avatar,
-          relationTo: Collections.RecordersThumbnails,
-          admin: { width: "0%" },
-        }),
-      ],
-    },
+    rowField([
+      {
+        name: fields.username,
+        type: "text",
+        unique: true,
+        required: true,
+        admin: { description: "The username must be unique" },
+      },
+      imageField({
+        name: fields.avatar,
+        relationTo: Collections.RecordersThumbnails,
+      }),
+    ]),
     {
       name: fields.languages,
       type: "relationship",

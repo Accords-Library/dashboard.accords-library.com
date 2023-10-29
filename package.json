@@ -19,18 +19,18 @@
     "precommit": "npm run generate:types && npm run prettier && npm run unused-exports && npm run tsc",
     "upgrade": "ncu",
     "clean": "sudo rm -r uploads mongo",
-    "start": "sudo docker compose up"
+    "start": "sudo docker compose up",
+    "stop": "sudo docker compose down"
   },
   "dependencies": {
     "@fontsource/vollkorn": "^5.0.17",
     "@payloadcms/bundler-webpack": "^1.0.4",
     "@payloadcms/db-mongodb": "^1.0.4",
     "@payloadcms/richtext-lexical": "^0.1.15",
-    "clean-deep": "^3.4.0",
     "cross-env": "^7.0.3",
     "language-tags": "^1.0.9",
     "luxon": "^3.4.3",
-    "payload": "^2.0.12",
+    "payload": "^2.0.13",
     "styled-components": "^6.1.0"
   },
   "devDependencies": {

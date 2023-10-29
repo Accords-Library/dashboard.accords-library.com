@@ -1,4 +1,6 @@
 import { CollectionGroups, Collections } from "../../constants";
+import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
+import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
@@ -11,6 +13,7 @@ const fields = {
   description: "description",
   subfolders: "subfolders",
   items: "items",
+  parentFolders: "parentFolders",
 } as const satisfies Record<string, string>;
 
 export const LibraryFolders = buildCollectionConfig({
@@ -44,24 +47,25 @@ export const LibraryFolders = buildCollectionConfig({
         },
       ],
     }),
-    {
-      type: "row",
-      fields: [
-        {
-          type: "relationship",
-          name: fields.subfolders,
-          relationTo: Collections.LibraryFolders,
-          hasMany: true,
-          admin: { width: "0%" },
-        },
-        {
-          type: "relationship",
-          name: fields.items,
-          relationTo: Collections.LibraryItems,
-          hasMany: true,
-          admin: { width: "0%" },
-        },
-      ],
-    },
+    rowField([
+      backPropagationField({
+        name: fields.parentFolders,
+        relationTo: Collections.LibraryFolders,
+        hasMany: true,
+        where: ({ id }) => ({ [fields.subfolders]: { equals: id } }),
+      }),
+      {
+        type: "relationship",
+        name: fields.subfolders,
+        relationTo: Collections.LibraryFolders,
+        hasMany: true,
+      },
+      {
+        type: "relationship",
+        name: fields.items,
+        relationTo: Collections.LibraryItems,
+        hasMany: true,
+      },
+    ]),
   ],
 });

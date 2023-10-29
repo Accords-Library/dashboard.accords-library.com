@@ -5,6 +5,7 @@ import {
   publishStatusFilters,
 } from "../../components/QuickFilters";
 import { CollectionGroups, Collections } from "../../constants";
+import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
@@ -69,32 +70,26 @@ export const ChronologyItems: CollectionConfig = buildVersionedCollectionConfig(
       name: fields.date,
       validate: validateDate,
       fields: [
-        {
-          type: "row",
-          fields: [
-            {
-              name: fields.dateYear,
-              type: "number",
-              required: true,
-              min: 0,
-              admin: { width: "0%" },
-            },
-            {
-              name: fields.dateMonth,
-              type: "number",
-              min: 1,
-              max: 12,
-              admin: { width: "0%" },
-            },
-            {
-              name: fields.dateDay,
-              type: "number",
-              min: 1,
-              max: 31,
-              admin: { width: "0%" },
-            },
-          ],
-        },
+        rowField([
+          {
+            name: fields.dateYear,
+            type: "number",
+            required: true,
+            min: 0,
+          },
+          {
+            name: fields.dateMonth,
+            type: "number",
+            min: 1,
+            max: 12,
+          },
+          {
+            name: fields.dateDay,
+            type: "number",
+            min: 1,
+            max: 31,
+          },
+        ]),
       ],
     },
     {

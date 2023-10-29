@@ -14,7 +14,7 @@ const updatedByField = (): RelationshipField => ({
   type: "relationship",
   required: true,
   relationTo: Collections.Recorders,
-  admin: { readOnly: true },
+  admin: { readOnly: true, hidden: true },
 });
 
 type BuildVersionedCollectionConfig = Omit<BuildCollectionConfig, "timestamps" | "versions">;

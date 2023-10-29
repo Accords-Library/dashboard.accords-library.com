@@ -2,6 +2,7 @@ import { RowLabelArgs } from "payload/dist/admin/components/forms/RowLabel/types
 import { CollectionGroups, Collections, KeysTypes } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
 import { keysField } from "../../fields/keysField/keysField";
+import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { createEditor } from "../../utils/editor";
@@ -45,34 +46,25 @@ export const Weapons = buildVersionedCollectionConfig({
   },
   endpoints: [importFromStrapi, getBySlugEndpoint],
   fields: [
-    {
-      type: "row",
-      fields: [
-        slugField({ name: fields.slug, admin: { width: "0%" } }),
-        imageField({
-          name: fields.thumbnail,
-          relationTo: Collections.WeaponsThumbnails,
-          admin: { width: "0%" },
-        }),
-      ],
-    },
-    {
-      type: "row",
-      fields: [
-        keysField({
-          name: fields.type,
-          relationTo: KeysTypes.Weapons,
-          required: true,
-          admin: { allowCreate: false, width: "0%" },
-        }),
-        {
-          name: fields.group,
-          type: "relationship",
-          relationTo: Collections.WeaponsGroups,
-          admin: { width: "0%" },
-        },
-      ],
-    },
+    rowField([
+      slugField({ name: fields.slug }),
+      imageField({
+        name: fields.thumbnail,
+        relationTo: Collections.WeaponsThumbnails,
+      }),
+    ]),
+    rowField([
+      keysField({
+        name: fields.type,
+        relationTo: KeysTypes.Weapons,
+        required: true,
+      }),
+      {
+        name: fields.group,
+        type: "relationship",
+        relationTo: Collections.WeaponsGroups,
+      },
+    ]),
     {
       name: fields.appearances,
       type: "array",
@@ -91,7 +83,6 @@ export const Weapons = buildVersionedCollectionConfig({
           required: true,
           hasMany: true,
           relationTo: KeysTypes.Categories,
-          admin: { allowCreate: false },
         }),
         translatedFields({
           name: fields.appearancesTranslations,
@@ -103,61 +94,46 @@ export const Weapons = buildVersionedCollectionConfig({
             hasCredits: true,
           },
           fields: [
-            {
-              type: "row",
-              fields: [
-                {
-                  name: fields.appearancesTranslationsName,
-                  type: "text",
-                  required: true,
-                  admin: { width: "0%" },
-                },
-                {
-                  name: fields.appearancesTranslationsDescription,
-                  type: "richText",
-                  editor: createEditor({ inlines: true }),
-                  admin: { width: "0%" },
-                },
-              ],
-            },
-            {
-              type: "row",
-              fields: [
-                {
-                  name: fields.appearancesTranslationsLevel1,
-                  label: "Level 1",
-                  type: "richText",
-                  editor: createEditor({ inlines: true }),
-                  admin: { width: "0%" },
-                },
-                {
-                  name: fields.appearancesTranslationsLevel2,
-                  label: "Level 2",
-                  type: "richText",
-                  editor: createEditor({ inlines: true }),
-                  admin: { width: "0%" },
-                },
-              ],
-            },
-            {
-              type: "row",
-              fields: [
-                {
-                  name: fields.appearancesTranslationsLevel3,
-                  label: "Level 3",
-                  type: "richText",
-                  editor: createEditor({ inlines: true }),
-                  admin: { width: "0%" },
-                },
-                {
-                  name: fields.appearancesTranslationsLevel4,
-                  label: "Level 4",
-                  type: "richText",
-                  editor: createEditor({ inlines: true }),
-                  admin: { width: "0%" },
-                },
-              ],
-            },
+            rowField([
+              {
+                name: fields.appearancesTranslationsName,
+                type: "text",
+                required: true,
+              },
+              {
+                name: fields.appearancesTranslationsDescription,
+                type: "richText",
+                editor: createEditor({ inlines: true }),
+              },
+            ]),
+            rowField([
+              {
+                name: fields.appearancesTranslationsLevel1,
+                label: "Level 1",
+                type: "richText",
+                editor: createEditor({ inlines: true }),
+              },
+              {
+                name: fields.appearancesTranslationsLevel2,
+                label: "Level 2",
+                type: "richText",
+                editor: createEditor({ inlines: true }),
+              },
+            ]),
+            rowField([
+              {
+                name: fields.appearancesTranslationsLevel3,
+                label: "Level 3",
+                type: "richText",
+                editor: createEditor({ inlines: true }),
+              },
+              {
+                name: fields.appearancesTranslationsLevel4,
+                label: "Level 4",
+                type: "richText",
+                editor: createEditor({ inlines: true }),
+              },
+            ]),
           ],
         }),
       ],

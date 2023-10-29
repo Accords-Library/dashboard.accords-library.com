@@ -22,32 +22,32 @@ export type RecorderBiographies = {
 
 export interface Config {
   collections: {
-    'library-folders': LibraryFolder;
-    'library-items': LibraryItem;
+    "library-folders": LibraryFolder;
+    "library-items": LibraryItem;
     contents: Content;
-    'contents-folders': ContentsFolder;
+    "contents-folders": ContentsFolder;
     posts: Post;
-    'chronology-items': ChronologyItem;
-    'chronology-eras': ChronologyEra;
+    "chronology-items": ChronologyItem;
+    "chronology-eras": ChronologyEra;
     weapons: Weapon;
-    'weapons-groups': WeaponsGroup;
-    'weapons-thumbnails': WeaponsThumbnail;
-    'contents-thumbnails': ContentsThumbnail;
-    'library-items-thumbnails': LibraryItemThumbnail;
-    'library-items-scans': LibraryItemScans;
-    'library-items-gallery': LibraryItemGallery;
-    'recorders-thumbnails': RecordersThumbnail;
-    'posts-thumbnails': PostThumbnail;
+    "weapons-groups": WeaponsGroup;
+    "weapons-thumbnails": WeaponsThumbnail;
+    "contents-thumbnails": ContentsThumbnail;
+    "library-items-thumbnails": LibraryItemThumbnail;
+    "library-items-scans": LibraryItemScans;
+    "library-items-gallery": LibraryItemGallery;
+    "recorders-thumbnails": RecordersThumbnail;
+    "posts-thumbnails": PostThumbnail;
     files: File;
     Notes: Note;
     videos: Video;
-    'videos-channels': VideosChannel;
+    "videos-channels": VideosChannel;
     languages: Language;
     currencies: Currency;
     recorders: Recorder;
     keys: Key;
-    'payload-preferences': PayloadPreference;
-    'payload-migrations': PayloadMigration;
+    "payload-preferences": PayloadPreference;
+    "payload-migrations": PayloadMigration;
   };
   globals: {};
 }
@@ -62,6 +62,7 @@ export interface LibraryFolder {
     }[];
     id?: string;
   }[];
+  parentFolders?: string[] | LibraryFolder[];
   subfolders?: string[] | LibraryFolder[];
   items?: string[] | LibraryItem[];
 }
@@ -71,20 +72,20 @@ export interface Language {
 }
 export interface LibraryItem {
   id: string;
-  itemType?: 'Textual' | 'Audio' | 'Video' | 'Game' | 'Other';
-  digital: boolean;
+  itemType?: "Textual" | "Audio" | "Video" | "Game" | "Other";
   slug: string;
   thumbnail?: string | LibraryItemThumbnail;
   pretitle?: string;
   title: string;
   subtitle?: string;
-  rootItem: boolean;
-  primary: boolean;
+  digital: boolean;
   gallery?: {
     image?: string | LibraryItemGallery;
     id?: string;
   }[];
+  scansEnabled?: boolean;
   scans?: {
+    coverEnabled?: boolean;
     cover?: {
       front?: string | LibraryItemScans;
       spine?: string | LibraryItemScans;
@@ -94,8 +95,8 @@ export interface LibraryItem {
       flapBack?: string | LibraryItemScans;
       insideFlapFront?: string | LibraryItemScans;
       insideFlapBack?: string | LibraryItemScans;
-      id?: string;
-    }[];
+    };
+    dustjacketEnabled?: boolean;
     dustjacket?: {
       front?: string | LibraryItemScans;
       spine?: string | LibraryItemScans;
@@ -107,8 +108,8 @@ export interface LibraryItem {
       flapBack?: string | LibraryItemScans;
       insideFlapFront?: string | LibraryItemScans;
       insideFlapBack?: string | LibraryItemScans;
-      id?: string;
-    }[];
+    };
+    obiEnabled?: boolean;
     obi?: {
       front?: string | LibraryItemScans;
       spine?: string | LibraryItemScans;
@@ -120,22 +121,19 @@ export interface LibraryItem {
       flapBack?: string | LibraryItemScans;
       insideFlapFront?: string | LibraryItemScans;
       insideFlapBack?: string | LibraryItemScans;
-      id?: string;
-    }[];
+    };
     pages?: {
       page: number;
       image: string | LibraryItemScans;
       id?: string;
     }[];
-    downloadable: boolean;
-    id?: string;
-  }[];
+  };
   textual?: {
     subtype?: string[] | Key[];
     languages?: string[] | Language[];
     pageCount?: number;
-    bindingType?: 'Paperback' | 'Hardcover';
-    pageOrder?: 'LeftToRight' | 'RightToLeft';
+    bindingType?: "Paperback" | "Hardcover";
+    pageOrder?: "LeftToRight" | "RightToLeft";
   };
   audio?: {
     audioSubtype?: string[] | Key[];
@@ -147,6 +145,17 @@ export interface LibraryItem {
   };
   releaseDate?: string;
   categories?: string[] | Key[];
+  sizeEnabled?: boolean;
+  size?: {
+    width: number;
+    height: number;
+    thickness?: number;
+  };
+  priceEnabled?: boolean;
+  price?: {
+    amount: number;
+    currency: string | Currency;
+  };
   translations?: {
     language: string | Language;
     description: {
@@ -154,21 +163,13 @@ export interface LibraryItem {
     }[];
     id?: string;
   }[];
-  size?: {
-    width: number;
-    height: number;
-    thickness?: number;
-    id?: string;
-  }[];
-  price?: {
-    amount: number;
-    currency: string | Currency;
-    id?: string;
-  }[];
   urls?: {
     url: string;
     id?: string;
   }[];
+  parentFolders?: string[] | LibraryFolder[];
+  parentItems?: string[] | LibraryItem[];
+  subitems?: string[] | LibraryItem[];
   contents?: {
     content: string | Content;
     pageStart?: number;
@@ -183,7 +184,7 @@ export interface LibraryItem {
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: 'draft' | 'published';
+  _status?: "draft" | "published";
 }
 export interface LibraryItemThumbnail {
   id: string;
@@ -301,22 +302,22 @@ export interface Key {
   id: string;
   name: string;
   type:
-    | 'Contents'
-    | 'LibraryAudio'
-    | 'LibraryVideo'
-    | 'LibraryTextual'
-    | 'LibraryGroup'
-    | 'Library'
-    | 'Weapons'
-    | 'GamePlatforms'
-    | 'Categories'
-    | 'Wordings';
+    | "Contents"
+    | "LibraryAudio"
+    | "LibraryVideo"
+    | "LibraryTextual"
+    | "LibraryGroup"
+    | "Library"
+    | "Weapons"
+    | "GamePlatforms"
+    | "Categories"
+    | "Wordings";
   translations?: CategoryTranslations;
 }
 export interface File {
   id: string;
   filename: string;
-  type: 'LibraryScans' | 'LibrarySoundtracks' | 'ContentVideo' | 'ContentAudio';
+  type: "LibraryScans" | "LibrarySoundtracks" | "ContentVideo" | "ContentAudio";
   updatedAt: string;
   createdAt: string;
 }
@@ -329,6 +330,7 @@ export interface Content {
   thumbnail?: string | ContentsThumbnail;
   categories?: string[] | Key[];
   type?: string | Key;
+  libraryItems?: string[] | LibraryItem[];
   translations: {
     language: string | Language;
     sourceLanguage: string | Language;
@@ -354,10 +356,13 @@ export interface Content {
     audio?: string | File;
     id?: string;
   }[];
+  folders?: string[] | ContentsFolder[];
+  previousContents?: string[] | Content[];
+  nextContents?: string[] | Content[];
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: 'draft' | 'published';
+  _status?: "draft" | "published";
 }
 export interface ContentsThumbnail {
   id: string;
@@ -403,7 +408,7 @@ export interface Recorder {
   avatar?: string | RecordersThumbnail;
   languages?: string[] | Language[];
   biographies?: RecorderBiographies;
-  role?: ('Admin' | 'Recorder' | 'Api')[];
+  role?: ("Admin" | "Recorder" | "Api")[];
   anonymize: boolean;
   email: string;
   resetPasswordToken?: string;
@@ -461,20 +466,20 @@ export interface Post {
   thumbnail?: string | PostThumbnail;
   authors:
     | {
-        relationTo: 'recorders';
+        relationTo: "recorders";
         value: string;
       }[]
     | {
-        relationTo: 'recorders';
+        relationTo: "recorders";
         value: Recorder;
       }[];
   categories?:
     | {
-        relationTo: 'keys';
+        relationTo: "keys";
         value: string;
       }[]
     | {
-        relationTo: 'keys';
+        relationTo: "keys";
         value: Key;
       }[];
   translations: {
@@ -484,11 +489,11 @@ export interface Post {
     summary?: {
       [k: string]: unknown;
     }[];
-    translators?: string[] | Recorder[];
-    proofreaders?: string[] | Recorder[];
     content?: {
       [k: string]: unknown;
     }[];
+    translators?: string[] | Recorder[];
+    proofreaders?: string[] | Recorder[];
     id?: string;
   }[];
   publishedDate: string;
@@ -496,7 +501,7 @@ export interface Post {
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: 'draft' | 'published';
+  _status?: "draft" | "published";
 }
 export interface PostThumbnail {
   id: string;
@@ -547,11 +552,11 @@ export interface ChronologyItem {
   events: {
     source?:
       | {
-          relationTo: 'contents';
+          relationTo: "contents";
           value: string | Content;
         }
       | {
-          relationTo: 'library-items';
+          relationTo: "library-items";
           value: string | LibraryItem;
         };
     translations: {
@@ -574,7 +579,7 @@ export interface ChronologyItem {
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: 'draft' | 'published';
+  _status?: "draft" | "published";
 }
 export interface ChronologyEra {
   id: string;
@@ -630,7 +635,7 @@ export interface Weapon {
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: 'draft' | 'published';
+  _status?: "draft" | "published";
 }
 export interface WeaponsThumbnail {
   id: string;
@@ -700,7 +705,7 @@ export interface Video {
   id: string;
   uid: string;
   gone: boolean;
-  source: 'YouTube' | 'NicoNico' | 'Tumblr';
+  source: "YouTube" | "NicoNico" | "Tumblr";
   title: string;
   description?: string;
   likes?: number;
@@ -717,7 +722,7 @@ export interface VideosChannel {
 export interface PayloadPreference {
   id: string;
   user: {
-    relationTo: 'recorders';
+    relationTo: "recorders";
     value: string | Recorder;
   };
   key?: string;
@@ -741,7 +746,6 @@ export interface PayloadMigration {
   createdAt: string;
 }
 
-
-declare module 'payload' {
+declare module "payload" {
   export interface GeneratedTypes extends Config {}
 }

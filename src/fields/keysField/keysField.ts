@@ -10,9 +10,14 @@ type KeysField = FieldBase & {
 export const keysField = ({
   relationTo,
   hasMany = false,
+  admin,
   ...props
 }: KeysField): RelationshipField => ({
   ...props,
+  admin: {
+    allowCreate: false,
+    ...admin,
+  },
   type: "relationship",
   hasMany: hasMany,
   relationTo: Collections.Keys,

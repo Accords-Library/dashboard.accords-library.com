@@ -168,3 +168,5 @@ dist
 # Ignore Data
 mongo/
 uploads/
+build
+core

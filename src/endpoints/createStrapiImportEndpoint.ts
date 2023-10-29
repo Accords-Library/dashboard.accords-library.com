@@ -38,6 +38,7 @@ type Params<S> = {
     params: any;
   };
   payload: {
+    path?: string;
     collection: Collections;
     import?: (strapiObject: S, user: any) => Promise<void>;
     convert?: (
@@ -55,36 +56,38 @@ export const importStrapiEntries = async <S>({
   const entries = await getAllStrapiEntries(strapiParams.collection, strapiParams.params);
 
   const errors: string[] = [];
+  let currentCount = 1;
 
-  await Promise.all(
-    entries.map(async ({ attributes, id }) => {
-      try {
-        if (isDefined(payloadParams.import)) {
-          await payloadParams.import(attributes, user);
-        } else if (isDefined(payloadParams.convert)) {
-          await payload.create({
-            collection: payloadParams.collection,
-            data: await payloadParams.convert(attributes, user),
-            user,
-          });
-        } else {
-          throw new Error("No function was provided to handle importing the Strapi data");
-        }
-      } catch (e) {
-        console.warn(e);
-        if (typeof e === "object" && isDefined(e) && "name" in e) {
-          errors.push(`${e.name} with ${id}`);
-        }
+  for (const { attributes, id } of entries) {
+    console.debug(`Handling entry ${currentCount}/${entries.length} (id: ${id})`);
+    currentCount++;
+    try {
+      if (isDefined(payloadParams.import)) {
+        await payloadParams.import(attributes, user);
+      } else if (isDefined(payloadParams.convert)) {
+        await payload.create({
+          collection: payloadParams.collection,
+          data: await payloadParams.convert(attributes, user),
+          user,
+        });
+      } else {
+        throw new Error("No function was provided to handle importing the Strapi data");
       }
-    })
-  );
+    } catch (e) {
+      console.warn(e);
+      if (typeof e === "object" && isDefined(e) && "name" in e) {
+        const message = "message" in e ? ` (${e.message})` : "";
+        errors.push(`${e.name}${message} with ${id}`);
+      }
+    }
+  }
 
   return { count: entries.length, errors };
 };
 
 export const createStrapiImportEndpoint = <S>(params: Params<S>): CollectionEndpoint => ({
   method: "post",
-  path: "/strapi",
+  path: params.payload.path ?? "/strapi",
   handler: async (req, res) => {
     if (!req.user) {
       return res.status(403).send({

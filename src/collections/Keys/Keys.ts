@@ -2,6 +2,7 @@ import payload from "payload";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { QuickFilters } from "../../components/QuickFilters";
 import { CollectionGroups, Collections, KeysTypes, LanguageCodes } from "../../constants";
+import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { Key } from "../../types/collections";
@@ -95,26 +96,21 @@ export const Keys = buildCollectionConfig({
         useAsTitle: fields.translationsName,
       },
       fields: [
-        {
-          type: "row",
-          fields: [
-            {
-              name: fields.translationsName,
-              type: "text",
-              required: true,
-              admin: { width: "0%" },
+        rowField([
+          {
+            name: fields.translationsName,
+            type: "text",
+            required: true,
+          },
+          {
+            name: fields.translationsShort,
+            type: "text",
+            admin: {
+              condition: (data: Partial<Key>) =>
+                isDefined(data.type) && keysTypesWithShort.includes(data.type),
             },
-            {
-              name: fields.translationsShort,
-              type: "text",
-              admin: {
-                condition: (data: Partial<Key>) =>
-                  isDefined(data.type) && keysTypesWithShort.includes(data.type),
-                width: "0%",
-              },
-            },
-          ],
-        },
+          },
+        ]),
       ],
     }),
   ],

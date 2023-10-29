@@ -3,6 +3,7 @@ import { array } from "payload/dist/fields/validations";
 import { ArrayField, Field } from "payload/types";
 import { Collections } from "../../constants";
 import { hasDuplicates, isDefined, isUndefined } from "../../utils/asserts";
+import { rowField } from "../rowField/rowField";
 import { Cell } from "./Cell";
 import { RowLabel } from "./RowLabel";
 
@@ -28,7 +29,7 @@ const languageField: Field = {
   type: "relationship",
   relationTo: Collections.Languages,
   required: true,
-  admin: { allowCreate: false  },
+  admin: { allowCreate: false },
 };
 
 const sourceLanguageField: Field = {
@@ -169,9 +170,7 @@ export const translatedFields = ({
     return true;
   },
   fields: [
-    hasSourceLanguage
-      ? { type: "row", fields: [languageField, sourceLanguageField] }
-      : languageField,
+    rowField(hasSourceLanguage ? [languageField, sourceLanguageField] : [languageField]),
     ...fields,
     ...(hasCredits ? [creditFields] : []),
   ],

@@ -4,6 +4,7 @@ import { Collections } from "../../../constants";
 import { CollectionEndpoint } from "../../../types/payload";
 import { StrapiLanguage } from "../../../types/strapi";
 import { isUndefined } from "../../../utils/asserts";
+import { findContent } from "../../../utils/localApi";
 
 type StrapiContentsFolder = {
   id: string;
@@ -11,13 +12,14 @@ type StrapiContentsFolder = {
     slug: string;
     titles?: { title: string; language: StrapiLanguage }[];
     subfolders: { data: StrapiContentsFolder[] };
-    contents: { data: { id: number }[] };
+    contents: { data: { attributes: { slug: string } }[] };
   };
 };
 
 const getStrapiContentFolder = async (id: number): Promise<StrapiContentsFolder> => {
   const paramsWithPagination = QueryString.stringify({
     populate: [
+      "contents",
       "subfolders",
       "subfolders.contents",
       "subfolders.titles",
@@ -72,17 +74,31 @@ export const importFromStrapi: CollectionEndpoint = {
     }
 
     let foldersCreated = 0;
+    const errors: string[] = [];
 
     const createContentFolder = async (data: StrapiContentsFolder): Promise<string> => {
+      const { slug, titles } = data.attributes;
+
       const subfolders = await Promise.all(
         data.attributes.subfolders.data.map(createContentFolder)
       );
-      const { slug, titles } = data.attributes;
+
+      const contents: string[] = [];
+      for (const content of data.attributes.contents.data) {
+        try {
+          const result = await findContent(content.attributes.slug);
+          contents.push(result);
+        } catch (e) {
+          errors.push(`Couldn't add ${content.attributes.slug} to folder ${slug}`);
+        }
+      }
+
       const result = await payload.create({
         collection: Collections.ContentsFolders,
         data: {
           slug,
           subfolders,
+          contents,
           translations: titles?.map(({ title, language }) => {
             if (isUndefined(language.data))
               throw new Error("A language is required for a content folder translation");
@@ -102,6 +118,8 @@ export const importFromStrapi: CollectionEndpoint = {
       res.status(500).json({ message: "Something went wrong", error: e });
     }
 
-    res.status(200).json({ message: `${foldersCreated} entries have been added successfully.` });
+    res
+      .status(200)
+      .json({ message: `${foldersCreated} entries have been added successfully.`, errors });
   },
 };

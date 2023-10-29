@@ -2,6 +2,7 @@ import { CollectionConfig } from "payload/types";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { CollectionGroups, Collections } from "../../constants";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
+import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
@@ -43,25 +44,22 @@ export const ChronologyEras: CollectionConfig = buildCollectionConfig({
   endpoints: [importFromStrapi, getAllEndpoint],
   fields: [
     slugField({ name: fields.slug }),
-    {
-      type: "row",
-      fields: [
-        {
-          name: fields.startingYear,
-          type: "number",
-          min: 0,
-          required: true,
-          admin: { width: "0%", description: "The year the era started (year included)" },
-        },
-        {
-          name: fields.endingYear,
-          type: "number",
-          min: 0,
-          required: true,
-          admin: { width: "0%", description: "The year the era ended (year included)" },
-        },
-      ],
-    },
+    rowField([
+      {
+        name: fields.startingYear,
+        type: "number",
+        min: 0,
+        required: true,
+        admin: { description: "The year the era started (year included)" },
+      },
+      {
+        name: fields.endingYear,
+        type: "number",
+        min: 0,
+        required: true,
+        admin: { description: "The year the era ended (year included)" },
+      },
+    ]),
     translatedFields({
       name: fields.translations,
       admin: { useAsTitle: fields.translationsTitle },

@@ -1,6 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { CollectionGroups, Collections, VideoSources } from "../../constants";
+import { rowField } from "../../fields/rowField/rowField";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 
@@ -47,40 +48,31 @@ export const Videos: CollectionConfig = buildCollectionConfig({
   endpoints: [importFromStrapi],
   timestamps: false,
   fields: [
-    {
-      type: "row",
-      fields: [
-        { name: fields.uid, type: "text", required: true, unique: true, admin: { width: "0%" } },
-        {
-          name: fields.gone,
-          type: "checkbox",
-          defaultValue: false,
-          required: true,
-          admin: {
-            description:
-              "Is the video no longer available (deleted, privatized, unlisted, blocked...)",
-            width: "0%",
-          },
+    rowField([
+      { name: fields.uid, type: "text", required: true, unique: true },
+      {
+        name: fields.gone,
+        type: "checkbox",
+        defaultValue: false,
+        required: true,
+        admin: {
+          description:
+            "Is the video no longer available (deleted, privatized, unlisted, blocked...)",
         },
-        {
-          name: fields.source,
-          type: "select",
-          required: true,
-          options: Object.entries(VideoSources).map(([value, label]) => ({ label, value })),
-          admin: { width: "0%" },
-        },
-      ],
-    },
-
+      },
+      {
+        name: fields.source,
+        type: "select",
+        required: true,
+        options: Object.entries(VideoSources).map(([value, label]) => ({ label, value })),
+      },
+    ]),
     { name: fields.title, type: "text", required: true },
     { name: fields.description, type: "textarea" },
-    {
-      type: "row",
-      fields: [
-        { name: fields.likes, type: "number", admin: { width: "0%" } },
-        { name: fields.views, type: "number", admin: { width: "0%" } },
-      ],
-    },
+    rowField([
+      { name: fields.likes, type: "number" },
+      { name: fields.views, type: "number" },
+    ]),
     {
       name: fields.publishedDate,
       type: "date",

@@ -1,9 +1,11 @@
 import { sectionBlock } from "../../blocks/sectionBlock";
 import { transcriptBlock } from "../../blocks/transcriptBlock";
 import { CollectionGroups, Collections, FileTypes, KeysTypes } from "../../constants";
+import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { fileField } from "../../fields/fileField/fileField";
 import { imageField } from "../../fields/imageField/imageField";
 import { keysField } from "../../fields/keysField/keysField";
+import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
@@ -13,6 +15,7 @@ import { isDefined } from "../../utils/asserts";
 import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
+import { importRelationsFromStrapi } from "./endpoints/importRelationsFromStrapi";
 
 const fields = {
   slug: "slug",
@@ -35,6 +38,10 @@ const fields = {
   audioNotes: "videoNotes",
   status: "status",
   updatedBy: "updatedBy",
+  previousContents: "previousContents",
+  nextContents: "nextContents",
+  folders: "folders",
+  libraryItems: "libraryItems",
 } as const satisfies Record<string, string>;
 
 export const Contents = buildVersionedCollectionConfig({
@@ -63,51 +70,44 @@ export const Contents = buildVersionedCollectionConfig({
         beforeDuplicateAddCopyTo(fields.slug),
       ]),
     },
-    preview: (doc) => `https://accords-library.com/contents/${doc.slug}`,
   },
-  endpoints: [importFromStrapi],
+  endpoints: [importFromStrapi, importRelationsFromStrapi],
   fields: [
-    {
-      type: "row",
-      fields: [
-        slugField({ name: fields.slug, admin: { width: "0%" } }),
-        imageField({
-          name: fields.thumbnail,
-          relationTo: Collections.ContentsThumbnails,
-          admin: { width: "0%" },
-        }),
-      ],
-    },
-    {
-      type: "row",
-      fields: [
-        keysField({
-          name: fields.categories,
-          relationTo: KeysTypes.Categories,
-          hasMany: true,
-          admin: { allowCreate: false, width: "0%" },
-        }),
-        keysField({
-          name: fields.type,
-          relationTo: KeysTypes.Contents,
-          admin: { allowCreate: false, width: "0%" },
-        }),
-      ],
-    },
+    rowField([
+      slugField({ name: fields.slug }),
+      imageField({
+        name: fields.thumbnail,
+        relationTo: Collections.ContentsThumbnails,
+      }),
+    ]),
+    rowField([
+      keysField({
+        name: fields.categories,
+        relationTo: KeysTypes.Categories,
+        hasMany: true,
+      }),
+      keysField({
+        name: fields.type,
+        relationTo: KeysTypes.Contents,
+      }),
+      backPropagationField({
+        name: fields.libraryItems,
+        hasMany: true,
+        relationTo: Collections.LibraryItems,
+        where: ({ id }) => ({ "contents.content": { equals: id } }),
+      }),
+    ]),
     translatedFields({
       name: fields.translations,
       admin: { useAsTitle: fields.title, hasSourceLanguage: true },
       required: true,
       minRows: 1,
       fields: [
-        {
-          type: "row",
-          fields: [
-            { name: fields.pretitle, type: "text" },
-            { name: fields.title, type: "text", required: true },
-            { name: fields.subtitle, type: "text" },
-          ],
-        },
+        rowField([
+          { name: fields.pretitle, type: "text" },
+          { name: fields.title, type: "text", required: true },
+          { name: fields.subtitle, type: "text" },
+        ]),
         {
           name: fields.summary,
           type: "richText",
@@ -137,43 +137,37 @@ export const Contents = buildVersionedCollectionConfig({
                     alignment: true,
                   }),
                 },
-                {
-                  type: "row",
-                  fields: [
-                    {
-                      name: fields.textTranscribers,
-                      label: "Transcribers",
-                      type: "relationship",
-                      relationTo: Collections.Recorders,
-                      hasMany: true,
-                      admin: {
-                        condition: (_, siblingData) =>
-                          siblingData.language === siblingData.sourceLanguage,
-                        width: "0%",
-                      },
+                rowField([
+                  {
+                    name: fields.textTranscribers,
+                    label: "Transcribers",
+                    type: "relationship",
+                    relationTo: Collections.Recorders,
+                    hasMany: true,
+                    admin: {
+                      condition: (_, siblingData) =>
+                        siblingData.language === siblingData.sourceLanguage,
                     },
-                    {
-                      name: fields.textTranslators,
-                      label: "Translators",
-                      type: "relationship",
-                      relationTo: Collections.Recorders,
-                      hasMany: true,
-                      admin: {
-                        condition: (_, siblingData) =>
-                          siblingData.language !== siblingData.sourceLanguage,
-                        width: "0%",
-                      },
+                  },
+                  {
+                    name: fields.textTranslators,
+                    label: "Translators",
+                    type: "relationship",
+                    relationTo: Collections.Recorders,
+                    hasMany: true,
+                    admin: {
+                      condition: (_, siblingData) =>
+                        siblingData.language !== siblingData.sourceLanguage,
                     },
-                    {
-                      name: fields.textProofreaders,
-                      label: "Proofreaders",
-                      type: "relationship",
-                      relationTo: Collections.Recorders,
-                      hasMany: true,
-                      admin: { width: "0%" },
-                    },
-                  ],
-                },
+                  },
+                  {
+                    name: fields.textProofreaders,
+                    label: "Proofreaders",
+                    type: "relationship",
+                    relationTo: Collections.Recorders,
+                    hasMany: true,
+                  },
+                ]),
                 {
                   name: fields.textNotes,
                   label: "Notes",
@@ -185,50 +179,63 @@ export const Contents = buildVersionedCollectionConfig({
             {
               label: "Video",
               fields: [
-                {
-                  type: "row",
-                  fields: [
-                    fileField({
-                      name: fields.video,
-                      relationTo: FileTypes.ContentVideo,
-                      admin: { width: "0%" },
-                    }),
-                    {
-                      name: fields.videoNotes,
-                      label: "Notes",
-                      type: "richText",
-                      editor: createEditor({ inlines: true, lists: true, links: true }),
-                      admin: { width: "0%" },
-                    },
-                  ],
-                },
+                rowField([
+                  fileField({
+                    name: fields.video,
+                    relationTo: FileTypes.ContentVideo,
+                  }),
+                  {
+                    name: fields.videoNotes,
+                    label: "Notes",
+                    type: "richText",
+                    editor: createEditor({ inlines: true, lists: true, links: true }),
+                  },
+                ]),
               ],
             },
             {
               label: "Audio",
               fields: [
-                {
-                  type: "row",
-                  fields: [
-                    fileField({
-                      name: fields.audio,
-                      relationTo: FileTypes.ContentAudio,
-                      admin: { width: "0%" },
-                    }),
-                    {
-                      name: fields.audioNotes,
-                      label: "Notes",
-                      type: "richText",
-                      editor: createEditor({ inlines: true, lists: true, links: true }),
-                      admin: { width: "0%" },
-                    },
-                  ],
-                },
+                rowField([
+                  fileField({
+                    name: fields.audio,
+                    relationTo: FileTypes.ContentAudio,
+                  }),
+                  {
+                    name: fields.audioNotes,
+                    label: "Notes",
+                    type: "richText",
+                    editor: createEditor({ inlines: true, lists: true, links: true }),
+                  },
+                ]),
               ],
             },
           ],
         },
       ],
     }),
+    rowField([
+      backPropagationField({
+        name: fields.folders,
+        hasMany: true,
+        relationTo: Collections.ContentsFolders,
+        where: ({ id }) => ({ contents: { equals: id } }),
+        admin: {
+          description: `You can set the folder(s) from the "Contents Folders" collection`,
+        },
+      }),
+      backPropagationField({
+        name: fields.previousContents,
+        relationTo: Collections.Contents,
+        hasMany: true,
+        where: ({ id }) => ({ [fields.nextContents]: { equals: id } }),
+      }),
+      {
+        name: fields.nextContents,
+        type: "relationship",
+        hasMany: true,
+        relationTo: Collections.Contents,
+      },
+    ]),
   ],
 });

@@ -60,6 +60,52 @@ export const importFromStrapi = createStrapiImportEndpoint<StrapiContent>({
         image: thumbnail,
       });
 
+      const handleTranslation = async ({
+        language,
+        title,
+        description,
+        pre_title,
+        subtitle,
+        text_set,
+      }: StrapiContent["translations"][number]) => {
+        if (isUndefined(language.data))
+          throw new Error("A language is required for a content translation");
+        if (isUndefined(text_set)) throw new Error("Only content with text_set are supported");
+        if (isUndefined(text_set.source_language.data))
+          throw new Error("A language is required for a content translation text_set");
+        return {
+          language: language.data.attributes.code,
+          sourceLanguage: text_set.source_language.data.attributes.code,
+          title,
+          pretitle: pre_title,
+          subtitle,
+          summary: isNotEmpty(description) ? plainTextToLexical(description) : undefined,
+          textContent: plainTextToLexical(text_set.text),
+          textNotes: isNotEmpty(text_set.notes) ? plainTextToLexical(text_set.notes) : undefined,
+          textTranscribers:
+            text_set.transcribers.data &&
+            (await Promise.all(
+              text_set.transcribers.data?.map(async (recorder) =>
+                findRecorder(recorder.attributes.username)
+              )
+            )),
+          textTranslators:
+            text_set.translators.data &&
+            (await Promise.all(
+              text_set.translators.data?.map(async (recorder) =>
+                findRecorder(recorder.attributes.username)
+              )
+            )),
+          textProofreaders:
+            text_set.proofreaders.data &&
+            (await Promise.all(
+              text_set.proofreaders.data?.map(async (recorder) =>
+                findRecorder(recorder.attributes.username)
+              )
+            )),
+        };
+      };
+
       const data: MarkOptional<Content, "createdAt" | "id" | "updatedAt" | "updatedBy"> = {
         slug,
         categories:
@@ -69,51 +115,7 @@ export const importFromStrapi = createStrapiImportEndpoint<StrapiContent>({
           )),
         type: type.data && (await findContentType(type.data?.attributes.slug)),
         thumbnail: thumbnailId,
-        translations: await Promise.all(
-          translations.map(
-            async ({ language, title, description, pre_title, subtitle, text_set }) => {
-              if (isUndefined(language.data))
-                throw new Error("A language is required for a content translation");
-              if (isUndefined(text_set))
-                throw new Error("Only content with text_set are supported");
-              if (isUndefined(text_set.source_language.data))
-                throw new Error("A language is required for a content translation text_set");
-              return {
-                language: language.data.attributes.code,
-                sourceLanguage: text_set.source_language.data.attributes.code,
-                title,
-                pretitle: pre_title,
-                subtitle,
-                summary: isNotEmpty(description) ? plainTextToLexical(description) : undefined,
-                textContent: plainTextToLexical(text_set.text),
-                textNotes: isNotEmpty(text_set.notes)
-                  ? plainTextToLexical(text_set.notes)
-                  : undefined,
-                textTranscribers:
-                  text_set.transcribers.data &&
-                  (await Promise.all(
-                    text_set.transcribers.data?.map(async (recorder) =>
-                      findRecorder(recorder.attributes.username)
-                    )
-                  )),
-                textTranslators:
-                  text_set.translators.data &&
-                  (await Promise.all(
-                    text_set.translators.data?.map(async (recorder) =>
-                      findRecorder(recorder.attributes.username)
-                    )
-                  )),
-                textProofreaders:
-                  text_set.proofreaders.data &&
-                  (await Promise.all(
-                    text_set.proofreaders.data?.map(async (recorder) =>
-                      findRecorder(recorder.attributes.username)
-                    )
-                  )),
-              };
-            }
-          )
-        ),
+        translations: await Promise.all(translations.map(handleTranslation)),
       };
       return data;
     },

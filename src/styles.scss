@@ -1,3 +1,5 @@
+// Theme override
+
 html[data-theme="dark"] {
   --color-base-0: #ffffff;
   --color-base-50: #ebeae7;
@@ -46,8 +48,14 @@ html[data-theme="light"] {
   --color-base-1000: #000000;
 }
 
+// Fix height disparities between certain fields
+
 .field-type.row {
   padding: 1rem 0;
+
+  > div > .field-type.checkbox {
+    padding-top: 2.4rem;
+  }
 }
 
 .field-type.radio-group {
@@ -55,6 +63,8 @@ html[data-theme="light"] {
     padding: 0.75rem 0;
   }
 }
+
+// Hide header on blocks with classname "no-label"
 
 .field-type.no-label > header {
   display: none;
@@ -68,37 +78,49 @@ html[data-theme="light"] {
   display: none;
 }
 
+// Reduce margin on Lexical blocks with the classname "reduced-margins"
+
 .rich-text-lexical.field-type.reduced-margins {
   margin-top: -0.75em;
   margin-bottom: -2rem;
 }
 
-.field-type.array-field.group-array {
-  > .array-field__header {
-    .array-field__header-actions {
-      display: none;
+// CSS for componentField
+
+.collapsible-field.component-field {
+  > .collapsible > .collapsible__toggle-wrap {
+    display: none;
+  }
+
+  .component-field-checkbox {
+    margin-bottom: 0;
+
+    .checkbox-input {
+      flex-direction: row-reverse;
+      justify-content: space-between;
+      display: flex;
+      gap: 16px;
+      pointer-events: none;
+
+      > .checkbox-input__input {
+        pointer-events: auto;
+      }
+    }
+
+    .field-label {
+      font-weight: 500;
+      font-family: "Suisse Intl";
+      font-size: 1.7788461538rem;
+      padding: 0;
+      transform: translateY(2px);
     }
   }
-  > div {
-    > div {
-      > div {
-        > .collapsible__toggle-wrap {
-          .array-actions__duplicate {
-            display: none;
-          }
 
-          .collapsible__drag,
-          .collapsible__toggle,
-          .collapsible__header-wrap,
-          .collapsible__indicator {
-            display: none;
-          }
+  .component-field-group {
+    margin-top: 2rem;
 
-          .collapsible__actions-wrap {
-            z-index: 1;
-          }
-        }
-      }
+    > .group-field__wrap > .group-field__header {
+      display: none;
     }
   }
 }

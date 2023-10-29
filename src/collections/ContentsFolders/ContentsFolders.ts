@@ -1,4 +1,5 @@
 import { CollectionGroups, Collections } from "../../constants";
+import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
@@ -37,24 +38,19 @@ export const ContentsFolders = buildCollectionConfig({
       },
       fields: [{ name: fields.name, type: "text", required: true }],
     }),
-    {
-      type: "row",
-      fields: [
-        {
-          type: "relationship",
-          name: fields.subfolders,
-          relationTo: Collections.ContentsFolders,
-          hasMany: true,
-          admin: { width: "0%" },
-        },
-        {
-          type: "relationship",
-          name: fields.contents,
-          relationTo: Collections.Contents,
-          hasMany: true,
-          admin: { width: "0%" },
-        },
-      ],
-    },
+    rowField([
+      {
+        type: "relationship",
+        name: fields.subfolders,
+        relationTo: Collections.ContentsFolders,
+        hasMany: true,
+      },
+      {
+        type: "relationship",
+        name: fields.contents,
+        relationTo: Collections.Contents,
+        hasMany: true,
+      },
+    ]),
   ],
 });

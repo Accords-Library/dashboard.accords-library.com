@@ -8,10 +8,12 @@ import {
   LibraryItemsTextualPageOrders,
   LibraryItemsTypes,
 } from "../../constants";
+import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
+import { componentField } from "../../fields/componentField/componentField";
 import { fileField } from "../../fields/fileField/fileField";
 import { imageField } from "../../fields/imageField/imageField";
 import { keysField } from "../../fields/keysField/keysField";
-import { optionalGroupField } from "../../fields/optionalGroupField/optionalGroupField";
+import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
@@ -25,6 +27,8 @@ import { RowLabel } from "./components/RowLabel";
 
 const fields = {
   status: "_status",
+  itemType: "itemType",
+  language: "language",
 
   slug: "slug",
   thumbnail: "thumbnail",
@@ -36,10 +40,7 @@ const fields = {
   translations: "translations",
   translationsDescription: "description",
 
-  rootItem: "rootItem",
-  primary: "primary",
   digital: "digital",
-  downloadable: "downloadable",
 
   size: "size",
   width: "width",
@@ -59,13 +60,11 @@ const fields = {
 
   categories: "categories",
 
-  itemType: "itemType",
   textual: "textual",
   textualSubtype: "subtype",
   textualBindingType: "bindingType",
   textualPageCount: "pageCount",
   textualPageOrder: "pageOrder",
-  textualLanguages: "languages",
 
   audio: "audio",
   audioSubtype: "audioSubtype",
@@ -73,7 +72,20 @@ const fields = {
   audioTracksFile: "file",
   audioTracksTitle: "title",
 
+  video: "video",
+  videoSubtype: "subtype",
+
+  game: "game",
+  gameDemo: "demo",
+  gamePlatform: "platform",
+  gameAudioLanguages: "audioLanguages",
+  gameSubtitleLanguages: "subtitleLanguages",
+  gameInterfacesLanguages: "interfacesLanguages",
+
   scans: "scans",
+  scansScanners: "scanners",
+  scansCleaners: "cleaners",
+  scansTypesetters: "typesetters",
 
   scansCover: "cover",
   scansCoverFlapFront: "flapFront",
@@ -114,6 +126,8 @@ const fields = {
   scansPagesPage: "page",
   scansPagesImage: "image",
 
+  scanArchiveFile: "archiveFile",
+
   contents: "contents",
   contentsContent: "content",
   contentsPageStart: "pageStart",
@@ -121,6 +135,10 @@ const fields = {
   contentsTimeStart: "timeStart",
   contentsTimeEnd: "timeEnd",
   contentsNote: "note",
+
+  parentFolders: "parentFolders",
+  parentItems: "parentItems",
+  subitems: "subitems",
 } as const satisfies Record<string, string>;
 
 export const LibraryItems = buildVersionedCollectionConfig({
@@ -143,37 +161,32 @@ export const LibraryItems = buildVersionedCollectionConfig({
         beforeDuplicateAddCopyTo(fields.slug),
       ]),
     },
-    preview: (doc) => `https://accords-library.com/library/${doc.slug}`,
   },
   fields: [
-    {
-      type: "row",
-      fields: [
-        {
-          name: fields.itemType,
-          type: "radio",
-          options: Object.entries(LibraryItemsTypes).map(([value, label]) => ({
-            label,
-            value,
-          })),
-          admin: {
-            layout: "horizontal",
-            width: "0%",
-          },
+    rowField([
+      {
+        name: fields.itemType,
+        type: "radio",
+        options: Object.entries(LibraryItemsTypes).map(([value, label]) => ({
+          label,
+          value,
+        })),
+        admin: {
+          layout: "horizontal",
         },
-        {
-          name: fields.digital,
-          type: "checkbox",
-          required: true,
-          defaultValue: false,
-          admin: {
-            description:
-              "The item is the digital version of another item, or the item is sold only digitally.",
-            width: "0%",
-          },
+      },
+      {
+        name: fields.language,
+        type: "relationship",
+        relationTo: Collections.Languages,
+        required: true,
+        admin: {
+          allowCreate: false,
+          description:
+            "This item sole or primary language (most notably, the language used on the cover)",
         },
-      ],
-    },
+      },
+    ]),
     {
       type: "tabs",
       admin: {
@@ -183,51 +196,29 @@ export const LibraryItems = buildVersionedCollectionConfig({
         {
           label: "Overview",
           fields: [
+            rowField([
+              slugField({
+                name: fields.slug,
+              }),
+              imageField({
+                name: fields.thumbnail,
+                relationTo: Collections.LibraryItemsThumbnails,
+              }),
+            ]),
+            rowField([
+              { name: fields.pretitle, type: "text" },
+              { name: fields.title, type: "text", required: true },
+              { name: fields.subtitle, type: "text" },
+            ]),
             {
-              type: "row",
-              fields: [
-                slugField({
-                  name: fields.slug,
-                }),
-                imageField({
-                  name: fields.thumbnail,
-                  relationTo: Collections.LibraryItemsThumbnails,
-                }),
-              ],
-            },
-            {
-              type: "row",
-              fields: [
-                { name: fields.pretitle, type: "text" },
-                { name: fields.title, type: "text", required: true },
-                { name: fields.subtitle, type: "text" },
-              ],
-            },
-            {
-              type: "row",
-              fields: [
-                {
-                  name: fields.rootItem,
-                  type: "checkbox",
-                  required: true,
-                  defaultValue: true,
-                  admin: {
-                    description: "Only items that can be sold separetely should be root items.",
-                    width: "0%",
-                  },
-                },
-                {
-                  name: fields.primary,
-                  type: "checkbox",
-                  required: true,
-                  defaultValue: true,
-                  admin: {
-                    description:
-                      "A primary item is an official item that focuses primarly on one or more of our Categories.",
-                    width: "0%",
-                  },
-                },
-              ],
+              name: fields.digital,
+              type: "checkbox",
+              required: true,
+              defaultValue: false,
+              admin: {
+                description:
+                  "The item is the digital version of another item, or the item is sold only digitally.",
+              },
             },
           ],
         },
@@ -241,6 +232,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                 description:
                   "Additional images of the item (unboxing, on shelf, promotional images...)",
               },
+              labels: { singular: "Image", plural: "Images" },
               fields: [
                 imageField({
                   name: fields.galleryImage,
@@ -248,226 +240,190 @@ export const LibraryItems = buildVersionedCollectionConfig({
                 }),
               ],
             },
-            optionalGroupField({
+            componentField({
               name: fields.scans,
               fields: [
-                optionalGroupField({
+                rowField([
+                  {
+                    name: fields.scansScanners,
+                    type: "relationship",
+                    relationTo: Collections.Recorders,
+                    hasMany: true,
+                    required: true,
+                  },
+                  {
+                    name: fields.scansCleaners,
+                    type: "relationship",
+                    relationTo: Collections.Recorders,
+                    hasMany: true,
+                    required: true,
+                  },
+                  {
+                    name: fields.scansTypesetters,
+                    type: "relationship",
+                    relationTo: Collections.Recorders,
+                    hasMany: true,
+                  },
+                ]),
+                componentField({
                   name: fields.scansCover,
                   fields: [
-                    {
-                      type: "row",
-                      fields: [
-                        imageField({
-                          name: fields.scansCoverFront,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansCoverSpine,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansCoverBack,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                      ],
-                    },
-                    {
-                      type: "row",
-                      fields: [
-                        imageField({
-                          name: fields.scansCoverInsideFront,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansCoverBack,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                      ],
-                    },
-                    {
-                      type: "row",
-                      fields: [
-                        imageField({
-                          name: fields.scansCoverFlapFront,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansCoverFlapBack,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansCoverInsideFlapFront,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansCoverInsideFlapBack,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                      ],
-                    },
+                    rowField([
+                      imageField({
+                        name: fields.scansCoverFront,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansCoverSpine,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansCoverBack,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                    ]),
+                    rowField([
+                      imageField({
+                        name: fields.scansCoverInsideFront,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansCoverBack,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                    ]),
+                    rowField([
+                      imageField({
+                        name: fields.scansCoverFlapFront,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansCoverFlapBack,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansCoverInsideFlapFront,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansCoverInsideFlapBack,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                    ]),
                   ],
                 }),
-                optionalGroupField({
+                componentField({
                   name: fields.scansDustjacket,
                   label: "Dust Jacket",
-                  labels: { singular: "Dust Jacket", plural: "Dust Jackets" },
                   admin: {
                     description:
                       "The dust jacket of a book is the detachable outer cover with folded \
                   flaps that hold it to the front and back book covers",
                   },
                   fields: [
-                    {
-                      type: "row",
-                      fields: [
-                        imageField({
-                          name: fields.scansDustjacketFront,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansDustjacketSpine,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansDustjacketBack,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                      ],
-                    },
-                    {
-                      type: "row",
-                      fields: [
-                        imageField({
-                          name: fields.scansDustjacketInsideFront,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansDustjacketInsideSpine,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansDustjacketInsideBack,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                      ],
-                    },
-                    {
-                      type: "row",
-                      fields: [
-                        imageField({
-                          name: fields.scansDustjacketFlapFront,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansDustjacketFlapBack,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansDustjacketInsideFlapFront,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansDustjacketInsideFlapBack,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                      ],
-                    },
+                    rowField([
+                      imageField({
+                        name: fields.scansDustjacketFront,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansDustjacketSpine,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansDustjacketBack,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                    ]),
+                    rowField([
+                      imageField({
+                        name: fields.scansDustjacketInsideFront,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansDustjacketInsideSpine,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansDustjacketInsideBack,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                    ]),
+                    rowField([
+                      imageField({
+                        name: fields.scansDustjacketFlapFront,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansDustjacketFlapBack,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansDustjacketInsideFlapFront,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansDustjacketInsideFlapBack,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                    ]),
                   ],
                 }),
-                optionalGroupField({
+                componentField({
                   name: fields.scansObi,
                   label: "Obi",
-                  labels: { singular: "Obi Belt", plural: "Obi Belts" },
                   admin: {
                     description:
                       "An obi is a strip of paper looped around a book or other product. \
                     it typically add marketing claims, or other relevant information about the product.",
                   },
                   fields: [
-                    {
-                      type: "row",
-                      fields: [
-                        imageField({
-                          name: fields.scansObiFront,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansObiSpine,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansObiBack,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                      ],
-                    },
-                    {
-                      type: "row",
-                      fields: [
-                        imageField({
-                          name: fields.scansObiInsideFront,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansObiInsideSpine,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansObiInsideBack,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                      ],
-                    },
-                    {
-                      type: "row",
-                      fields: [
-                        imageField({
-                          name: fields.scansObiFlapFront,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansObiFlapBack,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansObiInsideFlapFront,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                        imageField({
-                          name: fields.scansObiInsideFlapBack,
-                          relationTo: Collections.LibraryItemsScans,
-                          admin: { width: "0%" },
-                        }),
-                      ],
-                    },
+                    rowField([
+                      imageField({
+                        name: fields.scansObiFront,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansObiSpine,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansObiBack,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                    ]),
+                    rowField([
+                      imageField({
+                        name: fields.scansObiInsideFront,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansObiInsideSpine,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansObiInsideBack,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                    ]),
+                    rowField([
+                      imageField({
+                        name: fields.scansObiFlapFront,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansObiFlapBack,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansObiInsideFlapFront,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                      imageField({
+                        name: fields.scansObiInsideFlapBack,
+                        relationTo: Collections.LibraryItemsScans,
+                      }),
+                    ]),
                   ],
                 }),
                 {
@@ -483,35 +439,24 @@ export const LibraryItems = buildVersionedCollectionConfig({
                     },
                   },
                   fields: [
-                    {
-                      type: "row",
-                      fields: [
-                        {
-                          name: fields.scansPagesPage,
-                          type: "number",
-                          required: true,
-                          admin: { width: "0%" },
-                        },
-                        imageField({
-                          name: fields.scansPagesImage,
-                          relationTo: Collections.LibraryItemsScans,
-                          required: true,
-                          admin: { width: "0%" },
-                        }),
-                      ],
-                    },
+                    rowField([
+                      {
+                        name: fields.scansPagesPage,
+                        type: "number",
+                        required: true,
+                      },
+                      imageField({
+                        name: fields.scansPagesImage,
+                        relationTo: Collections.LibraryItemsScans,
+                        required: true,
+                      }),
+                    ]),
                   ],
                 },
-                {
-                  name: fields.downloadable,
-                  type: "checkbox",
-                  required: true,
-                  defaultValue: false,
-                  admin: {
-                    description: "Are the scans available for download?",
-                    width: "0%",
-                  },
-                },
+                fileField({
+                  name: fields.scanArchiveFile,
+                  relationTo: FileTypes.LibraryScans,
+                }),
               ],
             }),
           ],
@@ -535,58 +480,43 @@ export const LibraryItems = buildVersionedCollectionConfig({
                     keysField({
                       name: fields.textualSubtype,
                       relationTo: KeysTypes.LibraryTextual,
-                      hasMany: true,
-                      admin: { allowCreate: false, width: "0%" },
                     }),
-                    {
-                      name: fields.textualLanguages,
-                      type: "relationship",
-                      relationTo: Collections.Languages,
-                      hasMany: true,
-                      admin: { allowCreate: false, width: "0%" },
-                    },
-                  ],
-                },
-                {
-                  type: "row",
-                  fields: [
                     {
                       name: fields.textualPageCount,
                       type: "number",
                       min: 1,
-                      admin: { width: "0%" },
-                    },
-                    {
-                      name: fields.textualBindingType,
-                      type: "radio",
-                      options: Object.entries(LibraryItemsTextualBindingTypes).map(
-                        ([value, label]) => ({
-                          label,
-                          value,
-                        })
-                      ),
-                      admin: {
-                        condition: (data: Partial<LibraryItem>) => !data.digital,
-                        layout: "horizontal",
-                        width: "0%",
-                      },
-                    },
-                    {
-                      name: fields.textualPageOrder,
-                      type: "radio",
-                      options: Object.entries(LibraryItemsTextualPageOrders).map(
-                        ([value, label]) => ({
-                          label,
-                          value,
-                        })
-                      ),
-                      admin: {
-                        layout: "horizontal",
-                        width: "0%",
-                      },
                     },
                   ],
                 },
+                rowField([
+                  {
+                    name: fields.textualBindingType,
+                    type: "radio",
+                    options: Object.entries(LibraryItemsTextualBindingTypes).map(
+                      ([value, label]) => ({
+                        label,
+                        value,
+                      })
+                    ),
+                    admin: {
+                      condition: (data: Partial<LibraryItem>) => !data.digital,
+                      layout: "horizontal",
+                    },
+                  },
+                  {
+                    name: fields.textualPageOrder,
+                    type: "radio",
+                    options: Object.entries(LibraryItemsTextualPageOrders).map(
+                      ([value, label]) => ({
+                        label,
+                        value,
+                      })
+                    ),
+                    admin: {
+                      layout: "horizontal",
+                    },
+                  },
+                ]),
               ],
             },
             {
@@ -598,40 +528,84 @@ export const LibraryItems = buildVersionedCollectionConfig({
                   data.itemType === LibraryItemsTypes.Audio,
               },
               fields: [
-                {
-                  type: "row",
-                  fields: [
-                    keysField({
-                      name: fields.audioSubtype,
-                      relationTo: KeysTypes.LibraryAudio,
-                      hasMany: true,
-                      admin: { allowCreate: false, width: "0%" },
-                    }),
-                  ],
-                },
+                keysField({
+                  name: fields.audioSubtype,
+                  relationTo: KeysTypes.LibraryAudio,
+                }),
                 {
                   name: fields.audioTracks,
                   type: "array",
                   fields: [
-                    {
-                      type: "row",
-                      fields: [
-                        {
-                          name: fields.audioTracksTitle,
-                          type: "text",
-                          required: true,
-                          admin: { width: "0%" },
-                        },
-                        fileField({
-                          name: fields.audioTracksFile,
-                          relationTo: FileTypes.LibrarySoundtracks,
-                          required: true,
-                          admin: { width: "0%" },
-                        }),
-                      ],
-                    },
+                    rowField([
+                      {
+                        name: fields.audioTracksTitle,
+                        type: "text",
+                        required: true,
+                      },
+                      fileField({
+                        name: fields.audioTracksFile,
+                        relationTo: FileTypes.LibrarySoundtracks,
+                        required: true,
+                      }),
+                    ]),
                   ],
                 },
+              ],
+            },
+            {
+              name: fields.video,
+              type: "group",
+              label: false,
+              admin: {
+                condition: (data: Partial<LibraryItem>) =>
+                  data.itemType === LibraryItemsTypes.Video,
+              },
+              fields: [
+                keysField({
+                  name: fields.videoSubtype,
+                  relationTo: KeysTypes.LibraryVideo,
+                }),
+              ],
+            },
+            {
+              name: fields.game,
+              type: "group",
+              label: false,
+              admin: {
+                condition: (data: Partial<LibraryItem>) => data.itemType === LibraryItemsTypes.Game,
+              },
+              fields: [
+                rowField([
+                  {
+                    name: fields.gameDemo,
+                    type: "checkbox",
+                    admin: { description: "Is this item a demo for the game" },
+                  },
+                  keysField({
+                    name: fields.gamePlatform,
+                    relationTo: KeysTypes.GamePlatforms,
+                  }),
+                ]),
+                rowField([
+                  {
+                    name: fields.gameAudioLanguages,
+                    type: "relationship",
+                    relationTo: Collections.Languages,
+                    hasMany: true,
+                  },
+                  {
+                    name: fields.gameSubtitleLanguages,
+                    type: "relationship",
+                    relationTo: Collections.Languages,
+                    hasMany: true,
+                  },
+                  {
+                    name: fields.gameInterfacesLanguages,
+                    type: "relationship",
+                    relationTo: Collections.Languages,
+                    hasMany: true,
+                  },
+                ]),
               ],
             },
           ],
@@ -639,25 +613,69 @@ export const LibraryItems = buildVersionedCollectionConfig({
         {
           label: "Details",
           fields: [
-            {
-              type: "row",
-              fields: [
-                {
-                  name: fields.releaseDate,
-                  type: "date",
-                  admin: {
-                    date: { pickerAppearance: "dayOnly", displayFormat: "yyyy-MM-dd" },
-                    width: "0%",
-                  },
+            rowField([
+              {
+                name: fields.releaseDate,
+                type: "date",
+                admin: {
+                  date: { pickerAppearance: "dayOnly", displayFormat: "yyyy-MM-dd" },
                 },
-                keysField({
-                  name: fields.categories,
-                  relationTo: KeysTypes.Categories,
-                  hasMany: true,
-                  admin: { allowCreate: false, width: "0%" },
-                }),
+              },
+              keysField({
+                name: fields.categories,
+                relationTo: KeysTypes.Categories,
+                hasMany: true,
+              }),
+            ]),
+            componentField({
+              name: fields.size,
+              admin: {
+                condition: (data: Partial<LibraryItem>) => !data.digital,
+                description: "Add physical size information about the item",
+              },
+              fields: [
+                rowField([
+                  {
+                    name: fields.width,
+                    type: "number",
+                    required: true,
+                    admin: { step: 1, description: "in mm." },
+                  },
+                  {
+                    name: fields.height,
+                    type: "number",
+                    required: true,
+                    admin: { step: 1, description: "in mm." },
+                  },
+                  {
+                    name: fields.thickness,
+                    type: "number",
+                    admin: { step: 1, description: "in mm." },
+                  },
+                ]),
               ],
-            },
+            }),
+            componentField({
+              name: fields.price,
+              admin: { description: "Add pricing information about the item" },
+              fields: [
+                rowField([
+                  {
+                    name: fields.priceAmount,
+                    type: "number",
+                    required: true,
+                    min: 0,
+                  },
+                  {
+                    name: fields.priceCurrency,
+                    type: "relationship",
+                    relationTo: Collections.Currencies,
+                    required: true,
+                    admin: { allowCreate: false },
+                  },
+                ]),
+              ],
+            }),
             translatedFields({
               name: fields.translations,
               label: "Descriptions",
@@ -671,66 +689,12 @@ export const LibraryItems = buildVersionedCollectionConfig({
                 },
               ],
             }),
-            optionalGroupField({
-              name: fields.size,
-              admin: { condition: (data: Partial<LibraryItem>) => !data.digital },
-              fields: [
-                {
-                  type: "row",
-                  fields: [
-                    {
-                      name: fields.width,
-                      type: "number",
-                      required: true,
-                      admin: { step: 1, width: "0%", description: "in mm." },
-                    },
-                    {
-                      name: fields.height,
-                      type: "number",
-                      required: true,
-                      admin: { step: 1, width: "0%", description: "in mm." },
-                    },
-                    {
-                      name: fields.thickness,
-                      type: "number",
-                      admin: { step: 1, width: "0%", description: "in mm." },
-                    },
-                  ],
-                },
-              ],
-            }),
-            optionalGroupField({
-              name: fields.price,
-              admin: { className: "group-array", width: "0%" },
-              fields: [
-                {
-                  type: "row",
-                  fields: [
-                    {
-                      name: fields.priceAmount,
-                      type: "number",
-                      required: true,
-                      min: 0,
-                      admin: { width: "0%" },
-                    },
-                    {
-                      name: fields.priceCurrency,
-                      type: "relationship",
-                      relationTo: Collections.Currencies,
-                      required: true,
-                      admin: { allowCreate: false, width: "0%" },
-                    },
-                  ],
-                },
-              ],
-            }),
             {
               name: fields.urls,
               label: "URLs",
               type: "array",
               admin: {
                 description: "Links to official websites where to get/buy the item.",
-                width: "0%",
               },
               fields: [{ name: fields.urlsUrl, type: "text", required: true }],
             },
@@ -739,6 +703,29 @@ export const LibraryItems = buildVersionedCollectionConfig({
         {
           label: "Contents",
           fields: [
+            rowField([
+              backPropagationField({
+                name: fields.parentFolders,
+                relationTo: Collections.LibraryFolders,
+                hasMany: true,
+                where: ({ id }) => ({ items: { equals: id } }),
+                admin: {
+                  description: `You can set the folders from the "Library Folders" collection`,
+                },
+              }),
+              backPropagationField({
+                name: fields.parentItems,
+                relationTo: Collections.LibraryItems,
+                hasMany: true,
+                where: ({ id }) => ({ [fields.subitems]: { equals: id } }),
+              }),
+              {
+                name: fields.subitems,
+                type: "relationship",
+                hasMany: true,
+                relationTo: Collections.LibraryItems,
+              },
+            ]),
             {
               name: fields.contents,
               type: "array",
@@ -752,7 +739,9 @@ export const LibraryItems = buildVersionedCollectionConfig({
                 {
                   type: "row",
                   admin: {
-                    condition: ({ itemType }) => itemType === LibraryItemsTypes.Textual,
+                    // TODO: Check why those condition doesn't work
+                    condition: ({ itemType }: Partial<LibraryItem>) =>
+                      itemType === LibraryItemsTypes.Textual,
                   },
                   fields: [
                     {
@@ -765,7 +754,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                 {
                   type: "row",
                   admin: {
-                    condition: ({ itemType }) =>
+                    condition: ({ itemType }: Partial<LibraryItem>) =>
                       itemType === LibraryItemsTypes.Audio || itemType === LibraryItemsTypes.Video,
                   },
                   fields: [
@@ -781,7 +770,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                   type: "richText",
                   editor: createEditor({ inlines: true, lists: true, links: true }),
                   admin: {
-                    condition: ({ itemType }) =>
+                    condition: ({ itemType }: Partial<LibraryItem>) =>
                       itemType === LibraryItemsTypes.Game || itemType === LibraryItemsTypes.Other,
                   },
                 },

@@ -1,6 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { CollectionGroups, Collections } from "../../constants";
+import { rowField } from "../../fields/rowField/rowField";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 
 const fields = {
@@ -30,12 +31,9 @@ export const VideosChannels: CollectionConfig = buildCollectionConfig({
   timestamps: false,
   fields: [
     { name: fields.uid, type: "text", required: true, unique: true },
-    {
-      type: "row",
-      fields: [
-        { name: fields.title, type: "text", required: true },
-        { name: fields.subscribers, type: "number" },
-      ],
-    },
+    rowField([
+      { name: fields.title, type: "text", required: true },
+      { name: fields.subscribers, type: "number" },
+    ]),
   ],
 });
