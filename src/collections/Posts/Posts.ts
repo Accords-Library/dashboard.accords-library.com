@@ -12,6 +12,7 @@ import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
 import { isDefined, isUndefined } from "../../utils/asserts";
 import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
+import { importFromStrapi } from "./endpoints/importFromStrapi";
 
 const fields = {
   slug: "slug",
@@ -60,6 +61,7 @@ export const Posts = buildVersionedCollectionConfig({
     },
     preview: (doc) => `https://accords-library.com/news/${doc.slug}`,
   },
+  endpoints: [importFromStrapi],
   fields: [
     rowField([
       slugField({ name: fields.slug }),
@@ -72,7 +74,7 @@ export const Posts = buildVersionedCollectionConfig({
       {
         name: fields.authors,
         type: "relationship",
-        relationTo: [Collections.Recorders],
+        relationTo: Collections.Recorders,
         required: true,
         minRows: 1,
         hasMany: true,

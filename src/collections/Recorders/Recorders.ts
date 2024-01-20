@@ -65,7 +65,7 @@ export const Recorders = buildCollectionConfig({
       ],
     },
   },
-  auth: true,
+  auth: { tokenExpiration: 24 * 60 * 60 },
   access: {
     unlock: mustBeAdminForCollections,
     update: mustBeAdminOrSelf,

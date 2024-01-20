@@ -8,7 +8,6 @@ export enum Collections {
   Files = "files",
   Keys = "keys",
   Languages = "languages",
-  LibraryFolders = "library-folders",
   LibraryItems = "library-items",
   LibraryItemsThumbnails = "library-items-thumbnails",
   LibraryItemsScans = "library-items-scans",
@@ -23,6 +22,7 @@ export enum Collections {
   Weapons = "weapons",
   WeaponsGroups = "weapons-groups",
   WeaponsThumbnails = "weapons-thumbnails",
+  Folders = "folders"
 }
 
 export enum CollectionGroups {

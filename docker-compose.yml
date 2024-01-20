@@ -2,7 +2,7 @@ version: "3"
 
 services:
   payload:
-    image: node:18-alpine
+    image: docker.io/library/node:18-alpine
     ports:
       - "${PAYLOAD_PORT}:${PAYLOAD_PORT}"
     volumes:
@@ -20,7 +20,7 @@ services:
       NODE_ENV: development
 
   mongo:
-    image: mongo:latest
+    image: docker.io/library/mongo:latest
     ports:
       - "${MONGODB_PORT}:27017"
     command:

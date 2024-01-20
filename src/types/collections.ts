@@ -6,65 +6,73 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
-export type CategoryTranslations = {
-  language: string | Language;
-  name: string;
-  short?: string;
-  id?: string;
-}[];
-export type RecorderBiographies = {
-  language: string | Language;
-  biography: {
-    [k: string]: unknown;
-  }[];
-  id?: string;
-}[];
+export type RecorderBiographies =
+  | {
+      language: string | Language;
+      biography: {
+        [k: string]: unknown;
+      }[];
+      id?: string | null;
+    }[]
+  | null;
+export type CategoryTranslations =
+  | {
+      language: string | Language;
+      name: string;
+      short?: string | null;
+      id?: string | null;
+    }[]
+  | null;
 
 export interface Config {
   collections: {
-    "library-folders": LibraryFolder;
-    "library-items": LibraryItem;
+    'library-folders': LibraryFolder;
+    'library-items': LibraryItem;
     contents: Content;
-    "contents-folders": ContentsFolder;
+    'contents-folders': ContentsFolder;
     posts: Post;
-    "chronology-items": ChronologyItem;
-    "chronology-eras": ChronologyEra;
+    'chronology-items': ChronologyItem;
+    'chronology-eras': ChronologyEra;
     weapons: Weapon;
-    "weapons-groups": WeaponsGroup;
-    "weapons-thumbnails": WeaponsThumbnail;
-    "contents-thumbnails": ContentsThumbnail;
-    "library-items-thumbnails": LibraryItemThumbnail;
-    "library-items-scans": LibraryItemScans;
-    "library-items-gallery": LibraryItemGallery;
-    "recorders-thumbnails": RecordersThumbnail;
-    "posts-thumbnails": PostThumbnail;
+    'weapons-groups': WeaponsGroup;
+    'weapons-thumbnails': WeaponsThumbnail;
+    'contents-thumbnails': ContentsThumbnail;
+    'library-items-thumbnails': LibraryItemThumbnail;
+    'library-items-scans': LibraryItemScans;
+    'library-items-gallery': LibraryItemGallery;
+    'recorders-thumbnails': RecordersThumbnail;
+    'posts-thumbnails': PostThumbnail;
     files: File;
     Notes: Note;
     videos: Video;
-    "videos-channels": VideosChannel;
+    'videos-channels': VideosChannel;
     languages: Language;
     currencies: Currency;
     recorders: Recorder;
     keys: Key;
-    "payload-preferences": PayloadPreference;
-    "payload-migrations": PayloadMigration;
+    'payload-preferences': PayloadPreference;
+    'payload-migrations': PayloadMigration;
   };
   globals: {};
 }
 export interface LibraryFolder {
   id: string;
   slug: string;
-  translations?: {
-    language: string | Language;
-    name: string;
-    description?: {
-      [k: string]: unknown;
-    }[];
-    id?: string;
-  }[];
-  parentFolders?: string[] | LibraryFolder[];
-  subfolders?: string[] | LibraryFolder[];
-  items?: string[] | LibraryItem[];
+  translations?:
+    | {
+        language: string | Language;
+        name: string;
+        description?:
+          | {
+              [k: string]: unknown;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  parentFolders?: (string | LibraryFolder)[] | null;
+  subfolders?: (string | LibraryFolder)[] | null;
+  items?: (string | LibraryItem)[] | null;
 }
 export interface Language {
   id: string;
@@ -72,155 +80,183 @@ export interface Language {
 }
 export interface LibraryItem {
   id: string;
-  itemType?: "Textual" | "Audio" | "Video" | "Game" | "Other";
+  itemType?: ('Textual' | 'Audio' | 'Video' | 'Game' | 'Other') | null;
+  language: string | Language;
   slug: string;
-  thumbnail?: string | LibraryItemThumbnail;
-  pretitle?: string;
+  thumbnail?: string | LibraryItemThumbnail | null;
+  pretitle?: string | null;
   title: string;
-  subtitle?: string;
+  subtitle?: string | null;
   digital: boolean;
-  gallery?: {
-    image?: string | LibraryItemGallery;
-    id?: string;
-  }[];
-  scansEnabled?: boolean;
+  gallery?:
+    | {
+        image?: string | LibraryItemGallery | null;
+        id?: string | null;
+      }[]
+    | null;
+  scansEnabled?: boolean | null;
   scans?: {
-    coverEnabled?: boolean;
+    scanners: (string | Recorder)[];
+    cleaners: (string | Recorder)[];
+    typesetters?: (string | Recorder)[] | null;
+    coverEnabled?: boolean | null;
     cover?: {
-      front?: string | LibraryItemScans;
-      spine?: string | LibraryItemScans;
-      back?: string | LibraryItemScans;
-      insideFront?: string | LibraryItemScans;
-      flapFront?: string | LibraryItemScans;
-      flapBack?: string | LibraryItemScans;
-      insideFlapFront?: string | LibraryItemScans;
-      insideFlapBack?: string | LibraryItemScans;
+      front?: string | LibraryItemScans | null;
+      spine?: string | LibraryItemScans | null;
+      back?: string | LibraryItemScans | null;
+      insideFront?: string | LibraryItemScans | null;
+      flapFront?: string | LibraryItemScans | null;
+      flapBack?: string | LibraryItemScans | null;
+      insideFlapFront?: string | LibraryItemScans | null;
+      insideFlapBack?: string | LibraryItemScans | null;
     };
-    dustjacketEnabled?: boolean;
+    dustjacketEnabled?: boolean | null;
     dustjacket?: {
-      front?: string | LibraryItemScans;
-      spine?: string | LibraryItemScans;
-      back?: string | LibraryItemScans;
-      insideFront?: string | LibraryItemScans;
-      insideSpine?: string | LibraryItemScans;
-      insideBack?: string | LibraryItemScans;
-      flapFront?: string | LibraryItemScans;
-      flapBack?: string | LibraryItemScans;
-      insideFlapFront?: string | LibraryItemScans;
-      insideFlapBack?: string | LibraryItemScans;
+      front?: string | LibraryItemScans | null;
+      spine?: string | LibraryItemScans | null;
+      back?: string | LibraryItemScans | null;
+      insideFront?: string | LibraryItemScans | null;
+      insideSpine?: string | LibraryItemScans | null;
+      insideBack?: string | LibraryItemScans | null;
+      flapFront?: string | LibraryItemScans | null;
+      flapBack?: string | LibraryItemScans | null;
+      insideFlapFront?: string | LibraryItemScans | null;
+      insideFlapBack?: string | LibraryItemScans | null;
     };
-    obiEnabled?: boolean;
+    obiEnabled?: boolean | null;
     obi?: {
-      front?: string | LibraryItemScans;
-      spine?: string | LibraryItemScans;
-      back?: string | LibraryItemScans;
-      insideFront?: string | LibraryItemScans;
-      insideSpine?: string | LibraryItemScans;
-      insideBack?: string | LibraryItemScans;
-      flapFront?: string | LibraryItemScans;
-      flapBack?: string | LibraryItemScans;
-      insideFlapFront?: string | LibraryItemScans;
-      insideFlapBack?: string | LibraryItemScans;
+      front?: string | LibraryItemScans | null;
+      spine?: string | LibraryItemScans | null;
+      back?: string | LibraryItemScans | null;
+      insideFront?: string | LibraryItemScans | null;
+      insideSpine?: string | LibraryItemScans | null;
+      insideBack?: string | LibraryItemScans | null;
+      flapFront?: string | LibraryItemScans | null;
+      flapBack?: string | LibraryItemScans | null;
+      insideFlapFront?: string | LibraryItemScans | null;
+      insideFlapBack?: string | LibraryItemScans | null;
     };
-    pages?: {
-      page: number;
-      image: string | LibraryItemScans;
-      id?: string;
-    }[];
+    pages?:
+      | {
+          page: number;
+          image: string | LibraryItemScans;
+          id?: string | null;
+        }[]
+      | null;
+    archiveFile?: (string | null) | File;
   };
   textual?: {
-    subtype?: string[] | Key[];
-    languages?: string[] | Language[];
-    pageCount?: number;
-    bindingType?: "Paperback" | "Hardcover";
-    pageOrder?: "LeftToRight" | "RightToLeft";
+    subtype?: (string | null) | Key;
+    pageCount?: number | null;
+    bindingType?: ('Paperback' | 'Hardcover') | null;
+    pageOrder?: ('LeftToRight' | 'RightToLeft') | null;
   };
   audio?: {
-    audioSubtype?: string[] | Key[];
-    tracks?: {
-      title: string;
-      file: string | File;
-      id?: string;
-    }[];
+    audioSubtype?: (string | null) | Key;
+    tracks?:
+      | {
+          title: string;
+          file: string | File;
+          id?: string | null;
+        }[]
+      | null;
   };
-  releaseDate?: string;
-  categories?: string[] | Key[];
-  sizeEnabled?: boolean;
+  video?: {
+    subtype?: (string | null) | Key;
+  };
+  game?: {
+    demo?: boolean | null;
+    platform?: (string | null) | Key;
+    audioLanguages?: (string | Language)[] | null;
+    subtitleLanguages?: (string | Language)[] | null;
+    interfacesLanguages?: (string | Language)[] | null;
+  };
+  releaseDate?: string | null;
+  categories?: (string | Key)[] | null;
+  sizeEnabled?: boolean | null;
   size?: {
     width: number;
     height: number;
-    thickness?: number;
+    thickness?: number | null;
   };
-  priceEnabled?: boolean;
+  priceEnabled?: boolean | null;
   price?: {
     amount: number;
     currency: string | Currency;
   };
-  translations?: {
-    language: string | Language;
-    description: {
-      [k: string]: unknown;
-    }[];
-    id?: string;
-  }[];
-  urls?: {
-    url: string;
-    id?: string;
-  }[];
-  parentFolders?: string[] | LibraryFolder[];
-  parentItems?: string[] | LibraryItem[];
-  subitems?: string[] | LibraryItem[];
-  contents?: {
-    content: string | Content;
-    pageStart?: number;
-    pageEnd?: number;
-    timeStart?: number;
-    timeEnd?: number;
-    note?: {
-      [k: string]: unknown;
-    }[];
-    id?: string;
-  }[];
+  translations?:
+    | {
+        language: string | Language;
+        description: {
+          [k: string]: unknown;
+        }[];
+        id?: string | null;
+      }[]
+    | null;
+  urls?:
+    | {
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  parentFolders?: (string | LibraryFolder)[] | null;
+  parentItems?: (string | LibraryItem)[] | null;
+  subitems?: (string | LibraryItem)[] | null;
+  contents?:
+    | {
+        content: string | Content;
+        pageStart?: number | null;
+        pageEnd?: number | null;
+        timeStart?: number | null;
+        timeEnd?: number | null;
+        note?:
+          | {
+              [k: string]: unknown;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: "draft" | "published";
+  _status?: ('draft' | 'published') | null;
 }
 export interface LibraryItemThumbnail {
   id: string;
-  libraryItem?: string[] | LibraryItem[];
+  libraryItem?: (string | LibraryItem)[] | null;
   updatedAt: string;
   createdAt: string;
-  url?: string;
-  filename?: string;
-  mimeType?: string;
-  filesize?: number;
-  width?: number;
-  height?: number;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
   sizes?: {
     thumb?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
     og?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
     square?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
   };
 }
@@ -228,28 +264,75 @@ export interface LibraryItemGallery {
   id: string;
   updatedAt: string;
   createdAt: string;
-  url?: string;
-  filename?: string;
-  mimeType?: string;
-  filesize?: number;
-  width?: number;
-  height?: number;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
   sizes?: {
     thumb?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
     small?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+export interface Recorder {
+  id: string;
+  username: string;
+  avatar?: string | RecordersThumbnail | null;
+  languages?: (string | Language)[] | null;
+  biographies?: RecorderBiographies;
+  role?: ('Admin' | 'Recorder' | 'Api')[] | null;
+  anonymize: boolean;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
+}
+export interface RecordersThumbnail {
+  id: string;
+  recorder?: (string | null) | Recorder;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  sizes?: {
+    thumb?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    square?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
   };
 }
@@ -257,69 +340,69 @@ export interface LibraryItemScans {
   id: string;
   updatedAt: string;
   createdAt: string;
-  url?: string;
-  filename?: string;
-  mimeType?: string;
-  filesize?: number;
-  width?: number;
-  height?: number;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
   sizes?: {
     thumb?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
     og?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
     medium?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
     large?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
   };
+}
+export interface File {
+  id: string;
+  filename: string;
+  type: 'LibraryScans' | 'LibrarySoundtracks' | 'ContentVideo' | 'ContentAudio';
+  updatedAt: string;
+  createdAt: string;
 }
 export interface Key {
   id: string;
   name: string;
   type:
-    | "Contents"
-    | "LibraryAudio"
-    | "LibraryVideo"
-    | "LibraryTextual"
-    | "LibraryGroup"
-    | "Library"
-    | "Weapons"
-    | "GamePlatforms"
-    | "Categories"
-    | "Wordings";
+    | 'Contents'
+    | 'LibraryAudio'
+    | 'LibraryVideo'
+    | 'LibraryTextual'
+    | 'LibraryGroup'
+    | 'Library'
+    | 'Weapons'
+    | 'GamePlatforms'
+    | 'Categories'
+    | 'Wordings';
   translations?: CategoryTranslations;
-}
-export interface File {
-  id: string;
-  filename: string;
-  type: "LibraryScans" | "LibrarySoundtracks" | "ContentVideo" | "ContentAudio";
-  updatedAt: string;
-  createdAt: string;
 }
 export interface Currency {
   id: string;
@@ -327,371 +410,333 @@ export interface Currency {
 export interface Content {
   id: string;
   slug: string;
-  thumbnail?: string | ContentsThumbnail;
-  categories?: string[] | Key[];
-  type?: string | Key;
-  libraryItems?: string[] | LibraryItem[];
+  thumbnail?: string | ContentsThumbnail | null;
+  categories?: (string | Key)[] | null;
+  type?: (string | null) | Key;
+  libraryItems?: (string | LibraryItem)[] | null;
   translations: {
     language: string | Language;
     sourceLanguage: string | Language;
-    pretitle?: string;
+    pretitle?: string | null;
     title: string;
-    subtitle?: string;
-    summary?: {
-      [k: string]: unknown;
-    }[];
-    textContent?: {
-      [k: string]: unknown;
-    }[];
-    textTranscribers?: string[] | Recorder[];
-    textTranslators?: string[] | Recorder[];
-    textProofreaders?: string[] | Recorder[];
-    textNotes?: {
-      [k: string]: unknown;
-    }[];
-    video?: string | File;
-    videoNotes?: {
-      [k: string]: unknown;
-    }[];
-    audio?: string | File;
-    id?: string;
+    subtitle?: string | null;
+    summary?:
+      | {
+          [k: string]: unknown;
+        }[]
+      | null;
+    textContent?:
+      | {
+          [k: string]: unknown;
+        }[]
+      | null;
+    textTranscribers?: (string | Recorder)[] | null;
+    textTranslators?: (string | Recorder)[] | null;
+    textProofreaders?: (string | Recorder)[] | null;
+    textNotes?:
+      | {
+          [k: string]: unknown;
+        }[]
+      | null;
+    video?: (string | null) | File;
+    videoNotes?:
+      | {
+          [k: string]: unknown;
+        }[]
+      | null;
+    audio?: (string | null) | File;
+    id?: string | null;
   }[];
-  folders?: string[] | ContentsFolder[];
-  previousContents?: string[] | Content[];
-  nextContents?: string[] | Content[];
+  folders?: (string | ContentsFolder)[] | null;
+  previousContents?: (string | Content)[] | null;
+  nextContents?: (string | Content)[] | null;
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: "draft" | "published";
+  _status?: ('draft' | 'published') | null;
 }
 export interface ContentsThumbnail {
   id: string;
-  contents?: string[] | Content[];
+  contents?: (string | Content)[] | null;
   updatedAt: string;
   createdAt: string;
-  url?: string;
-  filename?: string;
-  mimeType?: string;
-  filesize?: number;
-  width?: number;
-  height?: number;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
   sizes?: {
     thumb?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
     og?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
     medium?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
-    };
-  };
-}
-export interface Recorder {
-  id: string;
-  username: string;
-  avatar?: string | RecordersThumbnail;
-  languages?: string[] | Language[];
-  biographies?: RecorderBiographies;
-  role?: ("Admin" | "Recorder" | "Api")[];
-  anonymize: boolean;
-  email: string;
-  resetPasswordToken?: string;
-  resetPasswordExpiration?: string;
-  salt?: string;
-  hash?: string;
-  loginAttempts?: number;
-  lockUntil?: string;
-  password?: string;
-}
-export interface RecordersThumbnail {
-  id: string;
-  recorder?: string | Recorder;
-  updatedAt: string;
-  createdAt: string;
-  url?: string;
-  filename?: string;
-  mimeType?: string;
-  filesize?: number;
-  width?: number;
-  height?: number;
-  sizes?: {
-    thumb?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
-    };
-    square?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
   };
 }
 export interface ContentsFolder {
   id: string;
   slug: string;
-  translations?: {
-    language: string | Language;
-    name: string;
-    id?: string;
-  }[];
-  subfolders?: string[] | ContentsFolder[];
-  contents?: string[] | Content[];
+  translations?:
+    | {
+        language: string | Language;
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  subfolders?: (string | ContentsFolder)[] | null;
+  contents?: (string | Content)[] | null;
 }
 export interface Post {
   id: string;
   slug: string;
-  thumbnail?: string | PostThumbnail;
-  authors:
-    | {
-        relationTo: "recorders";
-        value: string;
-      }[]
-    | {
-        relationTo: "recorders";
-        value: Recorder;
-      }[];
-  categories?:
-    | {
-        relationTo: "keys";
-        value: string;
-      }[]
-    | {
-        relationTo: "keys";
-        value: Key;
-      }[];
+  thumbnail?: string | PostThumbnail | null;
+  authors: (string | Recorder)[];
+  categories?: (string | Key)[] | null;
   translations: {
     language: string | Language;
     sourceLanguage: string | Language;
     title: string;
-    summary?: {
-      [k: string]: unknown;
-    }[];
-    content?: {
-      [k: string]: unknown;
-    }[];
-    translators?: string[] | Recorder[];
-    proofreaders?: string[] | Recorder[];
-    id?: string;
+    summary?:
+      | {
+          [k: string]: unknown;
+        }[]
+      | null;
+    content?:
+      | {
+          [k: string]: unknown;
+        }[]
+      | null;
+    translators?: (string | Recorder)[] | null;
+    proofreaders?: (string | Recorder)[] | null;
+    id?: string | null;
   }[];
   publishedDate: string;
-  hidden?: boolean;
+  hidden?: boolean | null;
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: "draft" | "published";
+  _status?: ('draft' | 'published') | null;
 }
 export interface PostThumbnail {
   id: string;
-  posts?: string[] | Post[];
+  posts?: (string | Post)[] | null;
   updatedAt: string;
   createdAt: string;
-  url?: string;
-  filename?: string;
-  mimeType?: string;
-  filesize?: number;
-  width?: number;
-  height?: number;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
   sizes?: {
     thumb?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
     og?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
     medium?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
   };
 }
 export interface ChronologyItem {
   id: string;
-  name?: string;
+  name?: string | null;
   date: {
     year: number;
-    month?: number;
-    day?: number;
+    month?: number | null;
+    day?: number | null;
   };
   events: {
-    source?:
-      | {
-          relationTo: "contents";
-          value: string | Content;
-        }
-      | {
-          relationTo: "library-items";
-          value: string | LibraryItem;
-        };
     translations: {
       language: string | Language;
       sourceLanguage: string | Language;
-      title?: string;
-      description?: {
-        [k: string]: unknown;
-      }[];
-      notes?: {
-        [k: string]: unknown;
-      }[];
-      transcribers?: string[] | Recorder[];
-      translators?: string[] | Recorder[];
-      proofreaders?: string[] | Recorder[];
-      id?: string;
+      title?: string | null;
+      description?:
+        | {
+            [k: string]: unknown;
+          }[]
+        | null;
+      notes?:
+        | {
+            [k: string]: unknown;
+          }[]
+        | null;
+      transcribers?: (string | Recorder)[] | null;
+      translators?: (string | Recorder)[] | null;
+      proofreaders?: (string | Recorder)[] | null;
+      id?: string | null;
     }[];
-    id?: string;
+    id?: string | null;
   }[];
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: "draft" | "published";
+  _status?: ('draft' | 'published') | null;
 }
 export interface ChronologyEra {
   id: string;
   slug: string;
   startingYear: number;
   endingYear: number;
-  translations?: {
-    language: string | Language;
-    title: string;
-    description?: {
-      [k: string]: unknown;
-    }[];
-    id?: string;
-  }[];
-  events?: string[] | ChronologyItem[];
+  translations?:
+    | {
+        language: string | Language;
+        title: string;
+        description?:
+          | {
+              [k: string]: unknown;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  events?: (string | ChronologyItem)[] | null;
   updatedAt: string;
   createdAt: string;
 }
 export interface Weapon {
   id: string;
   slug: string;
-  thumbnail?: string | WeaponsThumbnail;
+  thumbnail?: string | WeaponsThumbnail | null;
   type: string | Key;
-  group?: string | WeaponsGroup;
+  group?: (string | null) | WeaponsGroup;
   appearances: {
-    categories: string[] | Key[];
+    categories: (string | Key)[];
     translations: {
       language: string | Language;
       sourceLanguage: string | Language;
       name: string;
-      description?: {
-        [k: string]: unknown;
-      }[];
-      level1?: {
-        [k: string]: unknown;
-      }[];
-      level2?: {
-        [k: string]: unknown;
-      }[];
-      level3?: {
-        [k: string]: unknown;
-      }[];
-      level4?: {
-        [k: string]: unknown;
-      }[];
-      transcribers?: string[] | Recorder[];
-      translators?: string[] | Recorder[];
-      proofreaders?: string[] | Recorder[];
-      id?: string;
+      description?:
+        | {
+            [k: string]: unknown;
+          }[]
+        | null;
+      level1?:
+        | {
+            [k: string]: unknown;
+          }[]
+        | null;
+      level2?:
+        | {
+            [k: string]: unknown;
+          }[]
+        | null;
+      level3?:
+        | {
+            [k: string]: unknown;
+          }[]
+        | null;
+      level4?:
+        | {
+            [k: string]: unknown;
+          }[]
+        | null;
+      transcribers?: (string | Recorder)[] | null;
+      translators?: (string | Recorder)[] | null;
+      proofreaders?: (string | Recorder)[] | null;
+      id?: string | null;
     }[];
-    id?: string;
+    id?: string | null;
   }[];
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
-  _status?: "draft" | "published";
+  _status?: ('draft' | 'published') | null;
 }
 export interface WeaponsThumbnail {
   id: string;
-  weapon?: string | Weapon;
+  weapon?: (string | null) | Weapon;
   updatedAt: string;
   createdAt: string;
-  url?: string;
-  filename?: string;
-  mimeType?: string;
-  filesize?: number;
-  width?: number;
-  height?: number;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
   sizes?: {
     thumb?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
     og?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
     small?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
     medium?: {
-      url?: string;
-      width?: number;
-      height?: number;
-      mimeType?: string;
-      filesize?: number;
-      filename?: string;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
   };
 }
 export interface WeaponsGroup {
   id: string;
   slug: string;
-  translations?: {
-    language: string | Language;
-    name: string;
-    id?: string;
-  }[];
-  weapons?: string[] | Weapon[];
+  translations?:
+    | {
+        language: string | Language;
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  weapons?: (string | Weapon)[] | null;
 }
 export interface Note {
   id: string;
@@ -705,27 +750,27 @@ export interface Video {
   id: string;
   uid: string;
   gone: boolean;
-  source: "YouTube" | "NicoNico" | "Tumblr";
+  source: 'YouTube' | 'NicoNico' | 'Tumblr';
   title: string;
-  description?: string;
-  likes?: number;
-  views?: number;
+  description?: string | null;
+  likes?: number | null;
+  views?: number | null;
   publishedDate: string;
-  channel?: string | VideosChannel;
+  channel?: (string | null) | VideosChannel;
 }
 export interface VideosChannel {
   id: string;
   uid: string;
   title: string;
-  subscribers?: number;
+  subscribers?: number | null;
 }
 export interface PayloadPreference {
   id: string;
   user: {
-    relationTo: "recorders";
+    relationTo: 'recorders';
     value: string | Recorder;
   };
-  key?: string;
+  key?: string | null;
   value?:
     | {
         [k: string]: unknown;
@@ -740,12 +785,13 @@ export interface PayloadPreference {
 }
 export interface PayloadMigration {
   id: string;
-  name?: string;
-  batch?: number;
+  name?: string | null;
+  batch?: number | null;
   updatedAt: string;
   createdAt: string;
 }
 
-declare module "payload" {
+
+declare module 'payload' {
   export interface GeneratedTypes extends Config {}
 }

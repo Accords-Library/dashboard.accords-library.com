@@ -704,15 +704,16 @@ export const LibraryItems = buildVersionedCollectionConfig({
           label: "Contents",
           fields: [
             rowField([
-              backPropagationField({
-                name: fields.parentFolders,
-                relationTo: Collections.LibraryFolders,
-                hasMany: true,
-                where: ({ id }) => ({ items: { equals: id } }),
-                admin: {
-                  description: `You can set the folders from the "Library Folders" collection`,
-                },
-              }),
+              // TODO: Uncomment when the Folders are ready
+              // backPropagationField({
+              //   name: fields.parentFolders,
+              //   relationTo: Collections.Folders,
+              //   hasMany: true,
+              //   where: ({ id }) => ({ files: { equals: id } }),
+              //   admin: {
+              //     description: `You can set the folders from the "Folders" collection`,
+              //   },
+              // }),
               backPropagationField({
                 name: fields.parentItems,
                 relationTo: Collections.LibraryItems,

@@ -9,9 +9,9 @@ import { ContentsFolders } from "./collections/ContentsFolders/ContentsFolders";
 import { ContentsThumbnails } from "./collections/ContentsThumbnails/ContentsThumbnails";
 import { Currencies } from "./collections/Currencies/Currencies";
 import { Files } from "./collections/Files/Files";
+import { Folders } from "./collections/Folders/Folders";
 import { Keys } from "./collections/Keys/Keys";
 import { Languages } from "./collections/Languages/Languages";
-import { LibraryFolders } from "./collections/LibraryFolders/LibraryFolders";
 import { LibraryItems } from "./collections/LibraryItems/LibraryItems";
 import { LibraryItemsGallery } from "./collections/LibraryItemsGallery/LibraryItemsGallery";
 import { LibraryItemsScans } from "./collections/LibraryItemsScans/LibraryItemsScans";
@@ -46,7 +46,7 @@ export default buildConfig({
   },
   editor: createEditor({}),
   collections: [
-    LibraryFolders,
+    Folders,
     LibraryItems,
     Contents,
     ContentsFolders,

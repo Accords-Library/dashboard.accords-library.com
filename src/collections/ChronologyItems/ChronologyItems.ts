@@ -18,7 +18,6 @@ import { validateEventsTranslationsTitle } from "./validations/validateEventsTra
 const fields = {
   name: "name",
   events: "events",
-  eventsSource: "source",
   eventsTranslations: "translations",
   eventsTranslationsTitle: "title",
   eventsTranslationsDescription: "description",
@@ -98,13 +97,6 @@ export const ChronologyItems: CollectionConfig = buildVersionedCollectionConfig(
       required: true,
       minRows: 1,
       fields: [
-        {
-          name: fields.eventsSource,
-          type: "relationship",
-          relationTo: [Collections.Contents, Collections.LibraryItems],
-          // required: true,
-          admin: { allowCreate: false },
-        },
         translatedFields({
           name: fields.eventsTranslations,
           required: true,
