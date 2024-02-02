@@ -1,5 +1,4 @@
 import {
-  AdapterProps,
   AlignFeature,
   BlocksFeature,
   BoldTextFeature,
@@ -17,11 +16,11 @@ import {
   StrikethroughTextFeature,
   SubscriptTextFeature,
   SuperscriptTextFeature,
-  TreeviewFeature,
+  TreeViewFeature,
   UnderlineTextFeature,
-  UnoderedListFeature,
+  UnorderedListFeature,
   UploadFeature,
-  lexicalEditor,
+  lexicalEditor
 } from "@payloadcms/richtext-lexical";
 import { Block, RichTextAdapter } from "payload/types";
 
@@ -47,13 +46,13 @@ export const createEditor = ({
   links = false,
   relations = false,
   alignment = false,
-}: Partial<EditorOptions>): RichTextAdapter<any, AdapterProps> => {
+}: Partial<EditorOptions>): RichTextAdapter<any, any, any> => {
   const enabledFeatures: FeatureProvider[] = [];
 
-  if (lists) enabledFeatures.push(OrderedListFeature(), UnoderedListFeature(), CheckListFeature());
+  if (lists) enabledFeatures.push(OrderedListFeature(), UnorderedListFeature(), CheckListFeature());
   if (blocks.length > 0) enabledFeatures.push(BlocksFeature({ blocks }));
   if (headings) enabledFeatures.push(ParagraphFeature(), HeadingFeature({}));
-  if (debugs) enabledFeatures.push(TreeviewFeature());
+  if (debugs) enabledFeatures.push(TreeViewFeature());
   if (images) enabledFeatures.push(UploadFeature({ collections: [] }));
   if (links) enabledFeatures.push(LinkFeature({}));
   if (relations) enabledFeatures.push(RelationshipFeature());

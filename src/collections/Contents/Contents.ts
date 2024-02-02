@@ -35,7 +35,7 @@ const fields = {
   video: "video",
   videoNotes: "videoNotes",
   audio: "audio",
-  audioNotes: "videoNotes",
+  audioNotes: "audioNotes",
   status: "status",
   updatedBy: "updatedBy",
   previousContents: "previousContents",

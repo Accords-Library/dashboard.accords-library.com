@@ -288,7 +288,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                         relationTo: Collections.LibraryItemsScans,
                       }),
                       imageField({
-                        name: fields.scansCoverBack,
+                        name: fields.scansCoverInsideBack,
                         relationTo: Collections.LibraryItemsScans,
                       }),
                     ]),

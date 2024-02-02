@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: payload-pod
+  name: payload-pod
+spec:
+  containers:
+  - args:
+    - --storageEngine=wiredTiger
+    image: docker.io/library/mongo:latest
+    name: payload-mongo
+    ports:
+    - containerPort: 27017
+      hostPort: 27017
+    volumeMounts:
+    - mountPath: /data/db
+      name: payload-mongo-volume
+  - args:
+    env:
+    - name: PORT
+      value: 40062
+    - name: MONGODB_URI
+      value: mongodb://localhost:27017/payload
+    - name: PAYLOAD_SECRET
+      value: 02e32724b99b5823519837a6
+    - name: NODE_ENV
+      value: development
+    image: docker.io/library/node:18-alpine
+    name: payload-node
+    ports:
+    - containerPort: 40062
+      hostPort: 40062
+    volumeMounts:
+    - mountPath: /home/node/app
+      name: payload-node-volume
+    workingDir: /home/node/app/
+  volumes:
+  - hostPath:
+      path: /home/deck/Repos/payload
+      type: Directory
+    name: payload-node-volume
+  - hostPath:
+      path: /home/deck/Repos/payload/mongo
+      type: Directory
+    name: payload-mongo-volume

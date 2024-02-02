@@ -10,8 +10,20 @@ export type RecorderBiographies =
   | {
       language: string | Language;
       biography: {
+        root: {
+          children: {
+            type: string;
+            version: number;
+            [k: string]: unknown;
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
+          type: string;
+          version: number;
+        };
         [k: string]: unknown;
-      }[];
+      };
       id?: string | null;
     }[]
   | null;
@@ -26,7 +38,7 @@ export type CategoryTranslations =
 
 export interface Config {
   collections: {
-    'library-folders': LibraryFolder;
+    folders: Folder;
     'library-items': LibraryItem;
     contents: Content;
     'contents-folders': ContentsFolder;
@@ -55,24 +67,37 @@ export interface Config {
   };
   globals: {};
 }
-export interface LibraryFolder {
+export interface Folder {
   id: string;
   slug: string;
   translations?:
     | {
         language: string | Language;
         name: string;
-        description?:
-          | {
-              [k: string]: unknown;
-            }[]
-          | null;
         id?: string | null;
       }[]
     | null;
-  parentFolders?: (string | LibraryFolder)[] | null;
-  subfolders?: (string | LibraryFolder)[] | null;
-  items?: (string | LibraryItem)[] | null;
+  sections?:
+    | {
+        name?: string | null;
+        subfolders?: (string | Folder)[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  files?:
+    | (
+        | {
+            relationTo: 'library-items';
+            value: string | LibraryItem;
+          }
+        | {
+            relationTo: 'contents';
+            value: string | Content;
+          }
+      )[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 export interface Language {
   id: string;
@@ -105,6 +130,7 @@ export interface LibraryItem {
       spine?: string | LibraryItemScans | null;
       back?: string | LibraryItemScans | null;
       insideFront?: string | LibraryItemScans | null;
+      insideBack?: string | LibraryItemScans | null;
       flapFront?: string | LibraryItemScans | null;
       flapBack?: string | LibraryItemScans | null;
       insideFlapFront?: string | LibraryItemScans | null;
@@ -188,8 +214,20 @@ export interface LibraryItem {
     | {
         language: string | Language;
         description: {
+          root: {
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            type: string;
+            version: number;
+          };
           [k: string]: unknown;
-        }[];
+        };
         id?: string | null;
       }[]
     | null;
@@ -199,7 +237,6 @@ export interface LibraryItem {
         id?: string | null;
       }[]
     | null;
-  parentFolders?: (string | LibraryFolder)[] | null;
   parentItems?: (string | LibraryItem)[] | null;
   subitems?: (string | LibraryItem)[] | null;
   contents?:
@@ -209,11 +246,21 @@ export interface LibraryItem {
         pageEnd?: number | null;
         timeStart?: number | null;
         timeEnd?: number | null;
-        note?:
-          | {
+        note?: {
+          root: {
+            children: {
+              type: string;
+              version: number;
               [k: string]: unknown;
-            }[]
-          | null;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            type: string;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
         id?: string | null;
       }[]
     | null;
@@ -420,31 +467,86 @@ export interface Content {
     pretitle?: string | null;
     title: string;
     subtitle?: string | null;
-    summary?:
-      | {
+    summary?: {
+      root: {
+        children: {
+          type: string;
+          version: number;
           [k: string]: unknown;
-        }[]
-      | null;
-    textContent?:
-      | {
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        type: string;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    textContent?: {
+      root: {
+        children: {
+          type: string;
+          version: number;
           [k: string]: unknown;
-        }[]
-      | null;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        type: string;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
     textTranscribers?: (string | Recorder)[] | null;
     textTranslators?: (string | Recorder)[] | null;
     textProofreaders?: (string | Recorder)[] | null;
-    textNotes?:
-      | {
+    textNotes?: {
+      root: {
+        children: {
+          type: string;
+          version: number;
           [k: string]: unknown;
-        }[]
-      | null;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        type: string;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
     video?: (string | null) | File;
-    videoNotes?:
-      | {
+    videoNotes?: {
+      root: {
+        children: {
+          type: string;
+          version: number;
           [k: string]: unknown;
-        }[]
-      | null;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        type: string;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
     audio?: (string | null) | File;
+    audioNotes?: {
+      root: {
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        type: string;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
     id?: string | null;
   }[];
   folders?: (string | ContentsFolder)[] | null;
@@ -516,16 +618,36 @@ export interface Post {
     language: string | Language;
     sourceLanguage: string | Language;
     title: string;
-    summary?:
-      | {
+    summary?: {
+      root: {
+        children: {
+          type: string;
+          version: number;
           [k: string]: unknown;
-        }[]
-      | null;
-    content?:
-      | {
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        type: string;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    content?: {
+      root: {
+        children: {
+          type: string;
+          version: number;
           [k: string]: unknown;
-        }[]
-      | null;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        type: string;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
     translators?: (string | Recorder)[] | null;
     proofreaders?: (string | Recorder)[] | null;
     id?: string | null;
@@ -588,16 +710,36 @@ export interface ChronologyItem {
       language: string | Language;
       sourceLanguage: string | Language;
       title?: string | null;
-      description?:
-        | {
+      description?: {
+        root: {
+          children: {
+            type: string;
+            version: number;
             [k: string]: unknown;
-          }[]
-        | null;
-      notes?:
-        | {
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
+          type: string;
+          version: number;
+        };
+        [k: string]: unknown;
+      } | null;
+      notes?: {
+        root: {
+          children: {
+            type: string;
+            version: number;
             [k: string]: unknown;
-          }[]
-        | null;
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
+          type: string;
+          version: number;
+        };
+        [k: string]: unknown;
+      } | null;
       transcribers?: (string | Recorder)[] | null;
       translators?: (string | Recorder)[] | null;
       proofreaders?: (string | Recorder)[] | null;
@@ -619,11 +761,21 @@ export interface ChronologyEra {
     | {
         language: string | Language;
         title: string;
-        description?:
-          | {
+        description?: {
+          root: {
+            children: {
+              type: string;
+              version: number;
               [k: string]: unknown;
-            }[]
-          | null;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            type: string;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
         id?: string | null;
       }[]
     | null;
@@ -643,31 +795,81 @@ export interface Weapon {
       language: string | Language;
       sourceLanguage: string | Language;
       name: string;
-      description?:
-        | {
+      description?: {
+        root: {
+          children: {
+            type: string;
+            version: number;
             [k: string]: unknown;
-          }[]
-        | null;
-      level1?:
-        | {
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
+          type: string;
+          version: number;
+        };
+        [k: string]: unknown;
+      } | null;
+      level1?: {
+        root: {
+          children: {
+            type: string;
+            version: number;
             [k: string]: unknown;
-          }[]
-        | null;
-      level2?:
-        | {
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
+          type: string;
+          version: number;
+        };
+        [k: string]: unknown;
+      } | null;
+      level2?: {
+        root: {
+          children: {
+            type: string;
+            version: number;
             [k: string]: unknown;
-          }[]
-        | null;
-      level3?:
-        | {
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
+          type: string;
+          version: number;
+        };
+        [k: string]: unknown;
+      } | null;
+      level3?: {
+        root: {
+          children: {
+            type: string;
+            version: number;
             [k: string]: unknown;
-          }[]
-        | null;
-      level4?:
-        | {
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
+          type: string;
+          version: number;
+        };
+        [k: string]: unknown;
+      } | null;
+      level4?: {
+        root: {
+          children: {
+            type: string;
+            version: number;
             [k: string]: unknown;
-          }[]
-        | null;
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
+          type: string;
+          version: number;
+        };
+        [k: string]: unknown;
+      } | null;
       transcribers?: (string | Recorder)[] | null;
       translators?: (string | Recorder)[] | null;
       proofreaders?: (string | Recorder)[] | null;
@@ -741,8 +943,20 @@ export interface WeaponsGroup {
 export interface Note {
   id: string;
   note: {
+    root: {
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      type: string;
+      version: number;
+    };
     [k: string]: unknown;
-  }[];
+  };
   updatedAt: string;
   createdAt: string;
 }
