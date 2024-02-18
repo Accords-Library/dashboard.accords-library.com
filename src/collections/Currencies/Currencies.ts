@@ -2,6 +2,7 @@ import { text } from "payload/dist/fields/validations";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { CollectionGroups, Collections } from "../../constants";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 
 const fields = {
@@ -23,7 +24,7 @@ export const Currencies = buildCollectionConfig({
     group: CollectionGroups.Meta,
   },
   access: { create: mustBeAdmin, update: mustBeAdmin },
-  endpoints: [importFromStrapi],
+  endpoints: [importFromStrapi, getAllEndpoint],
   timestamps: false,
   fields: [
     {

@@ -1,4 +1,5 @@
 import { Collections } from "./constants";
+import { Currency, Language } from "./types/collections";
 
 class NodeCache {
   constructor(_params: any) {}
@@ -158,6 +159,39 @@ export type EndpointEra = {
   }[];
 };
 
+export type EndpointFolder = {
+  slug: string;
+  icon?: string;
+  translations: {
+    language: string;
+    name: string;
+    description?: string;
+  }[];
+  sections:
+    | { type: "single"; subfolders: EndpointFolderPreview[] }
+    | {
+        type: "multiple";
+        sections: {
+          translations: { language: string; name: string }[];
+          subfolders: EndpointFolderPreview[];
+        }[];
+      };
+  lightThumbnail?: PayloadImage;
+  darkThumbnail?: PayloadImage;
+};
+
+export type EndpointFolderPreview = {
+  slug: string;
+  icon?: string;
+  translations: {
+    language: string;
+    name: string;
+    description?: string;
+  }[];
+  lightThumbnail?: PayloadImage;
+  darkThumbnail?: PayloadImage;
+};
+
 export type PayloadImage = {
   url: string;
   width: number;
@@ -171,4 +205,12 @@ export const payload = {
     await (await request(payloadApiUrl(Collections.Weapons, `slug/${slug}`))).json(),
   getEras: async (): Promise<EndpointEra[]> =>
     await (await request(payloadApiUrl(Collections.ChronologyEras, `all`))).json(),
+  getRootFolders: async (): Promise<EndpointFolderPreview[]> =>
+    await (await request(payloadApiUrl(Collections.Folders, `root`))).json(),
+  getFolder: async (slug: string): Promise<EndpointFolder> =>
+    await (await request(payloadApiUrl(Collections.Folders, `slug/${slug}`))).json(),
+  getLanguages: async (): Promise<Language[]> =>
+    await (await request(payloadApiUrl(Collections.Languages, `all`))).json(),
+  getCurrencies: async (): Promise<Currency[]> =>
+    await (await request(payloadApiUrl(Collections.Currencies, `all`))).json(),
 };

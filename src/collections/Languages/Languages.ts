@@ -3,6 +3,7 @@ import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { publicAccess } from "../../accesses/publicAccess";
 import { CollectionGroups, Collections } from "../../constants";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 
 const fields = {
@@ -26,7 +27,7 @@ export const Languages = buildCollectionConfig({
   },
   access: { create: mustBeAdmin, update: mustBeAdmin, read: publicAccess },
   timestamps: false,
-  endpoints: [importFromStrapi],
+  endpoints: [importFromStrapi, getAllEndpoint],
   fields: [
     {
       name: fields.id,

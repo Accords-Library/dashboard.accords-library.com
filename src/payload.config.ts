@@ -10,6 +10,7 @@ import { ContentsThumbnails } from "./collections/ContentsThumbnails/ContentsThu
 import { Currencies } from "./collections/Currencies/Currencies";
 import { Files } from "./collections/Files/Files";
 import { Folders } from "./collections/Folders/Folders";
+import { FoldersThumbnails } from "./collections/FoldersThumbnails/FoldersThumbnails";
 import { Keys } from "./collections/Keys/Keys";
 import { Languages } from "./collections/Languages/Languages";
 import { LibraryItems } from "./collections/LibraryItems/LibraryItems";
@@ -47,6 +48,7 @@ export default buildConfig({
   editor: createEditor({}),
   collections: [
     Folders,
+    FoldersThumbnails,
     LibraryItems,
     Contents,
     ContentsFolders,

@@ -24,7 +24,15 @@ export const hasIntersection = (a: Span, b: Span): boolean => !hasNoIntersection
 export const hasDuplicates = <T>(list: T[]): boolean => list.length !== new Set(list).size;
 
 export const isValidPayloadImage = (
-  image: Partial<PayloadImage> | undefined
+  image:
+    | {
+        filename?: string | null;
+        mimeType?: string | null;
+        width?: number | null;
+        height?: number | null;
+        url?: string | null;
+      }
+    | undefined | null
 ): image is PayloadImage => {
   if (isUndefined(image)) return false;
   if (isEmpty(image.filename)) return false;

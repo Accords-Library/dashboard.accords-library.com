@@ -39,6 +39,7 @@ export type CategoryTranslations =
 export interface Config {
   collections: {
     folders: Folder;
+    FoldersThumbnails: FoldersThumbnail;
     'library-items': LibraryItem;
     contents: Content;
     'contents-folders': ContentsFolder;
@@ -70,16 +71,40 @@ export interface Config {
 export interface Folder {
   id: string;
   slug: string;
+  icon?: string | null;
+  lightThumbnail?: string | FoldersThumbnail | null;
+  darkThumbnail?: string | FoldersThumbnail | null;
   translations?:
     | {
         language: string | Language;
         name: string;
+        description?: {
+          root: {
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            type: string;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
         id?: string | null;
       }[]
     | null;
   sections?:
     | {
-        name?: string | null;
+        translations?:
+          | {
+              language: string | Language;
+              name: string;
+              id?: string | null;
+            }[]
+          | null;
         subfolders?: (string | Folder)[] | null;
         id?: string | null;
       }[]
@@ -98,6 +123,35 @@ export interface Folder {
     | null;
   updatedAt: string;
   createdAt: string;
+}
+export interface FoldersThumbnail {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  sizes?: {
+    thumb?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    medium?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 export interface Language {
   id: string;

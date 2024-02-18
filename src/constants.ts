@@ -22,7 +22,8 @@ export enum Collections {
   Weapons = "weapons",
   WeaponsGroups = "weapons-groups",
   WeaponsThumbnails = "weapons-thumbnails",
-  Folders = "folders"
+  Folders = "folders",
+  FoldersThumbnails = "FoldersThumbnails",
 }
 
 export enum CollectionGroups {
