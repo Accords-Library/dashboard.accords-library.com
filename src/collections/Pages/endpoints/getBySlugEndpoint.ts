@@ -78,7 +78,7 @@ const handleContent = (
             fields: {
               ...node.fields,
               anchorHash,
-              lines: handleContent(node.fields.lines, anchorHash),
+              content: handleContent(node.fields.content, anchorHash),
             },
           };
         }
@@ -94,8 +94,8 @@ const handleToc = (content: RichTextContent, parentPrefix = ""): TableOfContentE
     .filter(isBlockNodeSectionBlock)
     .map(({ fields }, index) => ({
       prefix: `${parentPrefix}${index + 1}.`,
-      title: fields.blockName,
-      children: handleToc(fields.lines, `${index + 1}.`),
+      title: fields.blockName ?? "",
+      children: handleToc(fields.content, `${index + 1}.`),
     }));
 
 const handleParentPages = ({

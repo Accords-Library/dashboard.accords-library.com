@@ -8,7 +8,7 @@ const generateRecursiveSectionBlock = (depth = 1, maxDepth = 5): Block => ({
   labels: { singular: "Section", plural: "Sections" },
   fields: [
     {
-      name: "lines",
+      name: "content",
       type: "richText",
       label: false,
       required: true,

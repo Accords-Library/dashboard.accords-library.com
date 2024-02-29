@@ -1343,7 +1343,7 @@ export interface TranscriptBlock {
  * via the `definition` "SectionBlock".
  */
 export interface SectionBlock {
-  lines: {
+  content: {
     root: {
       children: {
         type: string;
