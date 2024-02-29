@@ -1,5 +1,5 @@
-import { Collections } from "./constants";
-import { Currency, Language } from "./types/collections";
+import { Collections, PageType, RichTextContent } from "./constants";
+import { Content, Currency, Key, Language, LibraryItem, Page } from "./types/collections";
 
 class NodeCache {
   constructor(_params: any) {}
@@ -34,8 +34,8 @@ const refreshToken = async () => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      email: process.env.PAYLOAD_USER,
-      password: process.env.PAYLOAD_PASSWORD,
+      email: import.meta.env.PAYLOAD_USER,
+      password: import.meta.env.PAYLOAD_PASSWORD,
     }),
   });
   logResponse(loginResult);
@@ -74,7 +74,7 @@ const injectAuth = async (init?: RequestInit): Promise<RequestInit> => ({
 const logResponse = (res: Response) => console.log(res.status, res.statusText, res.url);
 
 const payloadApiUrl = (collection: Collections, endpoint?: string): string =>
-  `${process.env.PAYLOAD_API_URL}/${collection}${endpoint === undefined ? "" : `/${endpoint}`}`;
+  `${import.meta.env.PAYLOAD_API_URL}/${collection}${endpoint === undefined ? "" : `/${endpoint}`}`;
 
 const request = async (url: string, init?: RequestInit): Promise<Response> => {
   const result = await fetch(url, await injectAuth(init));
@@ -159,14 +159,7 @@ export type EndpointEra = {
   }[];
 };
 
-export type EndpointFolder = {
-  slug: string;
-  icon?: string;
-  translations: {
-    language: string;
-    name: string;
-    description?: string;
-  }[];
+export type EndpointFolder = EndpointFolderPreview & {
   sections:
     | { type: "single"; subfolders: EndpointFolderPreview[] }
     | {
@@ -176,8 +169,20 @@ export type EndpointFolder = {
           subfolders: EndpointFolderPreview[];
         }[];
       };
-  lightThumbnail?: PayloadImage;
-  darkThumbnail?: PayloadImage;
+  files: (
+    | {
+        relationTo: "library-items";
+        value: LibraryItem;
+      }
+    | {
+        relationTo: "contents";
+        value: Content;
+      }
+    | {
+        relationTo: "pages";
+        value: Page;
+      }
+  )[];
 };
 
 export type EndpointFolderPreview = {
@@ -186,10 +191,113 @@ export type EndpointFolderPreview = {
   translations: {
     language: string;
     name: string;
-    description?: string;
+    description?: RichTextContent;
   }[];
   lightThumbnail?: PayloadImage;
   darkThumbnail?: PayloadImage;
+};
+
+export type EndpointContent = {
+  slug: string;
+  thumbnail?: PayloadImage;
+  tagGroups: TagGroup[];
+  translations: {
+    language: string;
+    sourceLanguage: string;
+    pretitle?: string;
+    title: string;
+    subtitle?: string;
+    summary?: RichTextContent;
+    format: {
+      text?: {
+        content: RichTextContent;
+        toc: TableOfContentEntry[];
+        transcribers: string[];
+        translators: string[];
+        proofreaders: string[];
+        notes?: RichTextContent;
+      };
+    };
+  }[];
+};
+
+export type EndpointRecorder = {
+  id: string;
+  username: string;
+  avatar?: PayloadImage;
+  languages: string[];
+  biographies: {
+    language: string;
+    biography: RichTextContent;
+  }[];
+};
+
+export type EndpointKey = {
+  id: string;
+  name: string;
+  type: Key["type"];
+  translations: {
+    language: string;
+    name: string;
+    short: string;
+  }[];
+};
+
+export type EndpointTag = {
+  slug: string;
+  translations: {
+    language: string;
+    name: string;
+  }[];
+  group: string;
+};
+
+export type EndpointTagsGroup = {
+  slug: string;
+  icon?: string;
+  translations: {
+    language: string;
+    name: string;
+  }[];
+  tags: EndpointTag[];
+};
+
+export type EndpointPage = {
+  slug: string;
+  type: PageType;
+  thumbnail?: PayloadImage;
+  authors: string[];
+  tagGroups: TagGroup[];
+  translations: {
+    language: string;
+    sourceLanguage: string;
+    pretitle?: string;
+    title: string;
+    subtitle?: string;
+    summary?: RichTextContent;
+    content: RichTextContent;
+    transcribers: string[];
+    translators: string[];
+    proofreaders: string[];
+    toc: TableOfContentEntry[];
+  }[];
+  status: "draft" | "published";
+  parentPages: ParentPage[];
+};
+
+export type ParentPage = {
+  slug: string;
+  collection: Collections;
+  translations: { language: string; name: string }[];
+  tag: string;
+};
+
+export type TagGroup = { slug: string; icon: string; values: string[] };
+
+export type TableOfContentEntry = {
+  prefix: string;
+  title: string;
+  children: TableOfContentEntry[];
 };
 
 export type PayloadImage = {
@@ -213,4 +321,16 @@ export const payload = {
     await (await request(payloadApiUrl(Collections.Languages, `all`))).json(),
   getCurrencies: async (): Promise<Currency[]> =>
     await (await request(payloadApiUrl(Collections.Currencies, `all`))).json(),
+  getContent: async (slug: string): Promise<EndpointContent> =>
+    await (await request(payloadApiUrl(Collections.Contents, `slug/${slug}`))).json(),
+  getKeys: async (): Promise<EndpointKey[]> =>
+    await (await request(payloadApiUrl(Collections.Keys, `all`))).json(),
+  getRecorders: async (): Promise<EndpointRecorder[]> =>
+    await (await request(payloadApiUrl(Collections.Recorders, `all`))).json(),
+  getTags: async (): Promise<EndpointTag[]> =>
+    await (await request(payloadApiUrl(Collections.Tags, `all`))).json(),
+  getTagsGroups: async (): Promise<EndpointTagsGroup[]> =>
+    await (await request(payloadApiUrl(Collections.TagsGroups, `all`))).json(),
+  getPage: async (slug: string): Promise<EndpointPage> =>
+    await (await request(payloadApiUrl(Collections.Pages, `slug/${slug}`))).json(),
 };

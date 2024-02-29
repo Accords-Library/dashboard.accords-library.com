@@ -2,7 +2,8 @@ import payload from "payload";
 import { Collections } from "../../../constants";
 import { EndpointFolderPreview } from "../../../sdk";
 import { CollectionEndpoint } from "../../../types/payload";
-import { convertFolderToPreview, isValidFolder } from "./getBySlugEndpoint";
+import { isPayloadType } from "../../../utils/asserts";
+import { convertFolderToPreview } from "./getBySlugEndpoint";
 
 
 export const getRootFoldersEndpoint: CollectionEndpoint = {
@@ -39,7 +40,7 @@ export const getRootFoldersEndpoint: CollectionEndpoint = {
       return;
     }
 
-    const result = folders.filter(isValidFolder).map<EndpointFolderPreview>(convertFolderToPreview);
+    const result = folders.filter(isPayloadType).map<EndpointFolderPreview>(convertFolderToPreview);
 
     res.status(200).json(result);
   },

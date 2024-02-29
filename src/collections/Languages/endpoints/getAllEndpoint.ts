@@ -20,8 +20,8 @@ export const getAllEndpoint: CollectionEndpoint = {
     const languages: Language[] = (
       await payload.find({
         collection: Collections.Languages,
-        limit: 100,
-        sort: "name"
+        sort: "name",
+        pagination: false,
       })
     ).docs;
 

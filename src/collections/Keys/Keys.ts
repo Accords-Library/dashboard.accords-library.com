@@ -8,6 +8,7 @@ import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { Key } from "../../types/collections";
 import { isDefined, isUndefined } from "../../utils/asserts";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 
 const fields = {
@@ -74,7 +75,7 @@ export const Keys = buildCollectionConfig({
       },
     ],
   },
-  endpoints: [importFromStrapi],
+  endpoints: [importFromStrapi, getAllEndpoint],
   timestamps: false,
   versions: false,
   fields: [

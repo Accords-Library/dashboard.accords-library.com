@@ -59,19 +59,32 @@ const start = async () => {
   app.use("/public", express.static(path.join(__dirname, "../public")));
 
   app.get("/api/sdk", (_, res) => {
-    const collections = readFileSync(path.join(__dirname, "types/collections.ts"), "utf-8");
+    const removeMockingSection = (text: string): string => {
+      const lines = text.split("\n");
+      const endMockingLine = lines.findIndex((line) => line === "// END MOCKING SECTION") ?? 0;
+      return lines.slice(endMockingLine + 1).join("\n");
+    };
 
-    const constantsHeader = "/////////////// CONSTANTS ///////////////\n";
-    const constants = readFileSync(path.join(__dirname, "constants.ts"), "utf-8");
+    const removeDeclare = (text: string): string => {
+      const lines = text.split("\n");
+      const startDeclareLine =
+        lines.findIndex((line) => line === "declare module 'payload' {") ?? 0;
+      return lines.slice(0, startDeclareLine).join("\n");
+    };
 
-    const sdkHeader = "////////////////// SDK //////////////////\n";
-    const sdkLines = readFileSync(path.join(__dirname, "sdk.ts"), "utf-8").split("\n");
-    const endMockingLine = sdkLines.findIndex((line) => line === "// END MOCKING SECTION") ?? 0;
-    const sdk =
-      `import NodeCache from "node-cache";\n\n` + sdkLines.slice(endMockingLine + 1).join("\n");
+    const result = [];
+
+    result.push(removeDeclare(readFileSync(path.join(__dirname, "types/collections.ts"), "utf-8")));
+
+    result.push("/////////////// CONSTANTS ///////////////");
+    result.push(removeMockingSection(readFileSync(path.join(__dirname, "constants.ts"), "utf-8")));
+
+    result.push("////////////////// SDK //////////////////");
+    result.push(`import NodeCache from "node-cache";`);
+    result.push(removeMockingSection(readFileSync(path.join(__dirname, "sdk.ts"), "utf-8")));
 
     res.type("text/plain");
-    res.send([collections, constantsHeader, constants, sdkHeader, sdk].join("\n\n"));
+    res.send(result.join("\n\n"));
   });
 
   app.get("/robots.txt", (_, res) => {

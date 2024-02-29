@@ -28,7 +28,7 @@ export const getAllEndpoint: CollectionEndpoint = {
     const eras: ChronologyEra[] = (
       await payload.find({
         collection: Collections.ChronologyEras,
-        limit: 100,
+        pagination: false,
       })
     ).docs;
 

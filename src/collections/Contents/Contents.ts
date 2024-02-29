@@ -1,12 +1,13 @@
+import { Where } from "payload/types";
 import { sectionBlock } from "../../blocks/sectionBlock";
 import { transcriptBlock } from "../../blocks/transcriptBlock";
-import { CollectionGroups, Collections, FileTypes, KeysTypes } from "../../constants";
+import { CollectionGroups, Collections, FileTypes } from "../../constants";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { fileField } from "../../fields/fileField/fileField";
 import { imageField } from "../../fields/imageField/imageField";
-import { keysField } from "../../fields/keysField/keysField";
 import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
+import { tagsField } from "../../fields/tagsField/tagsField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
@@ -14,14 +15,13 @@ import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
 import { isDefined } from "../../utils/asserts";
 import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
+import { getBySlugEndpoint } from "./endpoints/getBySlugEndpoint";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 import { importRelationsFromStrapi } from "./endpoints/importRelationsFromStrapi";
 
 const fields = {
   slug: "slug",
   thumbnail: "thumbnail",
-  categories: "categories",
-  type: "type",
   translations: "translations",
   pretitle: "pretitle",
   title: "title",
@@ -42,6 +42,7 @@ const fields = {
   nextContents: "nextContents",
   folders: "folders",
   libraryItems: "libraryItems",
+  tags: "tags",
 } as const satisfies Record<string, string>;
 
 export const Contents = buildVersionedCollectionConfig({
@@ -55,14 +56,7 @@ export const Contents = buildVersionedCollectionConfig({
     useAsTitle: fields.slug,
     description:
       "All the contents (textual, audio, and video) from the Library or other online sources.",
-    defaultColumns: [
-      fields.thumbnail,
-      fields.slug,
-      fields.categories,
-      fields.type,
-      fields.translations,
-      fields.status,
-    ],
+    defaultColumns: [fields.thumbnail, fields.slug, fields.translations, fields.status],
     group: CollectionGroups.Collections,
     hooks: {
       beforeDuplicate: beforeDuplicatePiping([
@@ -71,7 +65,7 @@ export const Contents = buildVersionedCollectionConfig({
       ]),
     },
   },
-  endpoints: [importFromStrapi, importRelationsFromStrapi],
+  endpoints: [importFromStrapi, importRelationsFromStrapi, getBySlugEndpoint],
   fields: [
     rowField([
       slugField({ name: fields.slug }),
@@ -80,23 +74,7 @@ export const Contents = buildVersionedCollectionConfig({
         relationTo: Collections.ContentsThumbnails,
       }),
     ]),
-    rowField([
-      keysField({
-        name: fields.categories,
-        relationTo: KeysTypes.Categories,
-        hasMany: true,
-      }),
-      keysField({
-        name: fields.type,
-        relationTo: KeysTypes.Contents,
-      }),
-      backPropagationField({
-        name: fields.libraryItems,
-        hasMany: true,
-        relationTo: Collections.LibraryItems,
-        where: ({ id }) => ({ "contents.content": { equals: id } }),
-      }),
-    ]),
+    tagsField({ name: fields.tags }),
     translatedFields({
       name: fields.translations,
       admin: { useAsTitle: fields.title, hasSourceLanguage: true },
@@ -217,19 +195,30 @@ export const Contents = buildVersionedCollectionConfig({
     rowField([
       backPropagationField({
         name: fields.folders,
+        relationTo: Collections.Folders,
         hasMany: true,
-        relationTo: Collections.ContentsFolders,
-        where: ({ id }) => ({ contents: { equals: id } }),
-        admin: {
-          description: `You can set the folder(s) from the "Contents Folders" collection`,
-        },
+        where: ({ id }) => ({
+          and: [
+            { "files.value": { equals: id } },
+            { "files.relationTo": { equals: Collections.Contents } },
+          ] as Where[],
+        }),
       }),
+      backPropagationField({
+        name: fields.libraryItems,
+        hasMany: true,
+        relationTo: Collections.LibraryItems,
+        where: ({ id }) => ({ "contents.content": { equals: id } }),
+      }),
+    ]),
+    rowField([
       backPropagationField({
         name: fields.previousContents,
         relationTo: Collections.Contents,
         hasMany: true,
         where: ({ id }) => ({ [fields.nextContents]: { equals: id } }),
       }),
+
       {
         name: fields.nextContents,
         type: "relationship",

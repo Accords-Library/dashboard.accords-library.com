@@ -5,12 +5,12 @@ import { buildConfig } from "payload/config";
 import { ChronologyEras } from "./collections/ChronologyEras/ChronologyEras";
 import { ChronologyItems } from "./collections/ChronologyItems/ChronologyItems";
 import { Contents } from "./collections/Contents/Contents";
-import { ContentsFolders } from "./collections/ContentsFolders/ContentsFolders";
 import { ContentsThumbnails } from "./collections/ContentsThumbnails/ContentsThumbnails";
 import { Currencies } from "./collections/Currencies/Currencies";
 import { Files } from "./collections/Files/Files";
 import { Folders } from "./collections/Folders/Folders";
 import { FoldersThumbnails } from "./collections/FoldersThumbnails/FoldersThumbnails";
+import { Images } from "./collections/Images/Images";
 import { Keys } from "./collections/Keys/Keys";
 import { Languages } from "./collections/Languages/Languages";
 import { LibraryItems } from "./collections/LibraryItems/LibraryItems";
@@ -18,10 +18,13 @@ import { LibraryItemsGallery } from "./collections/LibraryItemsGallery/LibraryIt
 import { LibraryItemsScans } from "./collections/LibraryItemsScans/LibraryItemsScans";
 import { LibraryItemsThumbnails } from "./collections/LibraryItemsThumbnails/LibraryItemsThumbnails";
 import { Notes } from "./collections/Notes/Notes";
+import { Pages } from "./collections/Pages/Pages";
 import { Posts } from "./collections/Posts/Posts";
 import { PostsThumbnails } from "./collections/PostsThumbnails/PostsThumbnails";
 import { Recorders } from "./collections/Recorders/Recorders";
 import { RecordersThumbnails } from "./collections/RecordersThumbnails/RecordersThumbnails";
+import { Tags } from "./collections/Tags/Tags";
+import { TagsGroups } from "./collections/TagsGroups/TagsGroups";
 import { Videos } from "./collections/Videos/Videos";
 import { VideosChannels } from "./collections/VideosChannels/VideosChannels";
 import { Weapons } from "./collections/Weapons/Weapons";
@@ -51,8 +54,8 @@ export default buildConfig({
     FoldersThumbnails,
     LibraryItems,
     Contents,
-    ContentsFolders,
     Posts,
+    Pages,
     ChronologyItems,
     ChronologyEras,
     Weapons,
@@ -72,6 +75,9 @@ export default buildConfig({
     Currencies,
     Recorders,
     Keys,
+    Tags,
+    TagsGroups,
+    Images
   ],
   db: mongooseAdapter({
     url: process.env.MONGODB_URI ?? "mongodb://mongo:27017/payload",

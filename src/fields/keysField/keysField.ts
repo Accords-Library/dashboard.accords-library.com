@@ -1,10 +1,10 @@
-import { FieldBase, RelationshipField } from "payload/dist/fields/config/types";
+import { FieldBase, SingleRelationshipField } from "payload/dist/fields/config/types";
 import { Collections, KeysTypes } from "../../constants";
 
 type KeysField = FieldBase & {
   relationTo: KeysTypes;
   hasMany?: boolean;
-  admin?: RelationshipField["admin"];
+  admin?: SingleRelationshipField["admin"];
 };
 
 export const keysField = ({
@@ -12,7 +12,7 @@ export const keysField = ({
   hasMany = false,
   admin,
   ...props
-}: KeysField): RelationshipField => ({
+}: KeysField): SingleRelationshipField => ({
   ...props,
   admin: {
     allowCreate: false,

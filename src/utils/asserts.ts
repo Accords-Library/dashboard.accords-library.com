@@ -32,9 +32,12 @@ export const isValidPayloadImage = (
         height?: number | null;
         url?: string | null;
       }
-    | undefined | null
+    | undefined
+    | null
+    | string
 ): image is PayloadImage => {
   if (isUndefined(image)) return false;
+  if (typeof image === "string") return false;
   if (isEmpty(image.filename)) return false;
   if (isEmpty(image.url)) return false;
   if (isEmpty(image.mimeType)) return false;
@@ -49,5 +52,6 @@ export const isString = <T extends Object>(value: string | T): value is string =
 export const isPayloadType = <T extends Object>(value: string | T): value is T =>
   typeof value === "object";
 
-export const isPayloadArrayType = <T extends Object>(value: string[] | T[]): value is T[] =>
-  value.every(isPayloadType<T>);
+export const isPayloadArrayType = <T extends Object>(
+  value: (string | T)[] | null | undefined
+): value is T[] => isDefined(value) && value.every(isPayloadType<T>);

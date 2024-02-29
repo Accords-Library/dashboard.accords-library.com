@@ -8,6 +8,7 @@ import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { createEditor } from "../../utils/editor";
+import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 import { beforeLoginMustHaveAtLeastOneRole } from "./hooks/beforeLoginMustHaveAtLeastOneRole";
 
@@ -75,7 +76,7 @@ export const Recorders = buildCollectionConfig({
   hooks: {
     beforeLogin: [beforeLoginMustHaveAtLeastOneRole],
   },
-  endpoints: [importFromStrapi],
+  endpoints: [importFromStrapi, getAllEndpoint],
   timestamps: false,
   fields: [
     rowField([

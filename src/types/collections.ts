@@ -6,6 +6,10 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RecorderBiographies".
+ */
 export type RecorderBiographies =
   | {
       language: string | Language;
@@ -27,6 +31,10 @@ export type RecorderBiographies =
       id?: string | null;
     }[]
   | null;
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CategoryTranslations".
+ */
 export type CategoryTranslations =
   | {
       language: string | Language;
@@ -39,11 +47,11 @@ export type CategoryTranslations =
 export interface Config {
   collections: {
     folders: Folder;
-    FoldersThumbnails: FoldersThumbnail;
+    'folders-thumbnails': FoldersThumbnail;
     'library-items': LibraryItem;
     contents: Content;
-    'contents-folders': ContentsFolder;
     posts: Post;
+    pages: Page;
     'chronology-items': ChronologyItem;
     'chronology-eras': ChronologyEra;
     weapons: Weapon;
@@ -56,18 +64,25 @@ export interface Config {
     'recorders-thumbnails': RecordersThumbnail;
     'posts-thumbnails': PostThumbnail;
     files: File;
-    Notes: Note;
+    notes: Note;
     videos: Video;
     'videos-channels': VideosChannel;
     languages: Language;
     currencies: Currency;
     recorders: Recorder;
     keys: Key;
+    tags: Tag;
+    'tags-groups': TagsGroup;
+    images: Image;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
   globals: {};
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "folders".
+ */
 export interface Folder {
   id: string;
   slug: string;
@@ -119,11 +134,19 @@ export interface Folder {
             relationTo: 'contents';
             value: string | Content;
           }
+        | {
+            relationTo: 'pages';
+            value: string | Page;
+          }
       )[]
     | null;
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "folders-thumbnails".
+ */
 export interface FoldersThumbnail {
   id: string;
   updatedAt: string;
@@ -143,20 +166,20 @@ export interface FoldersThumbnail {
       filesize?: number | null;
       filename?: string | null;
     };
-    medium?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
   };
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "languages".
+ */
 export interface Language {
   id: string;
   name: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "library-items".
+ */
 export interface LibraryItem {
   id: string;
   itemType?: ('Textual' | 'Audio' | 'Video' | 'Game' | 'Other') | null;
@@ -323,6 +346,10 @@ export interface LibraryItem {
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "library-items-thumbnails".
+ */
 export interface LibraryItemThumbnail {
   id: string;
   libraryItem?: (string | LibraryItem)[] | null;
@@ -361,6 +388,10 @@ export interface LibraryItemThumbnail {
     };
   };
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "library-items-gallery".
+ */
 export interface LibraryItemGallery {
   id: string;
   updatedAt: string;
@@ -390,6 +421,10 @@ export interface LibraryItemGallery {
     };
   };
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recorders".
+ */
 export interface Recorder {
   id: string;
   username: string;
@@ -407,6 +442,10 @@ export interface Recorder {
   lockUntil?: string | null;
   password?: string | null;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recorders-thumbnails".
+ */
 export interface RecordersThumbnail {
   id: string;
   recorder?: (string | null) | Recorder;
@@ -437,6 +476,10 @@ export interface RecordersThumbnail {
     };
   };
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "library-items-scans".
+ */
 export interface LibraryItemScans {
   id: string;
   updatedAt: string;
@@ -482,6 +525,10 @@ export interface LibraryItemScans {
     };
   };
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "files".
+ */
 export interface File {
   id: string;
   filename: string;
@@ -489,6 +536,10 @@ export interface File {
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "keys".
+ */
 export interface Key {
   id: string;
   name: string;
@@ -505,16 +556,22 @@ export interface Key {
     | 'Wordings';
   translations?: CategoryTranslations;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "currencies".
+ */
 export interface Currency {
   id: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contents".
+ */
 export interface Content {
   id: string;
   slug: string;
   thumbnail?: string | ContentsThumbnail | null;
-  categories?: (string | Key)[] | null;
-  type?: (string | null) | Key;
-  libraryItems?: (string | LibraryItem)[] | null;
+  tags?: (string | Tag)[] | null;
   translations: {
     language: string | Language;
     sourceLanguage: string | Language;
@@ -603,7 +660,8 @@ export interface Content {
     } | null;
     id?: string | null;
   }[];
-  folders?: (string | ContentsFolder)[] | null;
+  folders?: (string | Folder)[] | null;
+  libraryItems?: (string | LibraryItem)[] | null;
   previousContents?: (string | Content)[] | null;
   nextContents?: (string | Content)[] | null;
   updatedBy: string | Recorder;
@@ -611,6 +669,10 @@ export interface Content {
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contents-thumbnails".
+ */
 export interface ContentsThumbnail {
   id: string;
   contents?: (string | Content)[] | null;
@@ -649,8 +711,13 @@ export interface ContentsThumbnail {
     };
   };
 }
-export interface ContentsFolder {
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
   id: string;
+  name?: string | null;
   slug: string;
   translations?:
     | {
@@ -659,9 +726,124 @@ export interface ContentsFolder {
         id?: string | null;
       }[]
     | null;
-  subfolders?: (string | ContentsFolder)[] | null;
-  contents?: (string | Content)[] | null;
+  group: string | TagsGroup;
+  updatedAt: string;
+  createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags-groups".
+ */
+export interface TagsGroup {
+  id: string;
+  slug: string;
+  icon?: string | null;
+  translations?:
+    | {
+        language: string | Language;
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: string;
+  type: 'Content' | 'Article' | 'Generic';
+  slug: string;
+  thumbnail?: string | Image | null;
+  tags?: (string | Tag)[] | null;
+  authors?: (string | Recorder)[] | null;
+  translations: {
+    language: string | Language;
+    sourceLanguage: string | Language;
+    pretitle?: string | null;
+    title: string;
+    subtitle?: string | null;
+    summary?: {
+      root: {
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        type: string;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    content: {
+      root: {
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        type: string;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    transcribers?: (string | Recorder)[] | null;
+    translators?: (string | Recorder)[] | null;
+    proofreaders?: (string | Recorder)[] | null;
+    id?: string | null;
+  }[];
+  folders?: (string | Folder)[] | null;
+  collectibles?: (string | LibraryItem)[] | null;
+  updatedBy: string | Recorder;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "images".
+ */
+export interface Image {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  sizes?: {
+    thumb?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
 export interface Post {
   id: string;
   slug: string;
@@ -713,6 +895,10 @@ export interface Post {
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts-thumbnails".
+ */
 export interface PostThumbnail {
   id: string;
   posts?: (string | Post)[] | null;
@@ -751,6 +937,10 @@ export interface PostThumbnail {
     };
   };
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chronology-items".
+ */
 export interface ChronologyItem {
   id: string;
   name?: string | null;
@@ -806,6 +996,10 @@ export interface ChronologyItem {
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chronology-eras".
+ */
 export interface ChronologyEra {
   id: string;
   slug: string;
@@ -837,6 +1031,10 @@ export interface ChronologyEra {
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "weapons".
+ */
 export interface Weapon {
   id: string;
   slug: string;
@@ -936,6 +1134,10 @@ export interface Weapon {
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "weapons-thumbnails".
+ */
 export interface WeaponsThumbnail {
   id: string;
   weapon?: (string | null) | Weapon;
@@ -982,6 +1184,10 @@ export interface WeaponsThumbnail {
     };
   };
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "weapons-groups".
+ */
 export interface WeaponsGroup {
   id: string;
   slug: string;
@@ -994,6 +1200,10 @@ export interface WeaponsGroup {
     | null;
   weapons?: (string | Weapon)[] | null;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notes".
+ */
 export interface Note {
   id: string;
   note: {
@@ -1014,6 +1224,10 @@ export interface Note {
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos".
+ */
 export interface Video {
   id: string;
   uid: string;
@@ -1026,12 +1240,20 @@ export interface Video {
   publishedDate: string;
   channel?: (string | null) | VideosChannel;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos-channels".
+ */
 export interface VideosChannel {
   id: string;
   uid: string;
   title: string;
   subscribers?: number | null;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-preferences".
+ */
 export interface PayloadPreference {
   id: string;
   user: {
@@ -1051,12 +1273,94 @@ export interface PayloadPreference {
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-migrations".
+ */
 export interface PayloadMigration {
   id: string;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LineBlock".
+ */
+export interface LineBlock {
+  content: {
+    root: {
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      type: string;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  blockType: 'lineBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CueBlock".
+ */
+export interface CueBlock {
+  content: {
+    root: {
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      type: string;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  blockType: 'cueBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TranscriptBlock".
+ */
+export interface TranscriptBlock {
+  lines: (LineBlock | CueBlock)[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'transcriptBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SectionBlock".
+ */
+export interface SectionBlock {
+  lines: {
+    root: {
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      type: string;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'sectionBlock';
 }
 
 

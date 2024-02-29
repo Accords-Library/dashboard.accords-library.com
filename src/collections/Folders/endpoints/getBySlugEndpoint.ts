@@ -1,8 +1,8 @@
 import { Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointFolder, EndpointFolderPreview, PayloadImage } from "../../../sdk";
-import { Folder, FoldersThumbnail, Language } from "../../../types/collections";
-import { isDefined, isUndefined, isValidPayloadImage } from "../../../utils/asserts";
+import { EndpointFolder, EndpointFolderPreview } from "../../../sdk";
+import { Folder, Language } from "../../../types/collections";
+import { isDefined, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
 
 export const getBySlugEndpoint = createGetByEndpoint(
   Collections.Folders,
@@ -15,7 +15,7 @@ export const getBySlugEndpoint = createGetByEndpoint(
           ? {
               type: "single",
               subfolders:
-                folder.sections[0]?.subfolders?.filter(isValidFolder).map(convertFolderToPreview) ??
+                folder.sections[0]?.subfolders?.filter(isPayloadType).map(convertFolderToPreview) ??
                 [],
             }
           : {
@@ -29,6 +29,20 @@ export const getBySlugEndpoint = createGetByEndpoint(
                   subfolders: subfolders.map(convertFolderToPreview),
                 })) ?? [],
             },
+      files:
+        folder.files?.flatMap<EndpointFolder["files"][number]>(({ relationTo, value }) => {
+          if (!isPayloadType(value)) {
+            return [];
+          }
+          switch (relationTo) {
+            case "contents":
+              return [{ relationTo, value }];
+            case "library-items":
+              return [{ relationTo, value }];
+            case "pages":
+              return [{ relationTo, value }];
+          }
+        }) ?? [],
     };
   }
 );
@@ -47,10 +61,10 @@ export const convertFolderToPreview = ({
       translations?.map(({ language, name, description }) => ({
         language: getLanguageId(language),
         name,
-        description: JSON.stringify(description),
+        ...(description ? { description } : {}),
       })) ?? [],
-    darkThumbnail: getThumbnail(darkThumbnail),
-    lightThumbnail: getThumbnail(lightThumbnail),
+    darkThumbnail: isValidPayloadImage(darkThumbnail) ? darkThumbnail : undefined,
+    lightThumbnail: isValidPayloadImage(lightThumbnail) ? lightThumbnail : undefined,
   };
 };
 
@@ -77,19 +91,7 @@ const isValidSection = (section: {
   if (!section.subfolders) {
     return false;
   }
-  return section.subfolders.every(isValidFolder);
-};
-
-export const isValidFolder = (folder: string | Folder): folder is Folder =>
-  typeof folder !== "string";
-
-const getThumbnail = (
-  thumbnail: string | FoldersThumbnail | null | undefined
-): PayloadImage | undefined => {
-  if (isUndefined(thumbnail)) return undefined;
-  if (typeof thumbnail === "string") return undefined;
-  if (!isValidPayloadImage(thumbnail)) return undefined;
-  return thumbnail;
+  return section.subfolders.every(isPayloadType);
 };
 
 const getLanguageId = (language: string | Language) =>
