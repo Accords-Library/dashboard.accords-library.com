@@ -1,5 +1,6 @@
 import { Where } from "payload/types";
 import { sectionBlock } from "../../blocks/sectionBlock";
+import { transcriptBlock } from "../../blocks/transcriptBlock";
 import { QuickFilters, publishStatusFilters } from "../../components/QuickFilters";
 import { CollectionGroups, Collections, PageType } from "../../constants";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
@@ -121,7 +122,7 @@ export const Pages = buildVersionedCollectionConfig({
             images: true,
             inlines: true,
             alignment: true,
-            blocks: [sectionBlock],
+            blocks: [sectionBlock, transcriptBlock],
             links: true,
             lists: true,
           }),

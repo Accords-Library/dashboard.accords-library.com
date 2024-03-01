@@ -1,4 +1,4 @@
-import { CueBlock, LineBlock, SectionBlock, TranscriptBlock } from "./types/collections";
+import type { CueBlock, LineBlock, SectionBlock, TranscriptBlock } from "./types/collections";
 
 // END MOCKING SECTION
 
@@ -243,7 +243,20 @@ export const isBlockNodeTranscriptBlock = (
 
 /* BLOCKS */
 
+/* TODO: TO BE REMOVED WHEN https://github.com/payloadcms/payload/issues/5216 is closed */
+export interface CueBlock {
+  id?: string | null;
+  blockName?: string | null;
+}
+
+export interface LineBlock {
+  id?: string | null;
+  blockName?: string | null;
+}
+
 export interface GenericBlock {
+  id?: string | null;
+  blockName?: string | null;
   content: unknown;
   blockType: string;
 }

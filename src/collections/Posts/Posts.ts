@@ -1,4 +1,5 @@
 import { sectionBlock } from "../../blocks/sectionBlock";
+import { transcriptBlock } from "../../blocks/transcriptBlock";
 import { QuickFilters, publishStatusFilters } from "../../components/QuickFilters";
 import { CollectionGroups, Collections, KeysTypes } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
@@ -100,7 +101,7 @@ export const Posts = buildVersionedCollectionConfig({
             images: true,
             inlines: true,
             alignment: true,
-            blocks: [sectionBlock],
+            blocks: [sectionBlock, transcriptBlock],
             links: true,
             lists: true,
           }),

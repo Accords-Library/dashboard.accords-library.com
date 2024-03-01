@@ -77,7 +77,7 @@ export default buildConfig({
     Keys,
     Tags,
     TagsGroups,
-    Images
+    Images,
   ],
   db: mongooseAdapter({
     url: process.env.MONGODB_URI ?? "mongodb://mongo:27017/payload",
