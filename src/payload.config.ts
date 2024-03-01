@@ -4,8 +4,6 @@ import path from "path";
 import { buildConfig } from "payload/config";
 import { ChronologyEras } from "./collections/ChronologyEras/ChronologyEras";
 import { ChronologyItems } from "./collections/ChronologyItems/ChronologyItems";
-import { Contents } from "./collections/Contents/Contents";
-import { ContentsThumbnails } from "./collections/ContentsThumbnails/ContentsThumbnails";
 import { Currencies } from "./collections/Currencies/Currencies";
 import { Files } from "./collections/Files/Files";
 import { Folders } from "./collections/Folders/Folders";
@@ -19,8 +17,6 @@ import { LibraryItemsScans } from "./collections/LibraryItemsScans/LibraryItemsS
 import { LibraryItemsThumbnails } from "./collections/LibraryItemsThumbnails/LibraryItemsThumbnails";
 import { Notes } from "./collections/Notes/Notes";
 import { Pages } from "./collections/Pages/Pages";
-import { Posts } from "./collections/Posts/Posts";
-import { PostsThumbnails } from "./collections/PostsThumbnails/PostsThumbnails";
 import { Recorders } from "./collections/Recorders/Recorders";
 import { RecordersThumbnails } from "./collections/RecordersThumbnails/RecordersThumbnails";
 import { Tags } from "./collections/Tags/Tags";
@@ -53,20 +49,16 @@ export default buildConfig({
     Folders,
     FoldersThumbnails,
     LibraryItems,
-    Contents,
-    Posts,
     Pages,
     ChronologyItems,
     ChronologyEras,
     Weapons,
     WeaponsGroups,
     WeaponsThumbnails,
-    ContentsThumbnails,
     LibraryItemsThumbnails,
     LibraryItemsScans,
     LibraryItemsGallery,
     RecordersThumbnails,
-    PostsThumbnails,
     Files,
     Notes,
     Videos,

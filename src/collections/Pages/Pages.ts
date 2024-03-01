@@ -56,7 +56,7 @@ export const Pages = buildVersionedCollectionConfig({
       BeforeListTable: [
         () =>
           QuickFilters({
-            slug: Collections.Posts,
+            slug: Collections.Pages,
             filterGroups: [publishStatusFilters],
           }),
       ],

@@ -33,26 +33,6 @@ export const findRecorder = async (name: string): Promise<string> => {
   return recorder.docs[0].id;
 };
 
-export const findContentType = async (name: string): Promise<string> => {
-  const key = await payload.find({
-    collection: Collections.Keys,
-    where: { name: { equals: name }, type: { equals: KeysTypes.Contents } },
-    depth: 0,
-  });
-  if (!key.docs[0]) throw new Error(`Content type ${name} wasn't found`);
-  return key.docs[0].id;
-};
-
-export const findContent = async (slug: string): Promise<string> => {
-  const content = await payload.find({
-    collection: Collections.Contents,
-    where: { slug: { equals: slug } },
-    depth: 0,
-  });
-  if (!content.docs[0]) throw new Error(`Content ${slug} wasn't found`);
-  return content.docs[0].id;
-};
-
 type UploadStrapiImage = {
   image: StrapiImage;
   collection: Collections;

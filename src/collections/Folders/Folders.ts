@@ -73,7 +73,7 @@ export const Folders = buildCollectionConfig({
           ],
         }),
         {
-          name: fields.sectionsSubfolders,
+          name: fields.sectionsSubfolders,  
           type: "relationship",
           relationTo: Collections.Folders,
           hasMany: true,
@@ -83,7 +83,7 @@ export const Folders = buildCollectionConfig({
     {
       type: "relationship",
       name: fields.files,
-      relationTo: [Collections.LibraryItems, Collections.Contents, Collections.Pages],
+      relationTo: [Collections.LibraryItems, Collections.Pages],
       hasMany: true,
     },
   ],

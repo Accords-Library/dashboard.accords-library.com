@@ -7,6 +7,7 @@ import {
   LibraryItemsTextualBindingTypes,
   LibraryItemsTextualPageOrders,
   LibraryItemsTypes,
+  PageType,
 } from "../../constants";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { componentField } from "../../fields/componentField/componentField";
@@ -734,8 +735,12 @@ export const LibraryItems = buildVersionedCollectionConfig({
                 {
                   name: fields.contentsContent,
                   type: "relationship",
-                  relationTo: Collections.Contents,
+                  relationTo: Collections.Pages,
+                  admin: {
+                    allowCreate: false,
+                  },
                   required: true,
+                  filterOptions: { type: { equals: PageType.Content } },
                 },
                 {
                   type: "row",
