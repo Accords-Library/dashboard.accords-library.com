@@ -1,7 +1,6 @@
 import payload, { GeneratedTypes } from "payload";
 import { BasePayload } from "payload/dist/payload";
 import QueryString from "qs";
-import { Collections } from "../constants";
 import { Recorder } from "../types/collections";
 import { CollectionEndpoint } from "../types/payload";
 import { isDefined } from "../utils/asserts";
@@ -39,7 +38,7 @@ type Params<S> = {
   };
   payload: {
     path?: string;
-    collection: Collections;
+    collection: keyof GeneratedTypes["collections"];
     import?: (strapiObject: S, user: any) => Promise<void>;
     convert?: (
       strapiObject: S,

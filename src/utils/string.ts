@@ -1,4 +1,5 @@
 import tags from "language-tags";
+import { RichTextContent } from "../constants";
 import { isUndefined } from "./asserts";
 
 export const shortenEllipsis = (text: string, length: number): string =>
@@ -24,9 +25,7 @@ export const formatToPascalCase = (name: string): string => capitalize(formatToC
 
 export const plainTextToLexical = (
   text: string
-): {
-  [k: string]: unknown;
-}[] => ({
+): RichTextContent => ({
   root: {
     type: "root",
     format: "",

@@ -20,7 +20,7 @@ import {
   UnderlineTextFeature,
   UnorderedListFeature,
   UploadFeature,
-  lexicalEditor
+  lexicalEditor,
 } from "@payloadcms/richtext-lexical";
 import { Block, RichTextAdapter } from "payload/types";
 
@@ -53,7 +53,7 @@ export const createEditor = ({
   if (blocks.length > 0) enabledFeatures.push(BlocksFeature({ blocks }));
   if (headings) enabledFeatures.push(ParagraphFeature(), HeadingFeature({}));
   if (debugs) enabledFeatures.push(TreeViewFeature());
-  if (images) enabledFeatures.push(UploadFeature({ collections: [] }));
+  if (images) enabledFeatures.push(UploadFeature());
   if (links) enabledFeatures.push(LinkFeature({}));
   if (relations) enabledFeatures.push(RelationshipFeature());
   if (alignment) enabledFeatures.push(AlignFeature());

@@ -1,4 +1,4 @@
-import payload from "payload";
+import payload, { GeneratedTypes } from "payload";
 import { Collections, KeysTypes } from "../constants";
 import { StrapiImage } from "../types/strapi";
 import { isDefined } from "./asserts";
@@ -35,7 +35,7 @@ export const findRecorder = async (name: string): Promise<string> => {
 
 type UploadStrapiImage = {
   image: StrapiImage;
-  collection: Collections;
+  collection: keyof GeneratedTypes["collections"];
 };
 
 export const uploadStrapiImage = async ({

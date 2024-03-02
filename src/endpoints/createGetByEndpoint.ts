@@ -1,8 +1,7 @@
 import payload, { GeneratedTypes } from "payload";
-import { Collections } from "../constants";
 import { CollectionEndpoint } from "../types/payload";
 
-export const createGetByEndpoint = <C extends Collections, R>(
+export const createGetByEndpoint = <C extends keyof GeneratedTypes["collections"], R>(
   collection: C,
   attribute: string,
   handler: (doc: GeneratedTypes["collections"][C]) => Promise<R> | R

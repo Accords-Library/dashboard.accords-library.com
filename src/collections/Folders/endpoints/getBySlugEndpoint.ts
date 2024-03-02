@@ -35,8 +35,6 @@ export const getBySlugEndpoint = createGetByEndpoint(
             return [];
           }
           switch (relationTo) {
-            case "contents":
-              return [{ relationTo, value }];
             case "library-items":
               return [{ relationTo, value }];
             case "pages":
