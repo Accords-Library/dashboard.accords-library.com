@@ -1,5 +1,6 @@
 import { Block } from "payload/types";
 import { createEditor } from "../utils/editor";
+import { spacerBlock } from "./spacerBlock";
 import { transcriptBlock } from "./transcriptBlock";
 
 const generateRecursiveSectionBlock = (depth = 1, maxDepth = 5): Block => ({
@@ -12,6 +13,9 @@ const generateRecursiveSectionBlock = (depth = 1, maxDepth = 5): Block => ({
       type: "richText",
       label: false,
       required: true,
+      admin: {
+        className: "section-reduced-margins",
+      },
       editor: createEditor({
         images: true,
         inlines: true,
@@ -20,8 +24,9 @@ const generateRecursiveSectionBlock = (depth = 1, maxDepth = 5): Block => ({
         relations: true,
         alignment: true,
         blocks: [
-          transcriptBlock,
           ...(depth < maxDepth ? [generateRecursiveSectionBlock(depth + 1, maxDepth)] : []),
+          spacerBlock,
+          transcriptBlock,
         ],
       }),
     },

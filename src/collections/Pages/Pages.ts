@@ -1,5 +1,6 @@
 import { Where } from "payload/types";
 import { sectionBlock } from "../../blocks/sectionBlock";
+import { spacerBlock } from "../../blocks/spacerBlock";
 import { transcriptBlock } from "../../blocks/transcriptBlock";
 import { QuickFilters, publishStatusFilters } from "../../components/QuickFilters";
 import { CollectionGroups, Collections, PageType } from "../../constants";
@@ -118,11 +119,12 @@ export const Pages = buildVersionedCollectionConfig({
           name: fields.content,
           type: "richText",
           required: true,
+          admin: {description: "Looking for help? Read the Rich Text Editor guide here: https://accords-library.com/dev/rich-text"},
           editor: createEditor({
             images: true,
             inlines: true,
             alignment: true,
-            blocks: [sectionBlock, transcriptBlock],
+            blocks: [sectionBlock, spacerBlock, transcriptBlock],
             links: true,
             lists: true,
           }),

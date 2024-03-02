@@ -1,5 +1,5 @@
 import { Collections, PageType, RichTextContent } from "./constants";
-import { Content, Currency, Key, Language, LibraryItem, Page } from "./types/collections";
+import { Currency, Key, Language, LibraryItem, Page } from "./types/collections";
 
 class NodeCache {
   constructor(_params: any) {}
@@ -175,10 +175,6 @@ export type EndpointFolder = EndpointFolderPreview & {
         value: LibraryItem;
       }
     | {
-        relationTo: "contents";
-        value: Content;
-      }
-    | {
         relationTo: "pages";
         value: Page;
       }
@@ -195,30 +191,6 @@ export type EndpointFolderPreview = {
   }[];
   lightThumbnail?: PayloadImage;
   darkThumbnail?: PayloadImage;
-};
-
-export type EndpointContent = {
-  slug: string;
-  thumbnail?: PayloadImage;
-  tagGroups: TagGroup[];
-  translations: {
-    language: string;
-    sourceLanguage: string;
-    pretitle?: string;
-    title: string;
-    subtitle?: string;
-    summary?: RichTextContent;
-    format: {
-      text?: {
-        content: RichTextContent;
-        toc: TableOfContentEntry[];
-        transcribers: string[];
-        translators: string[];
-        proofreaders: string[];
-        notes?: RichTextContent;
-      };
-    };
-  }[];
 };
 
 export type EndpointRecorder = {
@@ -240,6 +212,14 @@ export type EndpointKey = {
     language: string;
     name: string;
     short: string;
+  }[];
+};
+
+export type EndpointWording = {
+  name: string;
+  translations: {
+    language: string;
+    name: string;
   }[];
 };
 
@@ -321,10 +301,8 @@ export const payload = {
     await (await request(payloadApiUrl(Collections.Languages, `all`))).json(),
   getCurrencies: async (): Promise<Currency[]> =>
     await (await request(payloadApiUrl(Collections.Currencies, `all`))).json(),
-  getContent: async (slug: string): Promise<EndpointContent> =>
-    await (await request(payloadApiUrl(Collections.Contents, `slug/${slug}`))).json(),
-  getKeys: async (): Promise<EndpointKey[]> =>
-    await (await request(payloadApiUrl(Collections.Keys, `all`))).json(),
+  getWordings: async (): Promise<EndpointWording[]> =>
+    await (await request(payloadApiUrl(Collections.Wordings, `all`))).json(),
   getRecorders: async (): Promise<EndpointRecorder[]> =>
     await (await request(payloadApiUrl(Collections.Recorders, `all`))).json(),
   getTags: async (): Promise<EndpointTag[]> =>

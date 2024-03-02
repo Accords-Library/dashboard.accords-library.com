@@ -1,6 +1,7 @@
 import { Block } from "payload/types";
 import { cueBlock } from "./cueBlock";
 import { lineBlock } from "./lineBlock";
+import { spacerBlock } from "./spacerBlock";
 
 export const transcriptBlock: Block = {
   slug: "transcriptBlock",
@@ -13,7 +14,7 @@ export const transcriptBlock: Block = {
       required: true,
       minRows: 1,
       admin: { initCollapsed: true, className: "no-label" },
-      blocks: [lineBlock, cueBlock],
+      blocks: [lineBlock, cueBlock, spacerBlock],
     },
   ],
 };

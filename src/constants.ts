@@ -1,4 +1,10 @@
-import type { CueBlock, LineBlock, SectionBlock, TranscriptBlock } from "./types/collections";
+import type {
+  CueBlock,
+  LineBlock,
+  SectionBlock,
+  SpacerBlock,
+  TranscriptBlock,
+} from "./types/collections";
 
 // END MOCKING SECTION
 
@@ -28,6 +34,7 @@ export enum Collections {
   Tags = "tags",
   TagsGroups = "tags-groups",
   Images = "images",
+  Wordings = "wordings"
 }
 
 export enum CollectionGroups {
@@ -106,6 +113,13 @@ export enum PageType {
   Generic = "Generic",
 }
 
+export enum SpacerSizes {
+  Small = "Small",
+  Medium = "Medium",
+  Large = "Large",
+  XLarge = "Extra Large",
+}
+
 /* RICH TEXT */
 
 export type RichTextContent = {
@@ -132,6 +146,7 @@ export interface RichTextNodeWithChildren extends RichTextNode {
 
 export interface RichTextParagraphNode extends RichTextNodeWithChildren {
   type: "paragraph";
+  format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
 }
 
 export interface RichTextListNode extends RichTextNode {
@@ -156,6 +171,11 @@ export interface RichTextTextNode extends RichTextNode {
   type: "text";
   format: number;
   text: string;
+}
+
+export interface RichTextTabNode extends RichTextNode {
+  type: "tab";
+  format: number;
 }
 
 export interface RichTextLinkNode extends RichTextNodeWithChildren {
@@ -199,6 +219,10 @@ export interface RichTextTranscriptBlock extends RichTextBlockNode {
   fields: TranscriptBlock;
 }
 
+export interface RichTextSpacerBlock extends RichTextBlockNode {
+  fields: SpacerBlock;
+}
+
 export const isNodeParagraphNode = (node: RichTextNode): node is RichTextParagraphNode =>
   node.type === "paragraph";
 
@@ -216,6 +240,8 @@ export const isListNodeCheckListNode = (node: RichTextListNode): node is RichTex
 
 export const isNodeTextNode = (node: RichTextNode): node is RichTextTextNode =>
   node.type === "text";
+
+export const isNodeTabNode = (node: RichTextNode): node is RichTextTabNode => node.type === "tab";
 
 export const isNodeLinkNode = (node: RichTextNode): node is RichTextLinkNode =>
   node.type === "link";
@@ -237,6 +263,9 @@ export const isBlockNodeTranscriptBlock = (
   node: RichTextBlockNode
 ): node is RichTextTranscriptBlock => node.fields.blockType === "transcriptBlock";
 
+export const isBlockNodeSpacerBlock = (node: RichTextBlockNode): node is RichTextSpacerBlock =>
+  node.fields.blockType === "spacerBlock";
+
 /* BLOCKS */
 
 /* TODO: TO BE REMOVED WHEN https://github.com/payloadcms/payload/issues/5216 is closed */
@@ -253,7 +282,6 @@ export interface LineBlock {
 export interface GenericBlock {
   id?: string | null;
   blockName?: string | null;
-  content: unknown;
   blockType: string;
 }
 
@@ -262,3 +290,6 @@ export const isBlockCueBlock = (block: GenericBlock): block is CueBlock =>
 
 export const isBlockLineBlock = (block: GenericBlock): block is LineBlock =>
   block.blockType === "lineBlock";
+
+export const isBlockSpacerBlock = (block: GenericBlock): block is SpacerBlock =>
+  block.blockType === "spacerBlock";
