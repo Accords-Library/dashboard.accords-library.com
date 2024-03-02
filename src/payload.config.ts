@@ -26,6 +26,7 @@ import { VideosChannels } from "./collections/VideosChannels/VideosChannels";
 import { Weapons } from "./collections/Weapons/Weapons";
 import { WeaponsGroups } from "./collections/WeaponsGroups/WeaponsGroups";
 import { WeaponsThumbnails } from "./collections/WeaponsThumbnails/WeaponsThumbnails";
+import { Wordings } from "./collections/Wordings/Wordings";
 import { Icon } from "./components/Icon";
 import { Logo } from "./components/Logo";
 import { Collections } from "./constants";
@@ -70,6 +71,7 @@ export default buildConfig({
     Tags,
     TagsGroups,
     Images,
+    Wordings
   ],
   db: mongooseAdapter({
     url: process.env.MONGODB_URI ?? "mongodb://mongo:27017/payload",
