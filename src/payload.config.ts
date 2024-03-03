@@ -4,10 +4,12 @@ import path from "path";
 import { buildConfig } from "payload/config";
 import { ChronologyEras } from "./collections/ChronologyEras/ChronologyEras";
 import { ChronologyItems } from "./collections/ChronologyItems/ChronologyItems";
+import { Collectibles } from "./collections/Collectibles/Collectibles";
 import { Currencies } from "./collections/Currencies/Currencies";
 import { Files } from "./collections/Files/Files";
 import { Folders } from "./collections/Folders/Folders";
 import { FoldersThumbnails } from "./collections/FoldersThumbnails/FoldersThumbnails";
+import { GenericContents } from "./collections/GenericContents/GenericContents";
 import { Images } from "./collections/Images/Images";
 import { Keys } from "./collections/Keys/Keys";
 import { Languages } from "./collections/Languages/Languages";
@@ -71,7 +73,9 @@ export default buildConfig({
     Tags,
     TagsGroups,
     Images,
-    Wordings
+    Wordings,
+    Collectibles,
+    GenericContents,
   ],
   db: mongooseAdapter({
     url: process.env.MONGODB_URI ?? "mongodb://mongo:27017/payload",

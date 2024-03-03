@@ -28,6 +28,8 @@ export const TagsGroups: CollectionConfig = buildCollectionConfig({
     translatedFields({
       name: fields.translations,
       admin: { useAsTitle: fields.translationsName },
+      required: true,
+      minRows: 1,
       fields: [{ name: fields.translationsName, type: "text", required: true }],
     }),
   ],

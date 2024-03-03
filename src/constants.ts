@@ -34,7 +34,9 @@ export enum Collections {
   Tags = "tags",
   TagsGroups = "tags-groups",
   Images = "images",
-  Wordings = "wordings"
+  Wordings = "wordings",
+  Collectibles = "collectibles",
+  GenericContents = "generic-contents",
 }
 
 export enum CollectionGroups {
@@ -80,12 +82,12 @@ export enum LibraryItemsTypes {
   Other = "Other",
 }
 
-export enum LibraryItemsTextualBindingTypes {
+export enum CollectibleBindingTypes {
   Paperback = "Paperback",
   Hardcover = "Hardcover",
 }
 
-export enum LibraryItemsTextualPageOrders {
+export enum CollectiblePageOrders {
   LeftToRight = "Left to right",
   RightToLeft = "Right to left",
 }
@@ -109,7 +111,7 @@ export enum VideoSources {
 
 export enum PageType {
   Content = "Content",
-  Article = "Article",
+  Post = "Post",
   Generic = "Generic",
 }
 
@@ -118,6 +120,17 @@ export enum SpacerSizes {
   Medium = "Medium",
   Large = "Large",
   XLarge = "Extra Large",
+}
+
+export enum CollectibleNature {
+  Physical = "Physical",
+  Digital = "Digital",
+}
+
+export enum CollectibleContentType {
+  None = "None",
+  Indexes = "Index-based",
+  Pages = "Page-based",
 }
 
 /* RICH TEXT */

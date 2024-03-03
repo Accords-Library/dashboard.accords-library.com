@@ -83,7 +83,7 @@ export const Folders = buildCollectionConfig({
     {
       type: "relationship",
       name: fields.files,
-      relationTo: [Collections.LibraryItems, Collections.Pages],
+      relationTo: [Collections.Collectibles, Collections.Pages],
       hasMany: true,
     },
   ],

@@ -64,25 +64,22 @@ html[data-theme="light"] {
   }
 }
 
-// Hide header on blocks with classname "no-label"
+// Hide header on fields with classname "no-label"
 
 .field-type.no-label > header {
   display: none;
 }
 
-.lexical-block__block-pill-transcriptBlock + .section-title {
-  display: none;
-}
-
+.lexical-block__block-pill-transcriptBlock + .section-title,
 .lexical-block__block-pill-spacerBlock + .section-title {
   display: none;
 }
 
-.blocks-field__block-pill-cueBlock + .section-title {
-  display: none;
-}
-
-.blocks-field__block-pill-spacerBlock + .section-title {
+.blocks-field__block-pill-cueBlock + .section-title,
+.blocks-field__block-pill-spacerBlock + .section-title,
+.blocks-field__block-pill-pageRange + .section-title,
+.blocks-field__block-pill-timeRange + .section-title,
+.blocks-field__block-pill-other + .section-title {
   display: none;
 }
 

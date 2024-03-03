@@ -49,6 +49,8 @@ export const Tags: CollectionConfig = buildCollectionConfig({
     translatedFields({
       name: fields.translations,
       admin: { useAsTitle: fields.translationsName },
+      required: true,
+      minRows: 1,
       fields: [{ name: fields.translationsName, type: "text", required: true }],
     }),
     { name: fields.group, type: "relationship", required: true, relationTo: Collections.TagsGroups },

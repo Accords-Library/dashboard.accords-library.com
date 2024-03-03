@@ -1,87 +1,55 @@
 import { RowLabelArgs } from "payload/dist/admin/components/forms/RowLabel/types";
+import { Where } from "payload/types";
 import {
   CollectibleBindingTypes,
+  CollectibleNature,
   CollectiblePageOrders,
   CollectionGroups,
   Collections,
-  FileTypes,
-  KeysTypes,
-  LibraryItemsTypes,
   PageType,
 } from "../../constants";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { componentField } from "../../fields/componentField/componentField";
-import { fileField } from "../../fields/fileField/fileField";
 import { imageField } from "../../fields/imageField/imageField";
-import { keysField } from "../../fields/keysField/keysField";
 import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
+import { tagsField } from "../../fields/tagsField/tagsField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
 import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
-import { LibraryItem } from "../../types/collections";
-import { isDefined } from "../../utils/asserts";
 import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { RowLabel } from "./components/RowLabel";
 
 const fields = {
   status: "_status",
-  itemType: "itemType",
-  language: "language",
-
   slug: "slug",
   thumbnail: "thumbnail",
+  nature: "nature",
+  tags: "tags",
+  languages: "languages",
 
+  translations: "translations",
   pretitle: "pretitle",
   title: "title",
   subtitle: "subtitle",
-
-  translations: "translations",
-  translationsDescription: "description",
-
-  digital: "digital",
-
-  size: "size",
-  width: "width",
-  height: "height",
-  thickness: "thickness",
+  description: "description",
 
   price: "price",
   priceAmount: "amount",
   priceCurrency: "currency",
-  releaseDate: "releaseDate",
 
-  gallery: "gallery",
-  galleryImage: "image",
+  size: "size",
+  sizeWidth: "width",
+  sizeHeight: "height",
+  sizeThickness: "thickness",
+
+  weight: "weight",
+  weightAmount: "amount",
 
   urls: "urls",
   urlsUrl: "url",
-
-  categories: "categories",
-
-  textual: "textual",
-  textualSubtype: "subtype",
-  textualBindingType: "bindingType",
-  textualPageCount: "pageCount",
-  textualPageOrder: "pageOrder",
-
-  audio: "audio",
-  audioSubtype: "audioSubtype",
-  audioTracks: "tracks",
-  audioTracksFile: "file",
-  audioTracksTitle: "title",
-
-  video: "video",
-  videoSubtype: "subtype",
-
-  game: "game",
-  gameDemo: "demo",
-  gamePlatform: "platform",
-  gameAudioLanguages: "audioLanguages",
-  gameSubtitleLanguages: "subtitleLanguages",
-  gameInterfacesLanguages: "interfacesLanguages",
 
   scans: "scans",
   scansScanners: "scanners",
@@ -127,34 +95,34 @@ const fields = {
   scansPagesPage: "page",
   scansPagesImage: "image",
 
-  scanArchiveFile: "archiveFile",
+  gallery: "gallery",
+  galleryImage: "image",
+
+  releaseDate: "releaseDate",
+
+  parentItems: "parentItems",
+  subitems: "subitems",
+  folders: "folders",
 
   contents: "contents",
   contentsContent: "content",
-  contentsPageStart: "pageStart",
-  contentsPageEnd: "pageEnd",
-  contentsTimeStart: "timeStart",
-  contentsTimeEnd: "timeEnd",
-  contentsNote: "note",
 
-  parentFolders: "parentFolders",
-  parentItems: "parentItems",
-  subitems: "subitems",
+  pageInfo: "pageInfo",
+  pageInfoBindingType: "bindingType",
+  pageInfoPageCount: "pageCount",
+  pageInfoPageOrder: "pageOrder",
 } as const satisfies Record<string, string>;
 
-export const LibraryItems = buildVersionedCollectionConfig({
-  slug: Collections.LibraryItems,
+export const Collectibles = buildVersionedCollectionConfig({
+  slug: Collections.Collectibles,
   labels: {
-    singular: "Library Item",
-    plural: "Library Items",
+    singular: "Collectible",
+    plural: "Collectibles",
   },
   defaultSort: fields.slug,
   admin: {
     useAsTitle: fields.slug,
-    description:
-      "A comprehensive list of all Yokoverse’s side materials (books, novellas, artbooks, \
-         stage plays, manga, drama CDs, and comics).",
-    defaultColumns: [fields.thumbnail, fields.slug, fields.status],
+    defaultColumns: [fields.slug, fields.status],
     group: CollectionGroups.Collections,
     hooks: {
       beforeDuplicate: beforeDuplicatePiping([
@@ -164,63 +132,65 @@ export const LibraryItems = buildVersionedCollectionConfig({
     },
   },
   fields: [
-    rowField([
-      {
-        name: fields.itemType,
-        type: "radio",
-        options: Object.entries(LibraryItemsTypes).map(([value, label]) => ({
-          label,
-          value,
-        })),
-        admin: {
-          layout: "horizontal",
-        },
-      },
-      {
-        name: fields.language,
-        type: "relationship",
-        relationTo: Collections.Languages,
-        required: true,
-        admin: {
-          allowCreate: false,
-          description:
-            "This item sole or primary language (most notably, the language used on the cover)",
-        },
-      },
-    ]),
     {
       type: "tabs",
-      admin: {
-        condition: ({ itemType }) => isDefined(itemType),
-      },
       tabs: [
         {
           label: "Overview",
           fields: [
             rowField([
-              slugField({
-                name: fields.slug,
-              }),
+              slugField({ name: fields.slug }),
               imageField({
                 name: fields.thumbnail,
-                relationTo: Collections.LibraryItemsThumbnails,
+                relationTo: Collections.Images,
               }),
             ]),
+
             rowField([
-              { name: fields.pretitle, type: "text" },
-              { name: fields.title, type: "text", required: true },
-              { name: fields.subtitle, type: "text" },
-            ]),
-            {
-              name: fields.digital,
-              type: "checkbox",
-              required: true,
-              defaultValue: false,
-              admin: {
-                description:
-                  "The item is the digital version of another item, or the item is sold only digitally.",
+              {
+                name: fields.nature,
+                type: "radio",
+                required: true,
+                defaultValue: CollectibleNature.Physical,
+                options: Object.entries(CollectibleNature).map(([value, label]) => ({
+                  label,
+                  value,
+                })),
               },
-            },
+              {
+                name: fields.languages,
+                type: "relationship",
+                relationTo: Collections.Languages,
+                hasMany: true,
+                admin: {
+                  allowCreate: false,
+                  description:
+                    "Languages used by this collectible: language(s) available for a game,\
+                    in a video, a book is written in... Leave empty if inapplicable",
+                },
+              },
+            ]),
+
+            tagsField({ name: fields.tags }),
+
+            translatedFields({
+              name: fields.translations,
+              admin: { useAsTitle: fields.title },
+              required: true,
+              minRows: 1,
+              fields: [
+                rowField([
+                  { name: fields.pretitle, type: "text" },
+                  { name: fields.title, type: "text", required: true },
+                  { name: fields.subtitle, type: "text" },
+                ]),
+                {
+                  name: fields.description,
+                  type: "richText",
+                  editor: createEditor({ inlines: true, lists: true, links: true }),
+                },
+              ],
+            }),
           ],
         },
         {
@@ -454,211 +424,35 @@ export const LibraryItems = buildVersionedCollectionConfig({
                     ]),
                   ],
                 },
-                fileField({
-                  name: fields.scanArchiveFile,
-                  relationTo: FileTypes.LibraryScans,
-                }),
               ],
             }),
-          ],
-        },
-        {
-          label: "Type",
-          admin: { condition: () => false },
-          fields: [
-            {
-              name: fields.textual,
-              type: "group",
-              label: false,
-              admin: {
-                condition: (data: Partial<LibraryItem>) =>
-                  data.itemType === LibraryItemsTypes.Textual,
-              },
-              fields: [
-                {
-                  type: "row",
-                  fields: [
-                    keysField({
-                      name: fields.textualSubtype,
-                      relationTo: KeysTypes.LibraryTextual,
-                    }),
-                    {
-                      name: fields.textualPageCount,
-                      type: "number",
-                      min: 1,
-                    },
-                  ],
-                },
-                rowField([
-                  {
-                    name: fields.textualBindingType,
-                    type: "radio",
-                    options: Object.entries(CollectibleBindingTypes).map(
-                      ([value, label]) => ({
-                        label,
-                        value,
-                      })
-                    ),
-                    admin: {
-                      condition: (data: Partial<LibraryItem>) => !data.digital,
-                      layout: "horizontal",
-                    },
-                  },
-                  {
-                    name: fields.textualPageOrder,
-                    type: "radio",
-                    options: Object.entries(CollectiblePageOrders).map(
-                      ([value, label]) => ({
-                        label,
-                        value,
-                      })
-                    ),
-                    admin: {
-                      layout: "horizontal",
-                    },
-                  },
-                ]),
-              ],
-            },
-            {
-              name: fields.audio,
-              type: "group",
-              label: false,
-              admin: {
-                condition: (data: Partial<LibraryItem>) =>
-                  data.itemType === LibraryItemsTypes.Audio,
-              },
-              fields: [
-                keysField({
-                  name: fields.audioSubtype,
-                  relationTo: KeysTypes.LibraryAudio,
-                }),
-                {
-                  name: fields.audioTracks,
-                  type: "array",
-                  fields: [
-                    rowField([
-                      {
-                        name: fields.audioTracksTitle,
-                        type: "text",
-                        required: true,
-                      },
-                      fileField({
-                        name: fields.audioTracksFile,
-                        relationTo: FileTypes.LibrarySoundtracks,
-                        required: true,
-                      }),
-                    ]),
-                  ],
-                },
-              ],
-            },
-            {
-              name: fields.video,
-              type: "group",
-              label: false,
-              admin: {
-                condition: (data: Partial<LibraryItem>) =>
-                  data.itemType === LibraryItemsTypes.Video,
-              },
-              fields: [
-                keysField({
-                  name: fields.videoSubtype,
-                  relationTo: KeysTypes.LibraryVideo,
-                }),
-              ],
-            },
-            {
-              name: fields.game,
-              type: "group",
-              label: false,
-              admin: {
-                condition: (data: Partial<LibraryItem>) => data.itemType === LibraryItemsTypes.Game,
-              },
-              fields: [
-                rowField([
-                  {
-                    name: fields.gameDemo,
-                    type: "checkbox",
-                    admin: { description: "Is this item a demo for the game" },
-                  },
-                  keysField({
-                    name: fields.gamePlatform,
-                    relationTo: KeysTypes.GamePlatforms,
-                  }),
-                ]),
-                rowField([
-                  {
-                    name: fields.gameAudioLanguages,
-                    type: "relationship",
-                    relationTo: Collections.Languages,
-                    hasMany: true,
-                  },
-                  {
-                    name: fields.gameSubtitleLanguages,
-                    type: "relationship",
-                    relationTo: Collections.Languages,
-                    hasMany: true,
-                  },
-                  {
-                    name: fields.gameInterfacesLanguages,
-                    type: "relationship",
-                    relationTo: Collections.Languages,
-                    hasMany: true,
-                  },
-                ]),
-              ],
-            },
           ],
         },
         {
           label: "Details",
           fields: [
-            rowField([
-              {
-                name: fields.releaseDate,
-                type: "date",
-                admin: {
-                  date: { pickerAppearance: "dayOnly", displayFormat: "yyyy-MM-dd" },
-                },
-              },
-              keysField({
-                name: fields.categories,
-                relationTo: KeysTypes.Categories,
-                hasMany: true,
-              }),
-            ]),
-            componentField({
-              name: fields.size,
+            {
+              name: fields.urls,
+              label: "URLs",
+              type: "array",
               admin: {
-                condition: (data: Partial<LibraryItem>) => !data.digital,
-                description: "Add physical size information about the item",
+                description: "Links to official websites where to get/buy the item.",
               },
-              fields: [
-                rowField([
-                  {
-                    name: fields.width,
-                    type: "number",
-                    required: true,
-                    admin: { step: 1, description: "in mm." },
-                  },
-                  {
-                    name: fields.height,
-                    type: "number",
-                    required: true,
-                    admin: { step: 1, description: "in mm." },
-                  },
-                  {
-                    name: fields.thickness,
-                    type: "number",
-                    admin: { step: 1, description: "in mm." },
-                  },
-                ]),
-              ],
-            }),
+              fields: [{ name: fields.urlsUrl, type: "text", required: true }],
+            },
+            {
+              name: fields.releaseDate,
+              type: "date",
+              admin: {
+                date: { pickerAppearance: "dayOnly", displayFormat: "yyyy-MM-dd" },
+              },
+            },
             componentField({
               name: fields.price,
-              admin: { description: "Add pricing information about the item" },
+              admin: {
+                description:
+                  "Add pricing information about this collectible. Leave this unchecked if the collectible is not for sale or set the amount to 0 if it is free.",
+              },
               fields: [
                 rowField([
                   {
@@ -677,47 +471,111 @@ export const LibraryItems = buildVersionedCollectionConfig({
                 ]),
               ],
             }),
-            translatedFields({
-              name: fields.translations,
-              label: "Descriptions",
-              admin: { initCollapsed: true, useAsTitle: fields.translationsDescription },
+            componentField({
+              name: fields.size,
+              admin: {
+                condition: ({ nature }) => nature === CollectibleNature.Physical,
+                description: "Add physical size information about this collectible",
+              },
+              fields: [
+                rowField([
+                  {
+                    name: fields.sizeWidth,
+                    type: "number",
+                    required: true,
+                    admin: { step: 1, description: "in mm." },
+                  },
+                  {
+                    name: fields.sizeHeight,
+                    type: "number",
+                    required: true,
+                    admin: { step: 1, description: "in mm." },
+                  },
+                  {
+                    name: fields.sizeThickness,
+                    type: "number",
+                    admin: { step: 1, description: "in mm." },
+                  },
+                ]),
+              ],
+            }),
+            componentField({
+              name: fields.weight,
+              admin: {
+                condition: ({ nature }) => nature === CollectibleNature.Physical,
+                description: "Add physical weight information about this collectible",
+              },
               fields: [
                 {
-                  name: fields.translationsDescription,
+                  name: fields.weightAmount,
+                  type: "number",
                   required: true,
-                  type: "richText",
-                  editor: createEditor({ inlines: true, lists: true, links: true }),
+                  admin: { step: 1, description: "in g." },
+                  min: 0,
                 },
               ],
             }),
-            {
-              name: fields.urls,
-              label: "URLs",
-              type: "array",
+            componentField({
+              name: fields.pageInfo,
+              label: "Page information",
               admin: {
-                description: "Links to official websites where to get/buy the item.",
+                description:
+                  "If the collectible is book-like (has pages),\
+                use this to add additional information about its format.",
               },
-              fields: [{ name: fields.urlsUrl, type: "text", required: true }],
-            },
+              fields: [
+                {
+                  name: fields.pageInfoPageCount,
+                  type: "number",
+                  required: true,
+                  min: 1,
+                },
+                rowField([
+                  {
+                    name: fields.pageInfoBindingType,
+                    type: "radio",
+                    options: Object.entries(CollectibleBindingTypes).map(([value, label]) => ({
+                      label,
+                      value,
+                    })),
+                    admin: {
+                      condition: ({ nature }) => nature === CollectibleNature.Physical,
+                    },
+                  },
+                  {
+                    name: fields.pageInfoPageOrder,
+                    type: "radio",
+                    options: Object.entries(CollectiblePageOrders).map(([value, label]) => ({
+                      label,
+                      value,
+                    })),
+                  },
+                ]),
+              ],
+            }),
           ],
         },
         {
           label: "Contents",
           fields: [
             rowField([
-              // TODO: Uncomment when the Folders are ready
-              // backPropagationField({
-              //   name: fields.parentFolders,
-              //   relationTo: Collections.Folders,
-              //   hasMany: true,
-              //   where: ({ id }) => ({ files: { equals: id } }),
-              //   admin: {
-              //     description: `You can set the folders from the "Folders" collection`,
-              //   },
-              // }),
+              backPropagationField({
+                name: fields.folders,
+                relationTo: Collections.Folders,
+                hasMany: true,
+                where: ({ id }) => ({
+                  and: [
+                    { "files.value": { equals: id } },
+                    { "files.relationTo": { equals: Collections.Collectibles } },
+                  ] as Where[],
+                }),
+                admin: {
+                  description: `You can go to the "Folders" collection to include this collectible in a folder.`,
+                },
+              }),
               backPropagationField({
                 name: fields.parentItems,
-                relationTo: Collections.LibraryItems,
+                relationTo: Collections.Collectibles,
                 hasMany: true,
                 where: ({ id }) => ({ [fields.subitems]: { equals: id } }),
               }),
@@ -725,7 +583,7 @@ export const LibraryItems = buildVersionedCollectionConfig({
                 name: fields.subitems,
                 type: "relationship",
                 hasMany: true,
-                relationTo: Collections.LibraryItems,
+                relationTo: Collections.Collectibles,
               },
             ]),
             {
@@ -735,50 +593,103 @@ export const LibraryItems = buildVersionedCollectionConfig({
                 {
                   name: fields.contentsContent,
                   type: "relationship",
-                  relationTo: Collections.Pages,
+                  // TODO: Add audio and video files
+                  relationTo: [Collections.Pages, Collections.GenericContents],
                   admin: {
                     allowCreate: false,
                   },
                   required: true,
-                  filterOptions: { type: { equals: PageType.Content } },
+                  filterOptions: ({ relationTo }) => {
+                    switch (relationTo) {
+                      case Collections.Pages:
+                        return { type: { equals: PageType.Content } };
+
+                      default:
+                        return true;
+                    }
+                  },
                 },
                 {
-                  type: "row",
-                  admin: {
-                    // TODO: Check why those condition doesn't work
-                    condition: ({ itemType }: Partial<LibraryItem>) =>
-                      itemType === LibraryItemsTypes.Textual,
-                  },
-                  fields: [
+                  name: "range",
+                  type: "blocks",
+                  maxRows: 1,
+                  admin: { className: "no-label" },
+                  blocks: [
                     {
-                      name: fields.contentsPageStart,
-                      type: "number",
+                      slug: "pageRange",
+                      labels: { singular: "Page Range", plural: "Page Ranges" },
+                      fields: [
+                        rowField([
+                          {
+                            name: "start",
+                            type: "number",
+                            required: true,
+                            admin: {
+                              description:
+                                "Make sure the page range corresponds to the pages as written\
+                                on the collectible. You can use negative page numbers if necessary.",
+                            },
+                          },
+                          { name: "end", type: "number", required: true },
+                        ]),
+                      ],
                     },
-                    { name: fields.contentsPageEnd, type: "number" },
-                  ],
-                },
-                {
-                  type: "row",
-                  admin: {
-                    condition: ({ itemType }: Partial<LibraryItem>) =>
-                      itemType === LibraryItemsTypes.Audio || itemType === LibraryItemsTypes.Video,
-                  },
-                  fields: [
                     {
-                      name: fields.contentsTimeStart,
-                      type: "number",
+                      slug: "timeRange",
+                      labels: { singular: "Time Range", plural: "Time Ranges" },
+                      fields: [
+                        rowField([
+                          {
+                            name: "start",
+                            type: "text",
+                            required: true,
+                            defaultValue: "00:00:00",
+                            validate: (value) =>
+                              /\d{2}:\d{2}:\d{2}/g.test(value)
+                                ? true
+                                : "The format should be hh:mm:ss\
+                                (e.g: 01:23:45 for 1 hour, 23 minutes, and 45 seconds)",
+                            admin: {
+                              description:
+                                "hh:mm:ss (e.g: 01:23:45 for 1 hour, 23 minutes, and 45 seconds)",
+                            },
+                          },
+                          {
+                            name: "end",
+                            type: "text",
+                            required: true,
+                            defaultValue: "00:00:00",
+                            validate: (value) =>
+                              /\d{2}:\d{2}:\d{2}/g.test(value)
+                                ? true
+                                : "The format should be hh:mm:ss\
+                                (e.g: 01:23:45 for 1 hour, 23 minutes, and 45 seconds)",
+                            admin: {
+                              description:
+                                "hh:mm:ss (e.g: 01:23:45 for 1 hour, 23 minutes, and 45 seconds)",
+                            },
+                          },
+                        ]),
+                      ],
                     },
-                    { name: fields.contentsTimeEnd, type: "number" },
+                    {
+                      slug: "other",
+                      labels: { singular: "Other", plural: "Others" },
+                      fields: [
+                        translatedFields({
+                          admin: { className: "no-label" },
+                          name: "translations",
+                          fields: [
+                            {
+                              name: "note",
+                              type: "richText",
+                              editor: createEditor({ inlines: true, lists: true, links: true }),
+                            },
+                          ],
+                        }),
+                      ],
+                    },
                   ],
-                },
-                {
-                  name: fields.contentsNote,
-                  type: "richText",
-                  editor: createEditor({ inlines: true, lists: true, links: true }),
-                  admin: {
-                    condition: ({ itemType }: Partial<LibraryItem>) =>
-                      itemType === LibraryItemsTypes.Game || itemType === LibraryItemsTypes.Other,
-                  },
                 },
               ],
             },
