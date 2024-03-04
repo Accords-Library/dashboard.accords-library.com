@@ -9,7 +9,7 @@ import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointPage, ParentPage, TableOfContentEntry } from "../../../sdk";
 import { Page } from "../../../types/collections";
 import { isPayloadArrayType, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
-import { convertTagsToGroups } from "../../../utils/tags";
+import { convertTagsToGroups } from "../../../utils/endpoints";
 
 export const getBySlugEndpoint = createGetByEndpoint(
   Collections.Pages,
@@ -105,11 +105,14 @@ const handleParentPages = ({
   const result: ParentPage[] = [];
 
   if (collectibles && isPayloadArrayType(collectibles)) {
-    collectibles.forEach(({ slug, title }) => {
+    collectibles.forEach(({ slug, translations }) => {
       result.push({
-        collection: Collections.LibraryItems,
+        collection: Collections.Collectibles,
         slug,
-        translations: [{ language: "en", name: title }],
+        translations: translations.map(({ language, title }) => ({
+          language: isPayloadType(language) ? language.id : language,
+          name: title, // TODO: Use the entire pretitle + title + subtitle
+        })),
         tag: "collectible",
       });
     });

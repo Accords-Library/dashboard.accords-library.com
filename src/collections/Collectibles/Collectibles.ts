@@ -21,6 +21,7 @@ import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
 import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { RowLabel } from "./components/RowLabel";
+import { getBySlugEndpoint } from "./endpoints/getBySlugEndpoint";
 
 const fields = {
   status: "_status",
@@ -131,6 +132,7 @@ export const Collectibles = buildVersionedCollectionConfig({
       ]),
     },
   },
+  endpoints: [getBySlugEndpoint],
   fields: [
     {
       type: "tabs",
@@ -152,9 +154,9 @@ export const Collectibles = buildVersionedCollectionConfig({
                 type: "radio",
                 required: true,
                 defaultValue: CollectibleNature.Physical,
-                options: Object.entries(CollectibleNature).map(([value, label]) => ({
-                  label,
-                  value,
+                options: Object.entries(CollectibleNature).map(([_, value]) => ({
+                  label: value,
+                  value: value,
                 })),
               },
               {
@@ -207,7 +209,8 @@ export const Collectibles = buildVersionedCollectionConfig({
               fields: [
                 imageField({
                   name: fields.galleryImage,
-                  relationTo: Collections.LibraryItemsGallery,
+                  required: true,
+                  relationTo: Collections.Images,
                 }),
               ],
             },
@@ -242,43 +245,43 @@ export const Collectibles = buildVersionedCollectionConfig({
                     rowField([
                       imageField({
                         name: fields.scansCoverFront,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansCoverSpine,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansCoverBack,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                     ]),
                     rowField([
                       imageField({
                         name: fields.scansCoverInsideFront,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansCoverInsideBack,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                     ]),
                     rowField([
                       imageField({
                         name: fields.scansCoverFlapFront,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansCoverFlapBack,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansCoverInsideFlapFront,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansCoverInsideFlapBack,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                     ]),
                   ],
@@ -295,47 +298,47 @@ export const Collectibles = buildVersionedCollectionConfig({
                     rowField([
                       imageField({
                         name: fields.scansDustjacketFront,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansDustjacketSpine,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansDustjacketBack,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                     ]),
                     rowField([
                       imageField({
                         name: fields.scansDustjacketInsideFront,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansDustjacketInsideSpine,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansDustjacketInsideBack,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                     ]),
                     rowField([
                       imageField({
                         name: fields.scansDustjacketFlapFront,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansDustjacketFlapBack,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansDustjacketInsideFlapFront,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansDustjacketInsideFlapBack,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                     ]),
                   ],
@@ -352,47 +355,47 @@ export const Collectibles = buildVersionedCollectionConfig({
                     rowField([
                       imageField({
                         name: fields.scansObiFront,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansObiSpine,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansObiBack,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                     ]),
                     rowField([
                       imageField({
                         name: fields.scansObiInsideFront,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansObiInsideSpine,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansObiInsideBack,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                     ]),
                     rowField([
                       imageField({
                         name: fields.scansObiFlapFront,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansObiFlapBack,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansObiInsideFlapFront,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                       imageField({
                         name: fields.scansObiInsideFlapBack,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                       }),
                     ]),
                   ],
@@ -418,7 +421,7 @@ export const Collectibles = buildVersionedCollectionConfig({
                       },
                       imageField({
                         name: fields.scansPagesImage,
-                        relationTo: Collections.LibraryItemsScans,
+                        relationTo: Collections.Images,
                         required: true,
                       }),
                     ]),
@@ -534,9 +537,9 @@ export const Collectibles = buildVersionedCollectionConfig({
                   {
                     name: fields.pageInfoBindingType,
                     type: "radio",
-                    options: Object.entries(CollectibleBindingTypes).map(([value, label]) => ({
-                      label,
-                      value,
+                    options: Object.entries(CollectibleBindingTypes).map(([_, value]) => ({
+                      label: value,
+                      value: value,
                     })),
                     admin: {
                       condition: ({ nature }) => nature === CollectibleNature.Physical,
@@ -545,9 +548,9 @@ export const Collectibles = buildVersionedCollectionConfig({
                   {
                     name: fields.pageInfoPageOrder,
                     type: "radio",
-                    options: Object.entries(CollectiblePageOrders).map(([value, label]) => ({
-                      label,
-                      value,
+                    options: Object.entries(CollectiblePageOrders).map(([_, value]) => ({
+                      label: value,
+                      value: value,
                     })),
                   },
                 ]),
@@ -683,6 +686,7 @@ export const Collectibles = buildVersionedCollectionConfig({
                             {
                               name: "note",
                               type: "richText",
+                              required: true,
                               editor: createEditor({ inlines: true, lists: true, links: true }),
                             },
                           ],

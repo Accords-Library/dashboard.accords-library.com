@@ -38,7 +38,7 @@ const fields = {
   folders: "folders",
 } as const satisfies Record<string, string>;
 
-const pageTypesWithAuthor = [PageType.Article];
+const pageTypesWithAuthor = [PageType.Post];
 const pageTypesWithCollectibles = [PageType.Content];
 const pageTypesWithTranscribers = [PageType.Content];
 
@@ -76,7 +76,10 @@ export const Pages = buildVersionedCollectionConfig({
       type: "radio",
       required: true,
       defaultValue: PageType.Generic,
-      options: Object.entries(PageType).map(([value, label]) => ({ label, value })),
+      options: Object.entries(PageType).map(([_, value]) => ({
+        label: value,
+        value: value,
+      })),
     },
     rowField([
       slugField({ name: fields.slug }),
@@ -119,7 +122,10 @@ export const Pages = buildVersionedCollectionConfig({
           name: fields.content,
           type: "richText",
           required: true,
-          admin: {description: "Looking for help? Read the Rich Text Editor guide here: https://accords-library.com/dev/rich-text"},
+          admin: {
+            description:
+              "Looking for help? Read the Rich Text Editor guide here: https://accords-library.com/dev/rich-text",
+          },
           editor: createEditor({
             images: true,
             inlines: true,
@@ -206,12 +212,17 @@ export const Pages = buildVersionedCollectionConfig({
       backPropagationField({
         name: fields.collectibles,
         hasMany: true,
-        relationTo: Collections.LibraryItems,
+        relationTo: Collections.Collectibles,
         admin: {
           condition: (_, siblingData) =>
             pageTypesWithCollectibles.includes(siblingData[fields.type]),
         },
-        where: ({ id }) => ({ "contents.content": { equals: id } }),
+        where: ({ id }) => ({
+          and: [
+            { "contents.content.value": { equals: id } },
+            { "contents.content.relationTo": { equals: Collections.Pages } },
+          ] as Where[],
+        }),
       }),
     ]),
   ],

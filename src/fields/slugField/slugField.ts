@@ -1,7 +1,7 @@
 import { TextField } from "payload/types";
 import { isUndefined } from "../../utils/asserts";
 
-type Props = Omit<TextField, "type">;
+type Props = Omit<TextField, "type" | "hasMany" | "minRows" | "maxRows">;
 
 const validateSlug = (value?: string) => {
   if (isUndefined(value) || value === "") return "This field is required.";

@@ -11,9 +11,9 @@ export const spacerBlock: Block = {
       type: "radio",
       defaultValue: "medium",
       required: true,
-      options: Object.entries(SpacerSizes).map(([value, label]) => ({
-        label,
-        value,
+      options: Object.entries(SpacerSizes).map(([_, value]) => ({
+        label: value,
+        value: value,
       })),
     },
   ],

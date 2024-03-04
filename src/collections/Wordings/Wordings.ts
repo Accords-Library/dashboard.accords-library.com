@@ -1,7 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
-import { QuickFilters } from "../../components/QuickFilters";
-import { CollectionGroups, Collections, LanguageCodes } from "../../constants";
+import { QuickFilters, languageBasedFilters } from "../../components/QuickFilters";
+import { CollectionGroups, Collections } from "../../constants";
 import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { afterOperationWebhook } from "../../hooks/afterOperationWebhook";
@@ -34,12 +34,7 @@ export const Wordings: CollectionConfig = buildCollectionConfig({
         () =>
           QuickFilters({
             slug: Collections.Wordings,
-            filterGroups: [
-              Object.entries(LanguageCodes).map(([key, value]) => ({
-                label: `∅ ${value}`,
-                filter: { where: { "translations.language": { not_equals: key } } },
-              })),
-            ],
+            filterGroups: [languageBasedFilters("translations.language")],
           }),
       ],
     },

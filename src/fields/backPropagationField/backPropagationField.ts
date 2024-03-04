@@ -1,12 +1,11 @@
-import payload from "payload";
-import { FieldBase } from "payload/dist/fields/config/types";
-import { RelationshipField, Where } from "payload/types";
-import { Collections } from "../../constants";
+import payload, { GeneratedTypes } from "payload";
+import { FieldBase, SingleRelationshipField } from "payload/dist/fields/config/types";
+import { Where } from "payload/types";
 import { isEmpty } from "../../utils/asserts";
 
 type BackPropagationField = FieldBase & {
   where: (data: any) => Where;
-  relationTo: Collections;
+  relationTo: keyof GeneratedTypes["collections"];
   hasMany?: boolean;
 };
 export const backPropagationField = ({
@@ -15,7 +14,7 @@ export const backPropagationField = ({
   where,
   hasMany = false,
   ...params
-}: BackPropagationField): RelationshipField => ({
+}: BackPropagationField): SingleRelationshipField => ({
   ...params,
   type: "relationship",
   hasMany: hasMany,

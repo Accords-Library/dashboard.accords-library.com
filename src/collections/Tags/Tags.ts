@@ -3,6 +3,7 @@ import { CollectionBeforeChangeHook, CollectionConfig } from "payload/types";
 import { CollectionGroups, Collections } from "../../constants";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
+import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 
@@ -40,6 +41,9 @@ export const Tags: CollectionConfig = buildCollectionConfig({
     group: CollectionGroups.Meta,
     useAsTitle: fields.name,
     defaultColumns: [fields.slug, fields.group, fields.translations],
+    hooks: {
+      beforeDuplicate: beforeDuplicateAddCopyTo(fields.slug),
+    },
   },
   endpoints: [getAllEndpoint],
   hooks: { beforeChange: [beforeChangeUpdateName] },
@@ -53,6 +57,11 @@ export const Tags: CollectionConfig = buildCollectionConfig({
       minRows: 1,
       fields: [{ name: fields.translationsName, type: "text", required: true }],
     }),
-    { name: fields.group, type: "relationship", required: true, relationTo: Collections.TagsGroups },
+    {
+      name: fields.group,
+      type: "relationship",
+      required: true,
+      relationTo: Collections.TagsGroups,
+    },
   ],
 });

@@ -13,12 +13,7 @@ export enum Collections {
   ChronologyItems = "chronology-items",
   Currencies = "currencies",
   Files = "files",
-  Keys = "keys",
   Languages = "languages",
-  LibraryItems = "library-items",
-  LibraryItemsThumbnails = "library-items-thumbnails",
-  LibraryItemsScans = "library-items-scans",
-  LibraryItemsGallery = "library-items-gallery",
   Notes = "notes",
   Pages = "pages",
   PagesThumbnails = "pages-thumbnails",
@@ -45,19 +40,6 @@ export enum CollectionGroups {
   Meta = "Meta",
 }
 
-export enum KeysTypes {
-  Contents = "Contents",
-  LibraryAudio = "Library / Audio",
-  LibraryVideo = "Library / Video",
-  LibraryTextual = "Library / Textual",
-  LibraryGroup = "Library / Group",
-  Library = "Library",
-  Weapons = "Weapons",
-  GamePlatforms = "Game Platforms",
-  Categories = "Categories",
-  Wordings = "Wordings",
-}
-
 export enum LanguageCodes {
   en = "English",
   fr = "French",
@@ -65,21 +47,6 @@ export enum LanguageCodes {
   es = "Spanish",
   "pt-br" = "Portuguese",
   "zh" = "Chinese",
-}
-
-export enum FileTypes {
-  LibraryScans = "Library / Scans",
-  LibrarySoundtracks = "Library / Soundtracks",
-  ContentVideo = "Content / Video",
-  ContentAudio = "Content / Audio",
-}
-
-export enum LibraryItemsTypes {
-  Textual = "Textual",
-  Audio = "Audio",
-  Video = "Video",
-  Game = "Game",
-  Other = "Other",
 }
 
 export enum CollectibleBindingTypes {
@@ -90,6 +57,17 @@ export enum CollectibleBindingTypes {
 export enum CollectiblePageOrders {
   LeftToRight = "Left to right",
   RightToLeft = "Right to left",
+}
+
+export enum CollectibleNature {
+  Physical = "Physical",
+  Digital = "Digital",
+}
+
+export enum CollectibleContentType {
+  None = "None",
+  Indexes = "Index-based",
+  Pages = "Page-based",
 }
 
 export enum RecordersRoles {
@@ -120,17 +98,6 @@ export enum SpacerSizes {
   Medium = "Medium",
   Large = "Large",
   XLarge = "Extra Large",
-}
-
-export enum CollectibleNature {
-  Physical = "Physical",
-  Digital = "Digital",
-}
-
-export enum CollectibleContentType {
-  None = "None",
-  Indexes = "Index-based",
-  Pages = "Page-based",
 }
 
 /* RICH TEXT */

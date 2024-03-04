@@ -1,27 +1,7 @@
 import payload, { GeneratedTypes } from "payload";
-import { Collections, KeysTypes } from "../constants";
+import { Collections } from "../constants";
 import { StrapiImage } from "../types/strapi";
 import { isDefined } from "./asserts";
-
-export const findWeaponType = async (name: string): Promise<string> => {
-  const key = await payload.find({
-    collection: Collections.Keys,
-    where: { name: { equals: name }, type: { equals: KeysTypes.Weapons } },
-    depth: 0,
-  });
-  if (!key.docs[0]) throw new Error(`Weapon type ${name} wasn't found`);
-  return key.docs[0].id;
-};
-
-export const findCategory = async (name: string): Promise<string> => {
-  const key = await payload.find({
-    collection: Collections.Keys,
-    where: { name: { equals: name }, type: { equals: KeysTypes.Categories } },
-    depth: 0,
-  });
-  if (!key.docs[0]) throw new Error(`Category ${name} wasn't found`);
-  return key.docs[0].id;
-};
 
 export const findRecorder = async (name: string): Promise<string> => {
   const recorder = await payload.find({

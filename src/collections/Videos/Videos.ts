@@ -64,7 +64,10 @@ export const Videos: CollectionConfig = buildCollectionConfig({
         name: fields.source,
         type: "select",
         required: true,
-        options: Object.entries(VideoSources).map(([value, label]) => ({ label, value })),
+        options: Object.entries(VideoSources).map(([_, value]) => ({
+          label: value,
+          value: value,
+        })),
       },
     ]),
     { name: fields.title, type: "text", required: true },

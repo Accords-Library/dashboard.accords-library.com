@@ -6,17 +6,11 @@ import { ChronologyEras } from "./collections/ChronologyEras/ChronologyEras";
 import { ChronologyItems } from "./collections/ChronologyItems/ChronologyItems";
 import { Collectibles } from "./collections/Collectibles/Collectibles";
 import { Currencies } from "./collections/Currencies/Currencies";
-import { Files } from "./collections/Files/Files";
 import { Folders } from "./collections/Folders/Folders";
 import { FoldersThumbnails } from "./collections/FoldersThumbnails/FoldersThumbnails";
 import { GenericContents } from "./collections/GenericContents/GenericContents";
 import { Images } from "./collections/Images/Images";
-import { Keys } from "./collections/Keys/Keys";
 import { Languages } from "./collections/Languages/Languages";
-import { LibraryItems } from "./collections/LibraryItems/LibraryItems";
-import { LibraryItemsGallery } from "./collections/LibraryItemsGallery/LibraryItemsGallery";
-import { LibraryItemsScans } from "./collections/LibraryItemsScans/LibraryItemsScans";
-import { LibraryItemsThumbnails } from "./collections/LibraryItemsThumbnails/LibraryItemsThumbnails";
 import { Notes } from "./collections/Notes/Notes";
 import { Pages } from "./collections/Pages/Pages";
 import { Recorders } from "./collections/Recorders/Recorders";
@@ -51,25 +45,19 @@ export default buildConfig({
   collections: [
     Folders,
     FoldersThumbnails,
-    LibraryItems,
     Pages,
     ChronologyItems,
     ChronologyEras,
     Weapons,
     WeaponsGroups,
     WeaponsThumbnails,
-    LibraryItemsThumbnails,
-    LibraryItemsScans,
-    LibraryItemsGallery,
     RecordersThumbnails,
-    Files,
     Notes,
     Videos,
     VideosChannels,
     Languages,
     Currencies,
     Recorders,
-    Keys,
     Tags,
     TagsGroups,
     Images,

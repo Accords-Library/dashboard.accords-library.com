@@ -1,5 +1,12 @@
-import { Collections, PageType, RichTextContent } from "./constants";
-import { Currency, Key, Language, LibraryItem, Page } from "./types/collections";
+import {
+  CollectibleBindingTypes,
+  CollectibleNature,
+  CollectiblePageOrders,
+  Collections,
+  PageType,
+  RichTextContent,
+} from "./constants";
+import { Collectible, Currency, GenericContent, Language, Page } from "./types/collections";
 
 class NodeCache {
   constructor(_params: any) {}
@@ -171,8 +178,8 @@ export type EndpointFolder = EndpointFolderPreview & {
       };
   files: (
     | {
-        relationTo: "library-items";
-        value: LibraryItem;
+        relationTo: "collectibles";
+        value: Collectible;
       }
     | {
         relationTo: "pages";
@@ -201,17 +208,6 @@ export type EndpointRecorder = {
   biographies: {
     language: string;
     biography: RichTextContent;
-  }[];
-};
-
-export type EndpointKey = {
-  id: string;
-  name: string;
-  type: Key["type"];
-  translations: {
-    language: string;
-    name: string;
-    short: string;
   }[];
 };
 
@@ -272,6 +268,77 @@ export type ParentPage = {
   tag: string;
 };
 
+export type EndpointCollectiblePreview = {
+  slug: string;
+  thumbnail?: PayloadImage;
+  translations: {
+    language: string;
+    pretitle?: string;
+    title: string;
+    subtitle?: string;
+    description?: RichTextContent;
+  }[];
+  tagGroups: TagGroup[];
+  status: "draft" | "published";
+  releaseDate?: string;
+  languages: string[];
+};
+
+export type EndpointCollectible = EndpointCollectiblePreview & {
+  nature: CollectibleNature;
+  gallery: PayloadImage[];
+  urls: { url: string; label: string }[];
+  price?: {
+    amount: number;
+    currency: string;
+  };
+  size?: {
+    width: number;
+    height: number;
+    thickness?: number;
+  };
+  weight?: {
+    amount: number;
+  };
+  pageInfo?: {
+    pageCount: number;
+    bindingType?: CollectibleBindingTypes;
+    pageOrder?: CollectiblePageOrders;
+  };
+  subitems: EndpointCollectiblePreview[];
+  contents: {
+    content:
+      | {
+          relationTo: "pages";
+          value: Page;
+        }
+      | {
+          relationTo: "generic-contents";
+          value: GenericContent;
+        };
+
+    range?:
+      | {
+          type: "pageRange";
+          start: number;
+          end: number;
+        }
+      | {
+          type: "timeRange";
+          start: string;
+          end: string;
+        }
+      | {
+          type: "other";
+          translations: {
+            language: string;
+            note: RichTextContent;
+          }[];
+        };
+  }[];
+  parentPages: ParentPage[];
+};
+
 export type TagGroup = { slug: string; icon: string; values: string[] };
 
 export type TableOfContentEntry = {
@@ -311,4 +378,6 @@ export const payload = {
     await (await request(payloadApiUrl(Collections.TagsGroups, `all`))).json(),
   getPage: async (slug: string): Promise<EndpointPage> =>
     await (await request(payloadApiUrl(Collections.Pages, `slug/${slug}`))).json(),
+  getCollectible: async (slug: string): Promise<EndpointCollectible> =>
+    await (await request(payloadApiUrl(Collections.Collectibles, `slug/${slug}`))).json(),
 };

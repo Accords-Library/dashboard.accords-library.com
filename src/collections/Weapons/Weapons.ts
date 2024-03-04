@@ -1,7 +1,6 @@
 import { RowLabelArgs } from "payload/dist/admin/components/forms/RowLabel/types";
-import { CollectionGroups, Collections, KeysTypes } from "../../constants";
+import { CollectionGroups, Collections } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
-import { keysField } from "../../fields/keysField/keysField";
 import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
@@ -54,11 +53,6 @@ export const Weapons = buildVersionedCollectionConfig({
       }),
     ]),
     rowField([
-      keysField({
-        name: fields.type,
-        relationTo: KeysTypes.Weapons,
-        required: true,
-      }),
       {
         name: fields.group,
         type: "relationship",
@@ -78,12 +72,6 @@ export const Weapons = buildVersionedCollectionConfig({
         },
       },
       fields: [
-        keysField({
-          name: fields.appearancesCategories,
-          required: true,
-          hasMany: true,
-          relationTo: KeysTypes.Categories,
-        }),
         translatedFields({
           name: fields.appearancesTranslations,
           required: true,

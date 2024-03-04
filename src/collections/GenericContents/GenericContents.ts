@@ -1,6 +1,6 @@
 import { CollectionConfig } from "payload/types";
-import { QuickFilters } from "../../components/QuickFilters";
-import { CollectionGroups, Collections, LanguageCodes } from "../../constants";
+import { QuickFilters, languageBasedFilters } from "../../components/QuickFilters";
+import { CollectionGroups, Collections } from "../../constants";
 import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
@@ -31,12 +31,7 @@ export const GenericContents: CollectionConfig = buildCollectionConfig({
         () =>
           QuickFilters({
             slug: Collections.GenericContents,
-            filterGroups: [
-              Object.entries(LanguageCodes).map(([key, value]) => ({
-                label: `∅ ${value}`,
-                filter: { where: { "translations.language": { not_equals: key } } },
-              })),
-            ],
+            filterGroups: [languageBasedFilters("translations.language")],
           }),
       ],
     },
@@ -52,7 +47,6 @@ export const GenericContents: CollectionConfig = buildCollectionConfig({
       name: fields.translations,
       minRows: 1,
       required: true,
-      interfaceName: "CategoryTranslations",
       admin: {
         useAsTitle: fields.translationsName,
       },
