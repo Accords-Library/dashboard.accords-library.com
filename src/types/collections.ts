@@ -195,6 +195,7 @@ export interface Collectible {
     } | null;
     id?: string | null;
   }[];
+  backgroundImage?: string | Image | null;
   gallery?:
     | {
         image: string | Image;
@@ -480,9 +481,10 @@ export interface Currency {
  */
 export interface Page {
   id: string;
-  type: 'Content' | 'Post' | 'Generic';
   slug: string;
+  type: 'Content' | 'Post' | 'Generic';
   thumbnail?: string | Image | null;
+  backgroundImage?: string | Image | null;
   tags?: (string | Tag)[] | null;
   authors?: (string | Recorder)[] | null;
   translations: {

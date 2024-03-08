@@ -6,59 +6,49 @@ import {
   isNodeBlockNode,
 } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointPage, ParentPage, TableOfContentEntry } from "../../../sdk";
+import { EndpointPage, EndpointPagePreview, TableOfContentEntry } from "../../../sdk";
 import { Page } from "../../../types/collections";
 import { isPayloadArrayType, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
-import { convertTagsToGroups } from "../../../utils/endpoints";
+import { convertTagsToGroups, handleParentPages } from "../../../utils/endpoints";
 
 export const getBySlugEndpoint = createGetByEndpoint(
   Collections.Pages,
   "slug",
-  ({
-    authors,
-    slug,
-    translations,
-    tags,
-    thumbnail,
-    _status,
-    collectibles,
-    folders,
-    type,
-  }: Page): EndpointPage => ({
-    slug,
-    type: type as PageType,
-    ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
-    tagGroups: convertTagsToGroups(tags),
-    translations: translations.map(
-      ({
-        content,
-        language,
-        sourceLanguage,
-        title,
-        pretitle,
-        subtitle,
-        proofreaders,
-        summary,
-        transcribers,
-        translators,
-      }) => ({
-        language: isPayloadType(language) ? language.id : language,
-        sourceLanguage: isPayloadType(sourceLanguage) ? sourceLanguage.id : sourceLanguage,
-        ...(pretitle ? { pretitle } : {}),
-        title,
-        ...(subtitle ? { subtitle } : {}),
-        ...(summary ? { summary } : {}),
-        content: handleContent(content),
-        toc: handleToc(content),
-        translators: isPayloadArrayType(translators) ? translators.map(({ id }) => id) : [],
-        transcribers: isPayloadArrayType(transcribers) ? transcribers.map(({ id }) => id) : [],
-        proofreaders: isPayloadArrayType(proofreaders) ? proofreaders.map(({ id }) => id) : [],
-      })
-    ),
-    authors: isPayloadArrayType(authors) ? authors.map(({ id }) => id) : [],
-    status: _status === "published" ? "published" : "draft",
-    parentPages: handleParentPages({ collectibles, folders }),
-  })
+  (page: Page): EndpointPage => {
+    const { translations, collectibles, folders, backgroundImage } = page;
+
+    return {
+      ...convertPageToPreview(page),
+      ...(isValidPayloadImage(backgroundImage) ? { backgroundImage } : {}),
+      translations: translations.map(
+        ({
+          content,
+          language,
+          sourceLanguage,
+          title,
+          pretitle,
+          subtitle,
+          proofreaders,
+          summary,
+          transcribers,
+          translators,
+        }) => ({
+          language: isPayloadType(language) ? language.id : language,
+          sourceLanguage: isPayloadType(sourceLanguage) ? sourceLanguage.id : sourceLanguage,
+          ...(pretitle ? { pretitle } : {}),
+          title,
+          ...(subtitle ? { subtitle } : {}),
+          ...(summary ? { summary } : {}),
+          content: handleContent(content),
+          toc: handleToc(content),
+          translators: isPayloadArrayType(translators) ? translators.map(({ id }) => id) : [],
+          transcribers: isPayloadArrayType(transcribers) ? transcribers.map(({ id }) => id) : [],
+          proofreaders: isPayloadArrayType(proofreaders) ? proofreaders.map(({ id }) => id) : [],
+        })
+      ),
+      parentPages: handleParentPages({ collectibles, folders }),
+    };
+  }
 );
 
 const handleContent = (
@@ -98,40 +88,27 @@ const handleToc = (content: RichTextContent, parentPrefix = ""): TableOfContentE
       children: handleToc(fields.content, `${index + 1}.`),
     }));
 
-const handleParentPages = ({
-  collectibles,
-  folders,
-}: Pick<Page, "collectibles" | "folders">): ParentPage[] => {
-  const result: ParentPage[] = [];
 
-  if (collectibles && isPayloadArrayType(collectibles)) {
-    collectibles.forEach(({ slug, translations }) => {
-      result.push({
-        collection: Collections.Collectibles,
-        slug,
-        translations: translations.map(({ language, title }) => ({
-          language: isPayloadType(language) ? language.id : language,
-          name: title, // TODO: Use the entire pretitle + title + subtitle
-        })),
-        tag: "collectible",
-      });
-    });
-  }
 
-  if (folders && isPayloadArrayType(folders)) {
-    folders.forEach(({ slug, translations }) => {
-      result.push({
-        collection: Collections.Folders,
-        slug,
-        translations:
-          translations?.map(({ language, name }) => ({
-            language: isPayloadType(language) ? language.id : language,
-            name,
-          })) ?? [],
-        tag: "folders",
-      });
-    });
-  }
-
-  return result;
-};
+export const convertPageToPreview = ({
+  authors,
+  slug,
+  translations,
+  tags,
+  thumbnail,
+  _status,
+  type,
+}: Page): EndpointPagePreview => ({
+  slug,
+  type: type as PageType,
+  ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
+  tagGroups: convertTagsToGroups(tags),
+  translations: translations.map(({ language, title, pretitle, subtitle }) => ({
+    language: isPayloadType(language) ? language.id : language,
+    ...(pretitle ? { pretitle } : {}),
+    title,
+    ...(subtitle ? { subtitle } : {}),
+  })),
+  authors: isPayloadArrayType(authors) ? authors.map(({ id }) => id) : [],
+  status: _status === "published" ? "published" : "draft",
+});

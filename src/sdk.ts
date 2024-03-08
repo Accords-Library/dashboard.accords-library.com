@@ -6,7 +6,7 @@ import {
   PageType,
   RichTextContent,
 } from "./constants";
-import { Collectible, Currency, GenericContent, Language, Page } from "./types/collections";
+import { Currency, Language } from "./types/collections";
 
 class NodeCache {
   constructor(_params: any) {}
@@ -179,11 +179,11 @@ export type EndpointFolder = EndpointFolderPreview & {
   files: (
     | {
         relationTo: "collectibles";
-        value: Collectible;
+        value: EndpointCollectiblePreview;
       }
     | {
         relationTo: "pages";
-        value: Page;
+        value: EndpointPagePreview;
       }
   )[];
 };
@@ -238,7 +238,7 @@ export type EndpointTagsGroup = {
   tags: EndpointTag[];
 };
 
-export type EndpointPage = {
+export type EndpointPagePreview = {
   slug: string;
   type: PageType;
   thumbnail?: PayloadImage;
@@ -246,18 +246,24 @@ export type EndpointPage = {
   tagGroups: TagGroup[];
   translations: {
     language: string;
-    sourceLanguage: string;
     pretitle?: string;
     title: string;
     subtitle?: string;
+  }[];
+  status: "draft" | "published";
+};
+
+export type EndpointPage = EndpointPagePreview & {
+  backgroundImage?: PayloadImage;
+  translations: (EndpointPagePreview["translations"][number] & {
+    sourceLanguage: string;
     summary?: RichTextContent;
     content: RichTextContent;
     transcribers: string[];
     translators: string[];
     proofreaders: string[];
     toc: TableOfContentEntry[];
-  }[];
-  status: "draft" | "published";
+  })[];
   parentPages: ParentPage[];
 };
 
@@ -285,8 +291,10 @@ export type EndpointCollectiblePreview = {
 };
 
 export type EndpointCollectible = EndpointCollectiblePreview & {
+  backgroundImage?: PayloadImage;
   nature: CollectibleNature;
   gallery: PayloadImage[];
+  scans: PayloadImage[];
   urls: { url: string; label: string }[];
   price?: {
     amount: number;
@@ -297,9 +305,7 @@ export type EndpointCollectible = EndpointCollectiblePreview & {
     height: number;
     thickness?: number;
   };
-  weight?: {
-    amount: number;
-  };
+  weight?: number;
   pageInfo?: {
     pageCount: number;
     bindingType?: CollectibleBindingTypes;
@@ -310,11 +316,16 @@ export type EndpointCollectible = EndpointCollectiblePreview & {
     content:
       | {
           relationTo: "pages";
-          value: Page;
+          value: EndpointPagePreview;
         }
       | {
           relationTo: "generic-contents";
-          value: GenericContent;
+          value: {
+            translations: {
+              language: string;
+              name: string;
+            }[];
+          };
         };
 
     range?:

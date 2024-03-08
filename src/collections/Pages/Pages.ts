@@ -23,6 +23,7 @@ const fields = {
   type: "type",
   authors: "authors",
   thumbnail: "thumbnail",
+  backgroundImage: "backgroundImage",
   translations: "translations",
   tags: "tags",
   sourceLanguage: "sourceLanguage",
@@ -71,21 +72,32 @@ export const Pages = buildVersionedCollectionConfig({
   },
   endpoints: [getBySlugEndpoint],
   fields: [
-    {
-      name: fields.type,
-      type: "radio",
-      required: true,
-      defaultValue: PageType.Generic,
-      options: Object.entries(PageType).map(([_, value]) => ({
-        label: value,
-        value: value,
-      })),
-    },
     rowField([
       slugField({ name: fields.slug }),
+      {
+        name: fields.type,
+        type: "radio",
+        required: true,
+        defaultValue: PageType.Generic,
+        options: Object.entries(PageType).map(([_, value]) => ({
+          label: value,
+          value: value,
+        })),
+      },
+    ]),
+    rowField([
       imageField({
         name: fields.thumbnail,
         relationTo: Collections.Images,
+      }),
+      imageField({
+        name: fields.backgroundImage,
+        relationTo: Collections.Images,
+        admin: {
+          description:
+            "The image used as background from the webpage.\
+          If missing, the thumbnail will be used instead.",
+        },
       }),
     ]),
     rowField([

@@ -27,6 +27,7 @@ const fields = {
   status: "_status",
   slug: "slug",
   thumbnail: "thumbnail",
+  backgroundImage: "backgroundImage",
   nature: "nature",
   tags: "tags",
   languages: "languages",
@@ -198,6 +199,15 @@ export const Collectibles = buildVersionedCollectionConfig({
         {
           label: "Images",
           fields: [
+            imageField({
+              name: fields.backgroundImage,
+              relationTo: Collections.Images,
+              admin: {
+                description:
+                  "The image used as background from the webpage.\
+                  If missing, the thumbnail will be used instead.",
+              },
+            }),
             {
               name: fields.gallery,
               type: "array",

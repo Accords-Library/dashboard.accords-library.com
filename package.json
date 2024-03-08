@@ -22,7 +22,7 @@
     "start": "npm install && npm run generate:types && npm run dev"
   },
   "dependencies": {
-    "@fontsource/vollkorn": "5.0.18",
+    "@fontsource/vollkorn": "5.0.19",
     "@payloadcms/bundler-webpack": "1.0.6",
     "@payloadcms/db-mongodb": "1.4.3",
     "@payloadcms/richtext-lexical": "0.7.0",

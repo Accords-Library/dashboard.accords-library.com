@@ -3,6 +3,8 @@ import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointFolder, EndpointFolderPreview } from "../../../sdk";
 import { Folder, Language } from "../../../types/collections";
 import { isDefined, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
+import { convertCollectibleToPreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
+import { convertPageToPreview } from "../../Pages/endpoints/getBySlugEndpoint";
 
 export const getBySlugEndpoint = createGetByEndpoint(
   Collections.Folders,
@@ -36,9 +38,9 @@ export const getBySlugEndpoint = createGetByEndpoint(
           }
           switch (relationTo) {
             case "collectibles":
-              return [{ relationTo, value }];
+              return [{ relationTo, value: convertCollectibleToPreview(value) }];
             case "pages":
-              return [{ relationTo, value }];
+              return [{ relationTo, value: convertPageToPreview(value) }];
           }
         }) ?? [],
     };

@@ -4,7 +4,8 @@ import { CollectionEndpoint } from "../types/payload";
 export const createGetByEndpoint = <C extends keyof GeneratedTypes["collections"], R>(
   collection: C,
   attribute: string,
-  handler: (doc: GeneratedTypes["collections"][C]) => Promise<R> | R
+  handler: (doc: GeneratedTypes["collections"][C]) => Promise<R> | R,
+  depth?: number,
 ): CollectionEndpoint => ({
   path: `/${attribute}/:${attribute}`,
   method: "get",
@@ -21,6 +22,7 @@ export const createGetByEndpoint = <C extends keyof GeneratedTypes["collections"
 
     const result = await payload.find({
       collection,
+      depth,
       where: { [attribute]: { equals: req.params[attribute] } },
     });
 
