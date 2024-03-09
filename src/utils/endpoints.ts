@@ -1,25 +1,40 @@
 import { Collections } from "../constants";
-import { EndpointRecorder, ParentPage, TagGroup } from "../sdk";
+import { EndpointRecorder, EndpointTag, EndpointTagsGroup, ParentPage } from "../sdk";
 import { Collectible, Folder, Recorder, Tag } from "../types/collections";
 import { isPayloadArrayType, isPayloadType, isValidPayloadImage } from "./asserts";
 
-export const convertTagsToGroups = (tags: (string | Tag)[] | null | undefined): TagGroup[] => {
+export const convertTagsToGroups = (
+  tags: (string | Tag)[] | null | undefined
+): EndpointTagsGroup[] => {
   if (!isPayloadArrayType(tags)) {
     return [];
   }
 
-  const groups: TagGroup[] = [];
+  const groups: EndpointTagsGroup[] = [];
 
-  tags.forEach(({ group, slug }) => {
+  tags.forEach(({ translations, slug, group }) => {
     if (isPayloadType(group)) {
       const existingGroup = groups.find((existingGroup) => existingGroup.slug === group.slug);
+
+      const endpointTag: EndpointTag = {
+        slug,
+        translations: translations.map(({ language, name }) => ({
+          language: isPayloadType(language) ? language.id : language,
+          name,
+        })),
+      };
+
       if (existingGroup) {
-        existingGroup.values.push(slug);
+        existingGroup.tags.push(endpointTag);
       } else {
         groups.push({
           slug: group.slug,
           icon: group.icon ?? "material-symbols:category-outline",
-          values: [slug],
+          tags: [endpointTag],
+          translations: group.translations.map(({ language, name }) => ({
+            language: isPayloadType(language) ? language.id : language,
+            name,
+          })),
         });
       }
     }

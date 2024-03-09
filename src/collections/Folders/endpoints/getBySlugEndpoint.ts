@@ -44,7 +44,7 @@ export const getBySlugEndpoint = createGetByEndpoint(
           }
         }) ?? [],
     };
-  }
+  }, 3
 );
 
 export const convertFolderToPreview = ({

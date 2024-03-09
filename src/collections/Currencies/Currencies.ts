@@ -1,6 +1,7 @@
 import { text } from "payload/dist/fields/validations";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { CollectionGroups, Collections } from "../../constants";
+import { afterOperationWebhook } from "../../hooks/afterOperationWebhook";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
@@ -24,6 +25,9 @@ export const Currencies = buildCollectionConfig({
     group: CollectionGroups.Meta,
   },
   access: { create: mustBeAdmin, update: mustBeAdmin },
+  hooks: {
+    afterOperation: [afterOperationWebhook],
+  },
   endpoints: [importFromStrapi, getAllEndpoint],
   timestamps: false,
   fields: [

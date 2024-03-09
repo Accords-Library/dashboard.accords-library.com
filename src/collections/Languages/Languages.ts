@@ -2,6 +2,7 @@ import { text } from "payload/dist/fields/validations";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { publicAccess } from "../../accesses/publicAccess";
 import { CollectionGroups, Collections } from "../../constants";
+import { afterOperationWebhook } from "../../hooks/afterOperationWebhook";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
@@ -26,6 +27,9 @@ export const Languages = buildCollectionConfig({
     pagination: { defaultLimit: 100 },
   },
   access: { create: mustBeAdmin, update: mustBeAdmin, read: publicAccess },
+  hooks: {
+    afterOperation: [afterOperationWebhook],
+  },
   timestamps: false,
   endpoints: [importFromStrapi, getAllEndpoint],
   fields: [

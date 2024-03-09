@@ -225,12 +225,11 @@ export type EndpointTag = {
     language: string;
     name: string;
   }[];
-  group: string;
 };
 
 export type EndpointTagsGroup = {
   slug: string;
-  icon?: string;
+  icon: string;
   translations: {
     language: string;
     name: string;
@@ -243,7 +242,7 @@ export type EndpointPagePreview = {
   type: PageType;
   thumbnail?: PayloadImage;
   authors: EndpointRecorder[];
-  tagGroups: TagGroup[];
+  tagGroups: EndpointTagsGroup[];
   translations: {
     language: string;
     pretitle?: string;
@@ -284,7 +283,7 @@ export type EndpointCollectiblePreview = {
     subtitle?: string;
     description?: RichTextContent;
   }[];
-  tagGroups: TagGroup[];
+  tagGroups: EndpointTagsGroup[];
   status: "draft" | "published";
   releaseDate?: string;
   languages: string[];
@@ -349,8 +348,6 @@ export type EndpointCollectible = EndpointCollectiblePreview & {
   }[];
   parentPages: ParentPage[];
 };
-
-export type TagGroup = { slug: string; icon: string; values: string[] };
 
 export type TableOfContentEntry = {
   prefix: string;
