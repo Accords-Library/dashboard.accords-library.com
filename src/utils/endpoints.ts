@@ -1,7 +1,7 @@
 import { Collections } from "../constants";
-import { ParentPage, TagGroup } from "../sdk";
-import { Collectible, Folder, Tag } from "../types/collections";
-import { isPayloadArrayType, isPayloadType } from "./asserts";
+import { EndpointRecorder, ParentPage, TagGroup } from "../sdk";
+import { Collectible, Folder, Recorder, Tag } from "../types/collections";
+import { isPayloadArrayType, isPayloadType, isValidPayloadImage } from "./asserts";
 
 export const convertTagsToGroups = (tags: (string | Tag)[] | null | undefined): TagGroup[] => {
   if (!isPayloadArrayType(tags)) {
@@ -28,13 +28,12 @@ export const convertTagsToGroups = (tags: (string | Tag)[] | null | undefined): 
   return groups;
 };
 
-
 export const handleParentPages = ({
   collectibles,
   folders,
 }: {
   collectibles?: (string | Collectible)[] | null | undefined;
-  folders?: (string | Folder)[] | null | undefined
+  folders?: (string | Folder)[] | null | undefined;
 }): ParentPage[] => {
   const result: ParentPage[] = [];
 
@@ -69,3 +68,22 @@ export const handleParentPages = ({
 
   return result;
 };
+
+export const handleRecorder = ({
+  id,
+  biographies,
+  languages,
+  username,
+  avatar,
+  anonymize,
+}: Recorder): EndpointRecorder => ({
+  id,
+  biographies:
+    biographies?.map(({ biography, language }) => ({
+      biography,
+      language: isPayloadType(language) ? language.id : language,
+    })) ?? [],
+  languages: languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
+  username: anonymize ? `Recorder#${id.substring(0, 5)}` : username,
+  ...(isValidPayloadImage(avatar) ? { avatar } : {}),
+});

@@ -9,7 +9,7 @@ import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointPage, EndpointPagePreview, TableOfContentEntry } from "../../../sdk";
 import { Page } from "../../../types/collections";
 import { isPayloadArrayType, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
-import { convertTagsToGroups, handleParentPages } from "../../../utils/endpoints";
+import { convertTagsToGroups, handleParentPages, handleRecorder } from "../../../utils/endpoints";
 
 export const getBySlugEndpoint = createGetByEndpoint(
   Collections.Pages,
@@ -41,9 +41,9 @@ export const getBySlugEndpoint = createGetByEndpoint(
           ...(summary ? { summary } : {}),
           content: handleContent(content),
           toc: handleToc(content),
-          translators: isPayloadArrayType(translators) ? translators.map(({ id }) => id) : [],
-          transcribers: isPayloadArrayType(transcribers) ? transcribers.map(({ id }) => id) : [],
-          proofreaders: isPayloadArrayType(proofreaders) ? proofreaders.map(({ id }) => id) : [],
+          translators: isPayloadArrayType(translators) ? translators.map(handleRecorder) : [],
+          transcribers: isPayloadArrayType(transcribers) ? transcribers.map(handleRecorder) : [],
+          proofreaders: isPayloadArrayType(proofreaders) ? proofreaders.map(handleRecorder) : [],
         })
       ),
       parentPages: handleParentPages({ collectibles, folders }),
@@ -88,8 +88,6 @@ const handleToc = (content: RichTextContent, parentPrefix = ""): TableOfContentE
       children: handleToc(fields.content, `${index + 1}.`),
     }));
 
-
-
 export const convertPageToPreview = ({
   authors,
   slug,
@@ -109,6 +107,6 @@ export const convertPageToPreview = ({
     title,
     ...(subtitle ? { subtitle } : {}),
   })),
-  authors: isPayloadArrayType(authors) ? authors.map(({ id }) => id) : [],
+  authors: isPayloadArrayType(authors) ? authors.map(handleRecorder) : [],
   status: _status === "published" ? "published" : "draft",
 });
