@@ -92,7 +92,7 @@ export const Pages = buildVersionedCollectionConfig({
       }),
       imageField({
         name: fields.backgroundImage,
-        relationTo: Collections.Images,
+        relationTo: Collections.BackgroundImages,
         admin: {
           description:
             "The image used as background from the webpage.\

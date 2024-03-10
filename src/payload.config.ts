@@ -2,6 +2,7 @@ import { webpackBundler } from "@payloadcms/bundler-webpack";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import path from "path";
 import { buildConfig } from "payload/config";
+import { BackgroundImages } from "./collections/BackgroundImages/BackgroundImages";
 import { ChronologyEras } from "./collections/ChronologyEras/ChronologyEras";
 import { ChronologyItems } from "./collections/ChronologyItems/ChronologyItems";
 import { Collectibles } from "./collections/Collectibles/Collectibles";
@@ -64,6 +65,7 @@ export default buildConfig({
     Wordings,
     Collectibles,
     GenericContents,
+    BackgroundImages,
   ],
   db: mongooseAdapter({
     url: process.env.MONGODB_URI ?? "mongodb://mongo:27017/payload",

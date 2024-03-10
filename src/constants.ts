@@ -32,6 +32,7 @@ export enum Collections {
   Wordings = "wordings",
   Collectibles = "collectibles",
   GenericContents = "generic-contents",
+  BackgroundImages = "background-images",
 }
 
 export enum CollectionGroups {
