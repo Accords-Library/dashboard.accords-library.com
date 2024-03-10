@@ -1,10 +1,9 @@
 import payload from "payload";
 import { Collections } from "../../../constants";
-import { EndpointFolderPreview } from "../../../sdk";
+import { Folder } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isPayloadType } from "../../../utils/asserts";
 import { convertFolderToPreview } from "./getBySlugEndpoint";
-
 
 export const getRootFoldersEndpoint: CollectionEndpoint = {
   method: "get",
@@ -40,8 +39,14 @@ export const getRootFoldersEndpoint: CollectionEndpoint = {
       return;
     }
 
-    const result = folders.filter(isPayloadType).map<EndpointFolderPreview>(convertFolderToPreview);
+    const result = folders.filter(isPayloadType).filter(isEmptyFolder).map(convertFolderToPreview);
 
     res.status(200).json(result);
   },
+};
+
+const isEmptyFolder = ({ sections, files }: Folder): boolean => {
+  if (sections && sections.length > 0) return true;
+  if (files && files.length > 0) return true;
+  return false;
 };
