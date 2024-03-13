@@ -1,7 +1,6 @@
 import type {
   Image,
   SectionBlock,
-  SpacerBlock,
   TranscriptBlock,
 } from "./types/collections";
 
@@ -88,13 +87,6 @@ export enum PageType {
   Content = "Content",
   Post = "Post",
   Generic = "Generic",
-}
-
-export enum SpacerSizes {
-  Small = "Small",
-  Medium = "Medium",
-  Large = "Large",
-  XLarge = "Extra Large",
 }
 
 /* RICH TEXT */
@@ -210,10 +202,6 @@ export interface RichTextTranscriptBlock extends RichTextBlockNode {
   fields: TranscriptBlock;
 }
 
-export interface RichTextSpacerBlock extends RichTextBlockNode {
-  fields: SpacerBlock;
-}
-
 export const isNodeParagraphNode = (node: RichTextNode): node is RichTextParagraphNode =>
   node.type === "paragraph";
 
@@ -263,9 +251,6 @@ export const isBlockNodeTranscriptBlock = (
   node: RichTextBlockNode
 ): node is RichTextTranscriptBlock => node.fields.blockType === "transcriptBlock";
 
-export const isBlockNodeSpacerBlock = (node: RichTextBlockNode): node is RichTextSpacerBlock =>
-  node.fields.blockType === "spacerBlock";
-
 /* BLOCKS */
 
 /* TODO: TO BE REMOVED WHEN https://github.com/payloadcms/payload/issues/5216 is closed */
@@ -294,6 +279,3 @@ export const isBlockCueBlock = (block: GenericBlock): block is CueBlock =>
 
 export const isBlockLineBlock = (block: GenericBlock): block is LineBlock =>
   block.blockType === "lineBlock";
-
-export const isBlockSpacerBlock = (block: GenericBlock): block is SpacerBlock =>
-  block.blockType === "spacerBlock";

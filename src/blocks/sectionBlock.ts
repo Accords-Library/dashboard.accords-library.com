@@ -1,6 +1,5 @@
 import { Block } from "payload/types";
 import { createEditor } from "../utils/editor";
-import { spacerBlock } from "./spacerBlock";
 import { transcriptBlock } from "./transcriptBlock";
 
 const generateRecursiveSectionBlock = (depth = 1, maxDepth = 5): Block => ({
@@ -25,7 +24,6 @@ const generateRecursiveSectionBlock = (depth = 1, maxDepth = 5): Block => ({
         alignment: true,
         blocks: [
           ...(depth < maxDepth ? [generateRecursiveSectionBlock(depth + 1, maxDepth)] : []),
-          spacerBlock,
           transcriptBlock,
         ],
       }),

@@ -764,14 +764,6 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "SpacerBlock".
- */
-export interface SpacerBlock {
-  size: 'Small' | 'Medium' | 'Large' | 'Extra Large';
-  blockType: 'spacerBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "LineBlock".
  */
 export interface LineBlock {
@@ -819,7 +811,7 @@ export interface CueBlock {
  * via the `definition` "TranscriptBlock".
  */
 export interface TranscriptBlock {
-  lines: (LineBlock | CueBlock | SpacerBlock)[];
+  lines: (LineBlock | CueBlock)[];
   id?: string | null;
   blockName?: string | null;
   blockType: 'transcriptBlock';
