@@ -20,7 +20,6 @@ export enum Collections {
   VideosChannels = "videos-channels",
   Videos = "videos",
   Folders = "folders",
-  FoldersThumbnails = "folders-thumbnails",
   Tags = "tags",
   TagsGroups = "tags-groups",
   Images = "images",
@@ -28,6 +27,7 @@ export enum Collections {
   Collectibles = "collectibles",
   GenericContents = "generic-contents",
   BackgroundImages = "background-images",
+  HomeFolders = "home-folders",
 }
 
 export enum CollectionGroups {

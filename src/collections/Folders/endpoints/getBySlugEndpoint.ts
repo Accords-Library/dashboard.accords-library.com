@@ -2,7 +2,7 @@ import { Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointFolder, EndpointFolderPreview } from "../../../sdk";
 import { Folder, Language } from "../../../types/collections";
-import { isDefined, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
+import { isDefined, isPayloadType } from "../../../utils/asserts";
 import { convertCollectibleToPreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
 import { convertPageToPreview } from "../../Pages/endpoints/getBySlugEndpoint";
 
@@ -44,13 +44,12 @@ export const getBySlugEndpoint = createGetByEndpoint(
           }
         }) ?? [],
     };
-  }, 3
+  },
+  3
 );
 
 export const convertFolderToPreview = ({
   slug,
-  darkThumbnail,
-  lightThumbnail,
   translations,
   icon,
 }: Folder): EndpointFolderPreview => {
@@ -63,8 +62,6 @@ export const convertFolderToPreview = ({
         name,
         ...(description ? { description } : {}),
       })) ?? [],
-    darkThumbnail: isValidPayloadImage(darkThumbnail) ? darkThumbnail : undefined,
-    lightThumbnail: isValidPayloadImage(lightThumbnail) ? lightThumbnail : undefined,
   };
 };
 

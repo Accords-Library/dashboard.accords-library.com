@@ -126,6 +126,16 @@ export type EndpointEra = {
   }[];
 };
 
+export type EndpointFolderPreview = {
+  slug: string;
+  icon?: string;
+  translations: {
+    language: string;
+    name: string;
+    description?: RichTextContent;
+  }[];
+};
+
 export type EndpointFolder = EndpointFolderPreview & {
   sections:
     | { type: "single"; subfolders: EndpointFolderPreview[] }
@@ -148,14 +158,7 @@ export type EndpointFolder = EndpointFolderPreview & {
   )[];
 };
 
-export type EndpointFolderPreview = {
-  slug: string;
-  icon?: string;
-  translations: {
-    language: string;
-    name: string;
-    description?: RichTextContent;
-  }[];
+export type EndpointHomeFolder = EndpointFolderPreview & {
   lightThumbnail?: PayloadImage;
   darkThumbnail?: PayloadImage;
 };

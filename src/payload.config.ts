@@ -8,8 +8,8 @@ import { ChronologyItems } from "./collections/ChronologyItems/ChronologyItems";
 import { Collectibles } from "./collections/Collectibles/Collectibles";
 import { Currencies } from "./collections/Currencies/Currencies";
 import { Folders } from "./collections/Folders/Folders";
-import { FoldersThumbnails } from "./collections/FoldersThumbnails/FoldersThumbnails";
 import { GenericContents } from "./collections/GenericContents/GenericContents";
+import { HomeFolders } from "./collections/HomeFolders/HomeFolders";
 import { Images } from "./collections/Images/Images";
 import { Languages } from "./collections/Languages/Languages";
 import { Notes } from "./collections/Notes/Notes";
@@ -41,30 +41,31 @@ export default buildConfig({
   },
   editor: createEditor({}),
   collections: [
-    Folders,
-    FoldersThumbnails,
     Pages,
+    Collectibles,
+    Folders,
     ChronologyItems,
     ChronologyEras,
-    RecordersThumbnails,
     Notes,
+    
+    Images,
+    BackgroundImages,
+    RecordersThumbnails,
     Videos,
     VideosChannels,
-    Languages,
-    Currencies,
-    Recorders,
+    
     Tags,
     TagsGroups,
-    Images,
+    Recorders,
+    Languages,
+    Currencies,
     Wordings,
-    Collectibles,
     GenericContents,
-    BackgroundImages,
   ],
   db: mongooseAdapter({
     url: process.env.MONGODB_URI ?? "mongodb://mongo:27017/payload",
   }),
-  globals: [],
+  globals: [HomeFolders],
   telemetry: false,
   typescript: {
     outputFile: path.resolve(__dirname, "types/collections.ts"),

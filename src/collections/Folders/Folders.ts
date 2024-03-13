@@ -1,6 +1,5 @@
 import { CollectionGroups, Collections } from "../../constants";
 import { iconField } from "../../fields/iconField/iconField";
-import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
@@ -19,8 +18,6 @@ const fields = {
   sectionsTranslations: "translations",
   sectionsTranslationsName: "name",
   files: "files",
-  darkThumbnail: "darkThumbnail",
-  lightThumbnail: "lightThumbnail",
   icon: "icon",
 } as const satisfies Record<string, string>;
 
@@ -38,10 +35,6 @@ export const Folders = buildCollectionConfig({
   endpoints: [getRootFoldersEndpoint, getBySlugEndpoint],
   fields: [
     rowField([slugField({ name: fields.slug }), iconField({ name: fields.icon })]),
-    rowField([
-      imageField({ name: fields.lightThumbnail, relationTo: Collections.FoldersThumbnails }),
-      imageField({ name: fields.darkThumbnail, relationTo: Collections.FoldersThumbnails }),
-    ]),
     translatedFields({
       name: fields.translations,
       admin: { useAsTitle: fields.translationsName },
