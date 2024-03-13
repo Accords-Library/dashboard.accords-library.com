@@ -1,7 +1,8 @@
 import { Collections } from "../../../constants";
 import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImportEndpoint";
 import { StrapiLanguage } from "../../../types/strapi";
-import { isUndefined } from "../../../utils/asserts";
+import { isDefined, isUndefined } from "../../../utils/asserts";
+import { plainTextToLexical } from "../../../utils/string";
 
 type StrapiChronologyEra = {
   slug: string;
@@ -29,7 +30,7 @@ export const importFromStrapi = createStrapiImportEndpoint<StrapiChronologyEra>(
         return {
           language: language.data?.attributes.code,
           title,
-          description,
+          ...(isDefined(description) ? { description: plainTextToLexical(description) } : {}),
         };
       }),
     }),

@@ -41,8 +41,8 @@ const refreshToken = async () => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      email: import.meta.env.PAYLOAD_USER,
-      password: import.meta.env.PAYLOAD_PASSWORD,
+      email: process.env.PAYLOAD_USER,
+      password: process.env.PAYLOAD_PASSWORD,
     }),
   });
   logResponse(loginResult);
@@ -81,7 +81,7 @@ const injectAuth = async (init?: RequestInit): Promise<RequestInit> => ({
 const logResponse = (res: Response) => console.log(res.status, res.statusText, res.url);
 
 const payloadApiUrl = (collection: Collections, endpoint?: string): string =>
-  `${import.meta.env.PAYLOAD_API_URL}/${collection}${endpoint === undefined ? "" : `/${endpoint}`}`;
+  `${process.env.PAYLOAD_API_URL}/${collection}${endpoint === undefined ? "" : `/${endpoint}`}`;
 
 const request = async (url: string, init?: RequestInit): Promise<Response> => {
   const result = await fetch(url, await injectAuth(init));
@@ -96,43 +96,6 @@ const request = async (url: string, init?: RequestInit): Promise<Response> => {
 
 // SDK and Types
 
-export type EndpointWeapon = EndpointBasicWeapon & {
-  appearances: {
-    categories: string[];
-    translations: {
-      language: string;
-      sourceLanguage: string;
-      name: string;
-      description?: string;
-      level1?: string;
-      level2?: string;
-      level3?: string;
-      level4?: string;
-      transcribers: string[];
-      translators: string[];
-      proofreaders: string[];
-    }[];
-  }[];
-  group?: {
-    slug: string;
-    translations: { language: string; name: string }[];
-    weapons: EndpointBasicWeapon[];
-  };
-};
-
-export type EndpointBasicWeapon = {
-  slug: string;
-  type: string;
-  categories: string[];
-  translations: { language: string; name: string; aliases: string[] }[];
-  images?: {
-    previewCard: PayloadImage;
-    thumbnailHeader: PayloadImage;
-    lightBox: PayloadImage;
-    openGraph: PayloadImage;
-  };
-};
-
 export type EndpointEra = {
   slug: string;
   startingYear: number;
@@ -140,7 +103,7 @@ export type EndpointEra = {
   translations: {
     language: string;
     title: string;
-    description?: string;
+    description?: RichTextContent;
   }[];
   items: {
     date: {
@@ -153,16 +116,13 @@ export type EndpointEra = {
         language: string;
         sourceLanguage: string;
         title?: string;
-        description?: string;
-        notes?: string;
-        transcribers: string[];
-        translators: string[];
-        proofreaders: string[];
+        description?: RichTextContent;
+        notes?: RichTextContent;
+        transcribers: EndpointRecorder[];
+        translators: EndpointRecorder[];
+        proofreaders: EndpointRecorder[];
       }[];
     }[];
-    createdAt: Date;
-    updatedAt: Date;
-    updatedBy: string;
   }[];
 };
 
@@ -364,8 +324,6 @@ export type PayloadImage = {
 };
 
 export const payload = {
-  getWeapon: async (slug: string): Promise<EndpointWeapon> =>
-    await (await request(payloadApiUrl(Collections.Weapons, `slug/${slug}`))).json(),
   getEras: async (): Promise<EndpointEra[]> =>
     await (await request(payloadApiUrl(Collections.ChronologyEras, `all`))).json(),
   getRootFolders: async (): Promise<EndpointFolderPreview[]> =>
@@ -380,10 +338,6 @@ export const payload = {
     await (await request(payloadApiUrl(Collections.Wordings, `all`))).json(),
   getRecorders: async (): Promise<EndpointRecorder[]> =>
     await (await request(payloadApiUrl(Collections.Recorders, `all`))).json(),
-  getTags: async (): Promise<EndpointTag[]> =>
-    await (await request(payloadApiUrl(Collections.Tags, `all`))).json(),
-  getTagsGroups: async (): Promise<EndpointTagsGroup[]> =>
-    await (await request(payloadApiUrl(Collections.TagsGroups, `all`))).json(),
   getPage: async (slug: string): Promise<EndpointPage> =>
     await (await request(payloadApiUrl(Collections.Pages, `slug/${slug}`))).json(),
   getCollectible: async (slug: string): Promise<EndpointCollectible> =>

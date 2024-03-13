@@ -5,5 +5,5 @@ export const rowField = (fields: Field[]): RowField => ({
   fields: fields.map(({ admin, ...otherConfig }) => ({
     ...otherConfig,
     admin: { width: "0%", ...admin },
-  })),
+  })) as Field[],
 });

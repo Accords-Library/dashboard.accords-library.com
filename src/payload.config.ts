@@ -20,9 +20,6 @@ import { Tags } from "./collections/Tags/Tags";
 import { TagsGroups } from "./collections/TagsGroups/TagsGroups";
 import { Videos } from "./collections/Videos/Videos";
 import { VideosChannels } from "./collections/VideosChannels/VideosChannels";
-import { Weapons } from "./collections/Weapons/Weapons";
-import { WeaponsGroups } from "./collections/WeaponsGroups/WeaponsGroups";
-import { WeaponsThumbnails } from "./collections/WeaponsThumbnails/WeaponsThumbnails";
 import { Wordings } from "./collections/Wordings/Wordings";
 import { Icon } from "./components/Icon";
 import { Logo } from "./components/Logo";
@@ -49,9 +46,6 @@ export default buildConfig({
     Pages,
     ChronologyItems,
     ChronologyEras,
-    Weapons,
-    WeaponsGroups,
-    WeaponsThumbnails,
     RecordersThumbnails,
     Notes,
     Videos,

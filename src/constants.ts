@@ -1,7 +1,5 @@
 import type {
-  CueBlock,
   Image,
-  LineBlock,
   SectionBlock,
   SpacerBlock,
   TranscriptBlock,
@@ -22,9 +20,6 @@ export enum Collections {
   RecordersThumbnails = "recorders-thumbnails",
   VideosChannels = "videos-channels",
   Videos = "videos",
-  Weapons = "weapons",
-  WeaponsGroups = "weapons-groups",
-  WeaponsThumbnails = "weapons-thumbnails",
   Folders = "folders",
   FoldersThumbnails = "folders-thumbnails",
   Tags = "tags",
@@ -275,11 +270,15 @@ export const isBlockNodeSpacerBlock = (node: RichTextBlockNode): node is RichTex
 
 /* TODO: TO BE REMOVED WHEN https://github.com/payloadcms/payload/issues/5216 is closed */
 export interface CueBlock {
+  content: RichTextContent;
+  blockType: 'cueBlock';
   id?: string | null;
   blockName?: string | null;
 }
 
 export interface LineBlock {
+  content: RichTextContent;
+  blockType: 'lineBlock';
   id?: string | null;
   blockName?: string | null;
 }

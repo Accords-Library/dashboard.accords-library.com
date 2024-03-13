@@ -1,15 +1,10 @@
 import payload from "payload";
 import { Collections } from "../../../constants";
 import { EndpointEra } from "../../../sdk";
-import { ChronologyEra, ChronologyItem, Recorder } from "../../../types/collections";
+import { ChronologyEra, ChronologyItem } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
-import {
-  isEmpty,
-  isPayloadArrayType,
-  isPayloadType,
-  isString,
-  isUndefined,
-} from "../../../utils/asserts";
+import { isDefined, isPayloadArrayType, isPayloadType } from "../../../utils/asserts";
+import { handleRecorder } from "../../../utils/endpoints";
 
 export const getAllEndpoint: CollectionEndpoint = {
   method: "get",
@@ -38,16 +33,11 @@ export const getAllEndpoint: CollectionEndpoint = {
         startingYear,
         endingYear,
         translations:
-          translations?.flatMap(({ language, title, description }) => {
-            if (isString(language)) return [];
-            const translation = {
-              language: language.id,
-              title,
-              description,
-            };
-            if (isEmpty(translation.description)) delete translation.description;
-            return translation;
-          }) ?? [],
+          translations?.map(({ language, title, description }) => ({
+            language: isPayloadType(language) ? language.id : language,
+            title,
+            ...(description ? { description } : {}),
+          })) ?? [],
         items:
           items
             ?.filter(isPayloadType<ChronologyItem>)
@@ -63,52 +53,44 @@ export const getAllEndpoint: CollectionEndpoint = {
               if (aDay !== bDay) return aDay - bDay;
               return 0;
             })
-            .flatMap(({ date, events, createdAt, updatedAt, updatedBy }) => {
-              if (isString(updatedBy)) return [];
-              const item = {
-                date,
-                events: events.map(({ translations }) => ({
-                  translations: translations.flatMap(
-                    ({
-                      language,
-                      sourceLanguage,
-                      description,
-                      notes,
-                      proofreaders = [],
-                      transcribers = [],
-                      translators = [],
-                      title,
-                    }) => {
-                      if (isString(language)) return [];
-                      if (isString(sourceLanguage)) return [];
-                      if (!isPayloadArrayType<Recorder>(proofreaders)) return [];
-                      if (!isPayloadArrayType<Recorder>(transcribers)) return [];
-                      if (!isPayloadArrayType<Recorder>(translators)) return [];
-                      const event = {
-                        language: language.id,
-                        sourceLanguage: sourceLanguage.id,
-                        title,
-                        description,
-                        notes,
-                        proofreaders: proofreaders.map(({ id }) => id),
-                        transcribers: transcribers.map(({ id }) => id),
-                        translators: translators.map(({ id }) => id),
-                      };
-                      if (isEmpty(title)) delete event.title;
-                      if (isEmpty(description)) delete event.description;
-                      if (isEmpty(notes)) delete event.notes;
-                      return event;
-                    }
-                  ),
-                })),
-                createdAt: new Date(createdAt),
-                updatedAt: new Date(updatedAt),
-                updatedBy: updatedBy.id,
-              };
-              if (isUndefined(item.date.month)) delete item.date.month;
-              if (isUndefined(item.date.day)) delete item.date.day;
-              return item;
-            }) ?? [],
+            .map(({ events, date: { year, day, month } }) => ({
+              date: {
+                year,
+                ...(isDefined(day) ? { day } : {}),
+                ...(isDefined(month) ? { month } : {}),
+              },
+              events: events.map(({ translations }) => ({
+                translations: translations.map(
+                  ({
+                    language,
+                    sourceLanguage,
+                    description,
+                    notes,
+                    proofreaders,
+                    transcribers,
+                    translators,
+                    title,
+                  }) => ({
+                    language: isPayloadType(language) ? language.id : language,
+                    sourceLanguage: isPayloadType(sourceLanguage)
+                      ? sourceLanguage.id
+                      : sourceLanguage,
+                    ...(title ? { title } : {}),
+                    ...(description ? { description } : {}),
+                    ...(notes ? { notes } : {}),
+                    proofreaders: isPayloadArrayType(proofreaders)
+                      ? proofreaders.map(handleRecorder)
+                      : [],
+                    transcribers: isPayloadArrayType(transcribers)
+                      ? transcribers.map(handleRecorder)
+                      : [],
+                    translators: isPayloadArrayType(translators)
+                      ? translators.map(handleRecorder)
+                      : [],
+                  })
+                ),
+              })),
+            })) ?? [],
       })
     );
 

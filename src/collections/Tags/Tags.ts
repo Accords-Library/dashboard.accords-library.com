@@ -5,7 +5,6 @@ import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
-import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 
 const beforeChangeUpdateName: CollectionBeforeChangeHook = async ({ data }) => {
   let name = data.slug;
@@ -45,7 +44,6 @@ export const Tags: CollectionConfig = buildCollectionConfig({
       beforeDuplicate: beforeDuplicateAddCopyTo(fields.slug),
     },
   },
-  endpoints: [getAllEndpoint],
   hooks: { beforeChange: [beforeChangeUpdateName] },
   fields: [
     { name: fields.name, type: "text", admin: { readOnly: true, hidden: true } },

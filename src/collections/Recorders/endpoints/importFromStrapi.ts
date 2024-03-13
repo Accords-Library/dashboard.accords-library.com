@@ -47,15 +47,6 @@ export const importFromStrapi = createStrapiImportEndpoint<StrapiRecorder>({
             anonymize,
             languages: languages.data?.map((language) => language.attributes.code),
             avatar: avatarId,
-            biographies: bios?.map(({ language, bio }) => {
-              if (isUndefined(language.data))
-                throw new Error("A language is required for a Recorder biography");
-              if (isUndefined(bio)) throw new Error("A bio is required for a Recorder biography");
-              return {
-                language: language.data.attributes.code,
-                biography: plainTextToLexical(bio),
-              };
-            }),
           },
           user,
         });

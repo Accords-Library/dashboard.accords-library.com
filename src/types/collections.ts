@@ -48,9 +48,6 @@ export interface Config {
     pages: Page;
     'chronology-items': ChronologyItem;
     'chronology-eras': ChronologyEra;
-    weapons: Weapon;
-    'weapons-groups': WeaponsGroup;
-    'weapons-thumbnails': WeaponsThumbnail;
     'recorders-thumbnails': RecordersThumbnail;
     notes: Note;
     videos: Video;
@@ -64,6 +61,7 @@ export interface Config {
     wordings: Wording;
     collectibles: Collectible;
     'generic-contents': GenericContent;
+    'background-images': BackgroundImage;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -195,7 +193,7 @@ export interface Collectible {
     } | null;
     id?: string | null;
   }[];
-  backgroundImage?: string | Image | null;
+  backgroundImage?: string | BackgroundImage | null;
   gallery?:
     | {
         image: string | Image;
@@ -415,6 +413,31 @@ export interface TagsGroup {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "background-images".
+ */
+export interface BackgroundImage {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  sizes?: {
+    thumb?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "recorders".
  */
 export interface Recorder {
@@ -484,7 +507,7 @@ export interface Page {
   slug: string;
   type: 'Content' | 'Post' | 'Generic';
   thumbnail?: string | Image | null;
-  backgroundImage?: string | Image | null;
+  backgroundImage?: string | BackgroundImage | null;
   tags?: (string | Tag)[] | null;
   authors?: (string | Recorder)[] | null;
   translations: {
@@ -643,173 +666,6 @@ export interface ChronologyEra {
   events?: (string | ChronologyItem)[] | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "weapons".
- */
-export interface Weapon {
-  id: string;
-  slug: string;
-  thumbnail?: string | WeaponsThumbnail | null;
-  group?: (string | null) | WeaponsGroup;
-  appearances: {
-    translations: {
-      language: string | Language;
-      sourceLanguage: string | Language;
-      name: string;
-      description?: {
-        root: {
-          children: {
-            type: string;
-            version: number;
-            [k: string]: unknown;
-          }[];
-          direction: ('ltr' | 'rtl') | null;
-          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-          indent: number;
-          type: string;
-          version: number;
-        };
-        [k: string]: unknown;
-      } | null;
-      level1?: {
-        root: {
-          children: {
-            type: string;
-            version: number;
-            [k: string]: unknown;
-          }[];
-          direction: ('ltr' | 'rtl') | null;
-          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-          indent: number;
-          type: string;
-          version: number;
-        };
-        [k: string]: unknown;
-      } | null;
-      level2?: {
-        root: {
-          children: {
-            type: string;
-            version: number;
-            [k: string]: unknown;
-          }[];
-          direction: ('ltr' | 'rtl') | null;
-          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-          indent: number;
-          type: string;
-          version: number;
-        };
-        [k: string]: unknown;
-      } | null;
-      level3?: {
-        root: {
-          children: {
-            type: string;
-            version: number;
-            [k: string]: unknown;
-          }[];
-          direction: ('ltr' | 'rtl') | null;
-          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-          indent: number;
-          type: string;
-          version: number;
-        };
-        [k: string]: unknown;
-      } | null;
-      level4?: {
-        root: {
-          children: {
-            type: string;
-            version: number;
-            [k: string]: unknown;
-          }[];
-          direction: ('ltr' | 'rtl') | null;
-          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-          indent: number;
-          type: string;
-          version: number;
-        };
-        [k: string]: unknown;
-      } | null;
-      transcribers?: (string | Recorder)[] | null;
-      translators?: (string | Recorder)[] | null;
-      proofreaders?: (string | Recorder)[] | null;
-      id?: string | null;
-    }[];
-    id?: string | null;
-  }[];
-  updatedBy: string | Recorder;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "weapons-thumbnails".
- */
-export interface WeaponsThumbnail {
-  id: string;
-  weapon?: (string | null) | Weapon;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  sizes?: {
-    thumb?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    og?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    small?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    medium?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "weapons-groups".
- */
-export interface WeaponsGroup {
-  id: string;
-  slug: string;
-  translations?:
-    | {
-        language: string | Language;
-        name: string;
-        id?: string | null;
-      }[]
-    | null;
-  weapons?: (string | Weapon)[] | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

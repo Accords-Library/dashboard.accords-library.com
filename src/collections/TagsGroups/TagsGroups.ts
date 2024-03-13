@@ -4,7 +4,6 @@ import { iconField } from "../../fields/iconField/iconField";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
-import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 
 const fields = {
   slug: "slug",
@@ -21,7 +20,6 @@ export const TagsGroups: CollectionConfig = buildCollectionConfig({
     useAsTitle: fields.slug,
     defaultColumns: [fields.slug, fields.translations],
   },
-  endpoints: [getAllEndpoint],
   fields: [
     slugField({ name: fields.slug }),
     iconField({ name: fields.icon }),

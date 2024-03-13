@@ -8,7 +8,7 @@ export const validateEventsTranslationsTitle: Validate<
   ChronologyItem["events"][number]["translations"][number],
   unknown
 > = (_, { siblingData: { description, title } }) => {
-  if (isEmpty(description) && isEmpty(title)) {
+  if (!description && isEmpty(title)) {
     return "This field is required if no description is set.";
   }
   return true;
