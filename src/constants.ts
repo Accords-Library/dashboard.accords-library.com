@@ -1,5 +1,6 @@
 import type {
   CueBlock,
+  Image,
   LineBlock,
   SectionBlock,
   SpacerBlock,
@@ -152,6 +153,16 @@ export interface RichTextLinebreakNode extends RichTextNode {
   type: "linebreak";
 }
 
+export interface RichTextUploadNode extends RichTextNode {
+  type: "upload";
+  relationTo: string;
+}
+
+export interface RichTextUploadImageNode extends RichTextUploadNode {
+  relationTo: "images" | "background-images";
+  value: Image;
+}
+
 export interface RichTextTextNode extends RichTextNode {
   type: "text";
   format: number;
@@ -210,6 +221,12 @@ export interface RichTextSpacerBlock extends RichTextBlockNode {
 
 export const isNodeParagraphNode = (node: RichTextNode): node is RichTextParagraphNode =>
   node.type === "paragraph";
+
+export const isNodeUploadNode = (node: RichTextNode): node is RichTextUploadNode =>
+  node.type === "upload";
+
+export const isUploadNodeImageNode = (node: RichTextUploadNode): node is RichTextUploadImageNode =>
+  node.relationTo === "images" || node.relationTo === "background-images";
 
 export const isNodeListNode = (node: RichTextNode): node is RichTextListNode =>
   node.type === "list";
