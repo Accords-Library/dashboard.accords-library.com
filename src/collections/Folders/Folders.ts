@@ -30,6 +30,10 @@ export const Folders = buildCollectionConfig({
   admin: {
     useAsTitle: fields.slug,
     group: CollectionGroups.Collections,
+    defaultColumns: [fields.slug, fields.translations, fields.sections, fields.files, fields.icon],
+    description:
+      "Folders provide a way to structure our content. A folder can contain subfolders and/or files.",
+    preview: ({ slug }) => `https://v3.accords-library.com/en/folders/${slug}`,
   },
   endpoints: [getRootFoldersEndpoint, getBySlugEndpoint],
   fields: [
@@ -41,6 +45,8 @@ export const Folders = buildCollectionConfig({
     translatedFields({
       name: fields.translations,
       admin: { useAsTitle: fields.translationsName },
+      required: true,
+      minRows: 1,
       fields: [
         {
           name: fields.translationsName,
@@ -73,7 +79,7 @@ export const Folders = buildCollectionConfig({
           ],
         }),
         {
-          name: fields.sectionsSubfolders,  
+          name: fields.sectionsSubfolders,
           type: "relationship",
           relationTo: Collections.Folders,
           hasMany: true,

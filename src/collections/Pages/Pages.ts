@@ -51,8 +51,17 @@ export const Pages = buildVersionedCollectionConfig({
   defaultSort: fields.slug,
   admin: {
     useAsTitle: fields.slug,
-    defaultColumns: [fields.thumbnail, fields.slug],
+    defaultColumns: [
+      fields.slug,
+      fields.thumbnail,
+      fields.backgroundImage,
+      fields.type,
+      fields.tags,
+      fields.translations,
+      fields.folders,
+    ],
     group: CollectionGroups.Collections,
+    preview: ({ slug }) => `https://v3.accords-library.com/en/pages/${slug}`,
     components: {
       BeforeListTable: [
         () =>
