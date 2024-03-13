@@ -80,8 +80,8 @@ const injectAuth = async (init?: RequestInit): Promise<RequestInit> => ({
 
 const logResponse = (res: Response) => console.log(res.status, res.statusText, res.url);
 
-const payloadApiUrl = (collection: Collections, endpoint?: string): string =>
-  `${process.env.PAYLOAD_API_URL}/${collection}${endpoint === undefined ? "" : `/${endpoint}`}`;
+const payloadApiUrl = (collection: Collections, endpoint?: string, isGlobal?: boolean): string =>
+  `${process.env.PAYLOAD_API_URL}/${isGlobal === undefined ? "" : "globals/"}${collection}${endpoint === undefined ? "" : `/${endpoint}`}`;
 
 const request = async (url: string, init?: RequestInit): Promise<Response> => {
   const result = await fetch(url, await injectAuth(init));
@@ -329,8 +329,8 @@ export type PayloadImage = {
 export const payload = {
   getEras: async (): Promise<EndpointEra[]> =>
     await (await request(payloadApiUrl(Collections.ChronologyEras, `all`))).json(),
-  getRootFolders: async (): Promise<EndpointFolderPreview[]> =>
-    await (await request(payloadApiUrl(Collections.Folders, `root`))).json(),
+  getHomeFolders: async (): Promise<EndpointHomeFolder[]> =>
+    await (await request(payloadApiUrl(Collections.HomeFolders, `all`, true))).json(),
   getFolder: async (slug: string): Promise<EndpointFolder> =>
     await (await request(payloadApiUrl(Collections.Folders, `slug/${slug}`))).json(),
   getLanguages: async (): Promise<Language[]> =>
