@@ -807,6 +807,16 @@ export interface TranscriptBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BreakBlock".
+ */
+export interface BreakBlock {
+  type: 'Scene break' | 'Empty space' | 'Solid line' | 'Dotted line';
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'breakBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "SectionBlock".
  */
 export interface SectionBlock {

@@ -315,6 +315,8 @@ export type EndpointCollectible = EndpointCollectiblePreview & {
 export type TableOfContentEntry = {
   prefix: string;
   title: string;
+  type: "sceneBreak" | "break" | "section";
+  index: number;
   children: TableOfContentEntry[];
 };
 

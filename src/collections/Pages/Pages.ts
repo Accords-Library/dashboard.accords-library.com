@@ -1,4 +1,5 @@
 import { Where } from "payload/types";
+import { breakBlock } from "../../blocks/breakBlock";
 import { sectionBlock } from "../../blocks/sectionBlock";
 import { transcriptBlock } from "../../blocks/transcriptBlock";
 import { QuickFilters, publishStatusFilters } from "../../components/QuickFilters";
@@ -150,7 +151,7 @@ export const Pages = buildVersionedCollectionConfig({
             images: true,
             inlines: true,
             alignment: true,
-            blocks: [sectionBlock, transcriptBlock],
+            blocks: [sectionBlock, transcriptBlock, breakBlock],
             links: true,
             lists: true,
           }),

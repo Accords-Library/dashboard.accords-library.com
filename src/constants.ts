@@ -1,8 +1,4 @@
-import type {
-  Image,
-  SectionBlock,
-  TranscriptBlock,
-} from "./types/collections";
+import type { BreakBlock, Image, SectionBlock, TranscriptBlock } from "./types/collections";
 
 // END MOCKING SECTION
 
@@ -43,6 +39,13 @@ export enum LanguageCodes {
   es = "Spanish",
   "pt-br" = "Portuguese",
   "zh" = "Chinese",
+}
+
+export enum BreakBlockType {
+  sceneBreak = "Scene break",
+  space = "Empty space",
+  solidLine = "Solid line",
+  dottedLine = "Dotted line",
 }
 
 export enum CollectibleBindingTypes {
@@ -202,6 +205,10 @@ export interface RichTextTranscriptBlock extends RichTextBlockNode {
   fields: TranscriptBlock;
 }
 
+export interface RichTextBreakBlock extends RichTextBlockNode {
+  fields: BreakBlock;
+}
+
 export const isNodeParagraphNode = (node: RichTextNode): node is RichTextParagraphNode =>
   node.type === "paragraph";
 
@@ -251,19 +258,22 @@ export const isBlockNodeTranscriptBlock = (
   node: RichTextBlockNode
 ): node is RichTextTranscriptBlock => node.fields.blockType === "transcriptBlock";
 
+export const isBlockNodeBreakBlock = (node: RichTextBlockNode): node is RichTextBreakBlock =>
+  node.fields.blockType === "breakBlock";
+
 /* BLOCKS */
 
 /* TODO: TO BE REMOVED WHEN https://github.com/payloadcms/payload/issues/5216 is closed */
 export interface CueBlock {
   content: RichTextContent;
-  blockType: 'cueBlock';
+  blockType: "cueBlock";
   id?: string | null;
   blockName?: string | null;
 }
 
 export interface LineBlock {
   content: RichTextContent;
-  blockType: 'lineBlock';
+  blockType: "lineBlock";
   id?: string | null;
   blockName?: string | null;
 }
