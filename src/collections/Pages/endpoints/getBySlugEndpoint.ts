@@ -2,7 +2,9 @@ import {
   BreakBlockType,
   Collections,
   PageType,
+  RichTextBreakBlock,
   RichTextContent,
+  RichTextSectionBlock,
   isBlockNodeBreakBlock,
   isBlockNodeSectionBlock,
   isNodeBlockNode,
@@ -57,22 +59,33 @@ const handleContent = (
   { root: { children, ...others } }: RichTextContent,
   parentPrefix = ""
 ): RichTextContent => {
-  let sectionCount = 0;
+  let index = 0;
   return {
     root: {
       ...others,
       children: children.map((node) => {
-        if (isNodeBlockNode(node) && isBlockNodeSectionBlock(node)) {
-          sectionCount++;
-          const anchorHash = `${parentPrefix}${sectionCount}.`;
-          return {
-            ...node,
-            fields: {
-              ...node.fields,
+        if (isNodeBlockNode(node)) {
+          if (isBlockNodeSectionBlock(node)) {
+            index++;
+            const anchorHash = `${parentPrefix}${index}.`;
+            const newNode: RichTextSectionBlock = {
+              ...node,
+              fields: {
+                ...node.fields,
+                content: handleContent(node.fields.content, anchorHash),
+              },
               anchorHash,
-              content: handleContent(node.fields.content, anchorHash),
-            },
-          };
+            };
+            return newNode;
+          } else if (isBlockNodeBreakBlock(node)) {
+            index++;
+            const anchorHash = `${parentPrefix}${index}.`;
+            const newNode: RichTextBreakBlock = {
+              ...node,
+              anchorHash,
+            };
+            return newNode;
+          }
         }
         return node;
       }),

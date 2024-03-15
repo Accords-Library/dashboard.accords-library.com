@@ -198,7 +198,8 @@ export interface RichTextBlockNode extends RichTextNode {
 }
 
 export interface RichTextSectionBlock extends RichTextBlockNode {
-  fields: SectionBlock & { anchorHash: string };
+  fields: SectionBlock;
+  anchorHash: string;
 }
 
 export interface RichTextTranscriptBlock extends RichTextBlockNode {
@@ -207,6 +208,7 @@ export interface RichTextTranscriptBlock extends RichTextBlockNode {
 
 export interface RichTextBreakBlock extends RichTextBlockNode {
   fields: BreakBlock;
+  anchorHash: string;
 }
 
 export const isNodeParagraphNode = (node: RichTextNode): node is RichTextParagraphNode =>
