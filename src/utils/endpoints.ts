@@ -61,7 +61,6 @@ export const handleParentPages = ({
           language: isPayloadType(language) ? language.id : language,
           name: title, // TODO: Use the entire pretitle + title + subtitle
         })),
-        tag: "collectible",
       });
     });
   }
@@ -76,7 +75,6 @@ export const handleParentPages = ({
             language: isPayloadType(language) ? language.id : language,
             name,
           })) ?? [],
-        tag: "folders",
       });
     });
   }

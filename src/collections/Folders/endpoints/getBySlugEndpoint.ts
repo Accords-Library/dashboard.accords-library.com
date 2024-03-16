@@ -3,6 +3,7 @@ import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointFolder, EndpointFolderPreview } from "../../../sdk";
 import { Folder, Language } from "../../../types/collections";
 import { isDefined, isPayloadType } from "../../../utils/asserts";
+import { handleParentPages } from "../../../utils/endpoints";
 import { convertCollectibleToPreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
 import { convertPageToPreview } from "../../Pages/endpoints/getBySlugEndpoint";
 
@@ -10,20 +11,21 @@ export const getBySlugEndpoint = createGetByEndpoint(
   Collections.Folders,
   "slug",
   (folder: Folder): EndpointFolder => {
+    const { sections, files, parentFolders } = folder;
     return {
       ...convertFolderToPreview(folder),
       sections:
-        folder.sections?.length === 1
+        sections?.length === 1
           ? {
               type: "single",
               subfolders:
-                folder.sections[0]?.subfolders?.filter(isPayloadType).map(convertFolderToPreview) ??
+                sections[0]?.subfolders?.filter(isPayloadType).map(convertFolderToPreview) ??
                 [],
             }
           : {
               type: "multiple",
               sections:
-                folder.sections?.filter(isValidSection).map(({ translations, subfolders }) => ({
+                sections?.filter(isValidSection).map(({ translations, subfolders }) => ({
                   translations: translations.map(({ language, name }) => ({
                     language: getLanguageId(language),
                     name,
@@ -32,7 +34,7 @@ export const getBySlugEndpoint = createGetByEndpoint(
                 })) ?? [],
             },
       files:
-        folder.files?.flatMap<EndpointFolder["files"][number]>(({ relationTo, value }) => {
+        files?.flatMap<EndpointFolder["files"][number]>(({ relationTo, value }) => {
           if (!isPayloadType(value)) {
             return [];
           }
@@ -43,6 +45,7 @@ export const getBySlugEndpoint = createGetByEndpoint(
               return [{ relationTo, value: convertPageToPreview(value) }];
           }
         }) ?? [],
+      parentPages: handleParentPages({ folders: parentFolders }),
     };
   },
   3

@@ -290,6 +290,7 @@ export interface Folder {
   id: string;
   slug: string;
   icon?: string | null;
+  parentFolders?: (string | Folder)[] | null;
   translations: {
     language: string | Language;
     name: string;

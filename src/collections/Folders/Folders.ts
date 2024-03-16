@@ -1,4 +1,5 @@
 import { CollectionGroups, Collections } from "../../constants";
+import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { iconField } from "../../fields/iconField/iconField";
 import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
@@ -19,6 +20,7 @@ const fields = {
   sectionsTranslationsName: "name",
   files: "files",
   icon: "icon",
+  parentFolders: "parentFolders",
 } as const satisfies Record<string, string>;
 
 export const Folders = buildCollectionConfig({
@@ -27,14 +29,23 @@ export const Folders = buildCollectionConfig({
   admin: {
     useAsTitle: fields.slug,
     group: CollectionGroups.Collections,
-    defaultColumns: [fields.slug, fields.translations, fields.sections, fields.files, fields.icon],
+    defaultColumns: [fields.slug, fields.translations, fields.parentFolders, fields.sections, fields.files, fields.icon],
     description:
       "Folders provide a way to structure our content. A folder can contain subfolders and/or files.",
     preview: ({ slug }) => `https://v3.accords-library.com/en/folders/${slug}`,
   },
   endpoints: [getRootFoldersEndpoint, getBySlugEndpoint],
   fields: [
-    rowField([slugField({ name: fields.slug }), iconField({ name: fields.icon })]),
+    rowField([
+      slugField({ name: fields.slug }),
+      iconField({ name: fields.icon }),
+      backPropagationField({
+        name: fields.parentFolders,
+        relationTo: Collections.Folders,
+        hasMany: true,
+        where: ({ id }) => ({ "sections.subfolders": { equals: id } }),
+      }),
+    ]),
     translatedFields({
       name: fields.translations,
       admin: { useAsTitle: fields.translationsName },

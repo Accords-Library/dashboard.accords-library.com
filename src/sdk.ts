@@ -156,6 +156,7 @@ export type EndpointFolder = EndpointFolderPreview & {
         value: EndpointPagePreview;
       }
   )[];
+  parentPages: ParentPage[];
 };
 
 export type EndpointHomeFolder = EndpointFolderPreview & {
@@ -233,7 +234,6 @@ export type ParentPage = {
   slug: string;
   collection: Collections;
   translations: { language: string; name: string }[];
-  tag: string;
 };
 
 export type EndpointCollectiblePreview = {
