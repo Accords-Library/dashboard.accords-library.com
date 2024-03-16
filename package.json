@@ -10,7 +10,7 @@
     "build:server": "tsc",
     "build": "npm run copyfiles && npm run build:payload && npm run build:server",
     "serve": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.config.js NODE_ENV=production node dist/server.js",
-    "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png}\" dist/",
+    "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png}\" dist/ && copyfiles -u 1 \"src/sdk.ts\" dist/ && copyfiles -u 1 \"src/constants.ts\" dist/ && copyfiles -u 1 \"src/types/collections.ts\" dist/",
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
     "generate:graphQLSchema": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:graphQLSchema",
     "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport='src/payload.config.ts;src/sdk.ts;src/types/collections.ts'",
