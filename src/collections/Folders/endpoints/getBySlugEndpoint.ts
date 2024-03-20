@@ -19,8 +19,7 @@ export const getBySlugEndpoint = createGetByEndpoint(
           ? {
               type: "single",
               subfolders:
-                sections[0]?.subfolders?.filter(isPayloadType).map(convertFolderToPreview) ??
-                [],
+                sections[0]?.subfolders?.filter(isPayloadType).map(convertFolderToPreview) ?? [],
             }
           : {
               type: "multiple",

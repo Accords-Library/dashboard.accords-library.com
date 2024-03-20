@@ -5,7 +5,7 @@ export const createGetByEndpoint = <C extends keyof GeneratedTypes["collections"
   collection: C,
   attribute: string,
   handler: (doc: GeneratedTypes["collections"][C]) => Promise<R> | R,
-  depth?: number,
+  depth?: number
 ): CollectionEndpoint => ({
   path: `/${attribute}/:${attribute}`,
   method: "get",

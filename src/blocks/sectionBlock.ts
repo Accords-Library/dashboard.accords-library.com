@@ -26,7 +26,7 @@ const generateRecursiveSectionBlock = (depth = 1, maxDepth = 5): Block => ({
         blocks: [
           ...(depth < maxDepth ? [generateRecursiveSectionBlock(depth + 1, maxDepth)] : []),
           transcriptBlock,
-          breakBlock
+          breakBlock,
         ],
       }),
     },

@@ -14,7 +14,7 @@ export const capitalize = (string: string): string => {
   return [firstLetter.toUpperCase(), ...otherLetters].join("");
 };
 
-export const formatToCamelCase = (name: string): string =>
+const formatToCamelCase = (name: string): string =>
   name
     .toLowerCase()
     .split(/[ \_-]/g)
@@ -23,9 +23,7 @@ export const formatToCamelCase = (name: string): string =>
 
 export const formatToPascalCase = (name: string): string => capitalize(formatToCamelCase(name));
 
-export const plainTextToLexical = (
-  text: string
-): RichTextContent => ({
+export const plainTextToLexical = (text: string): RichTextContent => ({
   root: {
     type: "root",
     format: "",

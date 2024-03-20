@@ -4,10 +4,7 @@ import { Recorder } from "../types/collections";
 import { CollectionEndpoint } from "../types/payload";
 import { isDefined } from "../utils/asserts";
 
-export const getAllStrapiEntries = async (
-  collectionSlug: string,
-  params: Object
-): Promise<any[]> => {
+const getAllStrapiEntries = async (collectionSlug: string, params: Object): Promise<any[]> => {
   let page = 1;
   let totalPage = 1;
   const result: any[] = [];
@@ -39,14 +36,11 @@ type Params<S> = {
     path?: string;
     collection: keyof GeneratedTypes["collections"];
     import?: (strapiObject: S, user: any) => Promise<void>;
-    convert?: (
-      strapiObject: S,
-      user: any
-    ) => any;
+    convert?: (strapiObject: S, user: any) => any;
   };
 };
 
-export const importStrapiEntries = async <S>({
+const importStrapiEntries = async <S>({
   strapi: strapiParams,
   payload: payloadParams,
   user,

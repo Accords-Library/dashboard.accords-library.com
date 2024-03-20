@@ -12,15 +12,6 @@ export const isNotEmpty = (value: string | null | undefined): value is string =>
 export const isEmpty = (value: string | null | undefined): value is string =>
   isUndefined(value) || value.trim().length === 0;
 
-type Span = [number, number];
-const hasNoIntersection = (a: Span, b: Span): boolean => {
-  const [aStart, aEnd] = a;
-  const [bStart, bEnd] = b;
-  return aEnd < bStart || aStart > bEnd;
-};
-
-export const hasIntersection = (a: Span, b: Span): boolean => !hasNoIntersection(a, b);
-
 export const hasDuplicates = <T>(list: T[]): boolean => list.length !== new Set(list).size;
 
 export const isValidPayloadImage = (
@@ -45,9 +36,6 @@ export const isValidPayloadImage = (
   if (isUndefined(image.height)) return false;
   return true;
 };
-
-export const isString = <T extends Object>(value: string | T): value is string =>
-  typeof value === "string";
 
 export const isPayloadType = <T extends Object>(value: string | T): value is T =>
   typeof value === "object";

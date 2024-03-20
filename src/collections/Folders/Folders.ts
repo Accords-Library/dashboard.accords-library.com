@@ -28,7 +28,14 @@ export const Folders = buildCollectionConfig({
   admin: {
     useAsTitle: fields.slug,
     group: CollectionGroups.Collections,
-    defaultColumns: [fields.slug, fields.translations, fields.parentFolders, fields.sections, fields.files, fields.icon],
+    defaultColumns: [
+      fields.slug,
+      fields.translations,
+      fields.parentFolders,
+      fields.sections,
+      fields.files,
+      fields.icon,
+    ],
     description:
       "Folders provide a way to structure our content. A folder can contain subfolders and/or files.",
     preview: ({ slug }) => `https://v3.accords-library.com/en/folders/${slug}`,

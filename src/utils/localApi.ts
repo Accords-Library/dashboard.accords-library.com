@@ -1,17 +1,6 @@
 import payload, { GeneratedTypes } from "payload";
-import { Collections } from "../constants";
 import { StrapiImage } from "../types/strapi";
 import { isDefined } from "./asserts";
-
-export const findRecorder = async (name: string): Promise<string> => {
-  const recorder = await payload.find({
-    collection: Collections.Recorders,
-    where: { username: { equals: name } },
-    depth: 0,
-  });
-  if (!recorder.docs[0]) throw new Error(`Recorder ${name} wasn't found`);
-  return recorder.docs[0].id;
-};
 
 type UploadStrapiImage = {
   image: StrapiImage;
