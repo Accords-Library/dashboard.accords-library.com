@@ -3,8 +3,7 @@ import type { BreakBlock, Image, SectionBlock, TranscriptBlock } from "./types/c
 // END MOCKING SECTION
 
 export enum Collections {
-  ChronologyEras = "chronology-eras",
-  ChronologyItems = "chronology-items",
+  ChronologyEvents = "chronology-events",
   Currencies = "currencies",
   Files = "files",
   Languages = "languages",

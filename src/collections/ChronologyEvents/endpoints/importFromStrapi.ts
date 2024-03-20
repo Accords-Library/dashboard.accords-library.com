@@ -1,7 +1,8 @@
 import { Collections } from "../../../constants";
 import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImportEndpoint";
 import { StrapiLanguage } from "../../../types/strapi";
-import { isUndefined } from "../../../utils/asserts";
+import { isDefined, isUndefined } from "../../../utils/asserts";
+import { plainTextToLexical } from "../../../utils/string";
 
 type StrapiChronologyItem = {
   year: number;
@@ -25,20 +26,25 @@ export const importFromStrapi = createStrapiImportEndpoint<StrapiChronologyItem>
     },
   },
   payload: {
-    collection: Collections.ChronologyItems,
+    collection: Collections.ChronologyEvents,
     convert: ({ year, month, day, events }, user) => ({
       date: { year, month, day },
       events: events.map((event) => ({
         translations: event.translations.map(({ title, description, note, language }) => {
           if (isUndefined(language.data))
             throw new Error("A language is required for a chronology item event translation");
+
+          const newLanguage =
+            language.data.attributes.code === "pt-br" ? "pt" : language.data.attributes.code;
+          const sourceLanguage = language.data.attributes.code === "ja" ? "ja" : "en";
+
           return {
-            title,
-            description,
-            note,
-            language: language.data.attributes.code,
-            sourceLanguage: "en",
-            ...(language.data.attributes.code === "en"
+            ...(isDefined(title) ? { title } : {}),
+            ...(isDefined(note) ? { notes: plainTextToLexical(note) } : {}),
+            ...(isDefined(description) ? { description: plainTextToLexical(description) } : {}),
+            language: newLanguage,
+            sourceLanguage,
+            ...(newLanguage === sourceLanguage
               ? { transcribers: [user.id] }
               : { translators: [user.id] }),
           };

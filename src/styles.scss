@@ -77,7 +77,25 @@ html[data-theme="light"] {
 .blocks-field__block-pill-cueBlock + .section-title,
 .blocks-field__block-pill-pageRange + .section-title,
 .blocks-field__block-pill-timeRange + .section-title,
+.blocks-field__block-pill-urlBlock + .section-title,
+.blocks-field__block-pill-pageBlock + .section-title,
+.blocks-field__block-pill-collectibleBlock + .section-title,
+.blocks-field__block-pill-page + .section-title,
+.blocks-field__block-pill-timestamp + .section-title,
+.blocks-field__block-pill-other + .section-title,
 .blocks-field__block-pill-other + .section-title {
+  display: none;
+}
+
+.collapsible__toggle-wrap:has(
+    .blocks-field__block-pill-collectibleBlock,
+    .blocks-field__block-pill-page,
+    .blocks-field__block-pill-timestamp,
+    .blocks-field__block-pill-other,
+    .blocks-field__block-pill-pageRange,
+    .blocks-field__block-pill-timeRange
+  )
+  .blocks-field__block-number {
   display: none;
 }
 

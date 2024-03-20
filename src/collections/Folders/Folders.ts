@@ -7,7 +7,6 @@ import { translatedFields } from "../../fields/translatedFields/translatedFields
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { createEditor } from "../../utils/editor";
 import { getBySlugEndpoint } from "./endpoints/getBySlugEndpoint";
-import { getRootFoldersEndpoint } from "./endpoints/rootEndpoint";
 
 const fields = {
   slug: "slug",
@@ -34,7 +33,7 @@ export const Folders = buildCollectionConfig({
       "Folders provide a way to structure our content. A folder can contain subfolders and/or files.",
     preview: ({ slug }) => `https://v3.accords-library.com/en/folders/${slug}`,
   },
-  endpoints: [getRootFoldersEndpoint, getBySlugEndpoint],
+  endpoints: [getBySlugEndpoint],
   fields: [
     rowField([
       slugField({ name: fields.slug }),

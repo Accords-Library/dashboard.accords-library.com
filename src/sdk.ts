@@ -320,6 +320,40 @@ export type TableOfContentEntry = {
   children: TableOfContentEntry[];
 };
 
+export type EndpointChronologyEvent = {
+  id: string;
+  date: {
+    year: number;
+    month?: number;
+    day?: number;
+  };
+  events: {
+    sources: EndpointSource[];
+    translations: {
+      language: string;
+      sourceLanguage: string;
+      title?: string;
+      description?: RichTextContent;
+      notes?: RichTextContent;
+      transcribers: EndpointRecorder[];
+      translators: EndpointRecorder[];
+      proofreaders: EndpointRecorder[];
+    }[];
+  }[];
+};
+
+export type EndpointSource =
+  | { type: "url"; url: string; label: string }
+  | {
+      type: "collectible";
+      collectible: EndpointCollectiblePreview;
+      range?:
+        | { type: "page"; page: number }
+        | { type: "timestamp"; timestamp: string }
+        | { type: "custom"; translations: { language: string; note: string }[] };
+    }
+  | { type: "page"; page: EndpointPagePreview };
+
 export type PayloadImage = {
   url: string;
   width: number;
@@ -329,8 +363,6 @@ export type PayloadImage = {
 };
 
 export const payload = {
-  getEras: async (): Promise<EndpointEra[]> =>
-    await (await request(payloadApiUrl(Collections.ChronologyEras, `all`))).json(),
   getHomeFolders: async (): Promise<EndpointHomeFolder[]> =>
     await (await request(payloadApiUrl(Collections.HomeFolders, `all`, true))).json(),
   getFolder: async (slug: string): Promise<EndpointFolder> =>
@@ -347,4 +379,8 @@ export const payload = {
     await (await request(payloadApiUrl(Collections.Pages, `slug/${slug}`))).json(),
   getCollectible: async (slug: string): Promise<EndpointCollectible> =>
     await (await request(payloadApiUrl(Collections.Collectibles, `slug/${slug}`))).json(),
+  getChronologyEvents: async (): Promise<EndpointChronologyEvent[]> =>
+    await (await request(payloadApiUrl(Collections.ChronologyEvents, `all`))).json(),
+  getChronologyEventByID: async (id: string): Promise<EndpointChronologyEvent> =>
+    await (await request(payloadApiUrl(Collections.ChronologyEvents, id))).json(),
 };

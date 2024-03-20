@@ -3,8 +3,7 @@ import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import path from "path";
 import { buildConfig } from "payload/config";
 import { BackgroundImages } from "./collections/BackgroundImages/BackgroundImages";
-import { ChronologyEras } from "./collections/ChronologyEras/ChronologyEras";
-import { ChronologyItems } from "./collections/ChronologyItems/ChronologyItems";
+import { ChronologyEvents } from "./collections/ChronologyEvents/ChronologyEvents";
 import { Collectibles } from "./collections/Collectibles/Collectibles";
 import { Currencies } from "./collections/Currencies/Currencies";
 import { Folders } from "./collections/Folders/Folders";
@@ -44,16 +43,15 @@ export default buildConfig({
     Pages,
     Collectibles,
     Folders,
-    ChronologyItems,
-    ChronologyEras,
+    ChronologyEvents,
     Notes,
-    
+
     Images,
     BackgroundImages,
     RecordersThumbnails,
     Videos,
     VideosChannels,
-    
+
     Tags,
     TagsGroups,
     Recorders,

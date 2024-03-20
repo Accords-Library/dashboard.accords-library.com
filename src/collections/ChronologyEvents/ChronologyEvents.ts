@@ -9,6 +9,11 @@ import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
+import { collectibleBlock } from "./blocks/collectibleBlock";
+import { pageBlock } from "./blocks/contentBlock";
+import { urlBlock } from "./blocks/urlBlock";
+import { getAllEndpoint } from "./endpoints/getAllEndpoint";
+import { getByID } from "./endpoints/getByID";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 import { beforeValidatePopulateNameField } from "./hooks/beforeValidatePopulateNameField";
 import { validateDate } from "./validations/validateDate";
@@ -18,6 +23,7 @@ import { validateEventsTranslationsTitle } from "./validations/validateEventsTra
 const fields = {
   name: "name",
   events: "events",
+  eventsSources: "sources",
   eventsTranslations: "translations",
   eventsTranslationsTitle: "title",
   eventsTranslationsDescription: "description",
@@ -26,15 +32,14 @@ const fields = {
   dateYear: "year",
   dateMonth: "month",
   dateDay: "day",
-  era: "era",
   status: "_status",
 } as const satisfies Record<string, string>;
 
-export const ChronologyItems: CollectionConfig = buildVersionedCollectionConfig({
-  slug: Collections.ChronologyItems,
+export const ChronologyEvents: CollectionConfig = buildVersionedCollectionConfig({
+  slug: Collections.ChronologyEvents,
   labels: {
-    singular: "Chronology Item",
-    plural: "Chronology Items",
+    singular: "Chronology Event",
+    plural: "Chronology Events",
   },
   defaultSort: fields.name,
   admin: {
@@ -45,7 +50,7 @@ export const ChronologyItems: CollectionConfig = buildVersionedCollectionConfig(
       BeforeListTable: [
         () =>
           QuickFilters({
-            slug: Collections.ChronologyItems,
+            slug: Collections.ChronologyEvents,
             filterGroups: [
               languageBasedFilters("events.translations.language"),
               publishStatusFilters,
@@ -54,7 +59,7 @@ export const ChronologyItems: CollectionConfig = buildVersionedCollectionConfig(
       ],
     },
   },
-  endpoints: [importFromStrapi],
+  endpoints: [importFromStrapi, getAllEndpoint, getByID],
   fields: [
     {
       name: fields.name,
@@ -67,6 +72,11 @@ export const ChronologyItems: CollectionConfig = buildVersionedCollectionConfig(
     {
       type: "group",
       name: fields.date,
+      admin: {
+        description:
+          "Make sure there isn't already an entry in the Chronology Events with the same date.\
+      If you try to create another entry with the same date, it will refuse to publish.",
+      },
       validate: validateDate,
       fields: [
         rowField([
@@ -97,6 +107,12 @@ export const ChronologyItems: CollectionConfig = buildVersionedCollectionConfig(
       required: true,
       minRows: 1,
       fields: [
+        {
+          name: fields.eventsSources,
+          type: "blocks",
+          maxRows: 1,
+          blocks: [urlBlock, collectibleBlock, pageBlock],
+        },
         translatedFields({
           name: fields.eventsTranslations,
           required: true,

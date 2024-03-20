@@ -8,7 +8,7 @@ import {
   isPayloadType,
   isValidPayloadImage,
 } from "../../../utils/asserts";
-import { convertTagsToGroups, handleParentPages } from "../../../utils/endpoints";
+import { convertTagsToGroups, getDomainFromUrl, handleParentPages } from "../../../utils/endpoints";
 import { convertPageToPreview } from "../../Pages/endpoints/getBySlugEndpoint";
 
 export const getBySlugEndpoint = createGetByEndpoint(
@@ -41,9 +41,9 @@ export const getBySlugEndpoint = createGetByEndpoint(
       gallery: handleGallery(gallery),
       scans: handleScans(collectible.scans),
       nature: nature === "Physical" ? CollectibleNature.Physical : CollectibleNature.Digital,
-      parentPages: handleParentPages({collectibles: parentItems, folders}),
+      parentPages: handleParentPages({ collectibles: parentItems, folders }),
       subitems: isPayloadArrayType(subitems) ? subitems.map(convertCollectibleToPreview) : [],
-      urls: urls?.map(({ url }) => ({ url, label: getLabelFromUrl(url) })) ?? [],
+      urls: urls?.map(({ url }) => ({ url, label: getDomainFromUrl(url) })) ?? [],
       ...(weightEnabled && weight ? { weight: weight.amount } : {}),
       ...handleSize(size, sizeEnabled),
       ...handlePageInfo(pageInfo, pageInfoEnabled),
@@ -53,7 +53,7 @@ export const getBySlugEndpoint = createGetByEndpoint(
   3
 );
 
-export const handlePrice = (
+const handlePrice = (
   price: Collectible["price"],
   enabled: Collectible["priceEnabled"]
 ): { price: NonNullable<EndpointCollectible["price"]> } | {} => {
@@ -63,7 +63,7 @@ export const handlePrice = (
   };
 };
 
-export const handleSize = (
+const handleSize = (
   size: Collectible["size"],
   enabled: Collectible["sizeEnabled"]
 ): { size: NonNullable<EndpointCollectible["size"]> } | {} => {
@@ -77,7 +77,7 @@ export const handleSize = (
   };
 };
 
-export const handlePageInfo = (
+const handlePageInfo = (
   pageInfo: Collectible["pageInfo"],
   enabled: Collectible["pageInfoEnabled"]
 ): { pageInfo: NonNullable<EndpointCollectible["pageInfo"]> } | {} => {
@@ -91,7 +91,7 @@ export const handlePageInfo = (
   };
 };
 
-export const handleGallery = (gallery: Collectible["gallery"]): EndpointCollectible["gallery"] => {
+const handleGallery = (gallery: Collectible["gallery"]): EndpointCollectible["gallery"] => {
   const result: PayloadImage[] = [];
   if (!gallery) return result;
 
@@ -104,7 +104,7 @@ export const handleGallery = (gallery: Collectible["gallery"]): EndpointCollecti
   return result.slice(0, 10);
 };
 
-export const handleScans = (scans: Collectible["scans"]): EndpointCollectible["scans"] => {
+const handleScans = (scans: Collectible["scans"]): EndpointCollectible["scans"] => {
   const result: PayloadImage[] = [];
   if (!scans) return result;
 
@@ -133,9 +133,7 @@ export const handleScans = (scans: Collectible["scans"]): EndpointCollectible["s
   return result.slice(0, 10);
 };
 
-export const handleContents = (
-  contents: Collectible["contents"]
-): EndpointCollectible["contents"] => {
+const handleContents = (contents: Collectible["contents"]): EndpointCollectible["contents"] => {
   if (!contents) return [];
 
   return contents.flatMap(({ content, range: rangeArray }) => {
@@ -228,13 +226,4 @@ export const convertCollectibleToPreview = ({
         ...(description ? { description } : {}),
       })) ?? [],
   };
-};
-
-const getLabelFromUrl = (url: string): string => {
-  const urlObject = new URL(url);
-  let domain = urlObject.hostname;
-  if (domain.startsWith("www.")) {
-    domain = domain.substring("www.".length);
-  }
-  return domain;
 };

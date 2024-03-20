@@ -100,3 +100,12 @@ export const handleRecorder = ({
   username: anonymize ? `Recorder#${id.substring(0, 5)}` : username,
   ...(isValidPayloadImage(avatar) ? { avatar } : {}),
 });
+
+export const getDomainFromUrl = (url: string): string => {
+  const urlObject = new URL(url);
+  let domain = urlObject.hostname;
+  if (domain.startsWith("www.")) {
+    domain = domain.substring("www.".length);
+  }
+  return domain;
+};

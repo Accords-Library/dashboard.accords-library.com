@@ -1,11 +1,11 @@
 import { FieldHook } from "payload/dist/fields/config/types";
-import { ChronologyItem } from "../../../types/collections";
+import { ChronologyEvent } from "../../../types/collections";
 import { isDefined, isUndefined } from "../../../utils/asserts";
 
 export const beforeValidatePopulateNameField: FieldHook<
-  ChronologyItem,
-  ChronologyItem["name"],
-  ChronologyItem
+  ChronologyEvent,
+  ChronologyEvent["name"],
+  ChronologyEvent
 > = ({ data }) => {
   if (isUndefined(data) || isUndefined(data.date) || isUndefined(data.date.year))
     return "????-??-??";
