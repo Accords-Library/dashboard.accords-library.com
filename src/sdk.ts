@@ -213,7 +213,6 @@ export type EndpointPagePreview = {
     title: string;
     subtitle?: string;
   }[];
-  status: "draft" | "published";
 };
 
 export type EndpointPage = EndpointPagePreview & {
@@ -247,7 +246,6 @@ export type EndpointCollectiblePreview = {
     description?: RichTextContent;
   }[];
   tagGroups: EndpointTagsGroup[];
-  status: "draft" | "published";
   releaseDate?: string;
   languages: string[];
 };

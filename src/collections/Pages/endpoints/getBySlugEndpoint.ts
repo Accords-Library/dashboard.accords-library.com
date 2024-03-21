@@ -15,10 +15,10 @@ import { Page } from "../../../types/collections";
 import { isPayloadArrayType, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
 import { convertTagsToGroups, handleParentPages, handleRecorder } from "../../../utils/endpoints";
 
-export const getBySlugEndpoint = createGetByEndpoint(
-  Collections.Pages,
-  "slug",
-  (page: Page): EndpointPage => {
+export const getBySlugEndpoint = createGetByEndpoint({
+  collection: Collections.Pages,
+  attribute: "slug",
+  handler: (page: Page): EndpointPage => {
     const { translations, collectibles, folders, backgroundImage } = page;
 
     return {
@@ -52,8 +52,8 @@ export const getBySlugEndpoint = createGetByEndpoint(
       ),
       parentPages: handleParentPages({ collectibles, folders }),
     };
-  }
-);
+  },
+});
 
 const handleContent = (
   { root: { children, ...others } }: RichTextContent,
@@ -152,7 +152,6 @@ export const convertPageToPreview = ({
   translations,
   tags,
   thumbnail,
-  _status,
   type,
 }: Page): EndpointPagePreview => ({
   slug,
@@ -166,5 +165,4 @@ export const convertPageToPreview = ({
     ...(subtitle ? { subtitle } : {}),
   })),
   authors: isPayloadArrayType(authors) ? authors.map(handleRecorder) : [],
-  status: _status === "published" ? "published" : "draft",
 });

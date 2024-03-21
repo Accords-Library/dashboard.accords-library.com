@@ -1,7 +1,7 @@
 import { Collections } from "../constants";
 import { EndpointRecorder, EndpointTag, EndpointTagsGroup, ParentPage } from "../sdk";
 import { Collectible, Folder, Recorder, Tag } from "../types/collections";
-import { isPayloadArrayType, isPayloadType, isValidPayloadImage } from "./asserts";
+import { isPayloadArrayType, isPayloadType, isPublished, isValidPayloadImage } from "./asserts";
 
 export const convertTagsToGroups = (
   tags: (string | Tag)[] | null | undefined
@@ -53,7 +53,7 @@ export const handleParentPages = ({
   const result: ParentPage[] = [];
 
   if (collectibles && isPayloadArrayType(collectibles)) {
-    collectibles.forEach(({ slug, translations }) => {
+    collectibles.filter(isPublished).forEach(({ slug, translations }) => {
       result.push({
         collection: Collections.Collectibles,
         slug,

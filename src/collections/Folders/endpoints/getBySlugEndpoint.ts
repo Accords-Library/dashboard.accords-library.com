@@ -2,15 +2,16 @@ import { Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointFolder, EndpointFolderPreview } from "../../../sdk";
 import { Folder, Language } from "../../../types/collections";
-import { isDefined, isPayloadType } from "../../../utils/asserts";
+import { isDefined, isPayloadType, isPublished } from "../../../utils/asserts";
 import { handleParentPages } from "../../../utils/endpoints";
 import { convertCollectibleToPreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
 import { convertPageToPreview } from "../../Pages/endpoints/getBySlugEndpoint";
 
-export const getBySlugEndpoint = createGetByEndpoint(
-  Collections.Folders,
-  "slug",
-  (folder: Folder): EndpointFolder => {
+export const getBySlugEndpoint = createGetByEndpoint({
+  collection: Collections.Folders,
+  attribute: "slug",
+  depth: 3,
+  handler: (folder: Folder): EndpointFolder => {
     const { sections, files, parentFolders } = folder;
     return {
       ...convertFolderToPreview(folder),
@@ -34,9 +35,10 @@ export const getBySlugEndpoint = createGetByEndpoint(
             },
       files:
         files?.flatMap<EndpointFolder["files"][number]>(({ relationTo, value }) => {
-          if (!isPayloadType(value)) {
+          if (!isPayloadType(value) || !isPublished(value)) {
             return [];
           }
+
           switch (relationTo) {
             case "collectibles":
               return [{ relationTo, value: convertCollectibleToPreview(value) }];
@@ -47,8 +49,7 @@ export const getBySlugEndpoint = createGetByEndpoint(
       parentPages: handleParentPages({ folders: parentFolders }),
     };
   },
-  3
-);
+});
 
 export const convertFolderToPreview = ({
   slug,

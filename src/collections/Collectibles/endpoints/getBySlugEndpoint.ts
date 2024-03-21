@@ -1,4 +1,4 @@
-import { CollectibleNature, CollectionStatus, Collections } from "../../../constants";
+import { CollectibleNature, Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointCollectible, EndpointCollectiblePreview, PayloadImage } from "../../../sdk";
 import { Collectible } from "../../../types/collections";
@@ -6,15 +6,17 @@ import {
   isDefined,
   isPayloadArrayType,
   isPayloadType,
+  isPublished,
   isValidPayloadImage,
 } from "../../../utils/asserts";
 import { convertTagsToGroups, getDomainFromUrl, handleParentPages } from "../../../utils/endpoints";
 import { convertPageToPreview } from "../../Pages/endpoints/getBySlugEndpoint";
 
-export const getBySlugEndpoint = createGetByEndpoint(
-  Collections.Collectibles,
-  "slug",
-  (collectible: Collectible): EndpointCollectible => {
+export const getBySlugEndpoint = createGetByEndpoint({
+  collection: Collections.Collectibles,
+  attribute: "slug",
+  depth: 3,
+  handler: (collectible: Collectible): EndpointCollectible => {
     const {
       nature,
       urls,
@@ -42,7 +44,9 @@ export const getBySlugEndpoint = createGetByEndpoint(
       scans: handleScans(collectible.scans),
       nature: nature === "Physical" ? CollectibleNature.Physical : CollectibleNature.Digital,
       parentPages: handleParentPages({ collectibles: parentItems, folders }),
-      subitems: isPayloadArrayType(subitems) ? subitems.map(convertCollectibleToPreview) : [],
+      subitems: isPayloadArrayType(subitems)
+        ? subitems.filter(isPublished).map(convertCollectibleToPreview)
+        : [],
       urls: urls?.map(({ url }) => ({ url, label: getDomainFromUrl(url) })) ?? [],
       ...(weightEnabled && weight ? { weight: weight.amount } : {}),
       ...handleSize(size, sizeEnabled),
@@ -50,8 +54,7 @@ export const getBySlugEndpoint = createGetByEndpoint(
       ...handlePrice(price, priceEnabled),
     };
   },
-  3
-);
+});
 
 const handlePrice = (
   price: Collectible["price"],
@@ -183,7 +186,7 @@ const handleContents = (contents: Collectible["contents"]): EndpointCollectible[
             : undefined;
 
         case "pages":
-          return isPayloadType(content.value)
+          return isPayloadType(content.value) && isPublished(content.value)
             ? { relationTo: "pages", value: convertPageToPreview(content.value) }
             : undefined;
 
@@ -202,7 +205,6 @@ const handleContents = (contents: Collectible["contents"]): EndpointCollectible[
 
 export const convertCollectibleToPreview = ({
   slug,
-  _status,
   thumbnail,
   translations,
   releaseDate,
@@ -213,7 +215,6 @@ export const convertCollectibleToPreview = ({
     slug,
     languages:
       languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
-    status: _status === "draft" ? CollectionStatus.Draft : CollectionStatus.Published,
     ...(releaseDate ? { releaseDate } : {}),
     ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
     tagGroups: convertTagsToGroups(tags),

@@ -43,3 +43,7 @@ export const isPayloadType = <T extends Object>(value: string | T): value is T =
 export const isPayloadArrayType = <T extends Object>(
   value: (string | T)[] | null | undefined
 ): value is T[] => isDefined(value) && value.every(isPayloadType<T>);
+
+export const isPublished = <T extends { _status?: ("draft" | "published") | null }>(
+  object: T
+): boolean => object._status === "published";

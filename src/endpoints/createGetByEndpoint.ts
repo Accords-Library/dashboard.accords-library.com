@@ -1,12 +1,20 @@
 import payload, { GeneratedTypes } from "payload";
 import { CollectionEndpoint } from "../types/payload";
+import { isPublished } from "../utils/asserts";
 
-export const createGetByEndpoint = <C extends keyof GeneratedTypes["collections"], R>(
-  collection: C,
-  attribute: string,
-  handler: (doc: GeneratedTypes["collections"][C]) => Promise<R> | R,
-  depth?: number
-): CollectionEndpoint => ({
+interface Params<C extends keyof GeneratedTypes["collections"], R> {
+  collection: C;
+  attribute: string;
+  handler: (doc: GeneratedTypes["collections"][C]) => Promise<R> | R;
+  depth?: number;
+}
+
+export const createGetByEndpoint = <C extends keyof GeneratedTypes["collections"], R>({
+  attribute,
+  collection,
+  handler,
+  depth,
+}: Params<C, R>): CollectionEndpoint => ({
   path: `/${attribute}/:${attribute}`,
   method: "get",
   handler: async (req, res) => {
@@ -26,10 +34,16 @@ export const createGetByEndpoint = <C extends keyof GeneratedTypes["collections"
       where: { [attribute]: { equals: req.params[attribute] } },
     });
 
-    if (!result.docs[0]) {
+    const doc = result.docs[0];
+
+    if (!doc) {
       return res.sendStatus(404);
     }
 
-    res.status(200).send(await handler(result.docs[0]));
+    if ("_status" in doc && !isPublished(doc)) {
+      return res.sendStatus(404);
+    }
+
+    res.status(200).send(await handler(doc));
   },
 });
