@@ -110,7 +110,6 @@ export const ChronologyEvents: CollectionConfig = buildVersionedCollectionConfig
         {
           name: fields.eventsSources,
           type: "blocks",
-          maxRows: 1,
           blocks: [urlBlock, collectibleBlock, pageBlock],
         },
         translatedFields({

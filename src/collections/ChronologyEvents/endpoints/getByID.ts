@@ -5,7 +5,7 @@ import { eventToEndpointEvent } from "./getAllEndpoint";
 
 export const getByID: CollectionEndpoint = {
   method: "get",
-  path: "/:id",
+  path: "/id/:id",
   handler: async (req, res) => {
     if (!req.user) {
       return res.status(403).send({

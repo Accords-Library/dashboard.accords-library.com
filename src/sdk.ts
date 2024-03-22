@@ -380,5 +380,5 @@ export const payload = {
   getChronologyEvents: async (): Promise<EndpointChronologyEvent[]> =>
     await (await request(payloadApiUrl(Collections.ChronologyEvents, `all`))).json(),
   getChronologyEventByID: async (id: string): Promise<EndpointChronologyEvent> =>
-    await (await request(payloadApiUrl(Collections.ChronologyEvents, id))).json(),
+    await (await request(payloadApiUrl(Collections.ChronologyEvents, `id/${id}`))).json(),
 };
