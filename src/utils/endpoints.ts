@@ -1,5 +1,6 @@
-import { Collections } from "../constants";
-import { EndpointRecorder, EndpointTag, EndpointTagsGroup, ParentPage } from "../sdk";
+import { convertCollectibleToPreview } from "../collections/Collectibles/endpoints/getBySlugEndpoint";
+import { convertFolderToPreview } from "../collections/Folders/endpoints/getBySlugEndpoint";
+import { EndpointRecorder, EndpointSource, EndpointTag, EndpointTagsGroup } from "../sdk";
 import { Collectible, Folder, Recorder, Tag } from "../types/collections";
 import { isPayloadArrayType, isPayloadType, isPublished, isValidPayloadImage } from "./asserts";
 
@@ -49,32 +50,23 @@ export const handleParentPages = ({
 }: {
   collectibles?: (string | Collectible)[] | null | undefined;
   folders?: (string | Folder)[] | null | undefined;
-}): ParentPage[] => {
-  const result: ParentPage[] = [];
+}): EndpointSource[] => {
+  const result: EndpointSource[] = [];
 
   if (collectibles && isPayloadArrayType(collectibles)) {
-    collectibles.filter(isPublished).forEach(({ slug, translations }) => {
+    collectibles.filter(isPublished).forEach((collectible) => {
       result.push({
-        collection: Collections.Collectibles,
-        slug,
-        translations: translations.map(({ language, title }) => ({
-          language: isPayloadType(language) ? language.id : language,
-          name: title, // TODO: Use the entire pretitle + title + subtitle
-        })),
+        type: "collectible",
+        collectible: convertCollectibleToPreview(collectible),
       });
     });
   }
 
   if (folders && isPayloadArrayType(folders)) {
-    folders.forEach(({ slug, translations }) => {
+    folders.forEach((folder) => {
       result.push({
-        collection: Collections.Folders,
-        slug,
-        translations:
-          translations?.map(({ language, name }) => ({
-            language: isPayloadType(language) ? language.id : language,
-            name,
-          })) ?? [],
+        type: "folder",
+        folder: convertFolderToPreview(folder),
       });
     });
   }
