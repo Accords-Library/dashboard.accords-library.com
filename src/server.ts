@@ -67,8 +67,7 @@ const start = async () => {
 
     const removeDeclare = (text: string): string => {
       const lines = text.split("\n");
-      const startDeclareLine =
-        lines.findIndex((line) => line === "declare module 'payload' {") ?? 0;
+      const startDeclareLine = lines.findIndex((line) => line.startsWith("declare module")) ?? 0;
       return lines.slice(0, startDeclareLine).join("\n");
     };
 
