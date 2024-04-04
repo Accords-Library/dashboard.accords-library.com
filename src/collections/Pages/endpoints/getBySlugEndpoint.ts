@@ -12,7 +12,12 @@ import {
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointPage, EndpointPagePreview, TableOfContentEntry } from "../../../sdk";
 import { Page } from "../../../types/collections";
-import { isNotEmpty, isPayloadArrayType, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
+import {
+  isNotEmpty,
+  isPayloadArrayType,
+  isPayloadType,
+  isValidPayloadImage,
+} from "../../../utils/asserts";
 import { convertTagsToGroups, handleParentPages, handleRecorder } from "../../../utils/endpoints";
 
 export const getBySlugEndpoint = createGetByEndpoint({

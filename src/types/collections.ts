@@ -15,6 +15,7 @@ export type RecorderBiographies =
       language: string | Language;
       biography: {
         root: {
+          type: string;
           children: {
             type: string;
             version: number;
@@ -23,7 +24,6 @@ export type RecorderBiographies =
           direction: ("ltr" | "rtl") | null;
           format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
           indent: number;
-          type: string;
           version: number;
         };
         [k: string]: unknown;
@@ -87,6 +87,7 @@ export interface Page {
     subtitle?: string | null;
     summary?: {
       root: {
+        type: string;
         children: {
           type: string;
           version: number;
@@ -95,13 +96,13 @@ export interface Page {
         direction: ("ltr" | "rtl") | null;
         format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
         indent: number;
-        type: string;
         version: number;
       };
       [k: string]: unknown;
     } | null;
     content: {
       root: {
+        type: string;
         children: {
           type: string;
           version: number;
@@ -110,7 +111,6 @@ export interface Page {
         direction: ("ltr" | "rtl") | null;
         format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
         indent: number;
-        type: string;
         version: number;
       };
       [k: string]: unknown;
@@ -295,6 +295,7 @@ export interface Folder {
     name: string;
     description?: {
       root: {
+        type: string;
         children: {
           type: string;
           version: number;
@@ -303,7 +304,6 @@ export interface Folder {
         direction: ("ltr" | "rtl") | null;
         format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
         indent: number;
-        type: string;
         version: number;
       };
       [k: string]: unknown;
@@ -356,6 +356,7 @@ export interface Collectible {
     subtitle?: string | null;
     description?: {
       root: {
+        type: string;
         children: {
           type: string;
           version: number;
@@ -364,7 +365,6 @@ export interface Collectible {
         direction: ("ltr" | "rtl") | null;
         format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
         indent: number;
-        type: string;
         version: number;
       };
       [k: string]: unknown;
@@ -493,6 +493,7 @@ export interface Collectible {
                         language: string | Language;
                         note: {
                           root: {
+                            type: string;
                             children: {
                               type: string;
                               version: number;
@@ -501,7 +502,6 @@ export interface Collectible {
                             direction: ("ltr" | "rtl") | null;
                             format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
                             indent: number;
-                            type: string;
                             version: number;
                           };
                           [k: string]: unknown;
@@ -565,6 +565,7 @@ export interface ChronologyEvent {
       title?: string | null;
       description?: {
         root: {
+          type: string;
           children: {
             type: string;
             version: number;
@@ -573,13 +574,13 @@ export interface ChronologyEvent {
           direction: ("ltr" | "rtl") | null;
           format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
           indent: number;
-          type: string;
           version: number;
         };
         [k: string]: unknown;
       } | null;
       notes?: {
         root: {
+          type: string;
           children: {
             type: string;
             version: number;
@@ -588,7 +589,6 @@ export interface ChronologyEvent {
           direction: ("ltr" | "rtl") | null;
           format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
           indent: number;
-          type: string;
           version: number;
         };
         [k: string]: unknown;
@@ -669,6 +669,7 @@ export interface Note {
   id: string;
   note: {
     root: {
+      type: string;
       children: {
         type: string;
         version: number;
@@ -677,7 +678,6 @@ export interface Note {
       direction: ("ltr" | "rtl") | null;
       format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
-      type: string;
       version: number;
     };
     [k: string]: unknown;
@@ -780,6 +780,7 @@ export interface HomeFolder {
 export interface LineBlock {
   content: {
     root: {
+      type: string;
       children: {
         type: string;
         version: number;
@@ -788,11 +789,12 @@ export interface LineBlock {
       direction: ("ltr" | "rtl") | null;
       format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
-      type: string;
       version: number;
     };
     [k: string]: unknown;
   };
+  id?: string | null;
+  blockName?: string | null;
   blockType: "lineBlock";
 }
 /**
@@ -802,6 +804,7 @@ export interface LineBlock {
 export interface CueBlock {
   content: {
     root: {
+      type: string;
       children: {
         type: string;
         version: number;
@@ -810,11 +813,12 @@ export interface CueBlock {
       direction: ("ltr" | "rtl") | null;
       format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
-      type: string;
       version: number;
     };
     [k: string]: unknown;
   };
+  id?: string | null;
+  blockName?: string | null;
   blockType: "cueBlock";
 }
 /**
@@ -844,6 +848,7 @@ export interface BreakBlock {
 export interface SectionBlock {
   content: {
     root: {
+      type: string;
       children: {
         type: string;
         version: number;
@@ -852,7 +857,6 @@ export interface SectionBlock {
       direction: ("ltr" | "rtl") | null;
       format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
-      type: string;
       version: number;
     };
     [k: string]: unknown;
