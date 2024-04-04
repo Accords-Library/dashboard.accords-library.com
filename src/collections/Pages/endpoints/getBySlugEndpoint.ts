@@ -12,7 +12,7 @@ import {
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointPage, EndpointPagePreview, TableOfContentEntry } from "../../../sdk";
 import { Page } from "../../../types/collections";
-import { isPayloadArrayType, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
+import { isNotEmpty, isPayloadArrayType, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
 import { convertTagsToGroups, handleParentPages, handleRecorder } from "../../../utils/endpoints";
 
 export const getBySlugEndpoint = createGetByEndpoint({
@@ -39,10 +39,10 @@ export const getBySlugEndpoint = createGetByEndpoint({
         }) => ({
           language: isPayloadType(language) ? language.id : language,
           sourceLanguage: isPayloadType(sourceLanguage) ? sourceLanguage.id : sourceLanguage,
-          ...(pretitle ? { pretitle } : {}),
+          ...(isNotEmpty(pretitle) ? { pretitle } : {}),
           title,
-          ...(subtitle ? { subtitle } : {}),
-          ...(summary ? { summary } : {}),
+          ...(isNotEmpty(subtitle) ? { subtitle } : {}),
+          ...(isNotEmpty(summary) ? { summary } : {}),
           content: handleContent(content),
           toc: handleToc(content),
           translators: isPayloadArrayType(translators) ? translators.map(handleRecorder) : [],
@@ -160,9 +160,9 @@ export const convertPageToPreview = ({
   tagGroups: convertTagsToGroups(tags),
   translations: translations.map(({ language, title, pretitle, subtitle }) => ({
     language: isPayloadType(language) ? language.id : language,
-    ...(pretitle ? { pretitle } : {}),
+    ...(isNotEmpty(pretitle) ? { pretitle } : {}),
     title,
-    ...(subtitle ? { subtitle } : {}),
+    ...(isNotEmpty(subtitle) ? { subtitle } : {}),
   })),
   authors: isPayloadArrayType(authors) ? authors.map(handleRecorder) : [],
 });

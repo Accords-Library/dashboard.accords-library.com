@@ -2,7 +2,7 @@ import { Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointFolder, EndpointFolderPreview } from "../../../sdk";
 import { Folder, Language } from "../../../types/collections";
-import { isDefined, isPayloadType, isPublished } from "../../../utils/asserts";
+import { isDefined, isNotEmpty, isPayloadType, isPublished } from "../../../utils/asserts";
 import { handleParentPages } from "../../../utils/endpoints";
 import { convertCollectibleToPreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
 import { convertPageToPreview } from "../../Pages/endpoints/getBySlugEndpoint";
@@ -63,7 +63,7 @@ export const convertFolderToPreview = ({
       translations?.map(({ language, name, description }) => ({
         language: getLanguageId(language),
         name,
-        ...(description ? { description } : {}),
+        ...(isNotEmpty(description) ? { description } : {}),
       })) ?? [],
   };
 };

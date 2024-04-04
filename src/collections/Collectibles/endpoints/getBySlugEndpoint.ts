@@ -4,6 +4,7 @@ import { EndpointCollectible, EndpointCollectiblePreview, PayloadImage } from ".
 import { Collectible } from "../../../types/collections";
 import {
   isDefined,
+  isNotEmpty,
   isPayloadArrayType,
   isPayloadType,
   isPublished,
@@ -48,7 +49,7 @@ export const getBySlugEndpoint = createGetByEndpoint({
         ? subitems.filter(isPublished).map(convertCollectibleToPreview)
         : [],
       urls: urls?.map(({ url }) => ({ url, label: getDomainFromUrl(url) })) ?? [],
-      ...(weightEnabled && weight ? { weight: weight.amount } : {}),
+      ...(weightEnabled && isDefined(weight) ? { weight: weight.amount } : {}),
       ...handleSize(size, sizeEnabled),
       ...handlePageInfo(pageInfo, pageInfoEnabled),
       ...handlePrice(price, priceEnabled),
@@ -215,16 +216,16 @@ export const convertCollectibleToPreview = ({
     slug,
     languages:
       languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
-    ...(releaseDate ? { releaseDate } : {}),
+    ...(isDefined(releaseDate) ? { releaseDate } : {}),
     ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
     tagGroups: convertTagsToGroups(tags),
     translations:
       translations?.map(({ language, title, description, pretitle, subtitle }) => ({
         language: isPayloadType(language) ? language.id : language,
         title,
-        ...(pretitle ? { pretitle } : {}),
-        ...(subtitle ? { subtitle } : {}),
-        ...(description ? { description } : {}),
+        ...(isNotEmpty(pretitle) ? { pretitle } : {}),
+        ...(isNotEmpty(subtitle) ? { subtitle } : {}),
+        ...(isNotEmpty(description) ? { description } : {}),
       })) ?? [],
   };
 };

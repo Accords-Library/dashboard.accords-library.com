@@ -1,3 +1,4 @@
+import { RichTextContent, isNodeParagraphNode } from "../constants";
 import { PayloadImage } from "../sdk";
 
 export const isDefined = <T>(value: T | null | undefined): value is T =>
@@ -6,11 +7,18 @@ export const isDefined = <T>(value: T | null | undefined): value is T =>
 export const isUndefined = <T>(value: T | null | undefined): value is null | undefined =>
   !isDefined(value);
 
-export const isNotEmpty = (value: string | null | undefined): value is string =>
-  isDefined(value) && value.trim().length > 0;
+export const isNotEmpty = (value: string | null | undefined | RichTextContent): value is string =>
+  !isEmpty(value);
 
-export const isEmpty = (value: string | null | undefined): value is string =>
-  isUndefined(value) || value.trim().length === 0;
+export const isEmpty = (value: string | null | undefined | RichTextContent): value is string =>
+  isUndefined(value) ||
+  (typeof value === "string" && isEmptyString(value)) ||
+  (typeof value === "object" && isEmptyRichText(value));
+
+const isEmptyString = (value: string) => value.trim().length === 0;
+const isEmptyRichText = (value: RichTextContent) =>
+  value.root.children.length === 0 ||
+  value.root.children.every((node) => isNodeParagraphNode(node) && node.children.length === 0);
 
 export const hasDuplicates = <T>(list: T[]): boolean => list.length !== new Set(list).size;
 

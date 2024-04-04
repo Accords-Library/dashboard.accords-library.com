@@ -80,8 +80,8 @@ export const eventToEndpointEvent = ({
         language: isPayloadType(language) ? language.id : language,
         sourceLanguage: isPayloadType(sourceLanguage) ? sourceLanguage.id : sourceLanguage,
         ...(isNotEmpty(title) ? { title } : {}),
-        ...(isDefined(description) ? { description } : {}),
-        ...(isDefined(notes) ? { notes } : {}),
+        ...(isNotEmpty(description) ? { description } : {}),
+        ...(isNotEmpty(notes) ? { notes } : {}),
         proofreaders: isPayloadArrayType(proofreaders) ? proofreaders.map(handleRecorder) : [],
         transcribers: isPayloadArrayType(transcribers) ? transcribers.map(handleRecorder) : [],
         translators: isPayloadArrayType(translators) ? translators.map(handleRecorder) : [],
@@ -101,7 +101,7 @@ const handleSources = (sources: ChronologyEvent["events"][number]["sources"]): E
           return {
             type: "collectible",
             collectible: convertCollectibleToPreview(source.collectible),
-            ...(range ? { range } : {}),
+            ...(isDefined(range) ? { range } : {}),
           };
 
         case "pageBlock":

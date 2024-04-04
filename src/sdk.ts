@@ -96,36 +96,6 @@ const request = async (url: string, init?: RequestInit): Promise<Response> => {
 
 // SDK and Types
 
-export type EndpointEra = {
-  slug: string;
-  startingYear: number;
-  endingYear: number;
-  translations: {
-    language: string;
-    title: string;
-    description?: RichTextContent;
-  }[];
-  items: {
-    date: {
-      year: number;
-      month?: number;
-      day?: number;
-    };
-    events: {
-      translations: {
-        language: string;
-        sourceLanguage: string;
-        title?: string;
-        description?: RichTextContent;
-        notes?: RichTextContent;
-        transcribers: EndpointRecorder[];
-        translators: EndpointRecorder[];
-        proofreaders: EndpointRecorder[];
-      }[];
-    }[];
-  }[];
-};
-
 export type EndpointFolderPreview = {
   slug: string;
   icon?: string;
