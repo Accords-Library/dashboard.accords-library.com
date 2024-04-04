@@ -19,6 +19,7 @@ export enum Collections {
   Collectibles = "collectibles",
   GenericContents = "generic-contents",
   HomeFolders = "home-folders",
+  Videos = "videos",
 }
 
 export enum CollectionGroups {

@@ -1,5 +1,6 @@
 import { webpackBundler } from "@payloadcms/bundler-webpack";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
+import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import path from "path";
 import { buildConfig } from "payload/config";
 import { ChronologyEvents } from "./collections/ChronologyEvents/ChronologyEvents";
@@ -15,11 +16,20 @@ import { Pages } from "./collections/Pages/Pages";
 import { Recorders } from "./collections/Recorders/Recorders";
 import { Tags } from "./collections/Tags/Tags";
 import { TagsGroups } from "./collections/TagsGroups/TagsGroups";
+import { Videos } from "./collections/Videos/Videos";
 import { Wordings } from "./collections/Wordings/Wordings";
 import { Icon } from "./components/Icon";
 import { Logo } from "./components/Logo";
 import { Collections } from "./constants";
+import { ftpAdapter } from "./plugins/ftpAdapter";
 import { createEditor } from "./utils/editor";
+
+if (!process.env.PAYLOAD_URI) throw new Error("Missing PAYLOAD_URI in .env");
+if (!process.env.MONGODB_URI) throw new Error("Missing MONGODB_URI in .env");
+if (!process.env.FTP_HOST) throw new Error("Missing FTP_HOST in .env");
+if (!process.env.FTP_USER) throw new Error("Missing FTP_USER in .env");
+if (!process.env.FTP_PASSWORD) throw new Error("Missing FTP_PASSWORD in .env");
+if (!process.env.FTP_BASE_URL) throw new Error("Missing FTP_BASE_URL in .env");
 
 export default buildConfig({
   serverURL: process.env.PAYLOAD_URI,
@@ -43,6 +53,7 @@ export default buildConfig({
     Notes,
 
     Images,
+    Videos,
 
     Tags,
     TagsGroups,
@@ -53,7 +64,7 @@ export default buildConfig({
     GenericContents,
   ],
   db: mongooseAdapter({
-    url: process.env.MONGODB_URI ?? "mongodb://mongo:27017/payload",
+    url: process.env.MONGODB_URI,
   }),
   globals: [HomeFolders],
   telemetry: false,
@@ -63,4 +74,21 @@ export default buildConfig({
   graphQL: {
     disable: true,
   },
+  plugins: [
+    cloudStorage({
+      collections: {
+        [Collections.Videos]: {
+          adapter: ftpAdapter({
+            host: process.env.FTP_HOST,
+            user: process.env.FTP_USER,
+            password: process.env.FTP_PASSWORD,
+            secure: false,
+            endpoint: process.env.FTP_BASE_URL,
+          }),
+          disableLocalStorage: true,
+          disablePayloadAccessControl: true,
+        },
+      },
+    }),
+  ],
 });

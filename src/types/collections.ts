@@ -49,6 +49,7 @@ export interface Config {
     "chronology-events": ChronologyEvent;
     notes: Note;
     images: Image;
+    videos: Video;
     tags: Tag;
     "tags-groups": TagsGroup;
     recorders: Recorder;
@@ -621,6 +622,21 @@ export interface Note {
   };
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos".
+ */
+export interface Video {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
