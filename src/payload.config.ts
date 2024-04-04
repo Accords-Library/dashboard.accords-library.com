@@ -2,7 +2,6 @@ import { webpackBundler } from "@payloadcms/bundler-webpack";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import path from "path";
 import { buildConfig } from "payload/config";
-import { BackgroundImages } from "./collections/BackgroundImages/BackgroundImages";
 import { ChronologyEvents } from "./collections/ChronologyEvents/ChronologyEvents";
 import { Collectibles } from "./collections/Collectibles/Collectibles";
 import { Currencies } from "./collections/Currencies/Currencies";
@@ -14,11 +13,8 @@ import { Languages } from "./collections/Languages/Languages";
 import { Notes } from "./collections/Notes/Notes";
 import { Pages } from "./collections/Pages/Pages";
 import { Recorders } from "./collections/Recorders/Recorders";
-import { RecordersThumbnails } from "./collections/RecordersThumbnails/RecordersThumbnails";
 import { Tags } from "./collections/Tags/Tags";
 import { TagsGroups } from "./collections/TagsGroups/TagsGroups";
-import { Videos } from "./collections/Videos/Videos";
-import { VideosChannels } from "./collections/VideosChannels/VideosChannels";
 import { Wordings } from "./collections/Wordings/Wordings";
 import { Icon } from "./components/Icon";
 import { Logo } from "./components/Logo";
@@ -47,10 +43,6 @@ export default buildConfig({
     Notes,
 
     Images,
-    BackgroundImages,
-    RecordersThumbnails,
-    Videos,
-    VideosChannels,
 
     Tags,
     TagsGroups,

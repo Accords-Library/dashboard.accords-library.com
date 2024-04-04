@@ -49,10 +49,6 @@ export interface Config {
     "chronology-events": ChronologyEvent;
     notes: Note;
     images: Image;
-    "background-images": BackgroundImage;
-    "recorders-thumbnails": RecordersThumbnail;
-    videos: Video;
-    "videos-channels": VideosChannel;
     tags: Tag;
     "tags-groups": TagsGroup;
     recorders: Recorder;
@@ -76,7 +72,7 @@ export interface Page {
   slug: string;
   type: "Content" | "Post" | "Generic";
   thumbnail?: string | Image | null;
-  backgroundImage?: string | BackgroundImage | null;
+  backgroundImage?: string | Image | null;
   tags?: (string | Tag)[] | null;
   authors?: (string | Recorder)[] | null;
   translations: {
@@ -162,31 +158,6 @@ export interface Image {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "background-images".
- */
-export interface BackgroundImage {
-  id: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  sizes?: {
-    thumb?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "tags".
  */
 export interface Tag {
@@ -233,7 +204,7 @@ export interface TagsGroup {
 export interface Recorder {
   id: string;
   username: string;
-  avatar?: string | RecordersThumbnail | null;
+  avatar?: string | Image | null;
   languages?: (string | Language)[] | null;
   biographies?: RecorderBiographies;
   role?: ("Admin" | "Recorder" | "Api")[] | null;
@@ -246,40 +217,6 @@ export interface Recorder {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "recorders-thumbnails".
- */
-export interface RecordersThumbnail {
-  id: string;
-  recorder?: (string | null) | Recorder;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  sizes?: {
-    thumb?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    square?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -371,7 +308,7 @@ export interface Collectible {
     } | null;
     id?: string | null;
   }[];
-  backgroundImage?: string | BackgroundImage | null;
+  backgroundImage?: string | Image | null;
   gallery?:
     | {
         image: string | Image;
@@ -684,32 +621,6 @@ export interface Note {
   };
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "videos".
- */
-export interface Video {
-  id: string;
-  uid: string;
-  gone: boolean;
-  source: "YouTube" | "NicoNico" | "Tumblr";
-  title: string;
-  description?: string | null;
-  likes?: number | null;
-  views?: number | null;
-  publishedDate: string;
-  channel?: (string | null) | VideosChannel;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "videos-channels".
- */
-export interface VideosChannel {
-  id: string;
-  uid: string;
-  title: string;
-  subscribers?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

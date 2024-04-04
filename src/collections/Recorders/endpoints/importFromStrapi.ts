@@ -27,7 +27,7 @@ export const importFromStrapi = createStrapiImportEndpoint<StrapiRecorder>({
     collection: Collections.Recorders,
     import: async ({ username, anonymize, anonymous_code, languages, avatar, bio: bios }, user) => {
       const avatarId = await uploadStrapiImage({
-        collection: Collections.RecordersThumbnails,
+        collection: Collections.Images,
         image: avatar,
       });
 

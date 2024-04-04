@@ -89,7 +89,7 @@ export const Recorders = buildCollectionConfig({
       },
       imageField({
         name: fields.avatar,
-        relationTo: Collections.RecordersThumbnails,
+        relationTo: Collections.Images,
       }),
     ]),
     {

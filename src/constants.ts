@@ -11,9 +11,6 @@ export enum Collections {
   Pages = "pages",
   PagesThumbnails = "pages-thumbnails",
   Recorders = "recorders",
-  RecordersThumbnails = "recorders-thumbnails",
-  VideosChannels = "videos-channels",
-  Videos = "videos",
   Folders = "folders",
   Tags = "tags",
   TagsGroups = "tags-groups",
@@ -21,7 +18,6 @@ export enum Collections {
   Wordings = "wordings",
   Collectibles = "collectibles",
   GenericContents = "generic-contents",
-  BackgroundImages = "background-images",
   HomeFolders = "home-folders",
 }
 
@@ -77,12 +73,6 @@ export enum RecordersRoles {
 export enum CollectionStatus {
   Draft = "draft",
   Published = "published",
-}
-
-export enum VideoSources {
-  YouTube = "YouTube",
-  NicoNico = "NicoNico",
-  Tumblr = "Tumblr",
 }
 
 export enum PageType {
