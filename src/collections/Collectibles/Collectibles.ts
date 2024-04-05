@@ -695,8 +695,10 @@ export const Collectibles = buildVersionedCollectionConfig({
                       labels: { singular: "Other", plural: "Others" },
                       fields: [
                         translatedFields({
-                          admin: { className: "no-label" },
                           name: "translations",
+                          admin: { className: "no-label" },
+                          required: true,
+                          minRows: 1,
                           fields: [
                             {
                               name: "note",

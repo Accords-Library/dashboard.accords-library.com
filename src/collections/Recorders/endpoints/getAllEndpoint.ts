@@ -2,7 +2,7 @@ import payload from "payload";
 import { Collections } from "../../../constants";
 import { EndpointRecorder } from "../../../sdk";
 import { CollectionEndpoint } from "../../../types/payload";
-import { isPayloadArrayType, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
+import { isPayloadArrayType, isValidPayloadImage } from "../../../utils/asserts";
 
 export const getAllEndpoint: CollectionEndpoint = {
   method: "get",
@@ -27,16 +27,11 @@ export const getAllEndpoint: CollectionEndpoint = {
     ).docs;
 
     const result: EndpointRecorder[] = recorders.map(
-      ({ anonymize, id, username, avatar, biographies, languages }) => ({
+      ({ anonymize, id, username, avatar, languages }) => ({
         id,
         username: anonymize ? `Recorder#${id.substring(0, 5)}` : username,
         ...(isValidPayloadImage(avatar) ? { avatar } : {}),
         languages: isPayloadArrayType(languages) ? languages.map(({ id }) => id) : [],
-        biographies:
-          biographies?.map(({ biography, language }) => ({
-            language: isPayloadType(language) ? language.id : language,
-            biography,
-          })) ?? [],
       })
     );
 

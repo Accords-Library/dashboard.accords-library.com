@@ -5,9 +5,7 @@ import { QuickFilters } from "../../components/QuickFilters";
 import { CollectionGroups, Collections, RecordersRoles } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
-import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
-import { createEditor } from "../../utils/editor";
 import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 import { beforeLoginMustHaveAtLeastOneRole } from "./hooks/beforeLoginMustHaveAtLeastOneRole";
@@ -102,23 +100,6 @@ export const Recorders = buildCollectionConfig({
         description: "List of language(s) that this recorder is familiar with",
       },
     },
-    translatedFields({
-      name: fields.biographies,
-      interfaceName: "RecorderBiographies",
-      admin: {
-        // TODO: Reenable when we can use rich text as titles  useAsTitle: fields.biography,
-        description:
-          "A short personal description about you or your involvement with this project or the franchise",
-      },
-      fields: [
-        {
-          name: fields.biography,
-          required: true,
-          type: "richText",
-          editor: createEditor({ inlines: true, lists: true, links: true }),
-        },
-      ],
-    }),
     {
       name: fields.role,
       type: "select",

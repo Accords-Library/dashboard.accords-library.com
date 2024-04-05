@@ -139,10 +139,6 @@ export type EndpointRecorder = {
   username: string;
   avatar?: PayloadImage;
   languages: string[];
-  biographies: {
-    language: string;
-    biography: RichTextContent;
-  }[];
 };
 
 export type EndpointWording = {

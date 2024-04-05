@@ -8,31 +8,6 @@
 
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RecorderBiographies".
- */
-export type RecorderBiographies =
-  | {
-      language: string | Language;
-      biography: {
-        root: {
-          type: string;
-          children: {
-            type: string;
-            version: number;
-            [k: string]: unknown;
-          }[];
-          direction: ("ltr" | "rtl") | null;
-          format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-          indent: number;
-          version: number;
-        };
-        [k: string]: unknown;
-      };
-      id?: string | null;
-    }[]
-  | null;
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "CategoryTranslations".
  */
 export type CategoryTranslations = {
@@ -207,7 +182,6 @@ export interface Recorder {
   username: string;
   avatar?: string | Image | null;
   languages?: (string | Language)[] | null;
-  biographies?: RecorderBiographies;
   role?: ("Admin" | "Recorder" | "Api")[] | null;
   anonymize: boolean;
   email: string;
@@ -426,8 +400,7 @@ export interface Collectible {
                   blockType: "timeRange";
                 }
               | {
-                  translations?:
-                    | {
+                  translations: {
                         language: string | Language;
                         note: {
                           root: {
@@ -445,8 +418,7 @@ export interface Collectible {
                           [k: string]: unknown;
                         };
                         id?: string | null;
-                      }[]
-                    | null;
+                  }[];
                   id?: string | null;
                   blockName?: string | null;
                   blockType: "other";

@@ -76,18 +76,12 @@ export const handleParentPages = ({
 
 export const handleRecorder = ({
   id,
-  biographies,
   languages,
   username,
   avatar,
   anonymize,
 }: Recorder): EndpointRecorder => ({
   id,
-  biographies:
-    biographies?.map(({ biography, language }) => ({
-      biography,
-      language: isPayloadType(language) ? language.id : language,
-    })) ?? [],
   languages: languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
   username: anonymize ? `Recorder#${id.substring(0, 5)}` : username,
   ...(isValidPayloadImage(avatar) ? { avatar } : {}),

@@ -14,6 +14,7 @@ export const slugField = ({ admin, ...otherProps }: Props): TextField => ({
   type: "text",
   required: true,
   unique: true,
+  index: true,
   validate: validateSlug,
   admin: {
     description:
