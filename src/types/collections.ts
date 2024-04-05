@@ -6,16 +6,6 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CategoryTranslations".
- */
-export type CategoryTranslations = {
-  language: string | Language;
-  name: string;
-  id?: string | null;
-}[];
-
 export interface Config {
   collections: {
     pages: Page;
@@ -40,7 +30,7 @@ export interface Config {
     "payload-migrations": PayloadMigration;
   };
   globals: {
-    config: Config1;
+    "website-config": WebsiteConfig;
   };
 }
 /**
@@ -802,7 +792,11 @@ export interface PageBlock {
 export interface Wording {
   id: string;
   name: string;
-  translations: CategoryTranslations;
+  translations: {
+    language: string | Language;
+    name: string;
+    id?: string | null;
+  }[];
   updatedAt: string;
   createdAt: string;
 }
@@ -842,11 +836,11 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "config".
+ * via the `definition` "website-config".
  */
-export interface Config1 {
+export interface WebsiteConfig {
   id: string;
-  folders?:
+  homeFolders?:
     | {
         lightThumbnail?: string | Image | null;
         darkThumbnail?: string | Image | null;
@@ -854,6 +848,17 @@ export interface Config1 {
         id?: string | null;
       }[]
     | null;
+  timeline?: {
+    breaks?: number[] | null;
+    eras?:
+      | {
+          name: string | Wording;
+          startingYear: number;
+          endingYear: number;
+          id?: string | null;
+        }[]
+      | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }

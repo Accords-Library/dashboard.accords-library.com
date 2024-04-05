@@ -16,7 +16,7 @@ export enum Collections {
   Wordings = "wordings",
   Collectibles = "collectibles",
   GenericContents = "generic-contents",
-  HomeFolders = "home-folders",
+  WebsiteConfig = "website-config",
   Videos = "videos",
   VideosSubtitles = "videos-subtitles",
   VideosChannels = "videos-channels",

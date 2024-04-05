@@ -9,7 +9,6 @@ import { Collectibles } from "./collections/Collectibles/Collectibles";
 import { Currencies } from "./collections/Currencies/Currencies";
 import { Folders } from "./collections/Folders/Folders";
 import { GenericContents } from "./collections/GenericContents/GenericContents";
-import { HomeFolders } from "./collections/HomeFolders/HomeFolders";
 import { Images } from "./collections/Images/Images";
 import { Languages } from "./collections/Languages/Languages";
 import { Pages } from "./collections/Pages/Pages";
@@ -21,6 +20,7 @@ import { Videos } from "./collections/Videos/Videos";
 import { VideosChannels } from "./collections/VideosChannels/VideosChannels";
 import { VideosSubtitles } from "./collections/VideosSubtitles/VideosSubtitles";
 import { MediaThumbnails } from "./collections/VideosThumbnails/VideosThumbnails";
+import { WebsiteConfig } from "./collections/WebsiteConfig/WebsiteConfig";
 import { Wordings } from "./collections/Wordings/Wordings";
 import { Icon } from "./components/Icon";
 import { Logo } from "./components/Logo";
@@ -75,7 +75,7 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.MONGODB_URI ?? "",
   }),
-  globals: [HomeFolders],
+  globals: [WebsiteConfig],
   telemetry: false,
   typescript: {
     outputFile: path.resolve(__dirname, "types/collections.ts"),

@@ -129,9 +129,19 @@ export type EndpointFolder = EndpointFolderPreview & {
   parentPages: EndpointSource[];
 };
 
-export type EndpointHomeFolder = EndpointFolderPreview & {
-  lightThumbnail?: PayloadImage;
-  darkThumbnail?: PayloadImage;
+export type EndpointWebsiteConfig = {
+  homeFolders: (EndpointFolderPreview & {
+    lightThumbnail?: PayloadImage;
+    darkThumbnail?: PayloadImage;
+  })[];
+  timeline: {
+    breaks: number[];
+    eras: {
+      startingYear: number;
+      endingYear: number;
+      name: string;
+    }[];
+  };
 };
 
 export type EndpointRecorder = {
@@ -322,8 +332,8 @@ export type PayloadImage = {
 };
 
 export const payload = {
-  getHomeFolders: async (): Promise<EndpointHomeFolder[]> =>
-    await (await request(payloadApiUrl(Collections.HomeFolders, `all`, true))).json(),
+  getConfig: async (): Promise<EndpointWebsiteConfig> =>
+    await (await request(payloadApiUrl(Collections.WebsiteConfig, `config`, true))).json(),
   getFolder: async (slug: string): Promise<EndpointFolder> =>
     await (await request(payloadApiUrl(Collections.Folders, `slug/${slug}`))).json(),
   getLanguages: async (): Promise<Language[]> =>

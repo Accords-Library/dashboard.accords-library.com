@@ -58,7 +58,6 @@ export const Wordings: CollectionConfig = buildCollectionConfig({
       name: fields.translations,
       minRows: 1,
       required: true,
-      interfaceName: "CategoryTranslations",
       admin: {
         useAsTitle: fields.translationsName,
       },
