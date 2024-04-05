@@ -14,6 +14,7 @@ import { Languages } from "./collections/Languages/Languages";
 import { Notes } from "./collections/Notes/Notes";
 import { Pages } from "./collections/Pages/Pages";
 import { Recorders } from "./collections/Recorders/Recorders";
+import { Scans } from "./collections/Scans/Scans";
 import { Tags } from "./collections/Tags/Tags";
 import { TagsGroups } from "./collections/TagsGroups/TagsGroups";
 import { Videos } from "./collections/Videos/Videos";
@@ -51,6 +52,7 @@ export default buildConfig({
     Videos,
     VideosSubtitles,
     VideosChannels,
+    Scans,
 
     Tags,
     TagsGroups,

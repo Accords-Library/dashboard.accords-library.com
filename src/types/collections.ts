@@ -25,6 +25,7 @@ export interface Config {
     notes: Note;
     images: Image;
     videos: Video;
+    scans: Scan;
     tags: Tag;
     "tags-groups": TagsGroup;
     recorders: Recorder;
@@ -297,46 +298,46 @@ export interface Collectible {
     typesetters?: (string | Recorder)[] | null;
     coverEnabled?: boolean | null;
     cover?: {
-      front?: string | Image | null;
-      spine?: string | Image | null;
-      back?: string | Image | null;
-      insideFront?: string | Image | null;
-      insideBack?: string | Image | null;
-      flapFront?: string | Image | null;
-      flapBack?: string | Image | null;
-      insideFlapFront?: string | Image | null;
-      insideFlapBack?: string | Image | null;
+      front?: string | Scan | null;
+      spine?: string | Scan | null;
+      back?: string | Scan | null;
+      insideFront?: string | Scan | null;
+      insideBack?: string | Scan | null;
+      flapFront?: string | Scan | null;
+      flapBack?: string | Scan | null;
+      insideFlapFront?: string | Scan | null;
+      insideFlapBack?: string | Scan | null;
     };
     dustjacketEnabled?: boolean | null;
     dustjacket?: {
-      front?: string | Image | null;
-      spine?: string | Image | null;
-      back?: string | Image | null;
-      insideFront?: string | Image | null;
-      insideSpine?: string | Image | null;
-      insideBack?: string | Image | null;
-      flapFront?: string | Image | null;
-      flapBack?: string | Image | null;
-      insideFlapFront?: string | Image | null;
-      insideFlapBack?: string | Image | null;
+      front?: string | Scan | null;
+      spine?: string | Scan | null;
+      back?: string | Scan | null;
+      insideFront?: string | Scan | null;
+      insideSpine?: string | Scan | null;
+      insideBack?: string | Scan | null;
+      flapFront?: string | Scan | null;
+      flapBack?: string | Scan | null;
+      insideFlapFront?: string | Scan | null;
+      insideFlapBack?: string | Scan | null;
     };
     obiEnabled?: boolean | null;
     obi?: {
-      front?: string | Image | null;
-      spine?: string | Image | null;
-      back?: string | Image | null;
-      insideFront?: string | Image | null;
-      insideSpine?: string | Image | null;
-      insideBack?: string | Image | null;
-      flapFront?: string | Image | null;
-      flapBack?: string | Image | null;
-      insideFlapFront?: string | Image | null;
-      insideFlapBack?: string | Image | null;
+      front?: string | Scan | null;
+      spine?: string | Scan | null;
+      back?: string | Scan | null;
+      insideFront?: string | Scan | null;
+      insideSpine?: string | Scan | null;
+      insideBack?: string | Scan | null;
+      flapFront?: string | Scan | null;
+      flapBack?: string | Scan | null;
+      insideFlapFront?: string | Scan | null;
+      insideFlapBack?: string | Scan | null;
     };
     pages?:
       | {
           page: number;
-          image: string | Image;
+          image: string | Scan;
           id?: string | null;
         }[]
       | null;
@@ -432,6 +433,39 @@ export interface Collectible {
   updatedAt: string;
   createdAt: string;
   _status?: ("draft" | "published") | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "scans".
+ */
+export interface Scan {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  sizes?: {
+    thumb?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

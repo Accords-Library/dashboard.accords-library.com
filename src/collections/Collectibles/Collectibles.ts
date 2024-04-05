@@ -260,43 +260,43 @@ export const Collectibles = buildVersionedCollectionConfig({
                     rowField([
                       imageField({
                         name: fields.scansCoverFront,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansCoverSpine,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansCoverBack,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                     ]),
                     rowField([
                       imageField({
                         name: fields.scansCoverInsideFront,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansCoverInsideBack,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                     ]),
                     rowField([
                       imageField({
                         name: fields.scansCoverFlapFront,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansCoverFlapBack,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansCoverInsideFlapFront,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansCoverInsideFlapBack,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                     ]),
                   ],
@@ -313,47 +313,47 @@ export const Collectibles = buildVersionedCollectionConfig({
                     rowField([
                       imageField({
                         name: fields.scansDustjacketFront,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansDustjacketSpine,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansDustjacketBack,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                     ]),
                     rowField([
                       imageField({
                         name: fields.scansDustjacketInsideFront,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansDustjacketInsideSpine,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansDustjacketInsideBack,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                     ]),
                     rowField([
                       imageField({
                         name: fields.scansDustjacketFlapFront,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansDustjacketFlapBack,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansDustjacketInsideFlapFront,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansDustjacketInsideFlapBack,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                     ]),
                   ],
@@ -370,47 +370,47 @@ export const Collectibles = buildVersionedCollectionConfig({
                     rowField([
                       imageField({
                         name: fields.scansObiFront,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansObiSpine,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansObiBack,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                     ]),
                     rowField([
                       imageField({
                         name: fields.scansObiInsideFront,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansObiInsideSpine,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansObiInsideBack,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                     ]),
                     rowField([
                       imageField({
                         name: fields.scansObiFlapFront,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansObiFlapBack,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansObiInsideFlapFront,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                       imageField({
                         name: fields.scansObiInsideFlapBack,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                       }),
                     ]),
                   ],
@@ -436,7 +436,7 @@ export const Collectibles = buildVersionedCollectionConfig({
                       },
                       imageField({
                         name: fields.scansPagesImage,
-                        relationTo: Collections.Images,
+                        relationTo: Collections.Scans,
                         required: true,
                       }),
                     ]),
