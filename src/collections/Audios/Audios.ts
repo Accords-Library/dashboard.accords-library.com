@@ -1,5 +1,4 @@
 import { CollectionGroups, Collections } from "../../constants";
-import { componentField } from "../../fields/componentField/componentField";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { tagsField } from "../../fields/tagsField/tagsField";
@@ -19,18 +18,11 @@ const fields = {
   thumbnail: "thumbnail",
   duration: "duration",
   tags: "tags",
-  platform: "platform",
-  platformChannel: "channel",
-  platformViews: "views",
-  platformPublishedDate: "publishedDate",
-  platformUrl: "url",
-  platformLikes: "likes",
-  platformDislikes: "dislikes",
 };
 
-export const Videos = buildCollectionConfig({
-  slug: Collections.Videos,
-  labels: { singular: "Video", plural: "Videos" },
+export const Audios = buildCollectionConfig({
+  slug: Collections.Audios,
+  labels: { singular: "Audio", plural: "Audios" },
   defaultSort: fields.updatedAt,
   admin: {
     group: CollectionGroups.Media,
@@ -43,7 +35,7 @@ export const Videos = buildCollectionConfig({
     ],
   },
   upload: {
-    mimeTypes: ["video/*"],
+    mimeTypes: ["audio/*"],
     disableLocalStorage: true,
   },
   fields: [
@@ -52,7 +44,6 @@ export const Videos = buildCollectionConfig({
       imageField({
         name: fields.thumbnail,
         relationTo: Collections.MediaThumbnails,
-        required: true,
       }),
     ]),
     translatedFields({
@@ -76,43 +67,5 @@ export const Videos = buildCollectionConfig({
       ],
     }),
     tagsField({ name: fields.tags }),
-    componentField({
-      name: fields.platform,
-      admin: {
-        description:
-          "If the video comes from a platform (e.g: YouTube, NicoNico, Tumblr...),\
-           add additional informations here.",
-      },
-      fields: [
-        {
-          name: fields.platformChannel,
-          type: "relationship",
-          relationTo: Collections.VideosChannels,
-          required: true,
-        },
-        rowField([
-          { name: fields.platformViews, type: "number", min: 0 },
-          { name: fields.platformLikes, type: "number", min: 0 },
-          { name: fields.platformDislikes, type: "number", min: 0 },
-        ]),
-        {
-          name: fields.platformUrl,
-          type: "text",
-          required: true,
-          admin: {
-            description:
-              "If the video comes from a platform (e.g: YouTube, NicoNico, Tumblr...), paste the URL here.",
-          },
-        },
-        {
-          name: fields.platformPublishedDate,
-          required: true,
-          type: "date",
-          admin: {
-            date: { pickerAppearance: "dayOnly", displayFormat: "yyyy-MM-dd" },
-          },
-        },
-      ],
-    }),
   ],
 });

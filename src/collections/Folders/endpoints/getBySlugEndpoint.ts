@@ -35,7 +35,7 @@ export const getBySlugEndpoint = createGetByEndpoint({
             },
       files:
         files?.flatMap<EndpointFolder["files"][number]>(({ relationTo, value }) => {
-          if (!isPayloadType(value) || !isPublished(value)) {
+          if (!isPayloadType(value) || ("_status" in value && !isPublished(value))) {
             return [];
           }
 
@@ -44,6 +44,13 @@ export const getBySlugEndpoint = createGetByEndpoint({
               return [{ relationTo, value: convertCollectibleToPreview(value) }];
             case "pages":
               return [{ relationTo, value: convertPageToPreview(value) }];
+            // TODO: handle media type files
+            case "images":
+              return [];
+            case "audios":
+              return [];
+            case "videos":
+              return [];
           }
         }) ?? [],
       parentPages: handleParentPages({ folders: parentFolders }),

@@ -1,4 +1,7 @@
 import { Collections } from "../../constants";
+import { tagsField } from "../../fields/tagsField/tagsField";
+import { translatedFields } from "../../fields/translatedFields/translatedFields";
+import { createEditor } from "../../utils/editor";
 import { buildImageCollectionConfig } from "../../utils/imageCollectionConfig";
 
 const fields = {
@@ -7,6 +10,10 @@ const fields = {
   filesize: "filesize",
   posts: "posts",
   updatedAt: "updatedAt",
+  translations: "translations",
+  translationsTitle: "title",
+  translationsDescription: "description",
+  tags: "tags",
 } as const satisfies Record<string, string>;
 
 export const Images = buildImageCollectionConfig({
@@ -29,5 +36,19 @@ export const Images = buildImageCollectionConfig({
       },
     ],
   },
-  fields: [],
+  fields: [
+    translatedFields({
+      name: fields.translations,
+      admin: { useAsTitle: fields.translationsTitle },
+      fields: [
+        { name: fields.translationsTitle, type: "text", required: true },
+        {
+          name: fields.translationsDescription,
+          type: "richText",
+          editor: createEditor({ inlines: true, lists: true, links: true }),
+        },
+      ],
+    }),
+    tagsField({ name: fields.tags }),
+  ],
 });

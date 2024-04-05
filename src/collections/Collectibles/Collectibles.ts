@@ -611,8 +611,12 @@ export const Collectibles = buildVersionedCollectionConfig({
                 {
                   name: fields.contentsContent,
                   type: "relationship",
-                  // TODO: Add audio and video files
-                  relationTo: [Collections.Pages, Collections.GenericContents],
+                  relationTo: [
+                    Collections.Pages,
+                    Collections.GenericContents,
+                    Collections.Audios,
+                    Collections.Videos,
+                  ],
                   admin: {
                     allowCreate: false,
                   },

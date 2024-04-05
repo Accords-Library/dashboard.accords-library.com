@@ -3,11 +3,11 @@ import type { BreakBlock, Image, SectionBlock, TranscriptBlock } from "./types/c
 // END MOCKING SECTION
 
 export enum Collections {
+  Audios = "audios",
   ChronologyEvents = "chronology-events",
   Currencies = "currencies",
   Languages = "languages",
   Pages = "pages",
-  PagesThumbnails = "pages-thumbnails",
   Recorders = "recorders",
   Folders = "folders",
   Tags = "tags",
@@ -18,6 +18,9 @@ export enum Collections {
   GenericContents = "generic-contents",
   HomeFolders = "home-folders",
   Videos = "videos",
+  VideosSubtitles = "videos-subtitles",
+  VideosChannels = "videos-channels",
+  MediaThumbnails = "media-thumbnails",
   Scans = "scans",
 }
 

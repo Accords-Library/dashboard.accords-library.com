@@ -9,16 +9,13 @@ const fields = {
   updatedAt: "updatedAt",
 } as const satisfies Record<string, string>;
 
-export const Scans = buildImageCollectionConfig({
-  slug: Collections.Scans,
+export const MediaThumbnails = buildImageCollectionConfig({
+  slug: Collections.MediaThumbnails,
   labels: {
-    singular: "Scan",
-    plural: "Scans",
+    singular: "Media Thumbnail",
+    plural: "Media Thumbnails",
   },
-  admin: {
-    defaultColumns: [fields.filename, fields.updatedAt],
-    hidden: shownOnlyToAdmin,
-  },
+  admin: { defaultColumns: [fields.filename, fields.updatedAt], hidden: shownOnlyToAdmin },
   upload: {
     imageSizes: [
       {

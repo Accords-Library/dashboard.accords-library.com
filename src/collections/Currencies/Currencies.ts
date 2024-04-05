@@ -1,5 +1,6 @@
 import { text } from "payload/dist/fields/validations";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
+import { shownOnlyToAdmin } from "../../accesses/collections/shownOnlyToAdmin";
 import { CollectionGroups, Collections } from "../../constants";
 import { afterOperationWebhook } from "../../hooks/afterOperationWebhook";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
@@ -23,8 +24,9 @@ export const Currencies = buildCollectionConfig({
     defaultColumns: [fields.id],
     disableDuplicate: true,
     group: CollectionGroups.Meta,
+    hidden: shownOnlyToAdmin,
   },
-  access: { create: mustBeAdmin, update: mustBeAdmin },
+  access: { create: mustBeAdmin, update: mustBeAdmin, delete: mustBeAdmin },
   hooks: {
     afterOperation: [afterOperationWebhook],
   },

@@ -22,9 +22,12 @@ export interface Config {
     collectibles: Collectible;
     folders: Folder;
     "chronology-events": ChronologyEvent;
-    notes: Note;
     images: Image;
+    audios: Audio;
+    "media-thumbnails": MediaThumbnail;
     videos: Video;
+    "videos-subtitles": VideoSubtitle;
+    "videos-channels": VideosChannel;
     scans: Scan;
     tags: Tag;
     "tags-groups": TagsGroup;
@@ -37,7 +40,7 @@ export interface Config {
     "payload-migrations": PayloadMigration;
   };
   globals: {
-    "home-folders": HomeFolder;
+    config: Config1;
   };
 }
 /**
@@ -106,6 +109,29 @@ export interface Page {
  */
 export interface Image {
   id: string;
+  translations?:
+    | {
+        language: string | Language;
+        title: string;
+        description?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ("ltr" | "rtl") | null;
+            format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  tags?: (string | Tag)[] | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -135,6 +161,14 @@ export interface Image {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "languages".
+ */
+export interface Language {
+  id: string;
+  name: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "tags".
  */
 export interface Tag {
@@ -149,14 +183,6 @@ export interface Tag {
   group: string | TagsGroup;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "languages".
- */
-export interface Language {
-  id: string;
-  name: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -245,6 +271,18 @@ export interface Folder {
         | {
             relationTo: "pages";
             value: string | Page;
+          }
+        | {
+            relationTo: "videos";
+            value: string | Video;
+          }
+        | {
+            relationTo: "images";
+            value: string | Image;
+          }
+        | {
+            relationTo: "audios";
+            value: string | Audio;
           }
       )[]
     | null;
@@ -383,6 +421,14 @@ export interface Collectible {
           | {
               relationTo: "generic-contents";
               value: string | GenericContent;
+            }
+          | {
+              relationTo: "audios";
+              value: string | Audio;
+            }
+          | {
+              relationTo: "videos";
+              value: string | Video;
             };
         range?:
           | (
@@ -402,23 +448,23 @@ export interface Collectible {
                 }
               | {
                   translations: {
-                        language: string | Language;
-                        note: {
-                          root: {
-                            type: string;
-                            children: {
-                              type: string;
-                              version: number;
-                              [k: string]: unknown;
-                            }[];
-                            direction: ("ltr" | "rtl") | null;
-                            format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-                            indent: number;
-                            version: number;
-                          };
+                    language: string | Language;
+                    note: {
+                      root: {
+                        type: string;
+                        children: {
+                          type: string;
+                          version: number;
                           [k: string]: unknown;
-                        };
-                        id?: string | null;
+                        }[];
+                        direction: ("ltr" | "rtl") | null;
+                        format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+                        indent: number;
+                        version: number;
+                      };
+                      [k: string]: unknown;
+                    };
+                    id?: string | null;
                   }[];
                   id?: string | null;
                   blockName?: string | null;
@@ -488,6 +534,150 @@ export interface GenericContent {
   }[];
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audios".
+ */
+export interface Audio {
+  id: string;
+  duration: number;
+  thumbnail?: string | MediaThumbnail | null;
+  translations: {
+    language: string | Language;
+    title: string;
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ("ltr" | "rtl") | null;
+        format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    subfile?: string | VideoSubtitle | null;
+    id?: string | null;
+  }[];
+  tags?: (string | Tag)[] | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-thumbnails".
+ */
+export interface MediaThumbnail {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  sizes?: {
+    thumb?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos-subtitles".
+ */
+export interface VideoSubtitle {
+  id: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos".
+ */
+export interface Video {
+  id: string;
+  duration: number;
+  thumbnail: string | MediaThumbnail;
+  translations: {
+    language: string | Language;
+    title: string;
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ("ltr" | "rtl") | null;
+        format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    subfile?: string | VideoSubtitle | null;
+    id?: string | null;
+  }[];
+  tags?: (string | Tag)[] | null;
+  platformEnabled?: boolean | null;
+  platform?: {
+    channel: string | VideosChannel;
+    views?: number | null;
+    likes?: number | null;
+    dislikes?: number | null;
+    url: string;
+    publishedDate: string;
+  };
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos-channels".
+ */
+export interface VideosChannel {
+  id: string;
+  url: string;
+  title: string;
+  subscribers?: number | null;
+  videos?: (string | Video)[] | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -607,45 +797,6 @@ export interface PageBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "notes".
- */
-export interface Note {
-  id: string;
-  note: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "videos".
- */
-export interface Video {
-  id: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "wordings".
  */
 export interface Wording {
@@ -691,9 +842,9 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home-folders".
+ * via the `definition` "config".
  */
-export interface HomeFolder {
+export interface Config1 {
   id: string;
   folders?:
     | {

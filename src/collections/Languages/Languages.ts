@@ -1,6 +1,6 @@
 import { text } from "payload/dist/fields/validations";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
-import { publicAccess } from "../../accesses/publicAccess";
+import { shownOnlyToAdmin } from "../../accesses/collections/shownOnlyToAdmin";
 import { CollectionGroups, Collections } from "../../constants";
 import { afterOperationWebhook } from "../../hooks/afterOperationWebhook";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
@@ -25,8 +25,9 @@ export const Languages = buildCollectionConfig({
     disableDuplicate: true,
     group: CollectionGroups.Meta,
     pagination: { defaultLimit: 100 },
+    hidden: shownOnlyToAdmin,
   },
-  access: { create: mustBeAdmin, update: mustBeAdmin, read: publicAccess },
+  access: { create: mustBeAdmin, update: mustBeAdmin, delete: mustBeAdmin },
   hooks: {
     afterOperation: [afterOperationWebhook],
   },
