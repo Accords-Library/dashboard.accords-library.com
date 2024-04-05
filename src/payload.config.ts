@@ -46,7 +46,6 @@ export default buildConfig({
     Collectibles,
     Folders,
     ChronologyEvents,
-    Notes,
 
     Images,
     Videos,

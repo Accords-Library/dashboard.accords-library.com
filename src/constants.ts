@@ -5,9 +5,7 @@ import type { BreakBlock, Image, SectionBlock, TranscriptBlock } from "./types/c
 export enum Collections {
   ChronologyEvents = "chronology-events",
   Currencies = "currencies",
-  Files = "files",
   Languages = "languages",
-  Notes = "notes",
   Pages = "pages",
   PagesThumbnails = "pages-thumbnails",
   Recorders = "recorders",
