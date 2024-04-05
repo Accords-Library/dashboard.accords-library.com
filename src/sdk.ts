@@ -136,6 +136,7 @@ export type EndpointWebsiteConfig = {
   })[];
   timeline: {
     breaks: number[];
+    eventCount: number;
     eras: {
       startingYear: number;
       endingYear: number;

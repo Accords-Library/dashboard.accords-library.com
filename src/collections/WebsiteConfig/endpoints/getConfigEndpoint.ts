@@ -23,6 +23,24 @@ export const getConfigEndpoint: CollectionEndpoint = {
       slug: Collections.WebsiteConfig,
     });
 
+    const events = (
+      await payload.find({
+        collection: Collections.ChronologyEvents,
+        pagination: false,
+        draft: false,
+        where: {
+          _status: {
+            equals: "published",
+          },
+        },
+      })
+    ).docs;
+
+    let eventCount = 0;
+    events.forEach(({ events }) => {
+      eventCount += events.length;
+    });
+
     const endpointWebsiteConfig: EndpointWebsiteConfig = {
       homeFolders:
         homeFolders?.flatMap(({ folder, darkThumbnail, lightThumbnail }) => {
@@ -35,6 +53,7 @@ export const getConfigEndpoint: CollectionEndpoint = {
         }) ?? [],
       timeline: {
         breaks: timeline?.breaks ?? [],
+        eventCount,
         eras:
           timeline?.eras?.flatMap(({ endingYear, name, startingYear }) => {
             if (!isPayloadType(name)) return [];
