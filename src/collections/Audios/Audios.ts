@@ -14,7 +14,6 @@ const fields = {
   translations: "translations",
   translationsTitle: "title",
   translationsDescription: "description",
-  translationsSubfile: "subfile",
   thumbnail: "thumbnail",
   duration: "duration",
   tags: "tags",
@@ -28,6 +27,7 @@ export const Audios = buildCollectionConfig({
     group: CollectionGroups.Media,
     defaultColumns: [
       fields.filename,
+      fields.thumbnail,
       fields.mimeType,
       fields.filesize,
       fields.translations,
@@ -57,12 +57,6 @@ export const Audios = buildCollectionConfig({
           name: fields.translationsDescription,
           type: "richText",
           editor: createEditor({ inlines: true, lists: true, links: true }),
-        },
-        {
-          name: fields.translationsSubfile,
-          type: "upload",
-          relationTo: Collections.VideosSubtitles,
-          admin: { description: "The subtitle file needs to follow the WebVTT file format (.vtt)" },
         },
       ],
     }),

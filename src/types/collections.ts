@@ -551,7 +551,6 @@ export interface Audio {
       };
       [k: string]: unknown;
     } | null;
-    subfile?: string | VideoSubtitle | null;
     id?: string | null;
   }[];
   tags?: (string | Tag)[] | null;
@@ -599,19 +598,6 @@ export interface MediaThumbnail {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "videos-subtitles".
- */
-export interface VideoSubtitle {
-  id: string;
-  url?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "videos".
  */
 export interface Video {
@@ -651,6 +637,19 @@ export interface Video {
   };
   updatedAt: string;
   createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos-subtitles".
+ */
+export interface VideoSubtitle {
+  id: string;
   url?: string | null;
   filename?: string | null;
   mimeType?: string | null;

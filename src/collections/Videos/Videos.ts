@@ -36,6 +36,7 @@ export const Videos = buildCollectionConfig({
     group: CollectionGroups.Media,
     defaultColumns: [
       fields.filename,
+      fields.thumbnail,
       fields.mimeType,
       fields.filesize,
       fields.translations,

@@ -3,6 +3,7 @@ import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import path from "path";
 import { buildConfig } from "payload/config";
+import { sftpAdapter } from "payloadcms-sftp-storage";
 import { Audios } from "./collections/Audios/Audios";
 import { ChronologyEvents } from "./collections/ChronologyEvents/ChronologyEvents";
 import { Collectibles } from "./collections/Collectibles/Collectibles";
@@ -25,15 +26,16 @@ import { Wordings } from "./collections/Wordings/Wordings";
 import { Icon } from "./components/Icon";
 import { Logo } from "./components/Logo";
 import { Collections } from "./constants";
-import { ftpAdapter } from "./plugins/ftpAdapter";
 import { createEditor } from "./utils/editor";
 
-const configuredFtpAdapter = ftpAdapter({
-  host: process.env.FTP_HOST ?? "",
-  user: process.env.FTP_USER ?? "",
-  password: process.env.FTP_PASSWORD ?? "",
-  secure: false,
-  endpoint: process.env.FTP_BASE_URL ?? "",
+const configuredFtpAdapter = sftpAdapter({
+  connectOptions: {
+    host: process.env.SFTP_HOST,
+    username: process.env.SFTP_USERNAME,
+    privateKey: process.env.SFTP_PRIVATE_KEY,
+  },
+  destinationPathRoot: process.env.SFTP_DESTINATION_PATH_ROOT ?? "",
+  publicEndpoint: process.env.FTP_BASE_URL ?? "",
 });
 
 export default buildConfig({
