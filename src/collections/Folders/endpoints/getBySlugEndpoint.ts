@@ -1,79 +1,95 @@
 import { Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointFolder, EndpointFolderPreview } from "../../../sdk";
+import { EndpointFolder } from "../../../sdk";
 import { Folder, Language } from "../../../types/collections";
-import { isDefined, isNotEmpty, isPayloadType, isPublished } from "../../../utils/asserts";
-import { handleParentPages } from "../../../utils/endpoints";
-import { convertCollectibleToPreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
-import { convertPageToPreview } from "../../Pages/endpoints/getBySlugEndpoint";
+import {
+  isDefined,
+  isNotEmpty,
+  isPayloadType,
+  isPublished,
+  isValidPayloadImage,
+  isValidPayloadMedia,
+} from "../../../utils/asserts";
+import { convertSourceToEndpointSource, getLanguageId } from "../../../utils/endpoints";
+import { convertAudioToEndpointAudio } from "../../Audios/endpoints/getByID";
+import { convertCollectibleToEndpointCollectible } from "../../Collectibles/endpoints/getBySlugEndpoint";
+import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
+import { convertPageToEndpointPage } from "../../Pages/endpoints/getBySlugEndpoint";
+import { convertVideoToEndpointVideo } from "../../Videos/endpoints/getByID";
 
 export const getBySlugEndpoint = createGetByEndpoint({
   collection: Collections.Folders,
   attribute: "slug",
   depth: 3,
-  handler: (folder: Folder): EndpointFolder => {
-    const { sections, files, parentFolders } = folder;
-    return {
-      ...convertFolderToPreview(folder),
-      sections:
-        sections?.length === 1
-          ? {
-              type: "single",
-              subfolders:
-                sections[0]?.subfolders?.filter(isPayloadType).map(convertFolderToPreview) ?? [],
-            }
-          : {
-              type: "multiple",
-              sections:
-                sections?.filter(isValidSection).map(({ translations, subfolders }) => ({
-                  translations: translations.map(({ language, name }) => ({
-                    language: getLanguageId(language),
-                    name,
-                  })),
-                  subfolders: subfolders.map(convertFolderToPreview),
-                })) ?? [],
-            },
-      files:
-        files?.flatMap<EndpointFolder["files"][number]>(({ relationTo, value }) => {
-          if (!isPayloadType(value) || ("_status" in value && !isPublished(value))) {
-            return [];
-          }
-
-          switch (relationTo) {
-            case "collectibles":
-              return [{ relationTo, value: convertCollectibleToPreview(value) }];
-            case "pages":
-              return [{ relationTo, value: convertPageToPreview(value) }];
-            // TODO: handle media type files
-            case "images":
-              return [];
-            case "audios":
-              return [];
-            case "videos":
-              return [];
-          }
-        }) ?? [],
-      parentPages: handleParentPages({ folders: parentFolders }),
-    };
-  },
+  handler: (folder) => convertFolderToEndpointFolder(folder),
 });
 
-export const convertFolderToPreview = ({
+export const convertFolderToEndpointFolder = ({
   slug,
-  translations,
   icon,
-}: Folder): EndpointFolderPreview => {
-  return {
-    slug,
-    ...(isDefined(icon) ? { icon } : {}),
-    translations:
-      translations?.map(({ language, name, description }) => ({
-        language: getLanguageId(language),
-        name,
-        ...(isNotEmpty(description) ? { description } : {}),
-      })) ?? [],
-  };
-};
+  translations,
+  sections,
+  files,
+  parentFolders,
+}: Folder): EndpointFolder => ({
+  slug,
+  ...(isDefined(icon) ? { icon } : {}),
+  translations:
+    translations?.map(({ language, name, description }) => ({
+      language: getLanguageId(language),
+      name,
+      ...(isNotEmpty(description) ? { description } : {}),
+    })) ?? [],
+  sections:
+    sections?.length === 1
+      ? {
+          type: "single",
+          subfolders:
+            sections[0]?.subfolders?.filter(isPayloadType).map(convertFolderToEndpointFolder) ?? [],
+        }
+      : {
+          type: "multiple",
+          sections:
+            sections?.filter(isValidSection).map(({ translations, subfolders }) => ({
+              translations: translations.map(({ language, name }) => ({
+                language: getLanguageId(language),
+                name,
+              })),
+              subfolders: subfolders.map(convertFolderToEndpointFolder),
+            })) ?? [],
+        },
+  files:
+    files?.flatMap<EndpointFolder["files"][number]>(({ relationTo, value }) => {
+      if (!isPayloadType(value) || ("_status" in value && !isPublished(value))) {
+        return [];
+      }
+
+      switch (relationTo) {
+        case Collections.Collectibles:
+          return [
+            {
+              relationTo: Collections.Collectibles,
+              value: convertCollectibleToEndpointCollectible(value),
+            },
+          ];
+        case Collections.Pages:
+          return [{ relationTo: Collections.Pages, value: convertPageToEndpointPage(value) }];
+        // TODO: handle media type files
+        case Collections.Images:
+          if (!isValidPayloadImage(value)) return [];
+          return [{ relationTo: Collections.Images, value: convertImageToEndpointImage(value) }];
+        case Collections.Audios:
+          if (!isValidPayloadMedia(value)) return [];
+          return [{ relationTo: Collections.Audios, value: convertAudioToEndpointAudio(value) }];
+        case Collections.Videos:
+          if (!isValidPayloadMedia(value)) return [];
+          return [{ relationTo: Collections.Videos, value: convertVideoToEndpointVideo(value) }];
+        default:
+          return [];
+      }
+    }) ?? [],
+  parentPages: convertSourceToEndpointSource({ folders: parentFolders }),
+});
 
 const isValidSection = (section: {
   translations?:
@@ -100,6 +116,3 @@ const isValidSection = (section: {
   }
   return section.subfolders.every(isPayloadType);
 };
-
-const getLanguageId = (language: string | Language) =>
-  typeof language === "object" ? language.id : language;

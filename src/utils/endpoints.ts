@@ -1,10 +1,32 @@
-import { convertCollectibleToPreview } from "../collections/Collectibles/endpoints/getBySlugEndpoint";
-import { convertFolderToPreview } from "../collections/Folders/endpoints/getBySlugEndpoint";
-import { EndpointRecorder, EndpointSource, EndpointTag, EndpointTagsGroup } from "../sdk";
-import { Collectible, Folder, Recorder, Tag } from "../types/collections";
-import { isPayloadArrayType, isPayloadType, isPublished, isValidPayloadImage } from "./asserts";
+import { convertAudioToEndpointAudio } from "../collections/Audios/endpoints/getByID";
+import { convertCollectibleToEndpointCollectible } from "../collections/Collectibles/endpoints/getBySlugEndpoint";
+import { convertFolderToEndpointFolder } from "../collections/Folders/endpoints/getBySlugEndpoint";
+import { convertImageToEndpointImage } from "../collections/Images/endpoints/getByID";
+import { convertVideoToEndpointVideo } from "../collections/Videos/endpoints/getByID";
+import {
+  RichTextBreakBlock,
+  RichTextContent,
+  RichTextSectionBlock,
+  RichTextUploadNode,
+  isBlockNodeBreakBlock,
+  isBlockNodeSectionBlock,
+  isNodeBlockNode,
+  isNodeUploadNode,
+  isUploadNodeAudioNode,
+  isUploadNodeImageNode,
+  isUploadNodeVideoNode,
+} from "../constants";
+import { EndpointSource, EndpointTag, EndpointTagsGroup } from "../sdk";
+import { Audio, Collectible, Folder, Image, Language, Tag, Video } from "../types/collections";
+import {
+  isPayloadArrayType,
+  isPayloadType,
+  isPublished,
+  isValidPayloadImage,
+  isValidPayloadMedia,
+} from "./asserts";
 
-export const convertTagsToGroups = (
+export const convertTagsEndpointTagsGroups = (
   tags: (string | Tag)[] | null | undefined
 ): EndpointTagsGroup[] => {
   if (!isPayloadArrayType(tags)) {
@@ -44,7 +66,75 @@ export const convertTagsToGroups = (
   return groups;
 };
 
-export const handleParentPages = ({
+export const convertRTCToEndpointRTC = (
+  { root: { children, ...others } }: RichTextContent,
+  parentPrefix = ""
+): RichTextContent => {
+  let index = 0;
+  return {
+    root: {
+      ...others,
+      children: children.map((node) => {
+        if (isNodeBlockNode(node)) {
+          // Add anchor hash on section block (TOC)
+          if (isBlockNodeSectionBlock(node)) {
+            index++;
+            const anchorHash = `${parentPrefix}${index}.`;
+            const newNode: RichTextSectionBlock = {
+              ...node,
+              fields: {
+                ...node.fields,
+                content: convertRTCToEndpointRTC(node.fields.content, anchorHash),
+              },
+              anchorHash,
+            };
+            return newNode;
+            // Add anchor hash on section block (TOC)
+          } else if (isBlockNodeBreakBlock(node)) {
+            index++;
+            const anchorHash = `${parentPrefix}${index}.`;
+            const newNode: RichTextBreakBlock = {
+              ...node,
+              anchorHash,
+            };
+            return newNode;
+          }
+        } else if (isNodeUploadNode(node)) {
+          const errorUploadNode: RichTextUploadNode = {
+            type: "upload",
+            relationTo: "error",
+            version: 1,
+          };
+          if (isUploadNodeImageNode(node)) {
+            const value = node.value as Image | string;
+            if (!isPayloadType(value) || !isValidPayloadImage(value)) return errorUploadNode;
+            return {
+              ...node,
+              value: convertImageToEndpointImage(value),
+            };
+          } else if (isUploadNodeAudioNode(node)) {
+            const value = node.value as Audio | string;
+            if (!isPayloadType(value) || !isValidPayloadMedia(value)) return errorUploadNode;
+            return {
+              ...node,
+              value: convertAudioToEndpointAudio(value),
+            };
+          } else if (isUploadNodeVideoNode(node)) {
+            const value = node.value as Video | string;
+            if (!isPayloadType(value) || !isValidPayloadMedia(value)) return errorUploadNode;
+            return {
+              ...node,
+              value: convertVideoToEndpointVideo(value),
+            };
+          }
+        }
+        return node;
+      }),
+    },
+  };
+};
+
+export const convertSourceToEndpointSource = ({
   collectibles,
   folders,
 }: {
@@ -57,7 +147,7 @@ export const handleParentPages = ({
     collectibles.filter(isPublished).forEach((collectible) => {
       result.push({
         type: "collectible",
-        collectible: convertCollectibleToPreview(collectible),
+        collectible: convertCollectibleToEndpointCollectible(collectible),
       });
     });
   }
@@ -66,26 +156,13 @@ export const handleParentPages = ({
     folders.forEach((folder) => {
       result.push({
         type: "folder",
-        folder: convertFolderToPreview(folder),
+        folder: convertFolderToEndpointFolder(folder),
       });
     });
   }
 
   return result;
 };
-
-export const handleRecorder = ({
-  id,
-  languages,
-  username,
-  avatar,
-  anonymize,
-}: Recorder): EndpointRecorder => ({
-  id,
-  languages: languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
-  username: anonymize ? `Recorder#${id.substring(0, 5)}` : username,
-  ...(isValidPayloadImage(avatar) ? { avatar } : {}),
-});
 
 export const getDomainFromUrl = (url: string): string => {
   const urlObject = new URL(url);
@@ -95,3 +172,6 @@ export const getDomainFromUrl = (url: string): string => {
   }
   return domain;
 };
+
+export const getLanguageId = (language: string | Language) =>
+  typeof language === "object" ? language.id : language;

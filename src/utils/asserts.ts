@@ -1,5 +1,5 @@
 import { RichTextContent, isNodeParagraphNode } from "../constants";
-import { PayloadImage } from "../sdk";
+import { PayloadImage, PayloadMedia } from "../sdk";
 
 export const isDefined = <T>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined;
@@ -7,10 +7,11 @@ export const isDefined = <T>(value: T | null | undefined): value is T =>
 export const isUndefined = <T>(value: T | null | undefined): value is null | undefined =>
   !isDefined(value);
 
-export const isNotEmpty = (value: string | null | undefined | RichTextContent): value is string =>
-  !isEmpty(value);
+export const isNotEmpty = (
+  value: string | null | undefined | RichTextContent
+): value is string | RichTextContent => !isEmpty(value);
 
-export const isEmpty = (value: string | null | undefined | RichTextContent): value is string =>
+export const isEmpty = (value: string | null | undefined | RichTextContent): boolean =>
   isUndefined(value) ||
   (typeof value === "string" && isEmptyString(value)) ||
   (typeof value === "object" && isEmptyRichText(value));
@@ -26,6 +27,7 @@ export const isValidPayloadImage = (
   image:
     | {
         filename?: string | null;
+        filesize?: number | null;
         mimeType?: string | null;
         width?: number | null;
         height?: number | null;
@@ -42,6 +44,28 @@ export const isValidPayloadImage = (
   if (isEmpty(image.mimeType)) return false;
   if (isUndefined(image.width)) return false;
   if (isUndefined(image.height)) return false;
+  if (isUndefined(image.filesize)) return false;
+  return true;
+};
+
+export const isValidPayloadMedia = (
+  media:
+    | {
+        filename?: string | null;
+        filesize?: number | null;
+        mimeType?: string | null;
+        url?: string | null;
+      }
+    | undefined
+    | null
+    | string
+): media is PayloadMedia => {
+  if (isUndefined(media)) return false;
+  if (typeof media === "string") return false;
+  if (isEmpty(media.filename)) return false;
+  if (isEmpty(media.url)) return false;
+  if (isEmpty(media.mimeType)) return false;
+  if (isUndefined(media.filesize)) return false;
   return true;
 };
 

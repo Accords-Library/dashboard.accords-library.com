@@ -4,9 +4,10 @@ import { EndpointChronologyEvent, EndpointSource } from "../../../sdk";
 import { ChronologyEvent, CollectibleBlock } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isDefined, isNotEmpty, isPayloadArrayType, isPayloadType } from "../../../utils/asserts";
-import { getDomainFromUrl, handleRecorder } from "../../../utils/endpoints";
-import { convertCollectibleToPreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
-import { convertPageToPreview } from "../../Pages/endpoints/getBySlugEndpoint";
+import { getDomainFromUrl } from "../../../utils/endpoints";
+import { convertCollectibleToEndpointCollectible } from "../../Collectibles/endpoints/getBySlugEndpoint";
+import { convertPageToEndpointPage } from "../../Pages/endpoints/getBySlugEndpoint";
+import { convertRecorderToEndpointRecorder } from "../../Recorders/endpoints/getByUsername";
 
 export const getAllEndpoint: CollectionEndpoint = {
   method: "get",
@@ -82,9 +83,15 @@ export const eventToEndpointEvent = ({
         ...(isNotEmpty(title) ? { title } : {}),
         ...(isNotEmpty(description) ? { description } : {}),
         ...(isNotEmpty(notes) ? { notes } : {}),
-        proofreaders: isPayloadArrayType(proofreaders) ? proofreaders.map(handleRecorder) : [],
-        transcribers: isPayloadArrayType(transcribers) ? transcribers.map(handleRecorder) : [],
-        translators: isPayloadArrayType(translators) ? translators.map(handleRecorder) : [],
+        proofreaders: isPayloadArrayType(proofreaders)
+          ? proofreaders.map(convertRecorderToEndpointRecorder)
+          : [],
+        transcribers: isPayloadArrayType(transcribers)
+          ? transcribers.map(convertRecorderToEndpointRecorder)
+          : [],
+        translators: isPayloadArrayType(translators)
+          ? translators.map(convertRecorderToEndpointRecorder)
+          : [],
       })
     ),
     sources: handleSources(sources),
@@ -100,7 +107,7 @@ const handleSources = (sources: ChronologyEvent["events"][number]["sources"]): E
           if (!isPayloadType(source.collectible)) return [];
           return {
             type: "collectible",
-            collectible: convertCollectibleToPreview(source.collectible),
+            collectible: convertCollectibleToEndpointCollectible(source.collectible),
             ...(isDefined(range) ? { range } : {}),
           };
 
@@ -108,7 +115,7 @@ const handleSources = (sources: ChronologyEvent["events"][number]["sources"]): E
           if (!isPayloadType(source.page)) return [];
           return {
             type: "page",
-            page: convertPageToPreview(source.page),
+            page: convertPageToEndpointPage(source.page),
           };
 
         case "urlBlock":

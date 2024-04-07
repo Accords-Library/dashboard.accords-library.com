@@ -29,7 +29,7 @@ export const VideosChannels: CollectionConfig = buildCollectionConfig({
     { name: fields.url, type: "text", required: true, unique: true },
     rowField([
       { name: fields.title, type: "text", required: true },
-      { name: fields.subscribers, type: "number" },
+      { name: fields.subscribers, type: "number", required: true },
     ]),
     backPropagationField({
       name: fields.videos,

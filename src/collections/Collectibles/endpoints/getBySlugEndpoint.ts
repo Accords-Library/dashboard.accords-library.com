@@ -1,6 +1,6 @@
 import { CollectibleNature, Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointCollectible, EndpointCollectiblePreview, PayloadImage } from "../../../sdk";
+import { EndpointCollectible, PayloadImage } from "../../../sdk";
 import { Collectible } from "../../../types/collections";
 import {
   isDefined,
@@ -9,52 +9,76 @@ import {
   isPayloadType,
   isPublished,
   isValidPayloadImage,
+  isValidPayloadMedia,
 } from "../../../utils/asserts";
-import { convertTagsToGroups, getDomainFromUrl, handleParentPages } from "../../../utils/endpoints";
-import { convertPageToPreview } from "../../Pages/endpoints/getBySlugEndpoint";
+import {
+  convertSourceToEndpointSource,
+  convertTagsEndpointTagsGroups,
+  getDomainFromUrl,
+} from "../../../utils/endpoints";
+import { convertAudioToEndpointAudio } from "../../Audios/endpoints/getByID";
+import { convertPageToEndpointPage } from "../../Pages/endpoints/getBySlugEndpoint";
+import { convertVideoToEndpointVideo } from "../../Videos/endpoints/getByID";
 
 export const getBySlugEndpoint = createGetByEndpoint({
   collection: Collections.Collectibles,
   attribute: "slug",
   depth: 3,
-  handler: (collectible: Collectible): EndpointCollectible => {
-    const {
-      nature,
-      urls,
-      subitems,
-      gallery,
-      contents,
-      priceEnabled,
-      price,
-      size,
-      sizeEnabled,
-      weight,
-      weightEnabled,
-      pageInfo,
-      pageInfoEnabled,
-      parentItems,
-      folders,
-      backgroundImage,
-    } = collectible;
+  handler: (collectible) => convertCollectibleToEndpointCollectible(collectible),
+});
 
-    return {
-      ...convertCollectibleToPreview(collectible),
-      ...(isValidPayloadImage(backgroundImage) ? { backgroundImage } : {}),
-      contents: handleContents(contents),
-      gallery: handleGallery(gallery),
-      scans: handleScans(collectible.scans),
-      nature: nature === "Physical" ? CollectibleNature.Physical : CollectibleNature.Digital,
-      parentPages: handleParentPages({ collectibles: parentItems, folders }),
-      subitems: isPayloadArrayType(subitems)
-        ? subitems.filter(isPublished).map(convertCollectibleToPreview)
-        : [],
-      urls: urls?.map(({ url }) => ({ url, label: getDomainFromUrl(url) })) ?? [],
-      ...(weightEnabled && isDefined(weight) ? { weight: weight.amount } : {}),
-      ...handleSize(size, sizeEnabled),
-      ...handlePageInfo(pageInfo, pageInfoEnabled),
-      ...handlePrice(price, priceEnabled),
-    };
-  },
+export const convertCollectibleToEndpointCollectible = ({
+  nature,
+  urls,
+  subitems,
+  gallery,
+  contents,
+  priceEnabled,
+  price,
+  size,
+  sizeEnabled,
+  weight,
+  weightEnabled,
+  pageInfo,
+  pageInfoEnabled,
+  parentItems,
+  folders,
+  backgroundImage,
+  slug,
+  thumbnail,
+  translations,
+  releaseDate,
+  languages,
+  scans,
+  tags,
+}: Collectible): EndpointCollectible => ({
+  slug,
+  languages: languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
+  ...(isDefined(releaseDate) ? { releaseDate } : {}),
+  ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
+  tagGroups: convertTagsEndpointTagsGroups(tags),
+  translations:
+    translations?.map(({ language, title, description, pretitle, subtitle }) => ({
+      language: isPayloadType(language) ? language.id : language,
+      title,
+      ...(isNotEmpty(pretitle) ? { pretitle } : {}),
+      ...(isNotEmpty(subtitle) ? { subtitle } : {}),
+      ...(isNotEmpty(description) ? { description } : {}),
+    })) ?? [],
+  ...(isValidPayloadImage(backgroundImage) ? { backgroundImage } : {}),
+  contents: handleContents(contents),
+  gallery: handleGallery(gallery),
+  scans: handleScans(scans),
+  nature: nature === "Physical" ? CollectibleNature.Physical : CollectibleNature.Digital,
+  parentPages: convertSourceToEndpointSource({ collectibles: parentItems, folders }),
+  subitems: isPayloadArrayType(subitems)
+    ? subitems.filter(isPublished).map(convertCollectibleToEndpointCollectible)
+    : [],
+  urls: urls?.map(({ url }) => ({ url, label: getDomainFromUrl(url) })) ?? [],
+  ...(weightEnabled && isDefined(weight) ? { weight: weight.amount } : {}),
+  ...handleSize(size, sizeEnabled),
+  ...handlePageInfo(pageInfo, pageInfoEnabled),
+  ...handlePrice(price, priceEnabled),
 });
 
 const handlePrice = (
@@ -173,10 +197,10 @@ const handleContents = (contents: Collectible["contents"]): EndpointCollectible[
 
     const handleContent = (): EndpointCollectible["contents"][number]["content"] | undefined => {
       switch (content.relationTo) {
-        case "generic-contents":
+        case Collections.GenericContents:
           return isPayloadType(content.value)
             ? {
-                relationTo: "generic-contents",
+                relationTo: Collections.GenericContents,
                 value: {
                   translations: content.value.translations.map(({ language, name }) => ({
                     language: isPayloadType(language) ? language.id : language,
@@ -186,9 +210,19 @@ const handleContents = (contents: Collectible["contents"]): EndpointCollectible[
               }
             : undefined;
 
-        case "pages":
+        case Collections.Pages:
           return isPayloadType(content.value) && isPublished(content.value)
-            ? { relationTo: "pages", value: convertPageToPreview(content.value) }
+            ? { relationTo: Collections.Pages, value: convertPageToEndpointPage(content.value) }
+            : undefined;
+
+        case Collections.Audios:
+          return isPayloadType(content.value) && isValidPayloadMedia(content.value)
+            ? { relationTo: Collections.Audios, value: convertAudioToEndpointAudio(content.value) }
+            : undefined;
+
+        case Collections.Videos:
+          return isPayloadType(content.value) && isValidPayloadMedia(content.value)
+            ? { relationTo: Collections.Videos, value: convertVideoToEndpointVideo(content.value) }
             : undefined;
 
         default:
@@ -202,30 +236,4 @@ const handleContents = (contents: Collectible["contents"]): EndpointCollectible[
     if (!newContent) return [];
     return [{ content: newContent, range }];
   });
-};
-
-export const convertCollectibleToPreview = ({
-  slug,
-  thumbnail,
-  translations,
-  releaseDate,
-  languages,
-  tags,
-}: Collectible): EndpointCollectiblePreview => {
-  return {
-    slug,
-    languages:
-      languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
-    ...(isDefined(releaseDate) ? { releaseDate } : {}),
-    ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
-    tagGroups: convertTagsToGroups(tags),
-    translations:
-      translations?.map(({ language, title, description, pretitle, subtitle }) => ({
-        language: isPayloadType(language) ? language.id : language,
-        title,
-        ...(isNotEmpty(pretitle) ? { pretitle } : {}),
-        ...(isNotEmpty(subtitle) ? { subtitle } : {}),
-        ...(isNotEmpty(description) ? { description } : {}),
-      })) ?? [],
-  };
 };

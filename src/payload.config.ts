@@ -35,7 +35,7 @@ const configuredFtpAdapter = sftpAdapter({
     privateKey: process.env.SFTP_PRIVATE_KEY,
   },
   destinationPathRoot: process.env.SFTP_DESTINATION_PATH_ROOT ?? "",
-  publicEndpoint: process.env.FTP_BASE_URL ?? "",
+  publicEndpoint: process.env.SFTP_BASE_URL ?? "",
 });
 
 export default buildConfig({

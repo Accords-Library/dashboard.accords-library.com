@@ -6,6 +6,7 @@ import { tagsField } from "../../fields/tagsField/tagsField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { createEditor } from "../../utils/editor";
+import { getByID } from "./endpoints/getByID";
 
 const fields = {
   filename: "filename",
@@ -47,13 +48,13 @@ export const Videos = buildCollectionConfig({
     mimeTypes: ["video/*"],
     disableLocalStorage: true,
   },
+  endpoints: [getByID],
   fields: [
     rowField([
       { name: fields.duration, type: "number", min: 0, required: true },
       imageField({
         name: fields.thumbnail,
         relationTo: Collections.MediaThumbnails,
-        required: true,
       }),
     ]),
     translatedFields({

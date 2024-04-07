@@ -2,15 +2,13 @@ import {
   BreakBlockType,
   Collections,
   PageType,
-  RichTextBreakBlock,
   RichTextContent,
-  RichTextSectionBlock,
   isBlockNodeBreakBlock,
   isBlockNodeSectionBlock,
   isNodeBlockNode,
 } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointPage, EndpointPagePreview, TableOfContentEntry } from "../../../sdk";
+import { EndpointPage, TableOfContentEntry } from "../../../sdk";
 import { Page } from "../../../types/collections";
 import {
   isNotEmpty,
@@ -18,85 +16,70 @@ import {
   isPayloadType,
   isValidPayloadImage,
 } from "../../../utils/asserts";
-import { convertTagsToGroups, handleParentPages, handleRecorder } from "../../../utils/endpoints";
+import {
+  convertRTCToEndpointRTC,
+  convertSourceToEndpointSource,
+  convertTagsEndpointTagsGroups,
+} from "../../../utils/endpoints";
+import { convertRecorderToEndpointRecorder } from "../../Recorders/endpoints/getByUsername";
 
 export const getBySlugEndpoint = createGetByEndpoint({
   collection: Collections.Pages,
   attribute: "slug",
-  handler: (page: Page): EndpointPage => {
-    const { translations, collectibles, folders, backgroundImage } = page;
-
-    return {
-      ...convertPageToPreview(page),
-      ...(isValidPayloadImage(backgroundImage) ? { backgroundImage } : {}),
-      translations: translations.map(
-        ({
-          content,
-          language,
-          sourceLanguage,
-          title,
-          pretitle,
-          subtitle,
-          proofreaders,
-          summary,
-          transcribers,
-          translators,
-        }) => ({
-          language: isPayloadType(language) ? language.id : language,
-          sourceLanguage: isPayloadType(sourceLanguage) ? sourceLanguage.id : sourceLanguage,
-          ...(isNotEmpty(pretitle) ? { pretitle } : {}),
-          title,
-          ...(isNotEmpty(subtitle) ? { subtitle } : {}),
-          ...(isNotEmpty(summary) ? { summary } : {}),
-          content: handleContent(content),
-          toc: handleToc(content),
-          translators: isPayloadArrayType(translators) ? translators.map(handleRecorder) : [],
-          transcribers: isPayloadArrayType(transcribers) ? transcribers.map(handleRecorder) : [],
-          proofreaders: isPayloadArrayType(proofreaders) ? proofreaders.map(handleRecorder) : [],
-        })
-      ),
-      parentPages: handleParentPages({ collectibles, folders }),
-    };
-  },
+  handler: (page) => convertPageToEndpointPage(page),
 });
 
-const handleContent = (
-  { root: { children, ...others } }: RichTextContent,
-  parentPrefix = ""
-): RichTextContent => {
-  let index = 0;
-  return {
-    root: {
-      ...others,
-      children: children.map((node) => {
-        if (isNodeBlockNode(node)) {
-          if (isBlockNodeSectionBlock(node)) {
-            index++;
-            const anchorHash = `${parentPrefix}${index}.`;
-            const newNode: RichTextSectionBlock = {
-              ...node,
-              fields: {
-                ...node.fields,
-                content: handleContent(node.fields.content, anchorHash),
-              },
-              anchorHash,
-            };
-            return newNode;
-          } else if (isBlockNodeBreakBlock(node)) {
-            index++;
-            const anchorHash = `${parentPrefix}${index}.`;
-            const newNode: RichTextBreakBlock = {
-              ...node,
-              anchorHash,
-            };
-            return newNode;
-          }
-        }
-        return node;
-      }),
-    },
-  };
-};
+export const convertPageToEndpointPage = ({
+  translations,
+  collectibles,
+  folders,
+  backgroundImage,
+  authors,
+  slug,
+  tags,
+  thumbnail,
+  type,
+}: Page): EndpointPage => ({
+  slug,
+  type: type as PageType,
+  ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
+  tagGroups: convertTagsEndpointTagsGroups(tags),
+  authors: isPayloadArrayType(authors) ? authors.map(convertRecorderToEndpointRecorder) : [],
+  ...(isValidPayloadImage(backgroundImage) ? { backgroundImage } : {}),
+  translations: translations.map(
+    ({
+      content,
+      language,
+      sourceLanguage,
+      title,
+      pretitle,
+      subtitle,
+      proofreaders,
+      summary,
+      transcribers,
+      translators,
+    }) => ({
+      language: isPayloadType(language) ? language.id : language,
+      sourceLanguage: isPayloadType(sourceLanguage) ? sourceLanguage.id : sourceLanguage,
+      ...(isNotEmpty(pretitle) ? { pretitle } : {}),
+      title,
+      ...(isNotEmpty(subtitle) ? { subtitle } : {}),
+      ...(isNotEmpty(summary) ? { summary } : {}),
+      content: convertRTCToEndpointRTC(content),
+      toc: handleToc(content),
+      translators: isPayloadArrayType(translators)
+        ? translators.map(convertRecorderToEndpointRecorder)
+        : [],
+      transcribers: isPayloadArrayType(transcribers)
+        ? transcribers.map(convertRecorderToEndpointRecorder)
+        : [],
+      proofreaders: isPayloadArrayType(proofreaders)
+        ? proofreaders.map(convertRecorderToEndpointRecorder)
+        : [],
+    })
+  ),
+  parentPages: convertSourceToEndpointSource({ collectibles, folders }),
+});
 
 const handleToc = (content: RichTextContent, parentPrefix = ""): TableOfContentEntry[] => {
   let index = 0;
@@ -150,24 +133,3 @@ const handleToc = (content: RichTextContent, parentPrefix = ""): TableOfContentE
     return [];
   });
 };
-
-export const convertPageToPreview = ({
-  authors,
-  slug,
-  translations,
-  tags,
-  thumbnail,
-  type,
-}: Page): EndpointPagePreview => ({
-  slug,
-  type: type as PageType,
-  ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
-  tagGroups: convertTagsToGroups(tags),
-  translations: translations.map(({ language, title, pretitle, subtitle }) => ({
-    language: isPayloadType(language) ? language.id : language,
-    ...(isNotEmpty(pretitle) ? { pretitle } : {}),
-    title,
-    ...(isNotEmpty(subtitle) ? { subtitle } : {}),
-  })),
-  authors: isPayloadArrayType(authors) ? authors.map(handleRecorder) : [],
-});

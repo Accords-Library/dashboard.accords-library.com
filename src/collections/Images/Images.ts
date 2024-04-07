@@ -3,6 +3,7 @@ import { tagsField } from "../../fields/tagsField/tagsField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { createEditor } from "../../utils/editor";
 import { buildImageCollectionConfig } from "../../utils/imageCollectionConfig";
+import { getByID } from "./endpoints/getByID";
 
 const fields = {
   filename: "filename",
@@ -36,6 +37,7 @@ export const Images = buildImageCollectionConfig({
       },
     ],
   },
+  endpoints: [getByID],
   fields: [
     translatedFields({
       name: fields.translations,

@@ -603,7 +603,7 @@ export interface MediaThumbnail {
 export interface Video {
   id: string;
   duration: number;
-  thumbnail: string | MediaThumbnail;
+  thumbnail?: string | MediaThumbnail | null;
   translations: {
     language: string | Language;
     title: string;
@@ -665,7 +665,7 @@ export interface VideosChannel {
   id: string;
   url: string;
   title: string;
-  subscribers?: number | null;
+  subscribers: number;
   videos?: (string | Video)[] | null;
 }
 /**

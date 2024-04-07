@@ -96,7 +96,7 @@ const request = async (url: string, init?: RequestInit): Promise<Response> => {
 
 // SDK and Types
 
-export type EndpointFolderPreview = {
+export type EndpointFolder = {
   slug: string;
   icon?: string;
   translations: {
@@ -104,33 +104,42 @@ export type EndpointFolderPreview = {
     name: string;
     description?: RichTextContent;
   }[];
-};
-
-export type EndpointFolder = EndpointFolderPreview & {
   sections:
-    | { type: "single"; subfolders: EndpointFolderPreview[] }
+    | { type: "single"; subfolders: EndpointFolder[] }
     | {
         type: "multiple";
         sections: {
           translations: { language: string; name: string }[];
-          subfolders: EndpointFolderPreview[];
+          subfolders: EndpointFolder[];
         }[];
       };
   files: (
     | {
-        relationTo: "collectibles";
-        value: EndpointCollectiblePreview;
+        relationTo: Collections.Collectibles;
+        value: EndpointCollectible;
       }
     | {
-        relationTo: "pages";
-        value: EndpointPagePreview;
+        relationTo: Collections.Pages;
+        value: EndpointPage;
+      }
+    | {
+        relationTo: Collections.Images;
+        value: EndpointImage;
+      }
+    | {
+        relationTo: Collections.Audios;
+        value: EndpointAudio;
+      }
+    | {
+        relationTo: Collections.Videos;
+        value: EndpointVideo;
       }
   )[];
   parentPages: EndpointSource[];
 };
 
 export type EndpointWebsiteConfig = {
-  homeFolders: (EndpointFolderPreview & {
+  homeFolders: (EndpointFolder & {
     lightThumbnail?: PayloadImage;
     darkThumbnail?: PayloadImage;
   })[];
@@ -178,23 +187,18 @@ export type EndpointTagsGroup = {
   tags: EndpointTag[];
 };
 
-export type EndpointPagePreview = {
+export type EndpointPage = {
   slug: string;
   type: PageType;
   thumbnail?: PayloadImage;
   authors: EndpointRecorder[];
   tagGroups: EndpointTagsGroup[];
+  backgroundImage?: PayloadImage;
   translations: {
     language: string;
     pretitle?: string;
     title: string;
     subtitle?: string;
-  }[];
-};
-
-export type EndpointPage = EndpointPagePreview & {
-  backgroundImage?: PayloadImage;
-  translations: (EndpointPagePreview["translations"][number] & {
     sourceLanguage: string;
     summary?: RichTextContent;
     content: RichTextContent;
@@ -202,11 +206,11 @@ export type EndpointPage = EndpointPagePreview & {
     translators: EndpointRecorder[];
     proofreaders: EndpointRecorder[];
     toc: TableOfContentEntry[];
-  })[];
+  }[];
   parentPages: EndpointSource[];
 };
 
-export type EndpointCollectiblePreview = {
+export type EndpointCollectible = {
   slug: string;
   thumbnail?: PayloadImage;
   translations: {
@@ -219,9 +223,6 @@ export type EndpointCollectiblePreview = {
   tagGroups: EndpointTagsGroup[];
   releaseDate?: string;
   languages: string[];
-};
-
-export type EndpointCollectible = EndpointCollectiblePreview & {
   backgroundImage?: PayloadImage;
   nature: CollectibleNature;
   gallery: PayloadImage[];
@@ -242,15 +243,23 @@ export type EndpointCollectible = EndpointCollectiblePreview & {
     bindingType?: CollectibleBindingTypes;
     pageOrder?: CollectiblePageOrders;
   };
-  subitems: EndpointCollectiblePreview[];
+  subitems: EndpointCollectible[];
   contents: {
     content:
       | {
-          relationTo: "pages";
-          value: EndpointPagePreview;
+          relationTo: Collections.Pages;
+          value: EndpointPage;
         }
       | {
-          relationTo: "generic-contents";
+          relationTo: Collections.Audios;
+          value: EndpointAudio;
+        }
+      | {
+          relationTo: Collections.Videos;
+          value: EndpointVideo;
+        }
+      | {
+          relationTo: Collections.GenericContents;
           value: {
             translations: {
               language: string;
@@ -315,21 +324,72 @@ export type EndpointSource =
   | { type: "url"; url: string; label: string }
   | {
       type: "collectible";
-      collectible: EndpointCollectiblePreview;
+      collectible: EndpointCollectible;
       range?:
         | { type: "page"; page: number }
         | { type: "timestamp"; timestamp: string }
         | { type: "custom"; translations: { language: string; note: string }[] };
     }
-  | { type: "page"; page: EndpointPagePreview }
-  | { type: "folder"; folder: EndpointFolderPreview };
+  | { type: "page"; page: EndpointPage }
+  | { type: "folder"; folder: EndpointFolder };
 
-export type PayloadImage = {
+export type EndpointMedia = {
+  id: string;
   url: string;
+  filename: string;
+  mimeType: string;
+  filesize: number;
+  updatedAt: string;
+  createdAt: string;
+  tagGroups: EndpointTagsGroup[];
+  translations: {
+    language: string;
+    title: string;
+    description?: RichTextContent;
+  }[];
+};
+
+export type EndpointImage = EndpointMedia & {
   width: number;
   height: number;
+};
+
+export type EndpointAudio = EndpointMedia & {
+  thumbnail?: PayloadImage;
+  duration: number;
+};
+
+export type EndpointVideo = EndpointMedia & {
+  thumbnail?: PayloadImage;
+  subtitles: {
+    language: string;
+    url: string;
+  }[];
+  platform?: {
+    channel: {
+      url: string;
+      title: string;
+      subscribers: number;
+    };
+    views?: number;
+    likes?: number;
+    dislikes?: number;
+    url: string;
+    publishedDate: string;
+  };
+  duration: number;
+};
+
+export type PayloadMedia = {
+  url: string;
   mimeType: string;
   filename: string;
+  filesize: number;
+};
+
+export type PayloadImage = PayloadMedia & {
+  width: number;
+  height: number;
 };
 
 export const payload = {
@@ -353,4 +413,10 @@ export const payload = {
     await (await request(payloadApiUrl(Collections.ChronologyEvents, `all`))).json(),
   getChronologyEventByID: async (id: string): Promise<EndpointChronologyEvent> =>
     await (await request(payloadApiUrl(Collections.ChronologyEvents, `id/${id}`))).json(),
+  getImageByID: async (id: string): Promise<EndpointImage> =>
+    await (await request(payloadApiUrl(Collections.Images, `id/${id}`))).json(),
+  getAudioByID: async (id: string): Promise<EndpointAudio> =>
+    await (await request(payloadApiUrl(Collections.Audios, `id/${id}`))).json(),
+  getVideoByID: async (id: string): Promise<EndpointVideo> =>
+    await (await request(payloadApiUrl(Collections.Videos, `id/${id}`))).json(),
 };

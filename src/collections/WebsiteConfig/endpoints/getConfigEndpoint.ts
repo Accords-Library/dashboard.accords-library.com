@@ -3,7 +3,7 @@ import { Collections } from "../../../constants";
 import { EndpointWebsiteConfig } from "../../../sdk";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
-import { convertFolderToPreview } from "../../Folders/endpoints/getBySlugEndpoint";
+import { convertFolderToEndpointFolder } from "../../Folders/endpoints/getBySlugEndpoint";
 
 export const getConfigEndpoint: CollectionEndpoint = {
   method: "get",
@@ -46,7 +46,7 @@ export const getConfigEndpoint: CollectionEndpoint = {
         homeFolders?.flatMap(({ folder, darkThumbnail, lightThumbnail }) => {
           if (!isPayloadType(folder)) return [];
           return {
-            ...convertFolderToPreview(folder),
+            ...convertFolderToEndpointFolder(folder),
             ...(isValidPayloadImage(darkThumbnail) ? { darkThumbnail } : {}),
             ...(isValidPayloadImage(lightThumbnail) ? { lightThumbnail } : {}),
           };

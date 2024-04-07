@@ -7,6 +7,7 @@ import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { getAllEndpoint } from "./endpoints/getAllEndpoint";
+import { getByUsernameEndpoint } from "./endpoints/getByUsername";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 import { beforeLoginMustHaveAtLeastOneRole } from "./hooks/beforeLoginMustHaveAtLeastOneRole";
 
@@ -74,7 +75,7 @@ export const Recorders = buildCollectionConfig({
   hooks: {
     beforeLogin: [beforeLoginMustHaveAtLeastOneRole],
   },
-  endpoints: [importFromStrapi, getAllEndpoint],
+  endpoints: [importFromStrapi, getAllEndpoint, getByUsernameEndpoint],
   timestamps: false,
   fields: [
     rowField([
