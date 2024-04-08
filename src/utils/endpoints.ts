@@ -2,6 +2,7 @@ import { convertAudioToEndpointAudio } from "../collections/Audios/endpoints/get
 import { convertCollectibleToEndpointCollectible } from "../collections/Collectibles/endpoints/getBySlugEndpoint";
 import { convertFolderToEndpointFolder } from "../collections/Folders/endpoints/getBySlugEndpoint";
 import { convertImageToEndpointImage } from "../collections/Images/endpoints/getByID";
+import { convertRecorderToEndpointRecorder } from "../collections/Recorders/endpoints/getByUsername";
 import { convertVideoToEndpointVideo } from "../collections/Videos/endpoints/getByID";
 import {
   RichTextBreakBlock,
@@ -16,8 +17,24 @@ import {
   isUploadNodeImageNode,
   isUploadNodeVideoNode,
 } from "../constants";
-import { EndpointSource, EndpointTag, EndpointTagsGroup } from "../sdk";
-import { Audio, Collectible, Folder, Image, Language, Tag, Video } from "../types/collections";
+import {
+  EndpointCredit,
+  EndpointRole,
+  EndpointSource,
+  EndpointTag,
+  EndpointTagsGroup,
+} from "../sdk";
+import {
+  Audio,
+  Collectible,
+  Credits,
+  CreditsRole,
+  Folder,
+  Image,
+  Language,
+  Tag,
+  Video,
+} from "../types/collections";
 import {
   isPayloadArrayType,
   isPayloadType,
@@ -106,21 +123,21 @@ export const convertRTCToEndpointRTC = (
             version: 1,
           };
           if (isUploadNodeImageNode(node)) {
-            const value = node.value as Image | string;
+            const value = node.value as unknown as Image | string;
             if (!isPayloadType(value) || !isValidPayloadImage(value)) return errorUploadNode;
             return {
               ...node,
               value: convertImageToEndpointImage(value),
             };
           } else if (isUploadNodeAudioNode(node)) {
-            const value = node.value as Audio | string;
+            const value = node.value as unknown as Audio | string;
             if (!isPayloadType(value) || !isValidPayloadMedia(value)) return errorUploadNode;
             return {
               ...node,
               value: convertAudioToEndpointAudio(value),
             };
           } else if (isUploadNodeVideoNode(node)) {
-            const value = node.value as Video | string;
+            const value = node.value as unknown as Video | string;
             if (!isPayloadType(value) || !isValidPayloadMedia(value)) return errorUploadNode;
             return {
               ...node,
@@ -175,3 +192,22 @@ export const getDomainFromUrl = (url: string): string => {
 
 export const getLanguageId = (language: string | Language) =>
   typeof language === "object" ? language.id : language;
+
+const convertRoleToEndpointRole = ({ icon, translations }: CreditsRole): EndpointRole => ({
+  icon: icon ?? "material-symbols:person",
+  translations: translations.map(({ language, name }) => ({
+    language: getLanguageId(language),
+    name,
+  })),
+});
+
+export const convertCreditsToEndpointCredits = (credits?: Credits | null): EndpointCredit[] =>
+  credits?.flatMap<EndpointCredit>(({ recorders, role }) => {
+    if (!isPayloadArrayType(recorders) || !isPayloadType(role)) return [];
+    return [
+      {
+        role: convertRoleToEndpointRole(role),
+        recorders: recorders.map(convertRecorderToEndpointRecorder),
+      },
+    ];
+  }) ?? [];

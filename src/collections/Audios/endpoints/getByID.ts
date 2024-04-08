@@ -5,6 +5,7 @@ import { Audio } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isNotEmpty, isValidPayloadImage, isValidPayloadMedia } from "../../../utils/asserts";
 import {
+  convertCreditsToEndpointCredits,
   convertRTCToEndpointRTC,
   convertTagsEndpointTagsGroups,
   getLanguageId,
@@ -57,6 +58,7 @@ export const convertAudioToEndpointAudio = ({
   duration,
   id,
   thumbnail,
+  credits,
 }: Audio & PayloadMedia): EndpointAudio => ({
   url,
   tagGroups: convertTagsEndpointTagsGroups(tags),
@@ -74,4 +76,5 @@ export const convertAudioToEndpointAudio = ({
     })) ?? [],
   duration,
   ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
+  credits: convertCreditsToEndpointCredits(credits),
 });

@@ -13,6 +13,7 @@ import {
   isValidPayloadMedia,
 } from "../../../utils/asserts";
 import {
+  convertCreditsToEndpointCredits,
   convertRTCToEndpointRTC,
   convertTagsEndpointTagsGroups,
   getLanguageId,
@@ -67,6 +68,7 @@ export const convertVideoToEndpointVideo = ({
   thumbnail,
   platform,
   platformEnabled,
+  credits,
 }: Video & PayloadMedia): EndpointVideo => ({
   url,
   tagGroups: convertTagsEndpointTagsGroups(tags),
@@ -105,4 +107,5 @@ export const convertVideoToEndpointVideo = ({
         return [];
       return { language: getLanguageId(language), url: subfile.url };
     }) ?? [],
+  credits: convertCreditsToEndpointCredits(credits),
 });

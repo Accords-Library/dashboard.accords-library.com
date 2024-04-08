@@ -5,6 +5,7 @@ import { Image } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isNotEmpty, isValidPayloadImage } from "../../../utils/asserts";
 import {
+  convertCreditsToEndpointCredits,
   convertRTCToEndpointRTC,
   convertTagsEndpointTagsGroups,
   getLanguageId,
@@ -57,6 +58,7 @@ export const convertImageToEndpointImage = ({
   filename,
   filesize,
   id,
+  credits,
 }: Image & PayloadImage): EndpointImage => ({
   url,
   width,
@@ -74,4 +76,5 @@ export const convertImageToEndpointImage = ({
       title,
       ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
     })) ?? [],
+  credits: convertCreditsToEndpointCredits(credits),
 });

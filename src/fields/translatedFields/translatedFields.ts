@@ -19,7 +19,6 @@ type LocalizedFieldsProps = Omit<ArrayField, "type" | "admin"> & {
   admin?: ArrayField["admin"] & {
     useAsTitle?: string;
     hasSourceLanguage?: boolean;
-    hasCredits?: boolean;
   };
 };
 type ArrayData = { [fieldsNames.language]?: string }[] | number | undefined;
@@ -40,92 +39,12 @@ const sourceLanguageField: Field = {
   admin: { allowCreate: false },
 };
 
-const creditFields: Field = {
-  type: "row",
-  admin: {
-    condition: (_, siblingData) =>
-      isDefined(siblingData[fieldsNames.language]) &&
-      isDefined(siblingData[fieldsNames.sourceLanguage]),
-  },
-  fields: [
-    {
-      name: fieldsNames.transcribers,
-      label: "Transcribers",
-      type: "relationship",
-      relationTo: "recorders",
-      hasMany: true,
-      hooks: {
-        beforeChange: [
-          ({ siblingData }) => {
-            if (siblingData[fieldsNames.language] !== siblingData[fieldsNames.sourceLanguage]) {
-              delete siblingData[fieldsNames.transcribers];
-            }
-          },
-        ],
-      },
-      admin: {
-        condition: (_, siblingData) => siblingData.language === siblingData.sourceLanguage,
-        width: "0%",
-      },
-      validate: (count, { siblingData }) => {
-        if (siblingData[fieldsNames.language] !== siblingData[fieldsNames.sourceLanguage]) {
-          return true;
-        }
-        if (isDefined(count) && count.length > 0) {
-          return true;
-        }
-        return `This field is required when the ${fieldsNames.language} \
-        is the same as the ${fieldsNames.sourceLanguage}.`;
-      },
-    },
-    {
-      name: fieldsNames.translators,
-      label: "Translators",
-      type: "relationship",
-      relationTo: "recorders",
-      hasMany: true,
-      hooks: {
-        beforeChange: [
-          ({ siblingData }) => {
-            if (siblingData[fieldsNames.language] === siblingData[fieldsNames.sourceLanguage]) {
-              delete siblingData[fieldsNames.translators];
-            }
-          },
-        ],
-      },
-      admin: {
-        condition: (_, siblingData) =>
-          siblingData[fieldsNames.language] !== siblingData[fieldsNames.sourceLanguage],
-        width: "0%",
-      },
-      validate: (count, { siblingData }) => {
-        if (siblingData[fieldsNames.language] === siblingData[fieldsNames.sourceLanguage]) {
-          return true;
-        }
-        if (isDefined(count) && count.length > 0) {
-          return true;
-        }
-        return `This field is required when the ${fieldsNames.language} \
-        is different from the ${fieldsNames.sourceLanguage}.`;
-      },
-    },
-    {
-      name: fieldsNames.proofreaders,
-      label: "Proofreaders",
-      type: "relationship",
-      relationTo: "recorders",
-      hasMany: true,
-      admin: { width: "0%" },
-    },
-  ],
-};
-
 type FieldData = Record<string, any> & { [fieldsNames.language]: string };
 
 export const translatedFields = ({
   fields,
   validate,
-  admin: { useAsTitle, hasSourceLanguage, hasCredits, ...admin } = {},
+  admin: { useAsTitle, hasSourceLanguage, ...admin } = {},
   ...otherProps
 }: LocalizedFieldsProps): ArrayField => ({
   ...otherProps,
@@ -172,6 +91,5 @@ export const translatedFields = ({
   fields: [
     rowField(hasSourceLanguage ? [languageField, sourceLanguageField] : [languageField]),
     ...fields,
-    ...(hasCredits ? [creditFields] : []),
   ],
 });

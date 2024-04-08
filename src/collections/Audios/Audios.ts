@@ -1,4 +1,5 @@
 import { CollectionGroups, Collections } from "../../constants";
+import { creditsField } from "../../fields/creditsField/creditsField";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { tagsField } from "../../fields/tagsField/tagsField";
@@ -18,6 +19,7 @@ const fields = {
   thumbnail: "thumbnail",
   duration: "duration",
   tags: "tags",
+  credits: "credits",
 };
 
 export const Audios = buildCollectionConfig({
@@ -63,5 +65,6 @@ export const Audios = buildCollectionConfig({
       ],
     }),
     tagsField({ name: fields.tags }),
+    creditsField({ name: fields.credits }),
   ],
 });

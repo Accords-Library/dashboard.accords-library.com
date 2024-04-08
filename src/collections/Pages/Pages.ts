@@ -3,8 +3,9 @@ import { breakBlock } from "../../blocks/breakBlock";
 import { sectionBlock } from "../../blocks/sectionBlock";
 import { transcriptBlock } from "../../blocks/transcriptBlock";
 import { QuickFilters, publishStatusFilters } from "../../components/QuickFilters";
-import { CollectionGroups, Collections, PageType } from "../../constants";
+import { CollectionGroups, Collections } from "../../constants";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
+import { creditsField } from "../../fields/creditsField/creditsField";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
@@ -13,15 +14,12 @@ import { translatedFields } from "../../fields/translatedFields/translatedFields
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
 import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
-import { isDefined, isUndefined } from "../../utils/asserts";
 import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { getBySlugEndpoint } from "./endpoints/getBySlugEndpoint";
 
 const fields = {
   slug: "slug",
-  type: "type",
-  authors: "authors",
   thumbnail: "thumbnail",
   backgroundImage: "backgroundImage",
   translations: "translations",
@@ -32,16 +30,10 @@ const fields = {
   subtitle: "subtitle",
   summary: "summary",
   content: "content",
-  transcribers: "transcribers",
-  translators: "translators",
-  proofreaders: "proofreaders",
+  credits: "credits",
   collectibles: "collectibles",
   folders: "folders",
 } as const satisfies Record<string, string>;
-
-const pageTypesWithAuthor = [PageType.Post];
-const pageTypesWithCollectibles = [PageType.Content];
-const pageTypesWithTranscribers = [PageType.Content];
 
 export const Pages = buildVersionedCollectionConfig({
   slug: Collections.Pages,
@@ -56,7 +48,6 @@ export const Pages = buildVersionedCollectionConfig({
       fields.slug,
       fields.thumbnail,
       fields.backgroundImage,
-      fields.type,
       fields.tags,
       fields.translations,
       fields.folders,
@@ -81,19 +72,7 @@ export const Pages = buildVersionedCollectionConfig({
   },
   endpoints: [getBySlugEndpoint],
   fields: [
-    rowField([
-      slugField({ name: fields.slug }),
-      {
-        name: fields.type,
-        type: "radio",
-        required: true,
-        defaultValue: PageType.Generic,
-        options: Object.entries(PageType).map(([_, value]) => ({
-          label: value,
-          value: value,
-        })),
-      },
-    ]),
+    slugField({ name: fields.slug }),
     rowField([
       imageField({
         name: fields.thumbnail,
@@ -109,20 +88,7 @@ export const Pages = buildVersionedCollectionConfig({
         },
       }),
     ]),
-    rowField([
-      tagsField({ name: fields.tags }),
-      {
-        name: fields.authors,
-        type: "relationship",
-        admin: {
-          condition: (_, siblingData) => pageTypesWithAuthor.includes(siblingData[fields.type]),
-        },
-        relationTo: Collections.Recorders,
-        required: true,
-        minRows: 1,
-        hasMany: true,
-      },
-    ]),
+    tagsField({ name: fields.tags }),
     translatedFields({
       name: fields.translations,
       admin: { useAsTitle: fields.title, hasSourceLanguage: true },
@@ -156,66 +122,7 @@ export const Pages = buildVersionedCollectionConfig({
             lists: true,
           }),
         },
-        rowField([
-          {
-            name: fields.transcribers,
-            type: "relationship",
-            relationTo: Collections.Recorders,
-            hasMany: true,
-            admin: {
-              condition: (data, siblingData) => {
-                if (!pageTypesWithTranscribers.includes(data[fields.type])) {
-                  return false;
-                }
-                if (isUndefined(siblingData.language) || isUndefined(siblingData.sourceLanguage)) {
-                  return false;
-                }
-                return siblingData.language === siblingData.sourceLanguage;
-              },
-            },
-          },
-          {
-            name: fields.translators,
-            type: "relationship",
-            relationTo: Collections.Recorders,
-            hasMany: true,
-            hooks: {
-              beforeChange: [
-                ({ siblingData }) => {
-                  if (siblingData.language === siblingData.sourceLanguage) {
-                    delete siblingData.translators;
-                  }
-                },
-              ],
-            },
-            admin: {
-              condition: (_, siblingData) => {
-                if (isUndefined(siblingData.language) || isUndefined(siblingData.sourceLanguage)) {
-                  return false;
-                }
-                return siblingData.language !== siblingData.sourceLanguage;
-              },
-            },
-            validate: (translators, { siblingData }) => {
-              if (isUndefined(siblingData.language) || isUndefined(siblingData.sourceLanguage)) {
-                return true;
-              }
-              if (siblingData.language === siblingData.sourceLanguage) {
-                return true;
-              }
-              if (isDefined(translators) && translators.length > 0) {
-                return true;
-              }
-              return "This field is required when the language is different from the source language.";
-            },
-          },
-          {
-            name: fields.proofreaders,
-            type: "relationship",
-            relationTo: Collections.Recorders,
-            hasMany: true,
-          },
-        ]),
+        creditsField({ name: fields.credits }),
       ],
     }),
     rowField([
@@ -234,10 +141,6 @@ export const Pages = buildVersionedCollectionConfig({
         name: fields.collectibles,
         hasMany: true,
         relationTo: Collections.Collectibles,
-        admin: {
-          condition: (_, siblingData) =>
-            pageTypesWithCollectibles.includes(siblingData[fields.type]),
-        },
         where: ({ id }) => ({
           and: [
             { "contents.content.value": { equals: id } },

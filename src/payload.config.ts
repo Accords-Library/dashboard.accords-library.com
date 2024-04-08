@@ -7,6 +7,7 @@ import { sftpAdapter } from "payloadcms-sftp-storage";
 import { Audios } from "./collections/Audios/Audios";
 import { ChronologyEvents } from "./collections/ChronologyEvents/ChronologyEvents";
 import { Collectibles } from "./collections/Collectibles/Collectibles";
+import { CreditsRoles } from "./collections/CreditsRoles/CreditsRoles";
 import { Currencies } from "./collections/Currencies/Currencies";
 import { Folders } from "./collections/Folders/Folders";
 import { GenericContents } from "./collections/GenericContents/GenericContents";
@@ -68,6 +69,7 @@ export default buildConfig({
 
     Tags,
     TagsGroups,
+    CreditsRoles,
     Recorders,
     Languages,
     Currencies,

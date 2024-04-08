@@ -3,11 +3,10 @@ import { Collections } from "../../../constants";
 import { EndpointChronologyEvent, EndpointSource } from "../../../sdk";
 import { ChronologyEvent, CollectibleBlock } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
-import { isDefined, isNotEmpty, isPayloadArrayType, isPayloadType } from "../../../utils/asserts";
-import { getDomainFromUrl } from "../../../utils/endpoints";
+import { isDefined, isNotEmpty, isPayloadType } from "../../../utils/asserts";
+import { convertCreditsToEndpointCredits, getDomainFromUrl } from "../../../utils/endpoints";
 import { convertCollectibleToEndpointCollectible } from "../../Collectibles/endpoints/getBySlugEndpoint";
 import { convertPageToEndpointPage } from "../../Pages/endpoints/getBySlugEndpoint";
-import { convertRecorderToEndpointRecorder } from "../../Recorders/endpoints/getByUsername";
 
 export const getAllEndpoint: CollectionEndpoint = {
   method: "get",
@@ -68,30 +67,13 @@ export const eventToEndpointEvent = ({
   },
   events: events.map<EndpointChronologyEvent["events"][number]>(({ sources, translations }) => ({
     translations: translations.map(
-      ({
-        language,
-        sourceLanguage,
-        description,
-        notes,
-        proofreaders,
-        title,
-        transcribers,
-        translators,
-      }) => ({
+      ({ language, sourceLanguage, description, notes, title, credits }) => ({
         language: isPayloadType(language) ? language.id : language,
         sourceLanguage: isPayloadType(sourceLanguage) ? sourceLanguage.id : sourceLanguage,
         ...(isNotEmpty(title) ? { title } : {}),
         ...(isNotEmpty(description) ? { description } : {}),
         ...(isNotEmpty(notes) ? { notes } : {}),
-        proofreaders: isPayloadArrayType(proofreaders)
-          ? proofreaders.map(convertRecorderToEndpointRecorder)
-          : [],
-        transcribers: isPayloadArrayType(transcribers)
-          ? transcribers.map(convertRecorderToEndpointRecorder)
-          : [],
-        translators: isPayloadArrayType(translators)
-          ? translators.map(convertRecorderToEndpointRecorder)
-          : [],
+        credits: convertCreditsToEndpointCredits(credits),
       })
     ),
     sources: handleSources(sources),

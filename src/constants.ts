@@ -23,6 +23,7 @@ export enum Collections {
   VideosChannels = "videos-channels",
   MediaThumbnails = "media-thumbnails",
   Scans = "scans",
+  CreditsRole = "credits-roles",
 }
 
 export enum CollectionGroups {
@@ -77,12 +78,6 @@ export enum RecordersRoles {
 export enum CollectionStatus {
   Draft = "draft",
   Published = "published",
-}
-
-export enum PageType {
-  Content = "Content",
-  Post = "Post",
-  Generic = "Generic",
 }
 
 /* RICH TEXT */

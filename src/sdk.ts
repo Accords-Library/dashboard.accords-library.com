@@ -3,7 +3,6 @@ import {
   CollectibleNature,
   CollectiblePageOrders,
   Collections,
-  PageType,
   RichTextContent,
 } from "./constants";
 import { Currency, Language } from "./types/collections";
@@ -187,11 +186,22 @@ export type EndpointTagsGroup = {
   tags: EndpointTag[];
 };
 
+export type EndpointRole = {
+  icon: string;
+  translations: {
+    language: string;
+    name: string;
+  }[];
+};
+
+export type EndpointCredit = {
+  role: EndpointRole;
+  recorders: EndpointRecorder[];
+};
+
 export type EndpointPage = {
   slug: string;
-  type: PageType;
   thumbnail?: PayloadImage;
-  authors: EndpointRecorder[];
   tagGroups: EndpointTagsGroup[];
   backgroundImage?: PayloadImage;
   translations: {
@@ -202,9 +212,7 @@ export type EndpointPage = {
     sourceLanguage: string;
     summary?: RichTextContent;
     content: RichTextContent;
-    transcribers: EndpointRecorder[];
-    translators: EndpointRecorder[];
-    proofreaders: EndpointRecorder[];
+    credits: EndpointCredit[];
     toc: TableOfContentEntry[];
   }[];
   parentPages: EndpointSource[];
@@ -313,9 +321,7 @@ export type EndpointChronologyEvent = {
       title?: string;
       description?: RichTextContent;
       notes?: RichTextContent;
-      transcribers: EndpointRecorder[];
-      translators: EndpointRecorder[];
-      proofreaders: EndpointRecorder[];
+      credits: EndpointCredit[];
     }[];
   }[];
 };
@@ -347,6 +353,7 @@ export type EndpointMedia = {
     title: string;
     description?: RichTextContent;
   }[];
+  credits: EndpointCredit[];
 };
 
 export type EndpointImage = EndpointMedia & {

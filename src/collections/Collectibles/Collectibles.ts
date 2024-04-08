@@ -6,10 +6,10 @@ import {
   CollectiblePageOrders,
   CollectionGroups,
   Collections,
-  PageType,
 } from "../../constants";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { componentField } from "../../fields/componentField/componentField";
+import { creditsField } from "../../fields/creditsField/creditsField";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
@@ -54,9 +54,7 @@ const fields = {
   urlsUrl: "url",
 
   scans: "scans",
-  scansScanners: "scanners",
-  scansCleaners: "cleaners",
-  scansTypesetters: "typesetters",
+  scansCredits: "credits",
 
   scansCover: "cover",
   scansCoverFlapFront: "flapFront",
@@ -232,28 +230,7 @@ export const Collectibles = buildVersionedCollectionConfig({
             componentField({
               name: fields.scans,
               fields: [
-                rowField([
-                  {
-                    name: fields.scansScanners,
-                    type: "relationship",
-                    relationTo: Collections.Recorders,
-                    hasMany: true,
-                    required: true,
-                  },
-                  {
-                    name: fields.scansCleaners,
-                    type: "relationship",
-                    relationTo: Collections.Recorders,
-                    hasMany: true,
-                    required: true,
-                  },
-                  {
-                    name: fields.scansTypesetters,
-                    type: "relationship",
-                    relationTo: Collections.Recorders,
-                    hasMany: true,
-                  },
-                ]),
+                creditsField({ name: fields.scansCredits }),
                 componentField({
                   name: fields.scansCover,
                   fields: [
@@ -621,15 +598,6 @@ export const Collectibles = buildVersionedCollectionConfig({
                     allowCreate: false,
                   },
                   required: true,
-                  filterOptions: ({ relationTo }) => {
-                    switch (relationTo) {
-                      case Collections.Pages:
-                        return { type: { equals: PageType.Content } };
-
-                      default:
-                        return true;
-                    }
-                  },
                 },
                 {
                   name: "range",

@@ -1,7 +1,6 @@
 import {
   BreakBlockType,
   Collections,
-  PageType,
   RichTextContent,
   isBlockNodeBreakBlock,
   isBlockNodeSectionBlock,
@@ -10,18 +9,13 @@ import {
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointPage, TableOfContentEntry } from "../../../sdk";
 import { Page } from "../../../types/collections";
+import { isNotEmpty, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
 import {
-  isNotEmpty,
-  isPayloadArrayType,
-  isPayloadType,
-  isValidPayloadImage,
-} from "../../../utils/asserts";
-import {
+  convertCreditsToEndpointCredits,
   convertRTCToEndpointRTC,
   convertSourceToEndpointSource,
   convertTagsEndpointTagsGroups,
 } from "../../../utils/endpoints";
-import { convertRecorderToEndpointRecorder } from "../../Recorders/endpoints/getByUsername";
 
 export const getBySlugEndpoint = createGetByEndpoint({
   collection: Collections.Pages,
@@ -34,31 +28,16 @@ export const convertPageToEndpointPage = ({
   collectibles,
   folders,
   backgroundImage,
-  authors,
   slug,
   tags,
   thumbnail,
-  type,
 }: Page): EndpointPage => ({
   slug,
-  type: type as PageType,
   ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
   tagGroups: convertTagsEndpointTagsGroups(tags),
-  authors: isPayloadArrayType(authors) ? authors.map(convertRecorderToEndpointRecorder) : [],
   ...(isValidPayloadImage(backgroundImage) ? { backgroundImage } : {}),
   translations: translations.map(
-    ({
-      content,
-      language,
-      sourceLanguage,
-      title,
-      pretitle,
-      subtitle,
-      proofreaders,
-      summary,
-      transcribers,
-      translators,
-    }) => ({
+    ({ content, language, sourceLanguage, title, pretitle, subtitle, summary, credits }) => ({
       language: isPayloadType(language) ? language.id : language,
       sourceLanguage: isPayloadType(sourceLanguage) ? sourceLanguage.id : sourceLanguage,
       ...(isNotEmpty(pretitle) ? { pretitle } : {}),
@@ -67,15 +46,7 @@ export const convertPageToEndpointPage = ({
       ...(isNotEmpty(summary) ? { summary } : {}),
       content: convertRTCToEndpointRTC(content),
       toc: handleToc(content),
-      translators: isPayloadArrayType(translators)
-        ? translators.map(convertRecorderToEndpointRecorder)
-        : [],
-      transcribers: isPayloadArrayType(transcribers)
-        ? transcribers.map(convertRecorderToEndpointRecorder)
-        : [],
-      proofreaders: isPayloadArrayType(proofreaders)
-        ? proofreaders.map(convertRecorderToEndpointRecorder)
-        : [],
+      credits: convertCreditsToEndpointCredits(credits),
     })
   ),
   parentPages: convertSourceToEndpointSource({ collectibles, folders }),

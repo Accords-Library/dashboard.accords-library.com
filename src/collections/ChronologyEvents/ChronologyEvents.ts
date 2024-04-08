@@ -5,6 +5,7 @@ import {
   publishStatusFilters,
 } from "../../components/QuickFilters";
 import { CollectionGroups, Collections } from "../../constants";
+import { creditsField } from "../../fields/creditsField/creditsField";
 import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { createEditor } from "../../utils/editor";
@@ -28,6 +29,7 @@ const fields = {
   eventsTranslationsTitle: "title",
   eventsTranslationsDescription: "description",
   eventsTranslationsNotes: "notes",
+  eventsCredits: "credits",
   date: "date",
   dateYear: "year",
   dateMonth: "month",
@@ -119,7 +121,6 @@ export const ChronologyEvents: CollectionConfig = buildVersionedCollectionConfig
           admin: {
             useAsTitle: fields.eventsTranslationsTitle,
             hasSourceLanguage: true,
-            hasCredits: true,
           },
           fields: [
             {
@@ -138,6 +139,7 @@ export const ChronologyEvents: CollectionConfig = buildVersionedCollectionConfig
               type: "richText",
               editor: createEditor({ inlines: true, lists: true, links: true }),
             },
+            creditsField({ name: fields.eventsCredits }),
           ],
         }),
       ],
