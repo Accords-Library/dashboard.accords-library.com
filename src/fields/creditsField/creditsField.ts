@@ -21,7 +21,7 @@ export const creditsField = ({ validate, admin, ...props }: Props): ArrayField =
     }
 
     const data = options.data[props.name] as Credits | undefined | null;
-    if (isUndefined(data)) return true;
+    if (isUndefined(data) || typeof data !== "object") return true;
 
     const roles = data.map((row) => (isPayloadType(row.role) ? row.role.id : row.role));
     if (hasDuplicates(roles)) {
