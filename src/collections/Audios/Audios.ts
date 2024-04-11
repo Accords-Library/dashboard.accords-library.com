@@ -28,6 +28,7 @@ export const Audios = buildCollectionConfig({
   defaultSort: fields.updatedAt,
   admin: {
     group: CollectionGroups.Media,
+    preview: ({ slug }) => `https://v3.accords-library.com/en/audios/${slug}`,
     defaultColumns: [
       fields.filename,
       fields.thumbnail,

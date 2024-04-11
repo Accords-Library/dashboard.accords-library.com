@@ -25,7 +25,10 @@ export const Images = buildImageCollectionConfig({
     singular: "Image",
     plural: "Images",
   },
-  admin: { defaultColumns: [fields.filename, fields.posts, fields.updatedAt] },
+  admin: {
+    preview: ({ slug }) => `https://v3.accords-library.com/en/images/${slug}`,
+    defaultColumns: [fields.filename, fields.posts, fields.updatedAt],
+  },
   upload: {
     imageSizes: [
       {
