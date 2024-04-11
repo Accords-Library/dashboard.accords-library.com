@@ -95,6 +95,11 @@ export default buildConfig({
           disableLocalStorage: true,
           disablePayloadAccessControl: true,
         },
+        [Collections.VideosSubtitles]: {
+          adapter: configuredFtpAdapter,
+          disableLocalStorage: true,
+          disablePayloadAccessControl: true,
+        },
         [Collections.Audios]: {
           adapter: configuredFtpAdapter,
           disableLocalStorage: true,

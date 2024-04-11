@@ -7,8 +7,8 @@ export const VideosSubtitles = buildCollectionConfig({
   labels: { singular: "Video Subtitle", plural: "Videos Subtitles" },
   admin: { group: CollectionGroups.Media, disableDuplicate: true, hidden: shownOnlyToAdmin },
   upload: {
-    staticDir: `../uploads/${Collections.VideosSubtitles}`,
     mimeTypes: ["text/*"],
+    disableLocalStorage: true,
   },
   timestamps: false,
   fields: [],
