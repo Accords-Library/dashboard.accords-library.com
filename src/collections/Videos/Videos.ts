@@ -37,7 +37,7 @@ export const Videos = buildCollectionConfig({
   defaultSort: fields.updatedAt,
   admin: {
     group: CollectionGroups.Media,
-    preview: ({ slug }) => `https://v3.accords-library.com/en/videos/${slug}`,
+    preview: ({ id }) => `${process.env.PAYLOAD_PUBLIC_FRONTEND_BASE_URL}/en/videos/${id}`,
     defaultColumns: [
       fields.filename,
       fields.thumbnail,

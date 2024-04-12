@@ -38,7 +38,7 @@ export const Folders = buildCollectionConfig({
     ],
     description:
       "Folders provide a way to structure our content. A folder can contain subfolders and/or files.",
-    preview: ({ slug }) => `https://v3.accords-library.com/en/folders/${slug}`,
+    preview: ({ slug }) => `${process.env.PAYLOAD_PUBLIC_FRONTEND_BASE_URL}/en/folders/${slug}`,
   },
   endpoints: [getBySlugEndpoint],
   fields: [

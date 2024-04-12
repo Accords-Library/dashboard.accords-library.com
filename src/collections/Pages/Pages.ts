@@ -53,7 +53,7 @@ export const Pages = buildVersionedCollectionConfig({
       fields.folders,
     ],
     group: CollectionGroups.Collections,
-    preview: ({ slug }) => `https://v3.accords-library.com/en/pages/${slug}`,
+    preview: ({ slug }) => `${process.env.PAYLOAD_PUBLIC_FRONTEND_BASE_URL}/en/pages/${slug}`,
     components: {
       BeforeListTable: [
         () =>
