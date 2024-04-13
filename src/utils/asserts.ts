@@ -1,5 +1,6 @@
 import { RichTextContent, isNodeParagraphNode } from "../constants";
 import { PayloadImage, PayloadMedia } from "../sdk";
+import { Image } from "../types/collections";
 
 export const isDefined = <T>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined;
@@ -24,38 +25,18 @@ const isEmptyRichText = (value: RichTextContent) =>
 export const hasDuplicates = <T>(list: T[]): boolean => list.length !== new Set(list).size;
 
 export const isValidPayloadImage = (
-  image:
-    | {
-        filename?: string | null;
-        filesize?: number | null;
-        mimeType?: string | null;
-        width?: number | null;
-        height?: number | null;
-        url?: string | null;
-      }
-    | undefined
-    | null
-    | string
-): image is PayloadImage => {
-  if (isUndefined(image)) return false;
+  image: string | Image | null | undefined
+): image is Image & PayloadImage => {
   if (typeof image === "string") return false;
-  if (isEmpty(image.filename)) return false;
-  if (isEmpty(image.url)) return false;
-  if (isEmpty(image.mimeType)) return false;
+  if (!isValidPayloadMedia(image)) return false;
   if (isUndefined(image.width)) return false;
   if (isUndefined(image.height)) return false;
-  if (isUndefined(image.filesize)) return false;
   return true;
 };
 
 export const isValidPayloadMedia = (
   media:
-    | {
-        filename?: string | null;
-        filesize?: number | null;
-        mimeType?: string | null;
-        url?: string | null;
-      }
+    | Partial<{ [K in keyof PayloadMedia]: null | undefined | PayloadMedia[K] }>
     | undefined
     | null
     | string

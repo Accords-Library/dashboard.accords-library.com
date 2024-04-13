@@ -48,6 +48,6 @@
     "prettier": "3.2.5",
     "ts-node": "10.9.2",
     "ts-unused-exports": "10.0.1",
-    "typescript": "5.4.4"
+    "typescript": "5.4.5"
   }
 }

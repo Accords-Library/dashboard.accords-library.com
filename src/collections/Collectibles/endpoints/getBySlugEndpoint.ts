@@ -1,6 +1,6 @@
 import { CollectibleNature, Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointCollectible, PayloadImage } from "../../../sdk";
+import { EndpointCollectible } from "../../../sdk";
 import { Collectible } from "../../../types/collections";
 import {
   isDefined,
@@ -17,6 +17,7 @@ import {
   getDomainFromUrl,
 } from "../../../utils/endpoints";
 import { convertAudioToEndpointAudio } from "../../Audios/endpoints/getByID";
+import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 import { convertPageToEndpointPage } from "../../Pages/endpoints/getBySlugEndpoint";
 import { convertVideoToEndpointVideo } from "../../Videos/endpoints/getByID";
 
@@ -55,7 +56,10 @@ export const convertCollectibleToEndpointCollectible = ({
   slug,
   languages: languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
   ...(isDefined(releaseDate) ? { releaseDate } : {}),
-  ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
+  ...(isValidPayloadImage(thumbnail) ? { thumbnail: convertImageToEndpointImage(thumbnail) } : {}),
+  ...(isValidPayloadImage(backgroundImage)
+    ? { backgroundImage: convertImageToEndpointImage(backgroundImage) }
+    : {}),
   tagGroups: convertTagsEndpointTagsGroups(tags),
   translations:
     translations?.map(({ language, title, description, pretitle, subtitle }) => ({
@@ -65,7 +69,6 @@ export const convertCollectibleToEndpointCollectible = ({
       ...(isNotEmpty(subtitle) ? { subtitle } : {}),
       ...(isNotEmpty(description) ? { description } : {}),
     })) ?? [],
-  ...(isValidPayloadImage(backgroundImage) ? { backgroundImage } : {}),
   contents: handleContents(contents),
   gallery: handleGallery(gallery),
   scans: handleScans(scans),
@@ -119,42 +122,34 @@ const handlePageInfo = (
   };
 };
 
-const handleGallery = (gallery: Collectible["gallery"]): EndpointCollectible["gallery"] => {
-  const result: PayloadImage[] = [];
-  if (!gallery) return result;
-
-  gallery?.forEach(({ image }) => {
-    if (isValidPayloadImage(image)) {
-      result.push(image);
-    }
-  });
-
-  return result.slice(0, 10);
-};
+const handleGallery = (gallery: Collectible["gallery"]): EndpointCollectible["gallery"] =>
+  gallery
+    ?.flatMap(({ image }) => {
+      if (!isValidPayloadImage(image)) return [];
+      return convertImageToEndpointImage(image);
+    })
+    .slice(0, 10) ?? [];
 
 const handleScans = (scans: Collectible["scans"]): EndpointCollectible["scans"] => {
-  const result: PayloadImage[] = [];
-  if (!scans) return result;
+  const result =
+    scans?.pages?.flatMap(({ image }) => {
+      if (!isValidPayloadImage(image)) return [];
+      return image;
+    }) ?? [];
 
-  scans.pages?.forEach(({ image }) => {
-    if (isValidPayloadImage(image)) {
-      result.push(image);
-    }
-  });
-
-  if (isValidPayloadImage(scans.cover?.front)) {
+  if (isValidPayloadImage(scans?.cover?.front)) {
     result.push(scans.cover.front);
   }
 
-  if (isValidPayloadImage(scans.cover?.back)) {
+  if (isValidPayloadImage(scans?.cover?.back)) {
     result.push(scans.cover.back);
   }
 
-  if (isValidPayloadImage(scans.dustjacket?.front)) {
+  if (isValidPayloadImage(scans?.dustjacket?.front)) {
     result.push(scans.dustjacket.front);
   }
 
-  if (isValidPayloadImage(scans.dustjacket?.back)) {
+  if (isValidPayloadImage(scans?.dustjacket?.back)) {
     result.push(scans.dustjacket.back);
   }
 

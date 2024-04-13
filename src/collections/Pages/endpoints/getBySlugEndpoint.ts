@@ -16,6 +16,7 @@ import {
   convertSourceToEndpointSource,
   convertTagsEndpointTagsGroups,
 } from "../../../utils/endpoints";
+import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 
 export const getBySlugEndpoint = createGetByEndpoint({
   collection: Collections.Pages,
@@ -33,9 +34,11 @@ export const convertPageToEndpointPage = ({
   thumbnail,
 }: Page): EndpointPage => ({
   slug,
-  ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
+  ...(isValidPayloadImage(thumbnail) ? { thumbnail: convertImageToEndpointImage(thumbnail) } : {}),
+  ...(isValidPayloadImage(backgroundImage)
+    ? { backgroundImage: convertImageToEndpointImage(backgroundImage) }
+    : {}),
   tagGroups: convertTagsEndpointTagsGroups(tags),
-  ...(isValidPayloadImage(backgroundImage) ? { backgroundImage } : {}),
   translations: translations.map(
     ({ content, language, sourceLanguage, title, pretitle, subtitle, summary, credits }) => ({
       language: isPayloadType(language) ? language.id : language,

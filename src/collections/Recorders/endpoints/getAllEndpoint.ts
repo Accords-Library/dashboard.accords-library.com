@@ -3,6 +3,7 @@ import { Collections } from "../../../constants";
 import { EndpointRecorder } from "../../../sdk";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isPayloadArrayType, isValidPayloadImage } from "../../../utils/asserts";
+import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 
 export const getAllEndpoint: CollectionEndpoint = {
   method: "get",
@@ -30,7 +31,7 @@ export const getAllEndpoint: CollectionEndpoint = {
       ({ anonymize, id, username, avatar, languages }) => ({
         id,
         username: anonymize ? `Recorder#${id.substring(0, 5)}` : username,
-        ...(isValidPayloadImage(avatar) ? { avatar } : {}),
+        ...(isValidPayloadImage(avatar) ? { avatar: convertImageToEndpointImage(avatar) } : {}),
         languages: isPayloadArrayType(languages) ? languages.map(({ id }) => id) : [],
       })
     );

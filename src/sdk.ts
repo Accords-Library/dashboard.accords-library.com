@@ -139,8 +139,8 @@ export type EndpointFolder = {
 
 export type EndpointWebsiteConfig = {
   homeFolders: (EndpointFolder & {
-    lightThumbnail?: PayloadImage;
-    darkThumbnail?: PayloadImage;
+    lightThumbnail?: EndpointImage;
+    darkThumbnail?: EndpointImage;
   })[];
   timeline: {
     breaks: number[];
@@ -156,7 +156,7 @@ export type EndpointWebsiteConfig = {
 export type EndpointRecorder = {
   id: string;
   username: string;
-  avatar?: PayloadImage;
+  avatar?: EndpointImage;
   languages: string[];
 };
 
@@ -201,9 +201,9 @@ export type EndpointCredit = {
 
 export type EndpointPage = {
   slug: string;
-  thumbnail?: PayloadImage;
+  thumbnail?: EndpointImage;
   tagGroups: EndpointTagsGroup[];
-  backgroundImage?: PayloadImage;
+  backgroundImage?: EndpointImage;
   translations: {
     language: string;
     pretitle?: string;
@@ -220,7 +220,7 @@ export type EndpointPage = {
 
 export type EndpointCollectible = {
   slug: string;
-  thumbnail?: PayloadImage;
+  thumbnail?: EndpointImage;
   translations: {
     language: string;
     pretitle?: string;
@@ -231,9 +231,9 @@ export type EndpointCollectible = {
   tagGroups: EndpointTagsGroup[];
   releaseDate?: string;
   languages: string[];
-  backgroundImage?: PayloadImage;
+  backgroundImage?: EndpointImage;
   nature: CollectibleNature;
-  gallery: PayloadImage[];
+  gallery: EndpointImage[];
   scans: PayloadImage[];
   urls: { url: string; label: string }[];
   price?: {

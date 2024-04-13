@@ -128,7 +128,8 @@ export const Collectibles = buildVersionedCollectionConfig({
       "A physical or digital item. This can be a book, a CD/DVD, a video game copy...\
      any product related to our Scope.\
      This can also include merchandises such as figurines, music boxes, posters, key chains...",
-    preview: ({ slug }) => `${process.env.PAYLOAD_PUBLIC_FRONTEND_BASE_URL}/en/collectibles/${slug}`,
+    preview: ({ slug }) =>
+      `${process.env.PAYLOAD_PUBLIC_FRONTEND_BASE_URL}/en/collectibles/${slug}`,
     hooks: {
       beforeDuplicate: beforeDuplicatePiping([
         beforeDuplicateUnpublish,

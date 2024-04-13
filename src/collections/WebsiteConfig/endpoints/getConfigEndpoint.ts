@@ -4,6 +4,7 @@ import { EndpointWebsiteConfig } from "../../../sdk";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
 import { convertFolderToEndpointFolder } from "../../Folders/endpoints/getBySlugEndpoint";
+import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 
 export const getConfigEndpoint: CollectionEndpoint = {
   method: "get",
@@ -47,8 +48,12 @@ export const getConfigEndpoint: CollectionEndpoint = {
           if (!isPayloadType(folder)) return [];
           return {
             ...convertFolderToEndpointFolder(folder),
-            ...(isValidPayloadImage(darkThumbnail) ? { darkThumbnail } : {}),
-            ...(isValidPayloadImage(lightThumbnail) ? { lightThumbnail } : {}),
+            ...(isValidPayloadImage(darkThumbnail)
+              ? { darkThumbnail: convertImageToEndpointImage(darkThumbnail) }
+              : {}),
+            ...(isValidPayloadImage(lightThumbnail)
+              ? { lightThumbnail: convertImageToEndpointImage(lightThumbnail) }
+              : {}),
           };
         }) ?? [],
       timeline: {
