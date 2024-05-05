@@ -1,7 +1,7 @@
-import { Block } from "payload/types";
+import { LexicalBlock } from "@payloadcms/richtext-lexical";
 import { BreakBlockType } from "../constants";
 
-export const breakBlock: Block = {
+export const breakBlock: LexicalBlock = {
   slug: "breakBlock",
   interfaceName: "BreakBlock",
   labels: { singular: "Break", plural: "Breaks" },
