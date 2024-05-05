@@ -25,7 +25,7 @@ const fields = {
 export const Audios = buildCollectionConfig({
   slug: Collections.Audios,
   labels: { singular: "Audio", plural: "Audios" },
-  defaultSort: fields.updatedAt,
+  defaultSort: fields.filename,
   admin: {
     group: CollectionGroups.Media,
     preview: ({ id }) => `${process.env.PAYLOAD_PUBLIC_FRONTEND_BASE_URL}/en/audios/${id}`,

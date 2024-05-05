@@ -34,7 +34,7 @@ const fields = {
 export const Videos = buildCollectionConfig({
   slug: Collections.Videos,
   labels: { singular: "Video", plural: "Videos" },
-  defaultSort: fields.updatedAt,
+  defaultSort: fields.filename,
   admin: {
     group: CollectionGroups.Media,
     preview: ({ id }) => `${process.env.PAYLOAD_PUBLIC_FRONTEND_BASE_URL}/en/videos/${id}`,

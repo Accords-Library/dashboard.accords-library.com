@@ -4,6 +4,10 @@ import { publicAccess } from "../accesses/publicAccess";
 import { CollectionGroups } from "../constants";
 import { BuildCollectionConfig, buildCollectionConfig } from "./collectionConfig";
 
+const fields = {
+  filename: "filename",
+};
+
 type BuildImageCollectionConfig = Omit<BuildCollectionConfig, "upload"> & {
   upload: { imageSizes: ImageSize[] };
 };
@@ -15,10 +19,10 @@ export const buildImageCollectionConfig = ({
 }: BuildImageCollectionConfig): CollectionConfig =>
   buildCollectionConfig({
     ...otherConfig,
-    defaultSort: "-updatedAt",
+    defaultSort: fields.filename,
     admin: {
       disableDuplicate: true,
-      useAsTitle: "filename",
+      useAsTitle: fields.filename,
       group: CollectionGroups.Media,
       ...admin,
     },
