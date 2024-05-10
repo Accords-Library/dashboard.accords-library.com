@@ -115,6 +115,7 @@ export const Pages = buildVersionedCollectionConfig({
           },
           editor: createEditor({
             images: true,
+            relations: true,
             inlines: true,
             alignment: true,
             blocks: [sectionBlock, transcriptBlock, breakBlock],
