@@ -22,6 +22,10 @@ import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { RowLabel } from "./components/RowLabel";
 import { getBySlugEndpoint } from "./endpoints/getBySlugEndpoint";
+import { getBySlugEndpointGallery } from "./endpoints/getBySlugEndpointGallery";
+import { getBySlugEndpointGalleryImage } from "./endpoints/getBySlugEndpointGalleryImage";
+import { getBySlugEndpointScanPage } from "./endpoints/getBySlugEndpointScanPage";
+import { getBySlugEndpointScans } from "./endpoints/getBySlugEndpointScans";
 
 const fields = {
   status: "_status",
@@ -137,7 +141,13 @@ export const Collectibles = buildVersionedCollectionConfig({
       ]),
     },
   },
-  endpoints: [getBySlugEndpoint],
+  endpoints: [
+    getBySlugEndpoint,
+    getBySlugEndpointScans,
+    getBySlugEndpointScanPage,
+    getBySlugEndpointGallery,
+    getBySlugEndpointGalleryImage,
+  ],
   fields: [
     {
       type: "tabs",

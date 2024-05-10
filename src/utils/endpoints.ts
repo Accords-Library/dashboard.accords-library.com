@@ -154,8 +154,12 @@ export const convertRTCToEndpointRTC = (
 export const convertSourceToEndpointSource = ({
   collectibles,
   folders,
+  gallery,
+  scans,
 }: {
   collectibles?: (string | Collectible)[] | null | undefined;
+  scans?: (string | Collectible)[] | null | undefined;
+  gallery?: (string | Collectible)[] | null | undefined;
   folders?: (string | Folder)[] | null | undefined;
 }): EndpointSource[] => {
   const result: EndpointSource[] = [];
@@ -164,6 +168,24 @@ export const convertSourceToEndpointSource = ({
     collectibles.filter(isPublished).forEach((collectible) => {
       result.push({
         type: "collectible",
+        collectible: convertCollectibleToEndpointCollectible(collectible),
+      });
+    });
+  }
+
+  if (scans && isPayloadArrayType(scans)) {
+    scans.filter(isPublished).forEach((collectible) => {
+      result.push({
+        type: "scans",
+        collectible: convertCollectibleToEndpointCollectible(collectible),
+      });
+    });
+  }
+
+  if (gallery && isPayloadArrayType(gallery)) {
+    gallery.filter(isPublished).forEach((collectible) => {
+      result.push({
+        type: "gallery",
         collectible: convertCollectibleToEndpointCollectible(collectible),
       });
     });

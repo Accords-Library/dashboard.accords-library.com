@@ -233,8 +233,8 @@ export type EndpointCollectible = {
   languages: string[];
   backgroundImage?: EndpointImage;
   nature: CollectibleNature;
-  gallery: EndpointImage[];
-  scans: PayloadImage[];
+  gallery?: { count: number; thumbnail: EndpointImage };
+  scans?: { count: number; thumbnail: PayloadImage };
   urls: { url: string; label: string }[];
   price?: {
     amount: number;
@@ -298,6 +298,104 @@ export type EndpointCollectible = {
   parentPages: EndpointSource[];
 };
 
+export type EndpointCollectibleScans = {
+  slug: string;
+  thumbnail?: EndpointImage;
+  translations: {
+    language: string;
+    pretitle?: string;
+    title: string;
+    subtitle?: string;
+    description?: RichTextContent;
+  }[];
+  credits: EndpointCredit[];
+  cover?: {
+    front?: EndpointScanImage;
+    spine?: EndpointScanImage;
+    back?: EndpointScanImage;
+    insideFront?: EndpointScanImage;
+    insideBack?: EndpointScanImage;
+    flapFront?: EndpointScanImage;
+    flapBack?: EndpointScanImage;
+    insideFlapFront?: EndpointScanImage;
+    insideFlapBack?: EndpointScanImage;
+  };
+  dustjacket?: {
+    front?: EndpointScanImage;
+    spine?: EndpointScanImage;
+    back?: EndpointScanImage;
+    insideFront?: EndpointScanImage;
+    insideSpine?: EndpointScanImage;
+    insideBack?: EndpointScanImage;
+    flapFront?: EndpointScanImage;
+    flapBack?: EndpointScanImage;
+    insideFlapFront?: EndpointScanImage;
+    insideFlapBack?: EndpointScanImage;
+  };
+  obi?: {
+    front?: EndpointScanImage;
+    spine?: EndpointScanImage;
+    back?: EndpointScanImage;
+    insideFront?: EndpointScanImage;
+    insideSpine?: EndpointScanImage;
+    insideBack?: EndpointScanImage;
+    flapFront?: EndpointScanImage;
+    flapBack?: EndpointScanImage;
+    insideFlapFront?: EndpointScanImage;
+    insideFlapBack?: EndpointScanImage;
+  };
+  pages: EndpointScanImage[];
+  parentPages: EndpointSource[];
+};
+
+export type EndpointCollectibleGallery = {
+  slug: string;
+  thumbnail?: EndpointImage;
+  translations: {
+    language: string;
+    pretitle?: string;
+    title: string;
+    subtitle?: string;
+    description?: RichTextContent;
+  }[];
+  images: EndpointImage[];
+  parentPages: EndpointSource[];
+};
+
+export type EndpointCollectibleGalleryImage = {
+  slug: string;
+  thumbnail?: EndpointImage;
+  translations: {
+    language: string;
+    pretitle?: string;
+    title: string;
+    subtitle?: string;
+  }[];
+  image: EndpointImage;
+  previousIndex?: string;
+  nextIndex?: string;
+  parentPages: EndpointSource[];
+};
+
+export type EndpointCollectibleScanPage = {
+  slug: string;
+  thumbnail?: EndpointImage;
+  translations: {
+    language: string;
+    pretitle?: string;
+    title: string;
+    subtitle?: string;
+  }[];
+  image: EndpointScanImage;
+  previousIndex?: string;
+  nextIndex?: string;
+  parentPages: EndpointSource[];
+};
+
+export type EndpointScanImage = PayloadImage & {
+  index: string;
+};
+
 export type TableOfContentEntry = {
   prefix: string;
   title: string;
@@ -337,7 +435,9 @@ export type EndpointSource =
         | { type: "custom"; translations: { language: string; note: string }[] };
     }
   | { type: "page"; page: EndpointPage }
-  | { type: "folder"; folder: EndpointFolder };
+  | { type: "folder"; folder: EndpointFolder }
+  | { type: "scans"; collectible: EndpointCollectible }
+  | { type: "gallery"; collectible: EndpointCollectible };
 
 export type EndpointMedia = {
   id: string;
@@ -416,6 +516,24 @@ export const payload = {
     await (await request(payloadApiUrl(Collections.Pages, `slug/${slug}`))).json(),
   getCollectible: async (slug: string): Promise<EndpointCollectible> =>
     await (await request(payloadApiUrl(Collections.Collectibles, `slug/${slug}`))).json(),
+  getCollectibleScans: async (slug: string): Promise<EndpointCollectibleScans> =>
+    await (await request(payloadApiUrl(Collections.Collectibles, `slug/${slug}/scans`))).json(),
+  getCollectibleScanPage: async (
+    slug: string,
+    index: string
+  ): Promise<EndpointCollectibleScanPage> =>
+    await (
+      await request(payloadApiUrl(Collections.Collectibles, `slug/${slug}/scans/${index}`))
+    ).json(),
+  getCollectibleGallery: async (slug: string): Promise<EndpointCollectibleGallery> =>
+    await (await request(payloadApiUrl(Collections.Collectibles, `slug/${slug}/gallery`))).json(),
+  getCollectibleGalleryImage: async (
+    slug: string,
+    index: string
+  ): Promise<EndpointCollectibleGalleryImage> =>
+    await (
+      await request(payloadApiUrl(Collections.Collectibles, `slug/${slug}/gallery/${index}`))
+    ).json(),
   getChronologyEvents: async (): Promise<EndpointChronologyEvent[]> =>
     await (await request(payloadApiUrl(Collections.ChronologyEvents, `all`))).json(),
   getChronologyEventByID: async (id: string): Promise<EndpointChronologyEvent> =>

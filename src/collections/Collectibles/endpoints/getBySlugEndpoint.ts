@@ -32,7 +32,7 @@ export const convertCollectibleToEndpointCollectible = ({
   nature,
   urls,
   subitems,
-  gallery,
+  gallery: rawGallery,
   contents,
   priceEnabled,
   price,
@@ -50,39 +50,47 @@ export const convertCollectibleToEndpointCollectible = ({
   translations,
   releaseDate,
   languages,
-  scans,
+  scans: rawScans,
   tags,
-}: Collectible): EndpointCollectible => ({
-  slug,
-  languages: languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
-  ...(isDefined(releaseDate) ? { releaseDate } : {}),
-  ...(isValidPayloadImage(thumbnail) ? { thumbnail: convertImageToEndpointImage(thumbnail) } : {}),
-  ...(isValidPayloadImage(backgroundImage)
-    ? { backgroundImage: convertImageToEndpointImage(backgroundImage) }
-    : {}),
-  tagGroups: convertTagsEndpointTagsGroups(tags),
-  translations:
-    translations?.map(({ language, title, description, pretitle, subtitle }) => ({
-      language: isPayloadType(language) ? language.id : language,
-      title,
-      ...(isNotEmpty(pretitle) ? { pretitle } : {}),
-      ...(isNotEmpty(subtitle) ? { subtitle } : {}),
-      ...(isNotEmpty(description) ? { description } : {}),
-    })) ?? [],
-  contents: handleContents(contents),
-  gallery: handleGallery(gallery),
-  scans: handleScans(scans),
-  nature: nature === "Physical" ? CollectibleNature.Physical : CollectibleNature.Digital,
-  parentPages: convertSourceToEndpointSource({ collectibles: parentItems, folders }),
-  subitems: isPayloadArrayType(subitems)
-    ? subitems.filter(isPublished).map(convertCollectibleToEndpointCollectible)
-    : [],
-  urls: urls?.map(({ url }) => ({ url, label: getDomainFromUrl(url) })) ?? [],
-  ...(weightEnabled && isDefined(weight) ? { weight: weight.amount } : {}),
-  ...handleSize(size, sizeEnabled),
-  ...handlePageInfo(pageInfo, pageInfoEnabled),
-  ...handlePrice(price, priceEnabled),
-});
+}: Collectible): EndpointCollectible => {
+  const gallery = handleGallery(rawGallery);
+  const scans = handleScans(rawScans);
+
+  return {
+    slug,
+    languages:
+      languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
+    ...(isDefined(releaseDate) ? { releaseDate } : {}),
+    ...(isValidPayloadImage(thumbnail)
+      ? { thumbnail: convertImageToEndpointImage(thumbnail) }
+      : {}),
+    ...(isValidPayloadImage(backgroundImage)
+      ? { backgroundImage: convertImageToEndpointImage(backgroundImage) }
+      : {}),
+    tagGroups: convertTagsEndpointTagsGroups(tags),
+    translations:
+      translations?.map(({ language, title, description, pretitle, subtitle }) => ({
+        language: isPayloadType(language) ? language.id : language,
+        title,
+        ...(isNotEmpty(pretitle) ? { pretitle } : {}),
+        ...(isNotEmpty(subtitle) ? { subtitle } : {}),
+        ...(isNotEmpty(description) ? { description } : {}),
+      })) ?? [],
+    contents: handleContents(contents),
+    ...(gallery ? { gallery } : {}),
+    ...(scans ? { scans } : {}),
+    nature: nature === "Physical" ? CollectibleNature.Physical : CollectibleNature.Digital,
+    parentPages: convertSourceToEndpointSource({ collectibles: parentItems, folders }),
+    subitems: isPayloadArrayType(subitems)
+      ? subitems.filter(isPublished).map(convertCollectibleToEndpointCollectible)
+      : [],
+    urls: urls?.map(({ url }) => ({ url, label: getDomainFromUrl(url) })) ?? [],
+    ...(weightEnabled && isDefined(weight) ? { weight: weight.amount } : {}),
+    ...handleSize(size, sizeEnabled),
+    ...handlePageInfo(pageInfo, pageInfoEnabled),
+    ...handlePrice(price, priceEnabled),
+  };
+};
 
 const handlePrice = (
   price: Collectible["price"],
@@ -122,13 +130,11 @@ const handlePageInfo = (
   };
 };
 
-const handleGallery = (gallery: Collectible["gallery"]): EndpointCollectible["gallery"] =>
-  gallery
-    ?.flatMap(({ image }) => {
-      if (!isValidPayloadImage(image)) return [];
-      return convertImageToEndpointImage(image);
-    })
-    .slice(0, 10) ?? [];
+const handleGallery = (gallery: Collectible["gallery"]): EndpointCollectible["gallery"] => {
+  const thumbnail = gallery?.[0]?.image;
+  if (!thumbnail || !isValidPayloadImage(thumbnail)) return;
+  return { count: gallery.length, thumbnail: convertImageToEndpointImage(thumbnail) };
+};
 
 const handleScans = (scans: Collectible["scans"]): EndpointCollectible["scans"] => {
   const result =
@@ -137,23 +143,23 @@ const handleScans = (scans: Collectible["scans"]): EndpointCollectible["scans"] 
       return image;
     }) ?? [];
 
+  const totalCount =
+    Object.keys(scans?.cover ?? {}).length +
+    Object.keys(scans?.dustjacket ?? {}).length +
+    Object.keys(scans?.obi ?? {}).length +
+    result.length;
+
   if (isValidPayloadImage(scans?.cover?.front)) {
     result.push(scans.cover.front);
-  }
-
-  if (isValidPayloadImage(scans?.cover?.back)) {
-    result.push(scans.cover.back);
   }
 
   if (isValidPayloadImage(scans?.dustjacket?.front)) {
     result.push(scans.dustjacket.front);
   }
 
-  if (isValidPayloadImage(scans?.dustjacket?.back)) {
-    result.push(scans.dustjacket.back);
-  }
-
-  return result.slice(0, 10);
+  const thumbnail = result?.[0];
+  if (!thumbnail || !isValidPayloadImage(thumbnail)) return;
+  return { count: totalCount, thumbnail };
 };
 
 const handleContents = (contents: Collectible["contents"]): EndpointCollectible["contents"] => {

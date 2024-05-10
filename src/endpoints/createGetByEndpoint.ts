@@ -7,6 +7,7 @@ interface Params<C extends keyof GeneratedTypes["collections"], R> {
   attribute: string;
   handler: (doc: GeneratedTypes["collections"][C]) => Promise<R> | R;
   depth?: number;
+  suffix?: string;
 }
 
 export const createGetByEndpoint = <C extends keyof GeneratedTypes["collections"], R>({
@@ -14,8 +15,9 @@ export const createGetByEndpoint = <C extends keyof GeneratedTypes["collections"
   collection,
   handler,
   depth,
+  suffix = "",
 }: Params<C, R>): CollectionEndpoint => ({
-  path: `/${attribute}/:${attribute}`,
+  path: `/${attribute}/:${attribute}${suffix}`,
   method: "get",
   handler: async (req, res) => {
     if (!req.user) {
