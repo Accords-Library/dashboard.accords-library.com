@@ -1,5 +1,6 @@
 import { Collections } from "../../constants";
 import { creditsField } from "../../fields/creditsField/creditsField";
+import { rowField } from "../../fields/rowField/rowField";
 import { tagsField } from "../../fields/tagsField/tagsField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { createEditor } from "../../utils/editor";
@@ -13,7 +14,9 @@ const fields = {
   posts: "posts",
   updatedAt: "updatedAt",
   translations: "translations",
+  translationsPretitle: "pretitle",
   translationsTitle: "title",
+  translationsSubtitle: "subtitle",
   translationsDescription: "description",
   tags: "tags",
   credits: "credits",
@@ -48,7 +51,11 @@ export const Images = buildImageCollectionConfig({
       name: fields.translations,
       admin: { useAsTitle: fields.translationsTitle },
       fields: [
-        { name: fields.translationsTitle, type: "text", required: true },
+        rowField([
+          { name: fields.translationsPretitle, type: "text" },
+          { name: fields.translationsTitle, type: "text", required: true },
+          { name: fields.translationsSubtitle, type: "text" },
+        ]),
         {
           name: fields.translationsDescription,
           type: "richText",

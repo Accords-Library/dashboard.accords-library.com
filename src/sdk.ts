@@ -450,7 +450,9 @@ export type EndpointMedia = {
   tagGroups: EndpointTagsGroup[];
   translations: {
     language: string;
+    pretitle?: string;
     title: string;
+    subtitle?: string;
     description?: RichTextContent;
   }[];
   credits: EndpointCredit[];

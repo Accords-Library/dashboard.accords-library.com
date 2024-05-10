@@ -15,7 +15,9 @@ const fields = {
   filesize: "filesize",
   updatedAt: "updatedAt",
   translations: "translations",
+  translationsPretitle: "pretitle",
   translationsTitle: "title",
+  translationsSubtitle: "subtitle",
   translationsDescription: "description",
   translationsSubfile: "subfile",
   thumbnail: "thumbnail",
@@ -66,7 +68,11 @@ export const Videos = buildCollectionConfig({
       required: true,
       minRows: 1,
       fields: [
-        { name: fields.translationsTitle, type: "text", required: true },
+        rowField([
+          { name: fields.translationsPretitle, type: "text" },
+          { name: fields.translationsTitle, type: "text", required: true },
+          { name: fields.translationsSubtitle, type: "text" },
+        ]),
         {
           name: fields.translationsDescription,
           type: "richText",

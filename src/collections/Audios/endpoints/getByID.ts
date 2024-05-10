@@ -69,9 +69,11 @@ export const convertAudioToEndpointAudio = ({
   mimeType,
   updatedAt,
   translations:
-    translations?.map(({ language, title, description }) => ({
+    translations?.map(({ language, title, pretitle, subtitle, description }) => ({
       language: getLanguageId(language),
+      ...(isNotEmpty(pretitle) ? { pretitle } : {}),
       title,
+      ...(isNotEmpty(subtitle) ? { subtitle } : {}),
       ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
     })) ?? [],
   duration,
