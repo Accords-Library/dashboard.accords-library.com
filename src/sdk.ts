@@ -370,6 +370,7 @@ export type EndpointCollectibleGalleryImage = {
     pretitle?: string;
     title: string;
     subtitle?: string;
+    description?: RichTextContent;
   }[];
   image: EndpointImage;
   previousIndex?: string;
@@ -385,6 +386,7 @@ export type EndpointCollectibleScanPage = {
     pretitle?: string;
     title: string;
     subtitle?: string;
+    description?: RichTextContent;
   }[];
   image: EndpointScanImage;
   previousIndex?: string;
