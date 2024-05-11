@@ -17,6 +17,7 @@ import {
   convertTagsEndpointTagsGroups,
 } from "../../../utils/endpoints";
 import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
+import { convertRecorderToEndpointRecorder } from "../../Recorders/endpoints/getByUsername";
 
 export const getBySlugEndpoint = createGetByEndpoint({
   collection: Collections.Pages,
@@ -32,6 +33,9 @@ export const convertPageToEndpointPage = ({
   slug,
   tags,
   thumbnail,
+  createdAt,
+  updatedAt,
+  updatedBy,
 }: Page): EndpointPage => ({
   slug,
   ...(isValidPayloadImage(thumbnail) ? { thumbnail: convertImageToEndpointImage(thumbnail) } : {}),
@@ -52,6 +56,9 @@ export const convertPageToEndpointPage = ({
       credits: convertCreditsToEndpointCredits(credits),
     })
   ),
+  createdAt,
+  updatedAt,
+  ...(isPayloadType(updatedBy) ? { updatedBy: convertRecorderToEndpointRecorder(updatedBy) } : {}),
   parentPages: convertSourceToEndpointSource({ collectibles, folders }),
 });
 

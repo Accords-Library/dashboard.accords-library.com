@@ -215,6 +215,9 @@ export type EndpointPage = {
     credits: EndpointCredit[];
     toc: TableOfContentEntry[];
   }[];
+  createdAt: string;
+  updatedAt: string;
+  updatedBy?: EndpointRecorder;
   parentPages: EndpointSource[];
 };
 
@@ -295,6 +298,9 @@ export type EndpointCollectible = {
           }[];
         };
   }[];
+  createdAt: string;
+  updatedAt: string;
+  updatedBy?: EndpointRecorder;
   parentPages: EndpointSource[];
 };
 

@@ -19,6 +19,7 @@ import {
 import { convertAudioToEndpointAudio } from "../../Audios/endpoints/getByID";
 import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 import { convertPageToEndpointPage } from "../../Pages/endpoints/getBySlugEndpoint";
+import { convertRecorderToEndpointRecorder } from "../../Recorders/endpoints/getByUsername";
 import { convertVideoToEndpointVideo } from "../../Videos/endpoints/getByID";
 
 export const getBySlugEndpoint = createGetByEndpoint({
@@ -52,9 +53,13 @@ export const convertCollectibleToEndpointCollectible = ({
   languages,
   scans: rawScans,
   tags,
+  createdAt,
+  updatedAt,
+  scansEnabled,
+  updatedBy,
 }: Collectible): EndpointCollectible => {
   const gallery = handleGallery(rawGallery);
-  const scans = handleScans(rawScans);
+  const scans = scansEnabled ? handleScans(rawScans) : undefined;
 
   return {
     slug,
@@ -80,7 +85,6 @@ export const convertCollectibleToEndpointCollectible = ({
     ...(gallery ? { gallery } : {}),
     ...(scans ? { scans } : {}),
     nature: nature === "Physical" ? CollectibleNature.Physical : CollectibleNature.Digital,
-    parentPages: convertSourceToEndpointSource({ collectibles: parentItems, folders }),
     subitems: isPayloadArrayType(subitems)
       ? subitems.filter(isPublished).map(convertCollectibleToEndpointCollectible)
       : [],
@@ -89,6 +93,12 @@ export const convertCollectibleToEndpointCollectible = ({
     ...handleSize(size, sizeEnabled),
     ...handlePageInfo(pageInfo, pageInfoEnabled),
     ...handlePrice(price, priceEnabled),
+    createdAt,
+    updatedAt,
+    ...(isPayloadType(updatedBy)
+      ? { updatedBy: convertRecorderToEndpointRecorder(updatedBy) }
+      : {}),
+    parentPages: convertSourceToEndpointSource({ collectibles: parentItems, folders }),
   };
 };
 
