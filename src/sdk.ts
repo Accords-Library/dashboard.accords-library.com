@@ -74,7 +74,11 @@ const getToken = async (): Promise<string> => {
 
 const injectAuth = async (init?: RequestInit): Promise<RequestInit> => ({
   ...init,
-  headers: { ...init?.headers, Authorization: `JWT ${await getToken()}` },
+  headers: {
+    ...init?.headers,
+    Authorization: `JWT ${await getToken()}`,
+    "x-rate-limit-skip": process.env.PAYLOAD_RATING_LIMIT_SKIP_TOKEN ?? "",
+  },
 });
 
 const logResponse = (res: Response) => console.log(res.status, res.statusText, res.url);

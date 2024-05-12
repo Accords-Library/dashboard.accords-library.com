@@ -4,7 +4,6 @@ import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import path from "path";
 import { buildConfig } from "payload/config";
 import { sftpAdapter } from "payloadcms-sftp-storage";
-import { mustBeAdmin } from "./accesses/collections/mustBeAdmin";
 import { Audios } from "./collections/Audios/Audios";
 import { ChronologyEvents } from "./collections/ChronologyEvents/ChronologyEvents";
 import { Collectibles } from "./collections/Collectibles/Collectibles";
@@ -91,7 +90,7 @@ export default buildConfig({
   rateLimit: {
     window: 900_000, // 15 minutes
     max: 500,
-    skip: (req) => !!mustBeAdmin({ req }),
+    skip: (request) => request.headers["x-rate-limit-skip"] === process.env.RATING_LIMIT_SKIP_TOKEN,
   },
   plugins: [
     cloudStorage({
