@@ -149,3 +149,10 @@ html[data-theme="light"] {
     }
   }
 }
+
+// The Select all X entries button
+// It can lead to accidental deletions. Bring it back when
+// https://github.com/payloadcms/payload/issues/6326 is fixed.
+button.list-selection__button {
+  display: none;
+}
