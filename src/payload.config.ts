@@ -88,9 +88,7 @@ export default buildConfig({
     disable: true,
   },
   rateLimit: {
-    window: 900_000, // 15 minutes
-    max: 500,
-    skip: (request) => request.headers["x-rate-limit-skip"] === process.env.RATING_LIMIT_SKIP_TOKEN,
+    skip: () => true,
   },
   plugins: [
     cloudStorage({
