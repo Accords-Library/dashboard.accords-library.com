@@ -65,7 +65,11 @@ export const Recorders = buildCollectionConfig({
       ],
     },
   },
-  auth: { tokenExpiration: 24 * 60 * 60 },
+  auth: {
+    tokenExpiration: 24 * 60 * 60, // 1 day
+    maxLoginAttempts: 5,
+    lockTime: 900_000, // 15 minutes
+  },
   access: {
     unlock: mustBeAdminForCollections,
     update: mustBeAdminOrSelf,
