@@ -1,5 +1,6 @@
 import { icons } from "@iconify-json/material-symbols";
 import { TextField } from "payload/types";
+import { isEmpty } from "../../utils/asserts";
 
 type Props = Omit<TextField, "type" | "hasMany" | "maxRows" | "minRows">;
 
@@ -12,7 +13,8 @@ export const iconField = (props: Props): TextField => ({
     description:
       "Select an icon from here: https://icones.js.org/collection/material-symbols. Only outline and regular variants are usable on the website.",
   },
-  validate: (value) => {
+  validate: async (value) => {
+    if (isEmpty(value)) return true;
     if (!validNames.includes(value)) {
       return `The icon "${value}" doesn't exist in material-symbols`;
     }
