@@ -13,7 +13,7 @@ export const iconField = (props: Props): TextField => ({
     description:
       "Select an icon from here: https://icones.js.org/collection/material-symbols. Only outline and regular variants are usable on the website.",
   },
-  validate: async (value) => {
+  validate: (value) => {
     if (isEmpty(value)) return true;
     if (!validNames.includes(value)) {
       return `The icon "${value}" doesn't exist in material-symbols`;
