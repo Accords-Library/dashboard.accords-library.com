@@ -1,4 +1,5 @@
 import { CollectionGroups, Collections } from "../../constants";
+import { attributesField } from "../../fields/attributesField/attributesField";
 import { componentField } from "../../fields/componentField/componentField";
 import { creditsField } from "../../fields/creditsField/creditsField";
 import { imageField } from "../../fields/imageField/imageField";
@@ -23,6 +24,7 @@ const fields = {
   thumbnail: "thumbnail",
   duration: "duration",
   tags: "tags",
+  attributes: "attributes",
   platform: "platform",
   platformChannel: "channel",
   platformViews: "views",
@@ -87,6 +89,7 @@ export const Videos = buildCollectionConfig({
       ],
     }),
     tagsField({ name: fields.tags }),
+    attributesField({ name: fields.attributes }),
     creditsField({ name: fields.credits }),
     componentField({
       name: fields.platform,

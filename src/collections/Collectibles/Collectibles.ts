@@ -7,6 +7,7 @@ import {
   CollectionGroups,
   Collections,
 } from "../../constants";
+import { attributesField } from "../../fields/attributesField/attributesField";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { componentField } from "../../fields/componentField/componentField";
 import { creditsField } from "../../fields/creditsField/creditsField";
@@ -34,6 +35,7 @@ const fields = {
   backgroundImage: "backgroundImage",
   nature: "nature",
   tags: "tags",
+  attributes: "attributes",
   languages: "languages",
 
   translations: "translations",
@@ -189,6 +191,7 @@ export const Collectibles = buildVersionedCollectionConfig({
             ]),
 
             tagsField({ name: fields.tags }),
+            attributesField({ name: fields.attributes }),
 
             translatedFields({
               name: fields.translations,

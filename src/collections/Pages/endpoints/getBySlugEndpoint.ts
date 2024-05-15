@@ -11,10 +11,10 @@ import { EndpointPage, TableOfContentEntry } from "../../../sdk";
 import { Page } from "../../../types/collections";
 import { isNotEmpty, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
 import {
+  convertAttributesToEndpointAttributes,
   convertCreditsToEndpointCredits,
   convertRTCToEndpointRTC,
   convertSourceToEndpointSource,
-  convertTagsEndpointTagsGroups,
 } from "../../../utils/endpoints";
 import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 import { convertRecorderToEndpointRecorder } from "../../Recorders/endpoints/getByUsername";
@@ -31,7 +31,7 @@ export const convertPageToEndpointPage = ({
   folders,
   backgroundImage,
   slug,
-  tags,
+  attributes,
   thumbnail,
   createdAt,
   updatedAt,
@@ -42,7 +42,7 @@ export const convertPageToEndpointPage = ({
   ...(isValidPayloadImage(backgroundImage)
     ? { backgroundImage: convertImageToEndpointImage(backgroundImage) }
     : {}),
-  tagGroups: convertTagsEndpointTagsGroups(tags),
+  attributes: convertAttributesToEndpointAttributes(attributes),
   translations: translations.map(
     ({ content, language, sourceLanguage, title, pretitle, subtitle, summary, credits }) => ({
       language: isPayloadType(language) ? language.id : language,

@@ -5,9 +5,9 @@ import { Audio } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isNotEmpty, isValidPayloadImage, isValidPayloadMedia } from "../../../utils/asserts";
 import {
+  convertAttributesToEndpointAttributes,
   convertCreditsToEndpointCredits,
   convertRTCToEndpointRTC,
-  convertTagsEndpointTagsGroups,
   getLanguageId,
 } from "../../../utils/endpoints";
 
@@ -48,7 +48,7 @@ export const getByID: CollectionEndpoint = {
 
 export const convertAudioToEndpointAudio = ({
   url,
-  tags,
+  attributes,
   translations,
   mimeType,
   createdAt,
@@ -61,7 +61,7 @@ export const convertAudioToEndpointAudio = ({
   credits,
 }: Audio & PayloadMedia): EndpointAudio => ({
   url,
-  tagGroups: convertTagsEndpointTagsGroups(tags),
+  attributes: convertAttributesToEndpointAttributes(attributes),
   createdAt,
   filename,
   filesize,

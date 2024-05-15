@@ -12,8 +12,8 @@ import {
   isValidPayloadMedia,
 } from "../../../utils/asserts";
 import {
+  convertAttributesToEndpointAttributes,
   convertSourceToEndpointSource,
-  convertTagsEndpointTagsGroups,
   getDomainFromUrl,
 } from "../../../utils/endpoints";
 import { convertAudioToEndpointAudio } from "../../Audios/endpoints/getByID";
@@ -52,7 +52,7 @@ export const convertCollectibleToEndpointCollectible = ({
   releaseDate,
   languages,
   scans: rawScans,
-  tags,
+  attributes,
   createdAt,
   updatedAt,
   scansEnabled,
@@ -72,7 +72,7 @@ export const convertCollectibleToEndpointCollectible = ({
     ...(isValidPayloadImage(backgroundImage)
       ? { backgroundImage: convertImageToEndpointImage(backgroundImage) }
       : {}),
-    tagGroups: convertTagsEndpointTagsGroups(tags),
+    attributes: convertAttributesToEndpointAttributes(attributes),
     translations:
       translations?.map(({ language, title, description, pretitle, subtitle }) => ({
         language: isPayloadType(language) ? language.id : language,

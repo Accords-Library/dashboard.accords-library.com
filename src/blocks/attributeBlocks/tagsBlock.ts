@@ -1,0 +1,28 @@
+import { Block } from "payload/types";
+import { AttributeTypes, Collections } from "../../constants";
+import { rowField } from "../../fields/rowField/rowField";
+
+export const tagsBlock: Block = {
+  slug: "tagsBlock",
+  interfaceName: "TagsBlock",
+  labels: { singular: "Tags attribute", plural: "Tags attributes" },
+  fields: [
+    rowField([
+      {
+        name: "name",
+        type: "relationship",
+        relationTo: Collections.Attributes,
+        filterOptions: () => ({ type: { equals: AttributeTypes.Tags } }),
+        required: true,
+      },
+      {
+        name: "tags",
+        type: "relationship",
+        relationTo: Collections.Tags,
+        required: true,
+        hasMany: true,
+        minRows: 1,
+      },
+    ]),
+  ],
+};

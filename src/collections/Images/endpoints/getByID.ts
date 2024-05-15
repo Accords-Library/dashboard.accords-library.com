@@ -5,9 +5,9 @@ import { Image } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isNotEmpty, isValidPayloadImage } from "../../../utils/asserts";
 import {
+  convertAttributesToEndpointAttributes,
   convertCreditsToEndpointCredits,
   convertRTCToEndpointRTC,
-  convertTagsEndpointTagsGroups,
   getLanguageId,
 } from "../../../utils/endpoints";
 
@@ -50,7 +50,7 @@ export const convertImageToEndpointImage = ({
   url,
   width,
   height,
-  tags,
+  attributes,
   translations,
   mimeType,
   createdAt,
@@ -63,7 +63,7 @@ export const convertImageToEndpointImage = ({
   url,
   width,
   height,
-  tagGroups: convertTagsEndpointTagsGroups(tags),
+  attributes: convertAttributesToEndpointAttributes(attributes),
   createdAt,
   filename,
   filesize,

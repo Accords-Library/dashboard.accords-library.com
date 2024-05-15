@@ -2,9 +2,11 @@ import { convertAudioToEndpointAudio } from "../collections/Audios/endpoints/get
 import { convertCollectibleToEndpointCollectible } from "../collections/Collectibles/endpoints/getBySlugEndpoint";
 import { convertFolderToEndpointFolder } from "../collections/Folders/endpoints/getBySlugEndpoint";
 import { convertImageToEndpointImage } from "../collections/Images/endpoints/getByID";
+import { convertPageToEndpointPage } from "../collections/Pages/endpoints/getBySlugEndpoint";
 import { convertRecorderToEndpointRecorder } from "../collections/Recorders/endpoints/getByUsername";
 import { convertVideoToEndpointVideo } from "../collections/Videos/endpoints/getByID";
 import {
+  AttributeTypes,
   RichTextBreakBlock,
   RichTextContent,
   RichTextSectionBlock,
@@ -18,11 +20,11 @@ import {
   isUploadNodeVideoNode,
 } from "../constants";
 import {
+  EndpointAttribute,
   EndpointCredit,
   EndpointRole,
   EndpointSource,
   EndpointTag,
-  EndpointTagsGroup,
 } from "../sdk";
 import {
   Audio,
@@ -32,10 +34,15 @@ import {
   Folder,
   Image,
   Language,
+  NumberBlock,
   Tag,
+  TagsBlock,
+  TextBlock,
   Video,
 } from "../types/collections";
 import {
+  isDefined,
+  isEmpty,
   isPayloadArrayType,
   isPayloadType,
   isPublished,
@@ -43,45 +50,14 @@ import {
   isValidPayloadMedia,
 } from "./asserts";
 
-export const convertTagsEndpointTagsGroups = (
-  tags: (string | Tag)[] | null | undefined
-): EndpointTagsGroup[] => {
-  if (!isPayloadArrayType(tags)) {
-    return [];
-  }
-
-  const groups: EndpointTagsGroup[] = [];
-
-  tags.forEach(({ translations, slug, group }) => {
-    if (isPayloadType(group)) {
-      const existingGroup = groups.find((existingGroup) => existingGroup.slug === group.slug);
-
-      const endpointTag: EndpointTag = {
-        slug,
-        translations: translations.map(({ language, name }) => ({
-          language: isPayloadType(language) ? language.id : language,
-          name,
-        })),
-      };
-
-      if (existingGroup) {
-        existingGroup.tags.push(endpointTag);
-      } else {
-        groups.push({
-          slug: group.slug,
-          icon: group.icon ?? "material-symbols:category-outline",
-          tags: [endpointTag],
-          translations: group.translations.map(({ language, name }) => ({
-            language: isPayloadType(language) ? language.id : language,
-            name,
-          })),
-        });
-      }
-    }
-  });
-
-  return groups;
-};
+const convertTagToEndpointTag = ({ slug, page, translations }: Tag): EndpointTag => ({
+  slug,
+  ...(page && isPayloadType(page) ? { page: convertPageToEndpointPage(page) } : {}),
+  translations: translations.map(({ language, name }) => ({
+    language: isPayloadType(language) ? language.id : language,
+    name,
+  })),
+});
 
 export const convertRTCToEndpointRTC = (
   { root: { children, ...others } }: RichTextContent,
@@ -233,3 +209,66 @@ export const convertCreditsToEndpointCredits = (credits?: Credits | null): Endpo
       },
     ];
   }) ?? [];
+
+export const convertAttributesToEndpointAttributes = (
+  attributes: (TagsBlock | NumberBlock | TextBlock)[] | null | undefined
+): EndpointAttribute[] =>
+  attributes?.map(convertAttributeToEndpointAttribute).filter(isDefined) ?? [];
+
+const convertAttributeToEndpointAttribute = (
+  attribute: TagsBlock | NumberBlock | TextBlock
+): EndpointAttribute | undefined => {
+  switch (attribute.blockType) {
+    case "numberBlock": {
+      const { name, number } = attribute;
+      if (!isPayloadType(name)) return;
+      const { slug, icon, translations } = name;
+      return {
+        slug,
+        icon: icon ?? "material-symbols:category-outline",
+        translations: translations.map(({ language, name }) => ({
+          language: isPayloadType(language) ? language.id : language,
+          name,
+        })),
+        type: AttributeTypes.Number,
+        value: number,
+      };
+    }
+
+    case "textBlock": {
+      const { name, text } = attribute;
+      if (!isPayloadType(name)) return;
+      if (isEmpty(text)) return;
+      const { slug, icon, translations } = name;
+      return {
+        slug,
+        icon: icon ?? "material-symbols:category-outline",
+        translations: translations.map(({ language, name }) => ({
+          language: isPayloadType(language) ? language.id : language,
+          name,
+        })),
+        type: AttributeTypes.Text,
+        value: text,
+      };
+    }
+
+    case "tagsBlock": {
+      const { name, tags } = attribute;
+      if (!isPayloadType(name)) return;
+      if (!isPayloadArrayType(tags)) return;
+      if (tags.length === 0) return;
+      const { slug, icon, translations } = name;
+
+      return {
+        slug,
+        icon: icon ?? "material-symbols:category-outline",
+        translations: translations.map(({ language, name }) => ({
+          language: isPayloadType(language) ? language.id : language,
+          name,
+        })),
+        type: AttributeTypes.Tags,
+        value: tags.map(convertTagToEndpointTag),
+      };
+    }
+  }
+};

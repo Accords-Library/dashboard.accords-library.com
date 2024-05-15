@@ -13,9 +13,9 @@ import {
   isValidPayloadMedia,
 } from "../../../utils/asserts";
 import {
+  convertAttributesToEndpointAttributes,
   convertCreditsToEndpointCredits,
   convertRTCToEndpointRTC,
-  convertTagsEndpointTagsGroups,
   getLanguageId,
 } from "../../../utils/endpoints";
 
@@ -56,7 +56,7 @@ export const getByID: CollectionEndpoint = {
 
 export const convertVideoToEndpointVideo = ({
   url,
-  tags,
+  attributes,
   translations,
   mimeType,
   createdAt,
@@ -71,7 +71,7 @@ export const convertVideoToEndpointVideo = ({
   credits,
 }: Video & PayloadMedia): EndpointVideo => ({
   url,
-  tagGroups: convertTagsEndpointTagsGroups(tags),
+  attributes: convertAttributesToEndpointAttributes(attributes),
   createdAt,
   filename,
   filesize,

@@ -32,7 +32,7 @@ export interface Config {
     "videos-channels": VideosChannel;
     scans: Scan;
     tags: Tag;
-    "tags-groups": TagsGroup;
+    attributes: Attribute;
     "credits-roles": CreditsRole;
     recorders: Recorder;
     languages: Language;
@@ -56,6 +56,7 @@ export interface Page {
   thumbnail?: string | Image | null;
   backgroundImage?: string | Image | null;
   tags?: (string | Tag)[] | null;
+  attributes?: (TagsBlock | NumberBlock | TextBlock)[] | null;
   translations: {
     language: string | Language;
     sourceLanguage: string | Language;
@@ -133,6 +134,7 @@ export interface Image {
       }[]
     | null;
   tags?: (string | Tag)[] | null;
+  attributes?: (TagsBlock | NumberBlock | TextBlock)[] | null;
   credits?: Credits;
   updatedAt: string;
   createdAt: string;
@@ -175,25 +177,36 @@ export interface Language {
  */
 export interface Tag {
   id: string;
-  name?: string | null;
   slug: string;
+  page?: (string | null) | Page;
   translations: {
     language: string | Language;
     name: string;
     id?: string | null;
   }[];
-  group: string | TagsGroup;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags-groups".
+ * via the `definition` "TagsBlock".
  */
-export interface TagsGroup {
+export interface TagsBlock {
+  name: string | Attribute;
+  tags: (string | Tag)[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: "tagsBlock";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "attributes".
+ */
+export interface Attribute {
   id: string;
   slug: string;
   icon?: string | null;
+  type: "Number" | "Text" | "Tags";
   translations: {
     language: string | Language;
     name: string;
@@ -201,6 +214,28 @@ export interface TagsGroup {
   }[];
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NumberBlock".
+ */
+export interface NumberBlock {
+  name: string | Attribute;
+  number: number;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: "numberBlock";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TextBlock".
+ */
+export interface TextBlock {
+  name: string | Attribute;
+  text: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: "textBlock";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -318,6 +353,7 @@ export interface Collectible {
   nature: "Physical" | "Digital";
   languages?: (string | Language)[] | null;
   tags?: (string | Tag)[] | null;
+  attributes?: (TagsBlock | NumberBlock | TextBlock)[] | null;
   translations: {
     language: string | Language;
     pretitle?: string | null;
@@ -582,6 +618,7 @@ export interface Audio {
     id?: string | null;
   }[];
   tags?: (string | Tag)[] | null;
+  attributes?: (TagsBlock | NumberBlock | TextBlock)[] | null;
   credits?: Credits;
   updatedAt: string;
   createdAt: string;
@@ -657,6 +694,7 @@ export interface Video {
     id?: string | null;
   }[];
   tags?: (string | Tag)[] | null;
+  attributes?: (TagsBlock | NumberBlock | TextBlock)[] | null;
   credits?: Credits;
   platformEnabled?: boolean | null;
   platform?: {

@@ -4,26 +4,26 @@ import type { BreakBlock, SectionBlock, TranscriptBlock } from "./types/collecti
 // END MOCKING SECTION
 
 export enum Collections {
+  Attributes = "attributes",
   Audios = "audios",
   ChronologyEvents = "chronology-events",
+  Collectibles = "collectibles",
+  CreditsRole = "credits-roles",
   Currencies = "currencies",
+  Folders = "folders",
+  GenericContents = "generic-contents",
+  Images = "images",
   Languages = "languages",
+  MediaThumbnails = "media-thumbnails",
   Pages = "pages",
   Recorders = "recorders",
-  Folders = "folders",
-  Tags = "tags",
-  TagsGroups = "tags-groups",
-  Images = "images",
-  Wordings = "wordings",
-  Collectibles = "collectibles",
-  GenericContents = "generic-contents",
-  WebsiteConfig = "website-config",
-  Videos = "videos",
-  VideosSubtitles = "videos-subtitles",
-  VideosChannels = "videos-channels",
-  MediaThumbnails = "media-thumbnails",
   Scans = "scans",
-  CreditsRole = "credits-roles",
+  Tags = "tags",
+  Videos = "videos",
+  VideosChannels = "videos-channels",
+  VideosSubtitles = "videos-subtitles",
+  Wordings = "wordings",
+  WebsiteConfig = "website-config",
 }
 
 export enum CollectionGroups {
@@ -78,6 +78,12 @@ export enum RecordersRoles {
 export enum CollectionStatus {
   Draft = "draft",
   Published = "published",
+}
+
+export enum AttributeTypes {
+  Number = "Number",
+  Text = "Text",
+  Tags = "Tags",
 }
 
 /* RICH TEXT */

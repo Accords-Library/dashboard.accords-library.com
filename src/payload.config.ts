@@ -4,6 +4,7 @@ import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import path from "path";
 import { buildConfig } from "payload/config";
 import { sftpAdapter } from "payloadcms-sftp-storage";
+import { Attributes } from "./collections/Attributes/Attributes";
 import { Audios } from "./collections/Audios/Audios";
 import { ChronologyEvents } from "./collections/ChronologyEvents/ChronologyEvents";
 import { Collectibles } from "./collections/Collectibles/Collectibles";
@@ -13,15 +14,14 @@ import { Folders } from "./collections/Folders/Folders";
 import { GenericContents } from "./collections/GenericContents/GenericContents";
 import { Images } from "./collections/Images/Images";
 import { Languages } from "./collections/Languages/Languages";
+import { MediaThumbnails } from "./collections/MediaThumbnails/MediaThumbnails";
 import { Pages } from "./collections/Pages/Pages";
 import { Recorders } from "./collections/Recorders/Recorders";
 import { Scans } from "./collections/Scans/Scans";
 import { Tags } from "./collections/Tags/Tags";
-import { TagsGroups } from "./collections/TagsGroups/TagsGroups";
 import { Videos } from "./collections/Videos/Videos";
 import { VideosChannels } from "./collections/VideosChannels/VideosChannels";
 import { VideosSubtitles } from "./collections/VideosSubtitles/VideosSubtitles";
-import { MediaThumbnails } from "./collections/VideosThumbnails/VideosThumbnails";
 import { WebsiteConfig } from "./collections/WebsiteConfig/WebsiteConfig";
 import { Wordings } from "./collections/Wordings/Wordings";
 import { Icon } from "./components/Icon";
@@ -68,7 +68,7 @@ export default buildConfig({
     Scans,
 
     Tags,
-    TagsGroups,
+    Attributes,
     CreditsRoles,
     Recorders,
     Languages,

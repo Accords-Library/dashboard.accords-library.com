@@ -4,6 +4,7 @@ import { sectionBlock } from "../../blocks/sectionBlock";
 import { transcriptBlock } from "../../blocks/transcriptBlock";
 import { QuickFilters, publishStatusFilters } from "../../components/QuickFilters";
 import { CollectionGroups, Collections } from "../../constants";
+import { attributesField } from "../../fields/attributesField/attributesField";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { creditsField } from "../../fields/creditsField/creditsField";
 import { imageField } from "../../fields/imageField/imageField";
@@ -24,6 +25,7 @@ const fields = {
   backgroundImage: "backgroundImage",
   translations: "translations",
   tags: "tags",
+  attributes: "attributes",
   sourceLanguage: "sourceLanguage",
   pretitle: "pretitle",
   title: "title",
@@ -89,6 +91,7 @@ export const Pages = buildVersionedCollectionConfig({
       }),
     ]),
     tagsField({ name: fields.tags }),
+    attributesField({ name: fields.attributes }),
     translatedFields({
       name: fields.translations,
       admin: { useAsTitle: fields.title, hasSourceLanguage: true },

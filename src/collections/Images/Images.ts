@@ -1,4 +1,5 @@
 import { Collections } from "../../constants";
+import { attributesField } from "../../fields/attributesField/attributesField";
 import { creditsField } from "../../fields/creditsField/creditsField";
 import { rowField } from "../../fields/rowField/rowField";
 import { tagsField } from "../../fields/tagsField/tagsField";
@@ -19,6 +20,7 @@ const fields = {
   translationsSubtitle: "subtitle",
   translationsDescription: "description",
   tags: "tags",
+  attributes: "attributes",
   credits: "credits",
 } as const satisfies Record<string, string>;
 
@@ -64,6 +66,7 @@ export const Images = buildImageCollectionConfig({
       ],
     }),
     tagsField({ name: fields.tags }),
+    attributesField({ name: fields.attributes }),
     creditsField({ name: fields.credits }),
   ],
 });

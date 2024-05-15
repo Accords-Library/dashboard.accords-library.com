@@ -1,4 +1,5 @@
 import {
+  AttributeTypes,
   CollectibleBindingTypes,
   CollectibleNature,
   CollectiblePageOrders,
@@ -173,21 +174,41 @@ export type EndpointWording = {
 
 export type EndpointTag = {
   slug: string;
+  page?: EndpointPage;
   translations: {
     language: string;
     name: string;
   }[];
 };
 
-export type EndpointTagsGroup = {
+export type EndpointGenericAttribute = {
   slug: string;
   icon: string;
   translations: {
     language: string;
     name: string;
   }[];
-  tags: EndpointTag[];
 };
+
+export type EndpointNumberAttribute = EndpointGenericAttribute & {
+  type: AttributeTypes.Number;
+  value: number;
+};
+
+export type EndpointTextAttribute = EndpointGenericAttribute & {
+  type: AttributeTypes.Text;
+  value: string;
+};
+
+export type EndpointTagsAttribute = EndpointGenericAttribute & {
+  type: AttributeTypes.Tags;
+  value: EndpointTag[];
+};
+
+export type EndpointAttribute =
+  | EndpointNumberAttribute
+  | EndpointTextAttribute
+  | EndpointTagsAttribute;
 
 export type EndpointRole = {
   icon: string;
@@ -205,7 +226,7 @@ export type EndpointCredit = {
 export type EndpointPage = {
   slug: string;
   thumbnail?: EndpointImage;
-  tagGroups: EndpointTagsGroup[];
+  attributes: EndpointAttribute[];
   backgroundImage?: EndpointImage;
   translations: {
     language: string;
@@ -234,7 +255,7 @@ export type EndpointCollectible = {
     subtitle?: string;
     description?: RichTextContent;
   }[];
-  tagGroups: EndpointTagsGroup[];
+  attributes: EndpointAttribute[];
   releaseDate?: string;
   languages: string[];
   backgroundImage?: EndpointImage;
@@ -458,7 +479,7 @@ export type EndpointMedia = {
   filesize: number;
   updatedAt: string;
   createdAt: string;
-  tagGroups: EndpointTagsGroup[];
+  attributes: EndpointAttribute[];
   translations: {
     language: string;
     pretitle?: string;
