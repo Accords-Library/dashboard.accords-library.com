@@ -50,7 +50,7 @@ export const Recorders = buildCollectionConfig({
             slug: Collections.Recorders,
             filterGroups: [
               [
-                ...Object.entries(RecordersRoles).map(([_, value]) => ({
+                ...Object.values(RecordersRoles).map((value) => ({
                   label: value,
                   filter: { where: { role: { equals: value } } },
                 })),
@@ -113,7 +113,7 @@ export const Recorders = buildCollectionConfig({
         create: mustBeAdminForFields,
       },
       hasMany: true,
-      options: Object.entries(RecordersRoles).map(([_, value]) => ({
+      options: Object.values(RecordersRoles).map((value) => ({
         label: value,
         value: value,
       })),

@@ -169,7 +169,7 @@ export const Collectibles = buildVersionedCollectionConfig({
                 type: "radio",
                 required: true,
                 defaultValue: CollectibleNature.Physical,
-                options: Object.entries(CollectibleNature).map(([_, value]) => ({
+                options: Object.values(CollectibleNature).map((value) => ({
                   label: value,
                   value: value,
                 })),
@@ -540,7 +540,7 @@ export const Collectibles = buildVersionedCollectionConfig({
                   {
                     name: fields.pageInfoBindingType,
                     type: "radio",
-                    options: Object.entries(CollectibleBindingTypes).map(([_, value]) => ({
+                    options: Object.values(CollectibleBindingTypes).map((value) => ({
                       label: value,
                       value: value,
                     })),
@@ -551,7 +551,7 @@ export const Collectibles = buildVersionedCollectionConfig({
                   {
                     name: fields.pageInfoPageOrder,
                     type: "radio",
-                    options: Object.entries(CollectiblePageOrders).map(([_, value]) => ({
+                    options: Object.values(CollectiblePageOrders).map((value) => ({
                       label: value,
                       value: value,
                     })),

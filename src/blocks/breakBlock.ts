@@ -11,7 +11,7 @@ export const breakBlock: LexicalBlock = {
       type: "radio",
       required: true,
       defaultValue: BreakBlockType.sceneBreak,
-      options: Object.entries(BreakBlockType).map(([_, value]) => ({
+      options: Object.values(BreakBlockType).map((value) => ({
         label: value,
         value: value,
       })),
