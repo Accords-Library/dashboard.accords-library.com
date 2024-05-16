@@ -55,7 +55,6 @@ export interface Page {
   slug: string;
   thumbnail?: string | Image | null;
   backgroundImage?: string | Image | null;
-  tags?: (string | Tag)[] | null;
   attributes?: (TagsBlock | NumberBlock | TextBlock)[] | null;
   translations: {
     language: string | Language;
@@ -133,7 +132,6 @@ export interface Image {
         id?: string | null;
       }[]
     | null;
-  tags?: (string | Tag)[] | null;
   attributes?: (TagsBlock | NumberBlock | TextBlock)[] | null;
   credits?: Credits;
   updatedAt: string;
@@ -173,22 +171,6 @@ export interface Language {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: string;
-  slug: string;
-  page?: (string | null) | Page;
-  translations: {
-    language: string | Language;
-    name: string;
-    id?: string | null;
-  }[];
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "TagsBlock".
  */
 export interface TagsBlock {
@@ -207,6 +189,22 @@ export interface Attribute {
   slug: string;
   icon?: string | null;
   type: "Number" | "Text" | "Tags";
+  translations: {
+    language: string | Language;
+    name: string;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: string;
+  slug: string;
+  page?: (string | null) | Page;
   translations: {
     language: string | Language;
     name: string;
@@ -373,7 +371,6 @@ export interface Collectible {
   thumbnail?: string | Image | null;
   nature: "Physical" | "Digital";
   languages?: (string | Language)[] | null;
-  tags?: (string | Tag)[] | null;
   attributes?: (TagsBlock | NumberBlock | TextBlock)[] | null;
   translations: {
     language: string | Language;
@@ -638,7 +635,6 @@ export interface Audio {
     } | null;
     id?: string | null;
   }[];
-  tags?: (string | Tag)[] | null;
   attributes?: (TagsBlock | NumberBlock | TextBlock)[] | null;
   credits?: Credits;
   updatedAt: string;
@@ -714,7 +710,6 @@ export interface Video {
     subfile?: string | VideoSubtitle | null;
     id?: string | null;
   }[];
-  tags?: (string | Tag)[] | null;
   attributes?: (TagsBlock | NumberBlock | TextBlock)[] | null;
   credits?: Credits;
   platformEnabled?: boolean | null;

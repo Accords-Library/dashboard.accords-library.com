@@ -14,7 +14,6 @@ import { creditsField } from "../../fields/creditsField/creditsField";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
-import { tagsField } from "../../fields/tagsField/tagsField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
@@ -34,7 +33,6 @@ const fields = {
   thumbnail: "thumbnail",
   backgroundImage: "backgroundImage",
   nature: "nature",
-  tags: "tags",
   attributes: "attributes",
   languages: "languages",
 
@@ -190,7 +188,6 @@ export const Collectibles = buildVersionedCollectionConfig({
               },
             ]),
 
-            tagsField({ name: fields.tags }),
             attributesField({ name: fields.attributes }),
 
             translatedFields({

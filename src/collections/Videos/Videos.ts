@@ -4,7 +4,6 @@ import { componentField } from "../../fields/componentField/componentField";
 import { creditsField } from "../../fields/creditsField/creditsField";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
-import { tagsField } from "../../fields/tagsField/tagsField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { createEditor } from "../../utils/editor";
@@ -23,7 +22,6 @@ const fields = {
   translationsSubfile: "subfile",
   thumbnail: "thumbnail",
   duration: "duration",
-  tags: "tags",
   attributes: "attributes",
   platform: "platform",
   platformChannel: "channel",
@@ -88,7 +86,6 @@ export const Videos = buildCollectionConfig({
         },
       ],
     }),
-    tagsField({ name: fields.tags }),
     attributesField({ name: fields.attributes }),
     creditsField({ name: fields.credits }),
     componentField({

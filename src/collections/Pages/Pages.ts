@@ -10,7 +10,6 @@ import { creditsField } from "../../fields/creditsField/creditsField";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
-import { tagsField } from "../../fields/tagsField/tagsField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
@@ -24,7 +23,6 @@ const fields = {
   thumbnail: "thumbnail",
   backgroundImage: "backgroundImage",
   translations: "translations",
-  tags: "tags",
   attributes: "attributes",
   sourceLanguage: "sourceLanguage",
   pretitle: "pretitle",
@@ -50,7 +48,6 @@ export const Pages = buildVersionedCollectionConfig({
       fields.slug,
       fields.thumbnail,
       fields.backgroundImage,
-      fields.tags,
       fields.translations,
       fields.folders,
     ],
@@ -90,7 +87,6 @@ export const Pages = buildVersionedCollectionConfig({
         },
       }),
     ]),
-    tagsField({ name: fields.tags }),
     attributesField({ name: fields.attributes }),
     translatedFields({
       name: fields.translations,
