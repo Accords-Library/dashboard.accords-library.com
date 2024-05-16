@@ -79,7 +79,6 @@ const start = async () => {
     result.push(removeMockingSection(readFileSync(path.join(__dirname, "constants.ts"), "utf-8")));
 
     result.push("////////////////// SDK //////////////////");
-    result.push(`import NodeCache from "node-cache";`);
     result.push(removeMockingSection(readFileSync(path.join(__dirname, "sdk.ts"), "utf-8")));
 
     res.type("text/plain");
