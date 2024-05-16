@@ -19,7 +19,7 @@ import {
 import { convertAudioToEndpointAudio } from "../../Audios/endpoints/getByID";
 import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 import { convertPageToEndpointPage } from "../../Pages/endpoints/getBySlugEndpoint";
-import { convertRecorderToEndpointRecorder } from "../../Recorders/endpoints/getByUsername";
+import { convertRecorderToEndpointRecorder } from "../../Recorders/endpoints/getByID";
 import { convertVideoToEndpointVideo } from "../../Videos/endpoints/getByID";
 
 export const getBySlugEndpoint = createGetByEndpoint({

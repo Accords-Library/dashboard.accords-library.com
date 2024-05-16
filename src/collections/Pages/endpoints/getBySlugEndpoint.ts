@@ -17,7 +17,7 @@ import {
   convertSourceToEndpointSource,
 } from "../../../utils/endpoints";
 import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
-import { convertRecorderToEndpointRecorder } from "../../Recorders/endpoints/getByUsername";
+import { convertRecorderToEndpointRecorder } from "../../Recorders/endpoints/getByID";
 
 export const getBySlugEndpoint = createGetByEndpoint({
   collection: Collections.Pages,

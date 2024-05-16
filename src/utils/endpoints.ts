@@ -3,7 +3,7 @@ import { convertCollectibleToEndpointCollectible } from "../collections/Collecti
 import { convertFolderToEndpointFolder } from "../collections/Folders/endpoints/getBySlugEndpoint";
 import { convertImageToEndpointImage } from "../collections/Images/endpoints/getByID";
 import { convertPageToEndpointPage } from "../collections/Pages/endpoints/getBySlugEndpoint";
-import { convertRecorderToEndpointRecorder } from "../collections/Recorders/endpoints/getByUsername";
+import { convertRecorderToEndpointRecorder } from "../collections/Recorders/endpoints/getByID";
 import { convertVideoToEndpointVideo } from "../collections/Videos/endpoints/getByID";
 import {
   AttributeTypes,

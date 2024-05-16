@@ -161,6 +161,10 @@ export type EndpointRecorder = {
   id: string;
   username: string;
   avatar?: EndpointImage;
+  translations: {
+    language: string;
+    biography: RichTextContent;
+  }[];
   languages: string[];
 };
 
@@ -544,8 +548,6 @@ export const payload = {
     await (await request(payloadApiUrl(Collections.Currencies, `all`))).json(),
   getWordings: async (): Promise<EndpointWording[]> =>
     await (await request(payloadApiUrl(Collections.Wordings, `all`))).json(),
-  getRecorders: async (): Promise<EndpointRecorder[]> =>
-    await (await request(payloadApiUrl(Collections.Recorders, `all`))).json(),
   getPage: async (slug: string): Promise<EndpointPage> =>
     await (await request(payloadApiUrl(Collections.Pages, `slug/${slug}`))).json(),
   getCollectible: async (slug: string): Promise<EndpointCollectible> =>
@@ -578,4 +580,6 @@ export const payload = {
     await (await request(payloadApiUrl(Collections.Audios, `id/${id}`))).json(),
   getVideoByID: async (id: string): Promise<EndpointVideo> =>
     await (await request(payloadApiUrl(Collections.Videos, `id/${id}`))).json(),
+  getRecorderByID: async (id: string): Promise<EndpointRecorder> =>
+    await (await request(payloadApiUrl(Collections.Recorders, `id/${id}`))).json(),
 };

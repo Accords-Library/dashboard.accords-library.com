@@ -262,6 +262,27 @@ export interface Recorder {
   username: string;
   avatar?: string | Image | null;
   languages?: (string | Language)[] | null;
+  translations?:
+    | {
+        language: string | Language;
+        biography: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ("ltr" | "rtl") | null;
+            format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+      }[]
+    | null;
   role?: ("Admin" | "Recorder" | "Api")[] | null;
   anonymize: boolean;
   email: string;

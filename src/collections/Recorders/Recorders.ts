@@ -5,9 +5,10 @@ import { QuickFilters } from "../../components/QuickFilters";
 import { CollectionGroups, Collections, RecordersRoles } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
+import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
-import { getAllEndpoint } from "./endpoints/getAllEndpoint";
-import { getByUsernameEndpoint } from "./endpoints/getByUsername";
+import { createEditor } from "../../utils/editor";
+import { getByID } from "./endpoints/getByID";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 import { beforeLoginMustHaveAtLeastOneRole } from "./hooks/beforeLoginMustHaveAtLeastOneRole";
 
@@ -15,8 +16,8 @@ const fields = {
   username: "username",
   anonymize: "anonymize",
   languages: "languages",
-  biographies: "biographies",
-  biography: "biography",
+  translations: "translations",
+  translationsBiography: "biography",
   avatar: "avatar",
   role: "role",
 } as const satisfies Record<string, string>;
@@ -37,7 +38,7 @@ export const Recorders = buildCollectionConfig({
       fields.avatar,
       fields.username,
       fields.anonymize,
-      fields.biographies,
+      fields.translations,
       fields.languages,
       fields.role,
     ],
@@ -79,7 +80,7 @@ export const Recorders = buildCollectionConfig({
   hooks: {
     beforeLogin: [beforeLoginMustHaveAtLeastOneRole],
   },
-  endpoints: [importFromStrapi, getAllEndpoint, getByUsernameEndpoint],
+  endpoints: [importFromStrapi, getByID],
   timestamps: false,
   fields: [
     rowField([
@@ -105,6 +106,17 @@ export const Recorders = buildCollectionConfig({
         description: "List of language(s) that this recorder is familiar with",
       },
     },
+    translatedFields({
+      name: fields.translations,
+      fields: [
+        {
+          name: fields.translationsBiography,
+          type: "richText",
+          editor: createEditor({ inlines: true, lists: true, links: true }),
+          required: true,
+        },
+      ],
+    }),
     {
       name: fields.role,
       type: "select",
