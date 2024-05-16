@@ -1,9 +1,9 @@
-import { LexicalBlock } from "@payloadcms/richtext-lexical";
+import { Block } from "payload/types";
 import { createEditor } from "../utils/editor";
 import { breakBlock } from "./breakBlock";
 import { transcriptBlock } from "./transcriptBlock";
 
-const generateRecursiveSectionBlock = (depth = 1, maxDepth = 5): LexicalBlock => ({
+const generateRecursiveSectionBlock = (depth = 1, maxDepth = 5): Block => ({
   slug: "sectionBlock",
   interfaceName: "SectionBlock",
   labels: { singular: "Section", plural: "Sections" },
@@ -33,4 +33,4 @@ const generateRecursiveSectionBlock = (depth = 1, maxDepth = 5): LexicalBlock =>
   ],
 });
 
-export const sectionBlock: LexicalBlock = generateRecursiveSectionBlock();
+export const sectionBlock: Block = generateRecursiveSectionBlock();

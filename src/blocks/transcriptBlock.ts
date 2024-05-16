@@ -1,8 +1,8 @@
-import { LexicalBlock } from "@payloadcms/richtext-lexical";
+import { Block } from "payload/types";
 import { cueBlock } from "./cueBlock";
 import { lineBlock } from "./lineBlock";
 
-export const transcriptBlock: LexicalBlock = {
+export const transcriptBlock: Block = {
   slug: "transcriptBlock",
   interfaceName: "TranscriptBlock",
   labels: { singular: "Transcript", plural: "Transcripts" },

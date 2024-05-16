@@ -8,7 +8,6 @@ import {
   HeadingFeature,
   InlineCodeTextFeature,
   ItalicTextFeature,
-  LexicalBlock,
   LinkFeature,
   // BlockQuoteFeature,
   OrderedListFeature,
@@ -23,11 +22,11 @@ import {
   UploadFeature,
   lexicalEditor,
 } from "@payloadcms/richtext-lexical";
-import { RichTextAdapter } from "payload/types";
+import { Block, RichTextAdapter } from "payload/types";
 
 interface EditorOptions {
   debugs: boolean;
-  blocks: LexicalBlock[];
+  blocks: Block[];
   headings: boolean;
   lists: boolean;
   inlines: boolean;
