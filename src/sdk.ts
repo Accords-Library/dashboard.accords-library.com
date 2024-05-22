@@ -53,11 +53,15 @@ export type EndpointFolder = {
 };
 
 export type EndpointWebsiteConfig = {
-  homeFolders: (EndpointFolder & {
-    lightThumbnail?: EndpointImage;
-    darkThumbnail?: EndpointImage;
-  })[];
+  home: {
+    backgroundImage?: EndpointImage;
+    folders: (EndpointFolder & {
+      lightThumbnail?: EndpointImage;
+      darkThumbnail?: EndpointImage;
+    })[];
+  };
   timeline: {
+    backgroundImage?: EndpointImage;
     breaks: number[];
     eventCount: number;
     eras: {
@@ -66,6 +70,7 @@ export type EndpointWebsiteConfig = {
       name: string;
     }[];
   };
+  defaultOpenGraphImage?: EndpointImage;
 };
 
 export type EndpointRecorder = {
@@ -176,7 +181,7 @@ export type EndpointCollectible = {
   backgroundImage?: EndpointImage;
   nature: CollectibleNature;
   gallery?: { count: number; thumbnail: EndpointImage };
-  scans?: { count: number; thumbnail: PayloadImage };
+  scans?: { count: number; thumbnail: EndpointScanImage };
   urls: { url: string; label: string }[];
   price?: {
     amount: number;
@@ -341,6 +346,7 @@ export type EndpointCollectibleScanPage = {
 
 export type EndpointScanImage = PayloadImage & {
   index: string;
+  sizes: EndpointImageSize[];
 };
 
 export type TableOfContentEntry = {
@@ -405,18 +411,26 @@ export type EndpointMedia = {
   credits: EndpointCredit[];
 };
 
+export type EndpointImageSize = {
+  width: number;
+  height: number;
+  url: string;
+  wSize: number;
+};
+
 export type EndpointImage = EndpointMedia & {
   width: number;
   height: number;
+  sizes: EndpointImageSize[];
 };
 
 export type EndpointAudio = EndpointMedia & {
-  thumbnail?: PayloadImage;
+  thumbnail?: EndpointMediaThumbnail;
   duration: number;
 };
 
 export type EndpointVideo = EndpointMedia & {
-  thumbnail?: PayloadImage;
+  thumbnail?: EndpointMediaThumbnail;
   subtitles: {
     language: string;
     url: string;
@@ -434,6 +448,10 @@ export type EndpointVideo = EndpointMedia & {
     publishedDate: string;
   };
   duration: number;
+};
+
+export type EndpointMediaThumbnail = PayloadImage & {
+  sizes: EndpointImageSize[];
 };
 
 export type PayloadMedia = {

@@ -7,6 +7,7 @@ import { isNotEmpty, isValidPayloadImage, isValidPayloadMedia } from "../../../u
 import {
   convertAttributesToEndpointAttributes,
   convertCreditsToEndpointCredits,
+  convertMediaThumbnailToEndpointMediaThumbnail,
   convertRTCToEndpointRTC,
   getLanguageId,
 } from "../../../utils/endpoints";
@@ -77,6 +78,8 @@ export const convertAudioToEndpointAudio = ({
       ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
     })) ?? [],
   duration,
-  ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
+  ...(isValidPayloadImage(thumbnail)
+    ? { thumbnail: convertMediaThumbnailToEndpointMediaThumbnail(thumbnail) }
+    : {}),
   credits: convertCreditsToEndpointCredits(credits),
 });

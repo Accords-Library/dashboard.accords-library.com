@@ -5,6 +5,7 @@ import { Collectible } from "../../../types/collections";
 import { isNotEmpty, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
 import {
   convertCreditsToEndpointCredits,
+  convertScanToEndpointScanImage,
   convertSourceToEndpointSource,
 } from "../../../utils/endpoints";
 import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
@@ -51,7 +52,7 @@ const handleScans = ({
   credits: convertCreditsToEndpointCredits(credits),
   pages:
     pages?.flatMap(({ image, page }) =>
-      isValidPayloadImage(image) ? { ...image, index: page.toString() } : []
+      isValidPayloadImage(image) ? convertScanToEndpointScanImage(image, page.toString()) : []
     ) ?? [],
   ...(coverEnabled && cover ? { cover: handleCover(cover) } : {}),
   ...(dustjacketEnabled && dustjacket ? { dustjacket: handleDustjacket(dustjacket) } : {}),
@@ -69,25 +70,35 @@ const handleCover = ({
   insideFront,
   spine,
 }: NonNullable<NonNullable<Collectible["scans"]>["cover"]>): EndpointCollectibleScans["cover"] => ({
-  ...(isValidPayloadImage(back) ? { back: { ...back, index: "cover-back" } } : {}),
-  ...(isValidPayloadImage(flapBack) ? { flapBack: { ...flapBack, index: "cover-flap-back" } } : {}),
-  ...(isValidPayloadImage(flapFront)
-    ? { flapFront: { ...flapFront, index: "cover-flap-front" } }
+  ...(isValidPayloadImage(back)
+    ? { back: convertScanToEndpointScanImage(back, "cover-back") }
     : {}),
-  ...(isValidPayloadImage(front) ? { front: { ...front, index: "cover-front" } } : {}),
+  ...(isValidPayloadImage(flapBack)
+    ? { flapBack: convertScanToEndpointScanImage(flapBack, "cover-flap-back") }
+    : {}),
+  ...(isValidPayloadImage(flapFront)
+    ? { flapFront: convertScanToEndpointScanImage(flapFront, "cover-flap-front") }
+    : {}),
+  ...(isValidPayloadImage(front)
+    ? { front: convertScanToEndpointScanImage(front, "cover-front") }
+    : {}),
   ...(isValidPayloadImage(insideBack)
-    ? { insideBack: { ...insideBack, index: "cover-inside-back" } }
+    ? { insideBack: convertScanToEndpointScanImage(insideBack, "cover-inside-back") }
     : {}),
   ...(isValidPayloadImage(insideFlapBack)
-    ? { insideFlapBack: { ...insideFlapBack, index: "cover-inside-flap-back" } }
+    ? { insideFlapBack: convertScanToEndpointScanImage(insideFlapBack, "cover-inside-flap-back") }
     : {}),
   ...(isValidPayloadImage(insideFlapFront)
-    ? { insideFlapFront: { ...insideFlapFront, index: "cover-inside-flap-front" } }
+    ? {
+        insideFlapFront: convertScanToEndpointScanImage(insideFlapFront, "cover-inside-flap-front"),
+      }
     : {}),
   ...(isValidPayloadImage(insideFront)
-    ? { insideFront: { ...insideFront, index: "cover-inside-front" } }
+    ? { insideFront: convertScanToEndpointScanImage(insideFront, "cover-inside-front") }
     : {}),
-  ...(isValidPayloadImage(spine) ? { spine: { ...spine, index: "cover-spine" } } : {}),
+  ...(isValidPayloadImage(spine)
+    ? { spine: convertScanToEndpointScanImage(spine, "cover-spine") }
+    : {}),
 });
 
 const handleDustjacket = ({
@@ -104,29 +115,45 @@ const handleDustjacket = ({
 }: NonNullable<
   NonNullable<Collectible["scans"]>["dustjacket"]
 >): EndpointCollectibleScans["dustjacket"] => ({
-  ...(isValidPayloadImage(back) ? { back: { ...back, index: "dustjacket-back" } } : {}),
+  ...(isValidPayloadImage(back)
+    ? { back: convertScanToEndpointScanImage(back, "dustjacket-back") }
+    : {}),
   ...(isValidPayloadImage(flapBack)
-    ? { flapBack: { ...flapBack, index: "dustjacket-flap-back" } }
+    ? { flapBack: convertScanToEndpointScanImage(flapBack, "dustjacket-flap-back") }
     : {}),
   ...(isValidPayloadImage(flapFront)
-    ? { flapFront: { ...flapFront, index: "dustjacket-flap-front" } }
+    ? { flapFront: convertScanToEndpointScanImage(flapFront, "dustjacket-flap-front") }
     : {}),
-  ...(isValidPayloadImage(front) ? { front: { ...front, index: "dustjacket-front" } } : {}),
+  ...(isValidPayloadImage(front)
+    ? { front: convertScanToEndpointScanImage(front, "dustjacket-front") }
+    : {}),
   ...(isValidPayloadImage(insideBack)
-    ? { insideBack: { ...insideBack, index: "dustjacket-inside-back" } }
+    ? { insideBack: convertScanToEndpointScanImage(insideBack, "dustjacket-inside-back") }
     : {}),
   ...(isValidPayloadImage(insideFlapBack)
-    ? { insideFlapBack: { ...insideFlapBack, index: "dustjacket-inside-flap-back" } }
+    ? {
+        insideFlapBack: convertScanToEndpointScanImage(
+          insideFlapBack,
+          "dustjacket-inside-flap-back"
+        ),
+      }
     : {}),
   ...(isValidPayloadImage(insideFlapFront)
-    ? { insideFlapFront: { ...insideFlapFront, index: "dustjacket-inside-flap-front" } }
+    ? {
+        insideFlapFront: convertScanToEndpointScanImage(
+          insideFlapFront,
+          "dustjacket-inside-flap-front"
+        ),
+      }
     : {}),
   ...(isValidPayloadImage(insideFront)
-    ? { insideFront: { ...insideFront, index: "dustjacket-inside-front" } }
+    ? { insideFront: convertScanToEndpointScanImage(insideFront, "dustjacket-inside-front") }
     : {}),
-  ...(isValidPayloadImage(spine) ? { spine: { ...spine, index: "dustjacket-spine" } } : {}),
+  ...(isValidPayloadImage(spine)
+    ? { spine: convertScanToEndpointScanImage(spine, "dustjacket-spine") }
+    : {}),
   ...(isValidPayloadImage(insideSpine)
-    ? { insideSpine: { ...insideSpine, index: "dustjacket-inside-spine" } }
+    ? { insideSpine: convertScanToEndpointScanImage(insideSpine, "dustjacket-inside-spine") }
     : {}),
 });
 
@@ -142,26 +169,32 @@ const handleObi = ({
   insideSpine,
   spine,
 }: NonNullable<NonNullable<Collectible["scans"]>["obi"]>): EndpointCollectibleScans["obi"] => ({
-  ...(isValidPayloadImage(back) ? { back: { ...back, index: "obi-back" } } : {}),
-  ...(isValidPayloadImage(flapBack) ? { flapBack: { ...flapBack, index: "obi-flap-back" } } : {}),
-  ...(isValidPayloadImage(flapFront)
-    ? { flapFront: { ...flapFront, index: "obi-flap-front" } }
+  ...(isValidPayloadImage(back) ? { back: convertScanToEndpointScanImage(back, "obi-back") } : {}),
+  ...(isValidPayloadImage(flapBack)
+    ? { flapBack: convertScanToEndpointScanImage(flapBack, "obi-flap-back") }
     : {}),
-  ...(isValidPayloadImage(front) ? { front: { ...front, index: "obi-front" } } : {}),
+  ...(isValidPayloadImage(flapFront)
+    ? { flapFront: convertScanToEndpointScanImage(flapFront, "obi-flap-front") }
+    : {}),
+  ...(isValidPayloadImage(front)
+    ? { front: convertScanToEndpointScanImage(front, "obi-front") }
+    : {}),
   ...(isValidPayloadImage(insideBack)
-    ? { insideBack: { ...insideBack, index: "obi-inside-back" } }
+    ? { insideBack: convertScanToEndpointScanImage(insideBack, "obi-inside-back") }
     : {}),
   ...(isValidPayloadImage(insideFlapBack)
-    ? { insideFlapBack: { ...insideFlapBack, index: "obi-inside-flap-back" } }
+    ? { insideFlapBack: convertScanToEndpointScanImage(insideFlapBack, "obi-inside-flap-back") }
     : {}),
   ...(isValidPayloadImage(insideFlapFront)
-    ? { insideFlapFront: { ...insideFlapFront, index: "obi-inside-flap-front" } }
+    ? { insideFlapFront: convertScanToEndpointScanImage(insideFlapFront, "obi-inside-flap-front") }
     : {}),
   ...(isValidPayloadImage(insideFront)
-    ? { insideFront: { ...insideFront, index: "obi-inside-front" } }
+    ? { insideFront: convertScanToEndpointScanImage(insideFront, "obi-inside-front") }
     : {}),
-  ...(isValidPayloadImage(spine) ? { spine: { ...spine, index: "obi-spine" } } : {}),
+  ...(isValidPayloadImage(spine)
+    ? { spine: convertScanToEndpointScanImage(spine, "obi-spine") }
+    : {}),
   ...(isValidPayloadImage(insideSpine)
-    ? { insideSpine: { ...insideSpine, index: "obi-inside-spine" } }
+    ? { insideSpine: convertScanToEndpointScanImage(insideSpine, "obi-inside-spine") }
     : {}),
 });

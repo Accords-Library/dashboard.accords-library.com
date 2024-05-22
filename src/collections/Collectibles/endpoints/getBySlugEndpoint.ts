@@ -13,6 +13,7 @@ import {
 } from "../../../utils/asserts";
 import {
   convertAttributesToEndpointAttributes,
+  convertScanToEndpointScanImage,
   convertSourceToEndpointSource,
   getDomainFromUrl,
 } from "../../../utils/endpoints";
@@ -147,29 +148,34 @@ const handleGallery = (gallery: Collectible["gallery"]): EndpointCollectible["ga
 };
 
 const handleScans = (scans: Collectible["scans"]): EndpointCollectible["scans"] => {
-  const result =
-    scans?.pages?.flatMap(({ image }) => {
-      if (!isValidPayloadImage(image)) return [];
-      return image;
-    }) ?? [];
+  if (!scans) return;
 
   const totalCount =
     Object.keys(scans?.cover ?? {}).length +
     Object.keys(scans?.dustjacket ?? {}).length +
     Object.keys(scans?.obi ?? {}).length +
-    result.length;
+    (scans.pages ?? []).length;
+
+  const result =
+    scans?.pages?.flatMap(({ image, page }) => {
+      if (!isValidPayloadImage(image)) return [];
+      return { image, index: page.toString() };
+    }) ?? [];
 
   if (isValidPayloadImage(scans?.cover?.front)) {
-    result.push(scans.cover.front);
+    result.push({ image: scans.cover.front, index: "cover-front" });
   }
 
   if (isValidPayloadImage(scans?.dustjacket?.front)) {
-    result.push(scans.dustjacket.front);
+    result.push({ image: scans.dustjacket.front, index: "dustjacket-front" });
   }
 
   const thumbnail = result?.[0];
-  if (!thumbnail || !isValidPayloadImage(thumbnail)) return;
-  return { count: totalCount, thumbnail };
+  if (!thumbnail || !isValidPayloadImage(thumbnail.image)) return;
+  return {
+    count: totalCount,
+    thumbnail: convertScanToEndpointScanImage(thumbnail.image, thumbnail.index),
+  };
 };
 
 const handleContents = (contents: Collectible["contents"]): EndpointCollectible["contents"] => {

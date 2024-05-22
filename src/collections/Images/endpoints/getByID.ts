@@ -8,6 +8,7 @@ import {
   convertAttributesToEndpointAttributes,
   convertCreditsToEndpointCredits,
   convertRTCToEndpointRTC,
+  convertSizesToEndpointImageSize,
   getLanguageId,
 } from "../../../utils/endpoints";
 
@@ -59,6 +60,7 @@ export const convertImageToEndpointImage = ({
   filesize,
   id,
   credits,
+  sizes,
 }: Image & PayloadImage): EndpointImage => ({
   url,
   width,
@@ -79,4 +81,17 @@ export const convertImageToEndpointImage = ({
       ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
     })) ?? [],
   credits: convertCreditsToEndpointCredits(credits),
+  sizes: convertSizesToEndpointImageSize(
+    [
+      sizes?.["200w"],
+      sizes?.["320w"],
+      sizes?.["480w"],
+      sizes?.["800w"],
+      sizes?.["1280w"],
+      sizes?.["1920w"],
+      sizes?.["2560w"],
+      { url, width, height, filename, filesize, mimeType },
+    ],
+    [200, 320, 480, 800, 1280, 1920, 2560]
+  ),
 });

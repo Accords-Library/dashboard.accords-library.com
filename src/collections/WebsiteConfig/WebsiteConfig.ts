@@ -7,6 +7,9 @@ import { afterChangeWebhook } from "../../hooks/afterChangeWebhook";
 import { getConfigEndpoint } from "./endpoints/getConfigEndpoint";
 
 const fields = {
+  homeBackgroundImage: "homeBackgroundImage",
+  timelineBackgroundImage: "timelineBackgroundImage",
+  defaultOpenGraphImage: "defaultOpenGraphImage",
   homeFolders: "homeFolders",
   homeFoldersDarkThumbnail: "darkThumbnail",
   homeFoldersLightThumbnail: "lightThumbnail",
@@ -32,6 +35,26 @@ export const WebsiteConfig: GlobalConfig = {
     afterChange: [afterChangeWebhook],
   },
   fields: [
+    rowField([
+      {
+        name: fields.homeBackgroundImage,
+        type: "upload",
+        relationTo: Collections.Images,
+        required: true,
+      },
+      {
+        name: fields.timelineBackgroundImage,
+        type: "upload",
+        relationTo: Collections.Images,
+        required: true,
+      },
+      {
+        name: fields.defaultOpenGraphImage,
+        type: "upload",
+        relationTo: Collections.Images,
+        required: true,
+      },
+    ]),
     {
       name: fields.homeFolders,
       admin: {

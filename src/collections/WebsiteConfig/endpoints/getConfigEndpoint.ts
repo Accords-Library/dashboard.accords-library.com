@@ -20,7 +20,13 @@ export const getConfigEndpoint: CollectionEndpoint = {
       });
     }
 
-    const { homeFolders, timeline } = await payload.findGlobal({
+    const {
+      homeFolders,
+      timeline,
+      defaultOpenGraphImage,
+      homeBackgroundImage,
+      timelineBackgroundImage,
+    } = await payload.findGlobal({
       slug: Collections.WebsiteConfig,
     });
 
@@ -43,20 +49,28 @@ export const getConfigEndpoint: CollectionEndpoint = {
     });
 
     const endpointWebsiteConfig: EndpointWebsiteConfig = {
-      homeFolders:
-        homeFolders?.flatMap(({ folder, darkThumbnail, lightThumbnail }) => {
-          if (!isPayloadType(folder)) return [];
-          return {
-            ...convertFolderToEndpointFolder(folder),
-            ...(isValidPayloadImage(darkThumbnail)
-              ? { darkThumbnail: convertImageToEndpointImage(darkThumbnail) }
-              : {}),
-            ...(isValidPayloadImage(lightThumbnail)
-              ? { lightThumbnail: convertImageToEndpointImage(lightThumbnail) }
-              : {}),
-          };
-        }) ?? [],
+      home: {
+        ...(isValidPayloadImage(homeBackgroundImage)
+          ? { backgroundImage: convertImageToEndpointImage(homeBackgroundImage) }
+          : {}),
+        folders:
+          homeFolders?.flatMap(({ folder, darkThumbnail, lightThumbnail }) => {
+            if (!isPayloadType(folder)) return [];
+            return {
+              ...convertFolderToEndpointFolder(folder),
+              ...(isValidPayloadImage(darkThumbnail)
+                ? { darkThumbnail: convertImageToEndpointImage(darkThumbnail) }
+                : {}),
+              ...(isValidPayloadImage(lightThumbnail)
+                ? { lightThumbnail: convertImageToEndpointImage(lightThumbnail) }
+                : {}),
+            };
+          }) ?? [],
+      },
       timeline: {
+        ...(isValidPayloadImage(timelineBackgroundImage)
+          ? { backgroundImage: convertImageToEndpointImage(timelineBackgroundImage) }
+          : {}),
         breaks: timeline?.breaks ?? [],
         eventCount,
         eras:
@@ -69,6 +83,9 @@ export const getConfigEndpoint: CollectionEndpoint = {
             };
           }) ?? [],
       },
+      ...(isValidPayloadImage(defaultOpenGraphImage)
+        ? { defaultOpenGraphImage: convertImageToEndpointImage(defaultOpenGraphImage) }
+        : {}),
     };
     res.status(200).json(endpointWebsiteConfig);
   },

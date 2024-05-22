@@ -49,3 +49,35 @@ export const buildImageCollectionConfig = ({
       ],
     },
   });
+
+export const generateOpenGraphSize = (): ImageSize => ({
+  name: "og",
+  withoutEnlargement: true,
+  height: 1200,
+  width: 1200,
+  fit: "inside",
+  formatOptions: {
+    format: "jpg",
+    options: {
+      quality: 50,
+      optimizeScans: true,
+      quantizationTable: 2,
+      force: true,
+    },
+  },
+});
+
+export const generateWebpSize = (maxWidth: number, quality: number): ImageSize => ({
+  name: `${maxWidth}w`,
+  withoutEnlargement: true,
+  width: maxWidth,
+  fit: "inside",
+  formatOptions: {
+    format: "webp",
+    options: {
+      quality,
+      alphaQuality: quality,
+      force: true,
+    },
+  },
+});

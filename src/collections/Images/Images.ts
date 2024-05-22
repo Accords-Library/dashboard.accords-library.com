@@ -1,10 +1,15 @@
 import { Collections } from "../../constants";
+import { createImageSizesRegenerationEndpoint } from "../../endpoints/imageSizesRegenerationEndpoint";
 import { attributesField } from "../../fields/attributesField/attributesField";
 import { creditsField } from "../../fields/creditsField/creditsField";
 import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { createEditor } from "../../utils/editor";
-import { buildImageCollectionConfig } from "../../utils/imageCollectionConfig";
+import {
+  buildImageCollectionConfig,
+  generateOpenGraphSize,
+  generateWebpSize,
+} from "../../utils/imageCollectionConfig";
 import { getByID } from "./endpoints/getByID";
 
 const fields = {
@@ -34,18 +39,17 @@ export const Images = buildImageCollectionConfig({
   },
   upload: {
     imageSizes: [
-      {
-        name: "og",
-        height: 750,
-        width: 1125,
-        formatOptions: {
-          format: "jpg",
-          options: { progressive: true, mozjpeg: true, compressionLevel: 9, quality: 60 },
-        },
-      },
+      generateOpenGraphSize(),
+      generateWebpSize(200, 60),
+      generateWebpSize(320, 60),
+      generateWebpSize(480, 70),
+      generateWebpSize(800, 70),
+      generateWebpSize(1280, 85),
+      generateWebpSize(1920, 85),
+      generateWebpSize(2560, 90),
     ],
   },
-  endpoints: [getByID],
+  endpoints: [getByID, createImageSizesRegenerationEndpoint(Collections.Images)],
   fields: [
     translatedFields({
       name: fields.translations,

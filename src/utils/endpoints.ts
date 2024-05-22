@@ -22,9 +22,13 @@ import {
 import {
   EndpointAttribute,
   EndpointCredit,
+  EndpointImageSize,
+  EndpointMediaThumbnail,
   EndpointRole,
+  EndpointScanImage,
   EndpointSource,
   EndpointTag,
+  PayloadImage,
 } from "../sdk";
 import {
   Audio,
@@ -34,18 +38,23 @@ import {
   Folder,
   Image,
   Language,
+  MediaThumbnail,
   NumberBlock,
+  Scan,
   Tag,
   TagsBlock,
   TextBlock,
   Video,
 } from "../types/collections";
 import {
+  ImageSize,
+  ValidImageSize,
   isDefined,
   isEmpty,
   isPayloadArrayType,
   isPayloadType,
   isPublished,
+  isValidImageSize,
   isValidPayloadImage,
   isValidPayloadMedia,
 } from "./asserts";
@@ -272,3 +281,90 @@ const convertAttributeToEndpointAttribute = (
     }
   }
 };
+
+export const convertSizesToEndpointImageSize = (
+  sizes: (ImageSize | undefined)[],
+  targetSizes: number[]
+): EndpointImageSize[] => {
+  if (!sizes) return [];
+  const processedSizes = sizes.filter(isValidImageSize);
+
+  const targetBins: { min: number; target: number; max: number; image: ValidImageSize }[] = [];
+  for (let index = 0; index < targetSizes.length; index++) {
+    const previous = targetSizes[index - 1];
+    const current = targetSizes[index]!;
+    const next = targetSizes[index + 1];
+
+    const min = previous ? previous + (current - previous) / 2 : 0;
+    const max = next ? current + (next - current) / 2 : Infinity;
+
+    const images = processedSizes
+      .filter(({ width }) => width > min && width <= max)
+      .sort((a, b) => a.filesize - b.filesize);
+
+    const smallestImage = images[0];
+    if (!smallestImage) continue;
+
+    targetBins.push({ min, target: current, max, image: smallestImage });
+  }
+
+  return targetBins.map(({ target, image: { height, width, url } }) => ({
+    width,
+    height,
+    url,
+    wSize: target,
+  }));
+};
+
+export const convertScanToEndpointScanImage = (
+  { url, width, height, mimeType, filename, filesize, sizes }: Scan & PayloadImage,
+  index: string
+): EndpointScanImage => ({
+  index,
+  url,
+  width,
+  height,
+  filename,
+  filesize,
+  mimeType,
+  sizes: convertSizesToEndpointImageSize(
+    [
+      sizes?.["200w"],
+      sizes?.["320w"],
+      sizes?.["480w"],
+      sizes?.["800w"],
+      { url, width, height, filename, filesize, mimeType },
+    ],
+    [200, 320, 480, 800]
+  ),
+});
+
+export const convertMediaThumbnailToEndpointMediaThumbnail = ({
+  url,
+  width,
+  height,
+  mimeType,
+  filename,
+  filesize,
+  sizes,
+}: MediaThumbnail & PayloadImage): EndpointMediaThumbnail => ({
+  url,
+  width,
+  height,
+  filename,
+  filesize,
+  mimeType,
+  sizes: convertSizesToEndpointImageSize(
+    [
+      sizes?.["200w"],
+      sizes?.["320w"],
+      sizes?.["480w"],
+      sizes?.["800w"],
+      sizes?.["1280w"],
+      sizes?.["1920w"],
+      sizes?.["2560w"],
+      { url, width, height, filename, filesize, mimeType },
+    ],
+    [200, 320, 480, 800, 1280, 1920, 2560]
+  ),
+});

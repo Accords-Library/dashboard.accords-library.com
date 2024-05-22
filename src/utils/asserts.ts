@@ -60,3 +60,32 @@ export const isPayloadArrayType = <T extends Object>(
 export const isPublished = <T extends { _status?: ("draft" | "published") | null }>(
   object: T
 ): boolean => object._status === "published";
+
+export type ImageSize = {
+  url?: string | null;
+  width?: number | null;
+  height?: number | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  filename?: string | null;
+};
+
+export type ValidImageSize = {
+  url: string;
+  width: number;
+  height: number;
+  mimeType: string;
+  filesize: number;
+  filename: string;
+};
+
+export const isValidImageSize = (size: ImageSize | undefined): size is ValidImageSize => {
+  if (isUndefined(size)) return false;
+  if (isUndefined(size.url)) return false;
+  if (isUndefined(size.width)) return false;
+  if (isUndefined(size.height)) return false;
+  if (isUndefined(size.mimeType)) return false;
+  if (isUndefined(size.filesize)) return false;
+  if (isUndefined(size.filename)) return false;
+  return true;
+};

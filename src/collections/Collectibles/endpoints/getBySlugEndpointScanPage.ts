@@ -4,7 +4,10 @@ import { EndpointCollectibleScanPage } from "../../../sdk";
 import { Collectible, Scan } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isDefined, isNotEmpty, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
-import { convertSourceToEndpointSource } from "../../../utils/endpoints";
+import {
+  convertScanToEndpointScanImage,
+  convertSourceToEndpointSource,
+} from "../../../utils/endpoints";
 import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 
 export const getBySlugEndpointScanPage: CollectionEndpoint = {
@@ -51,7 +54,7 @@ export const getBySlugEndpointScanPage: CollectionEndpoint = {
     const nextIndex = getNextIndex(index, collectible.scans);
 
     const scanPage: EndpointCollectibleScanPage = {
-      image: { ...image, index },
+      image: convertScanToEndpointScanImage(image, index),
       parentPages: convertSourceToEndpointSource({ scans: [collectible] }),
       slug,
       ...(isValidPayloadImage(collectible.thumbnail)

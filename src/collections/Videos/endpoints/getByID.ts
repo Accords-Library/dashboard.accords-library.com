@@ -15,6 +15,7 @@ import {
 import {
   convertAttributesToEndpointAttributes,
   convertCreditsToEndpointCredits,
+  convertMediaThumbnailToEndpointMediaThumbnail,
   convertRTCToEndpointRTC,
   getLanguageId,
 } from "../../../utils/endpoints";
@@ -88,7 +89,9 @@ export const convertVideoToEndpointVideo = ({
     })) ?? [],
 
   duration,
-  ...(isValidPayloadImage(thumbnail) ? { thumbnail } : {}),
+  ...(isValidPayloadImage(thumbnail)
+    ? { thumbnail: convertMediaThumbnailToEndpointMediaThumbnail(thumbnail) }
+    : {}),
   ...(platformEnabled && isDefined(platform) && isPayloadType(platform.channel)
     ? {
         platform: {
