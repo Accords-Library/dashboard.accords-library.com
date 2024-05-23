@@ -298,11 +298,11 @@ export const convertSizesToPayloadImages = (
     const min = previous ? previous + (current - previous) / 2 : 0;
     const max = next ? current + (next - current) / 2 : Infinity;
 
-    const images = processedSizes
+    const imagesAtTargetSize = processedSizes
       .filter(({ width }) => width > min && width <= max)
       .sort((a, b) => a.filesize - b.filesize);
 
-    const smallestImage = images[0];
+    const smallestImage = imagesAtTargetSize[0];
     if (!smallestImage) continue;
 
     images.push(smallestImage);
