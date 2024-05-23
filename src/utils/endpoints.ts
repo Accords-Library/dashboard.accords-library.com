@@ -362,4 +362,5 @@ export const convertMediaThumbnailToEndpointMediaThumbnail = ({
     ],
     [200, 320, 480, 800, 1280, 1920, 2560]
   ),
+  ...(isPayloadImage(sizes?.og) ? { openGraph: sizes.og } : {}),
 });

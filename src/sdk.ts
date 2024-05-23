@@ -415,6 +415,7 @@ export type EndpointImage = EndpointMedia & {
   width: number;
   height: number;
   sizes: PayloadImage[];
+  openGraph?: PayloadImage;
 };
 
 export type EndpointAudio = EndpointMedia & {
@@ -445,6 +446,7 @@ export type EndpointVideo = EndpointMedia & {
 
 export type EndpointMediaThumbnail = PayloadImage & {
   sizes: PayloadImage[];
+  openGraph?: PayloadImage;
 };
 
 export type PayloadMedia = {
