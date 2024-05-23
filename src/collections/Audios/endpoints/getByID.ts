@@ -3,7 +3,7 @@ import { Collections } from "../../../constants";
 import { EndpointAudio, PayloadMedia } from "../../../sdk";
 import { Audio } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
-import { isNotEmpty, isValidPayloadImage, isValidPayloadMedia } from "../../../utils/asserts";
+import { isAudio, isMediaThumbnail, isNotEmpty } from "../../../utils/asserts";
 import {
   convertAttributesToEndpointAttributes,
   convertCreditsToEndpointCredits,
@@ -36,7 +36,7 @@ export const getByID: CollectionEndpoint = {
         id: req.params.id,
       });
 
-      if (!isValidPayloadMedia(result)) {
+      if (!isAudio(result)) {
         return res.sendStatus(404);
       }
 
@@ -78,7 +78,7 @@ export const convertAudioToEndpointAudio = ({
       ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
     })) ?? [],
   duration,
-  ...(isValidPayloadImage(thumbnail)
+  ...(isMediaThumbnail(thumbnail)
     ? { thumbnail: convertMediaThumbnailToEndpointMediaThumbnail(thumbnail) }
     : {}),
   credits: convertCreditsToEndpointCredits(credits),

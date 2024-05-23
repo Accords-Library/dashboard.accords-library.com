@@ -3,7 +3,7 @@ import { Collections } from "../../../constants";
 import { EndpointCollectibleScanPage } from "../../../sdk";
 import { Collectible, Scan } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
-import { isDefined, isNotEmpty, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
+import { isDefined, isImage, isNotEmpty, isPayloadType, isScan } from "../../../utils/asserts";
 import {
   convertScanToEndpointScanImage,
   convertSourceToEndpointSource,
@@ -44,9 +44,9 @@ export const getBySlugEndpointScanPage: CollectionEndpoint = {
       return res.sendStatus(404);
     }
 
-    const image = getImageFromIndex(index, collectible.scans);
+    const scan = getScanFromIndex(index, collectible.scans);
 
-    if (!image || !isValidPayloadImage(image)) {
+    if (!isScan(scan)) {
       return res.sendStatus(404);
     }
 
@@ -54,10 +54,10 @@ export const getBySlugEndpointScanPage: CollectionEndpoint = {
     const nextIndex = getNextIndex(index, collectible.scans);
 
     const scanPage: EndpointCollectibleScanPage = {
-      image: convertScanToEndpointScanImage(image, index),
+      image: convertScanToEndpointScanImage(scan, index),
       parentPages: convertSourceToEndpointSource({ scans: [collectible] }),
       slug,
-      ...(isValidPayloadImage(collectible.thumbnail)
+      ...(isImage(collectible.thumbnail)
         ? { thumbnail: convertImageToEndpointImage(collectible.thumbnail) }
         : {}),
       translations:
@@ -102,7 +102,7 @@ const getNextIndex = (
   return page.page.toString();
 };
 
-const getImageFromIndex = (
+const getScanFromIndex = (
   index: string,
   scans: NonNullable<Collectible["scans"]>
 ): string | Scan | null | undefined => {

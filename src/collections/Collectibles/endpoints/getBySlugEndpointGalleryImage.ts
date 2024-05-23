@@ -3,7 +3,7 @@ import { Collections } from "../../../constants";
 import { EndpointCollectibleGalleryImage } from "../../../sdk";
 import { Collectible, Image } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
-import { isDefined, isNotEmpty, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
+import { isDefined, isImage, isNotEmpty, isPayloadType } from "../../../utils/asserts";
 import { convertSourceToEndpointSource } from "../../../utils/endpoints";
 import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 
@@ -43,7 +43,7 @@ export const getBySlugEndpointGalleryImage: CollectionEndpoint = {
 
     const image = getImageFromIndex(index, collectible.gallery);
 
-    if (!image || !isValidPayloadImage(image)) {
+    if (!isImage(image)) {
       return res.sendStatus(404);
     }
 
@@ -54,7 +54,7 @@ export const getBySlugEndpointGalleryImage: CollectionEndpoint = {
       image: convertImageToEndpointImage(image),
       parentPages: convertSourceToEndpointSource({ gallery: [collectible] }),
       slug,
-      ...(isValidPayloadImage(collectible.thumbnail)
+      ...(isImage(collectible.thumbnail)
         ? { thumbnail: convertImageToEndpointImage(collectible.thumbnail) }
         : {}),
       translations:

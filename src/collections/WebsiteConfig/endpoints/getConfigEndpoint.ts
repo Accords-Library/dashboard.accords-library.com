@@ -2,7 +2,7 @@ import payload from "payload";
 import { Collections } from "../../../constants";
 import { EndpointWebsiteConfig } from "../../../sdk";
 import { CollectionEndpoint } from "../../../types/payload";
-import { isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
+import { isImage, isPayloadType } from "../../../utils/asserts";
 import { convertFolderToEndpointFolder } from "../../Folders/endpoints/getBySlugEndpoint";
 import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 
@@ -50,7 +50,7 @@ export const getConfigEndpoint: CollectionEndpoint = {
 
     const endpointWebsiteConfig: EndpointWebsiteConfig = {
       home: {
-        ...(isValidPayloadImage(homeBackgroundImage)
+        ...(isImage(homeBackgroundImage)
           ? { backgroundImage: convertImageToEndpointImage(homeBackgroundImage) }
           : {}),
         folders:
@@ -58,17 +58,17 @@ export const getConfigEndpoint: CollectionEndpoint = {
             if (!isPayloadType(folder)) return [];
             return {
               ...convertFolderToEndpointFolder(folder),
-              ...(isValidPayloadImage(darkThumbnail)
+              ...(isImage(darkThumbnail)
                 ? { darkThumbnail: convertImageToEndpointImage(darkThumbnail) }
                 : {}),
-              ...(isValidPayloadImage(lightThumbnail)
+              ...(isImage(lightThumbnail)
                 ? { lightThumbnail: convertImageToEndpointImage(lightThumbnail) }
                 : {}),
             };
           }) ?? [],
       },
       timeline: {
-        ...(isValidPayloadImage(timelineBackgroundImage)
+        ...(isImage(timelineBackgroundImage)
           ? { backgroundImage: convertImageToEndpointImage(timelineBackgroundImage) }
           : {}),
         breaks: timeline?.breaks ?? [],
@@ -83,7 +83,7 @@ export const getConfigEndpoint: CollectionEndpoint = {
             };
           }) ?? [],
       },
-      ...(isValidPayloadImage(defaultOpenGraphImage)
+      ...(isImage(defaultOpenGraphImage)
         ? { defaultOpenGraphImage: convertImageToEndpointImage(defaultOpenGraphImage) }
         : {}),
     };

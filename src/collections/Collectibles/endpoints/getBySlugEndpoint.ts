@@ -3,13 +3,15 @@ import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointCollectible } from "../../../sdk";
 import { Collectible } from "../../../types/collections";
 import {
+  isAudio,
   isDefined,
+  isImage,
   isNotEmpty,
   isPayloadArrayType,
   isPayloadType,
   isPublished,
-  isValidPayloadImage,
-  isValidPayloadMedia,
+  isScan,
+  isVideo,
 } from "../../../utils/asserts";
 import {
   convertAttributesToEndpointAttributes,
@@ -67,10 +69,8 @@ export const convertCollectibleToEndpointCollectible = ({
     languages:
       languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
     ...(isDefined(releaseDate) ? { releaseDate } : {}),
-    ...(isValidPayloadImage(thumbnail)
-      ? { thumbnail: convertImageToEndpointImage(thumbnail) }
-      : {}),
-    ...(isValidPayloadImage(backgroundImage)
+    ...(isImage(thumbnail) ? { thumbnail: convertImageToEndpointImage(thumbnail) } : {}),
+    ...(isImage(backgroundImage)
       ? { backgroundImage: convertImageToEndpointImage(backgroundImage) }
       : {}),
     attributes: convertAttributesToEndpointAttributes(attributes),
@@ -143,7 +143,7 @@ const handlePageInfo = (
 
 const handleGallery = (gallery: Collectible["gallery"]): EndpointCollectible["gallery"] => {
   const thumbnail = gallery?.[0]?.image;
-  if (!thumbnail || !isValidPayloadImage(thumbnail)) return;
+  if (!thumbnail || !isImage(thumbnail)) return;
   return { count: gallery.length, thumbnail: convertImageToEndpointImage(thumbnail) };
 };
 
@@ -158,20 +158,21 @@ const handleScans = (scans: Collectible["scans"]): EndpointCollectible["scans"] 
 
   const result =
     scans?.pages?.flatMap(({ image, page }) => {
-      if (!isValidPayloadImage(image)) return [];
+      if (!isScan(image)) return [];
       return { image, index: page.toString() };
     }) ?? [];
 
-  if (isValidPayloadImage(scans?.cover?.front)) {
+  if (isScan(scans?.cover?.front)) {
     result.push({ image: scans.cover.front, index: "cover-front" });
   }
 
-  if (isValidPayloadImage(scans?.dustjacket?.front)) {
+  if (isScan(scans?.dustjacket?.front)) {
     result.push({ image: scans.dustjacket.front, index: "dustjacket-front" });
   }
 
   const thumbnail = result?.[0];
-  if (!thumbnail || !isValidPayloadImage(thumbnail.image)) return;
+  if (!thumbnail) return;
+  
   return {
     count: totalCount,
     thumbnail: convertScanToEndpointScanImage(thumbnail.image, thumbnail.index),
@@ -233,12 +234,12 @@ const handleContents = (contents: Collectible["contents"]): EndpointCollectible[
             : undefined;
 
         case Collections.Audios:
-          return isPayloadType(content.value) && isValidPayloadMedia(content.value)
+          return isAudio(content.value)
             ? { relationTo: Collections.Audios, value: convertAudioToEndpointAudio(content.value) }
             : undefined;
 
         case Collections.Videos:
-          return isPayloadType(content.value) && isValidPayloadMedia(content.value)
+          return isVideo(content.value)
             ? { relationTo: Collections.Videos, value: convertVideoToEndpointVideo(content.value) }
             : undefined;
 

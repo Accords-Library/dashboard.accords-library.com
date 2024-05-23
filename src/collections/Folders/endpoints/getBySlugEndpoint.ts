@@ -3,12 +3,13 @@ import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointFolder } from "../../../sdk";
 import { Folder, Language } from "../../../types/collections";
 import {
+  isAudio,
   isDefined,
+  isImage,
   isNotEmpty,
   isPayloadType,
   isPublished,
-  isValidPayloadImage,
-  isValidPayloadMedia,
+  isVideo,
 } from "../../../utils/asserts";
 import { convertSourceToEndpointSource, getLanguageId } from "../../../utils/endpoints";
 import { convertAudioToEndpointAudio } from "../../Audios/endpoints/getByID";
@@ -76,13 +77,13 @@ export const convertFolderToEndpointFolder = ({
           return [{ relationTo: Collections.Pages, value: convertPageToEndpointPage(value) }];
         // TODO: handle media type files
         case Collections.Images:
-          if (!isValidPayloadImage(value)) return [];
+          if (!isImage(value)) return [];
           return [{ relationTo: Collections.Images, value: convertImageToEndpointImage(value) }];
         case Collections.Audios:
-          if (!isValidPayloadMedia(value)) return [];
+          if (!isAudio(value)) return [];
           return [{ relationTo: Collections.Audios, value: convertAudioToEndpointAudio(value) }];
         case Collections.Videos:
-          if (!isValidPayloadMedia(value)) return [];
+          if (!isVideo(value)) return [];
           return [{ relationTo: Collections.Videos, value: convertVideoToEndpointVideo(value) }];
         default:
           return [];

@@ -9,7 +9,7 @@ import {
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointPage, TableOfContentEntry } from "../../../sdk";
 import { Page } from "../../../types/collections";
-import { isNotEmpty, isPayloadType, isValidPayloadImage } from "../../../utils/asserts";
+import { isImage, isNotEmpty, isPayloadType } from "../../../utils/asserts";
 import {
   convertAttributesToEndpointAttributes,
   convertCreditsToEndpointCredits,
@@ -38,8 +38,8 @@ export const convertPageToEndpointPage = ({
   updatedBy,
 }: Page): EndpointPage => ({
   slug,
-  ...(isValidPayloadImage(thumbnail) ? { thumbnail: convertImageToEndpointImage(thumbnail) } : {}),
-  ...(isValidPayloadImage(backgroundImage)
+  ...(isImage(thumbnail) ? { thumbnail: convertImageToEndpointImage(thumbnail) } : {}),
+  ...(isImage(backgroundImage)
     ? { backgroundImage: convertImageToEndpointImage(backgroundImage) }
     : {}),
   attributes: convertAttributesToEndpointAttributes(attributes),

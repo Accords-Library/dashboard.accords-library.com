@@ -6,11 +6,11 @@ import { CollectionEndpoint } from "../../../types/payload";
 import {
   isDefined,
   isEmpty,
+  isMediaThumbnail,
   isNotEmpty,
   isPayloadType,
   isUndefined,
-  isValidPayloadImage,
-  isValidPayloadMedia,
+  isVideo,
 } from "../../../utils/asserts";
 import {
   convertAttributesToEndpointAttributes,
@@ -44,7 +44,7 @@ export const getByID: CollectionEndpoint = {
         id: req.params.id,
       });
 
-      if (!isValidPayloadMedia(result)) {
+      if (!isVideo(result)) {
         return res.sendStatus(404);
       }
 
@@ -89,7 +89,7 @@ export const convertVideoToEndpointVideo = ({
     })) ?? [],
 
   duration,
-  ...(isValidPayloadImage(thumbnail)
+  ...(isMediaThumbnail(thumbnail)
     ? { thumbnail: convertMediaThumbnailToEndpointMediaThumbnail(thumbnail) }
     : {}),
   ...(platformEnabled && isDefined(platform) && isPayloadType(platform.channel)

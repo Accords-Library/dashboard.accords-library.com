@@ -3,12 +3,12 @@ import { Collections } from "../../../constants";
 import { EndpointImage, PayloadImage } from "../../../sdk";
 import { Image } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
-import { isNotEmpty, isValidPayloadImage } from "../../../utils/asserts";
+import { isImage, isNotEmpty, isPayloadImage } from "../../../utils/asserts";
 import {
   convertAttributesToEndpointAttributes,
   convertCreditsToEndpointCredits,
   convertRTCToEndpointRTC,
-  convertSizesToEndpointImageSize,
+  convertSizesToPayloadImages,
   getLanguageId,
 } from "../../../utils/endpoints";
 
@@ -36,7 +36,7 @@ export const getByID: CollectionEndpoint = {
         id: req.params.id,
       });
 
-      if (!isValidPayloadImage(result)) {
+      if (!isImage(result)) {
         return res.sendStatus(404);
       }
 
@@ -81,7 +81,7 @@ export const convertImageToEndpointImage = ({
       ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
     })) ?? [],
   credits: convertCreditsToEndpointCredits(credits),
-  sizes: convertSizesToEndpointImageSize(
+  sizes: convertSizesToPayloadImages(
     [
       sizes?.["200w"],
       sizes?.["320w"],

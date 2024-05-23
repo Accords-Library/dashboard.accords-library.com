@@ -22,7 +22,6 @@ import {
 import {
   EndpointAttribute,
   EndpointCredit,
-  EndpointImageSize,
   EndpointMediaThumbnail,
   EndpointRole,
   EndpointScanImage,
@@ -47,16 +46,15 @@ import {
   Video,
 } from "../types/collections";
 import {
-  ImageSize,
-  ValidImageSize,
+  isAudio,
   isDefined,
   isEmpty,
+  isImage,
   isPayloadArrayType,
+  isPayloadImage,
   isPayloadType,
   isPublished,
-  isValidImageSize,
-  isValidPayloadImage,
-  isValidPayloadMedia,
+  isVideo,
 } from "./asserts";
 
 const convertTagToEndpointTag = ({ slug, page, translations }: Tag): EndpointTag => ({
@@ -109,21 +107,21 @@ export const convertRTCToEndpointRTC = (
           };
           if (isUploadNodeImageNode(node)) {
             const value = node.value as unknown as Image | string;
-            if (!isPayloadType(value) || !isValidPayloadImage(value)) return errorUploadNode;
+            if (!isImage(value)) return errorUploadNode;
             return {
               ...node,
               value: convertImageToEndpointImage(value),
             };
           } else if (isUploadNodeAudioNode(node)) {
             const value = node.value as unknown as Audio | string;
-            if (!isPayloadType(value) || !isValidPayloadMedia(value)) return errorUploadNode;
+            if (!isAudio(value)) return errorUploadNode;
             return {
               ...node,
               value: convertAudioToEndpointAudio(value),
             };
           } else if (isUploadNodeVideoNode(node)) {
             const value = node.value as unknown as Video | string;
-            if (!isPayloadType(value) || !isValidPayloadMedia(value)) return errorUploadNode;
+            if (!isVideo(value)) return errorUploadNode;
             return {
               ...node,
               value: convertVideoToEndpointVideo(value),
@@ -282,14 +280,16 @@ const convertAttributeToEndpointAttribute = (
   }
 };
 
-export const convertSizesToEndpointImageSize = (
-  sizes: (ImageSize | undefined)[],
-  targetSizes: number[]
-): EndpointImageSize[] => {
-  if (!sizes) return [];
-  const processedSizes = sizes.filter(isValidImageSize);
+type Nullable<T> = { [P in keyof T]?: T[P] | undefined | null };
 
-  const targetBins: { min: number; target: number; max: number; image: ValidImageSize }[] = [];
+export const convertSizesToPayloadImages = (
+  sizes: (Nullable<PayloadImage> | undefined)[],
+  targetSizes: number[]
+): PayloadImage[] => {
+  if (!sizes) return [];
+  const processedSizes = sizes.filter(isPayloadImage);
+
+  const images: PayloadImage[] = [];
   for (let index = 0; index < targetSizes.length; index++) {
     const previous = targetSizes[index - 1];
     const current = targetSizes[index]!;
@@ -305,15 +305,10 @@ export const convertSizesToEndpointImageSize = (
     const smallestImage = images[0];
     if (!smallestImage) continue;
 
-    targetBins.push({ min, target: current, max, image: smallestImage });
+    images.push(smallestImage);
   }
 
-  return targetBins.map(({ target, image: { height, width, url } }) => ({
-    width,
-    height,
-    url,
-    wSize: target,
-  }));
+  return images;
 };
 
 export const convertScanToEndpointScanImage = (
@@ -327,7 +322,7 @@ export const convertScanToEndpointScanImage = (
   filename,
   filesize,
   mimeType,
-  sizes: convertSizesToEndpointImageSize(
+  sizes: convertSizesToPayloadImages(
     [
       sizes?.["200w"],
       sizes?.["320w"],
@@ -354,7 +349,7 @@ export const convertMediaThumbnailToEndpointMediaThumbnail = ({
   filename,
   filesize,
   mimeType,
-  sizes: convertSizesToEndpointImageSize(
+  sizes: convertSizesToPayloadImages(
     [
       sizes?.["200w"],
       sizes?.["320w"],

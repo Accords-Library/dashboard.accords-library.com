@@ -1,6 +1,6 @@
 import { RichTextContent, isNodeParagraphNode } from "../constants";
 import { PayloadImage, PayloadMedia } from "../sdk";
-import { Image } from "../types/collections";
+import { Audio, Image, MediaThumbnail, Scan, Video } from "../types/collections";
 
 export const isDefined = <T>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined;
@@ -24,32 +24,6 @@ const isEmptyRichText = (value: RichTextContent) =>
 
 export const hasDuplicates = <T>(list: T[]): boolean => list.length !== new Set(list).size;
 
-export const isValidPayloadImage = (
-  image: string | Image | null | undefined
-): image is Image & PayloadImage => {
-  if (typeof image === "string") return false;
-  if (!isValidPayloadMedia(image)) return false;
-  if (isUndefined(image.width)) return false;
-  if (isUndefined(image.height)) return false;
-  return true;
-};
-
-export const isValidPayloadMedia = (
-  media:
-    | Partial<{ [K in keyof PayloadMedia]: null | undefined | PayloadMedia[K] }>
-    | undefined
-    | null
-    | string
-): media is PayloadMedia => {
-  if (isUndefined(media)) return false;
-  if (typeof media === "string") return false;
-  if (isEmpty(media.filename)) return false;
-  if (isEmpty(media.url)) return false;
-  if (isEmpty(media.mimeType)) return false;
-  if (isUndefined(media.filesize)) return false;
-  return true;
-};
-
 export const isPayloadType = <T extends Object>(value: string | T): value is T =>
   typeof value === "object";
 
@@ -61,31 +35,35 @@ export const isPublished = <T extends { _status?: ("draft" | "published") | null
   object: T
 ): boolean => object._status === "published";
 
-export type ImageSize = {
-  url?: string | null;
-  width?: number | null;
-  height?: number | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  filename?: string | null;
+export const isImage = (image: string | Image | null | undefined): image is PayloadImage & Image =>
+  isPayloadImage(image);
+
+export const isScan = (image: string | Scan | null | undefined): image is PayloadImage & Scan =>
+  isPayloadImage(image);
+
+export const isMediaThumbnail = (
+  image: string | MediaThumbnail | null | undefined
+): image is PayloadImage & MediaThumbnail => isPayloadImage(image);
+
+export const isPayloadImage = (image: unknown): image is PayloadImage => {
+  if (!isPayloadMedia(image)) return false;
+  if (!("width" in image) || typeof image.width !== "number") return false;
+  if (!("height" in image) || typeof image.height !== "number") return false;
+  return true;
 };
 
-export type ValidImageSize = {
-  url: string;
-  width: number;
-  height: number;
-  mimeType: string;
-  filesize: number;
-  filename: string;
-};
+export const isVideo = (video: string | Video | null | undefined): video is PayloadMedia & Video =>
+  isPayloadMedia(video);
 
-export const isValidImageSize = (size: ImageSize | undefined): size is ValidImageSize => {
-  if (isUndefined(size)) return false;
-  if (isUndefined(size.url)) return false;
-  if (isUndefined(size.width)) return false;
-  if (isUndefined(size.height)) return false;
-  if (isUndefined(size.mimeType)) return false;
-  if (isUndefined(size.filesize)) return false;
-  if (isUndefined(size.filename)) return false;
+export const isAudio = (video: string | Audio | null | undefined): video is PayloadMedia & Audio =>
+  isPayloadMedia(video);
+
+const isPayloadMedia = (media: unknown): media is PayloadMedia => {
+  if (typeof media !== "object") return false;
+  if (isUndefined(media)) return false;
+  if (!("url" in media) || typeof media.url !== "string") return false;
+  if (!("mimeType" in media) || typeof media.mimeType !== "string") return false;
+  if (!("filename" in media) || typeof media.filename !== "string") return false;
+  if (!("filesize" in media) || typeof media.filesize !== "number") return false;
   return true;
 };

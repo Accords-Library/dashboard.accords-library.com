@@ -346,7 +346,7 @@ export type EndpointCollectibleScanPage = {
 
 export type EndpointScanImage = PayloadImage & {
   index: string;
-  sizes: EndpointImageSize[];
+  sizes: PayloadImage[];
 };
 
 export type TableOfContentEntry = {
@@ -411,17 +411,10 @@ export type EndpointMedia = {
   credits: EndpointCredit[];
 };
 
-export type EndpointImageSize = {
-  width: number;
-  height: number;
-  url: string;
-  wSize: number;
-};
-
 export type EndpointImage = EndpointMedia & {
   width: number;
   height: number;
-  sizes: EndpointImageSize[];
+  sizes: PayloadImage[];
 };
 
 export type EndpointAudio = EndpointMedia & {
@@ -451,7 +444,7 @@ export type EndpointVideo = EndpointMedia & {
 };
 
 export type EndpointMediaThumbnail = PayloadImage & {
-  sizes: EndpointImageSize[];
+  sizes: PayloadImage[];
 };
 
 export type PayloadMedia = {
