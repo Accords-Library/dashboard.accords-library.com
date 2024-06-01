@@ -75,7 +75,6 @@ export const convertFolderToEndpointFolder = ({
           ];
         case Collections.Pages:
           return [{ relationTo: Collections.Pages, value: convertPageToEndpointPage(value) }];
-        // TODO: handle media type files
         case Collections.Images:
           if (!isImage(value)) return [];
           return [{ relationTo: Collections.Images, value: convertImageToEndpointImage(value) }];

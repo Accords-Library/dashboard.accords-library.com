@@ -3,6 +3,7 @@ import { ArrayField } from "payload/types";
 import { Collections } from "../../constants";
 import { Credits } from "../../types/collections";
 import { hasDuplicates, isDefined, isPayloadType, isUndefined } from "../../utils/asserts";
+import { rowField } from "../rowField/rowField";
 
 type Props = Omit<ArrayField, "type" | "fields">;
 
@@ -31,13 +32,15 @@ export const creditsField = ({ validate, admin, ...props }: Props): ArrayField =
     return true;
   },
   fields: [
-    { name: "role", type: "relationship", relationTo: Collections.CreditsRole, required: true },
-    {
-      name: "recorders",
-      type: "relationship",
-      relationTo: Collections.Recorders,
-      required: true,
-      hasMany: true,
-    },
+    rowField([
+      { name: "role", type: "relationship", relationTo: Collections.CreditsRole, required: true },
+      {
+        name: "recorders",
+        type: "relationship",
+        relationTo: Collections.Recorders,
+        required: true,
+        hasMany: true,
+      },
+    ]),
   ],
 });

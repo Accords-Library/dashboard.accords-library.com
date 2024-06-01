@@ -232,7 +232,7 @@ const convertAttributeToEndpointAttribute = (
       const { slug, icon, translations } = name;
       return {
         slug,
-        icon: icon ?? "material-symbols:category-outline",
+        icon: icon ?? "material-symbols:category",
         translations: translations.map(({ language, name }) => ({
           language: isPayloadType(language) ? language.id : language,
           name,
@@ -249,7 +249,7 @@ const convertAttributeToEndpointAttribute = (
       const { slug, icon, translations } = name;
       return {
         slug,
-        icon: icon ?? "material-symbols:category-outline",
+        icon: icon ?? "material-symbols:category",
         translations: translations.map(({ language, name }) => ({
           language: isPayloadType(language) ? language.id : language,
           name,
@@ -268,7 +268,7 @@ const convertAttributeToEndpointAttribute = (
 
       return {
         slug,
-        icon: icon ?? "material-symbols:category-outline",
+        icon: icon ?? "material-symbols:category",
         translations: translations.map(({ language, name }) => ({
           language: isPayloadType(language) ? language.id : language,
           name,
@@ -286,7 +286,6 @@ export const convertSizesToPayloadImages = (
   sizes: (Nullable<PayloadImage> | undefined)[],
   targetSizes: number[]
 ): PayloadImage[] => {
-  if (!sizes) return [];
   const processedSizes = sizes.filter(isPayloadImage);
 
   const images: PayloadImage[] = [];
@@ -307,6 +306,7 @@ export const convertSizesToPayloadImages = (
 
     images.push(smallestImage);
   }
+
 
   return images;
 };
