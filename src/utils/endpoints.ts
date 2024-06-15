@@ -1,9 +1,6 @@
 import { convertAudioToEndpointAudio } from "../collections/Audios/endpoints/getByID";
-import { convertCollectibleToEndpointCollectible } from "../collections/Collectibles/endpoints/getBySlugEndpoint";
-import { convertFolderToEndpointFolder } from "../collections/Folders/endpoints/getBySlugEndpoint";
 import { convertImageToEndpointImage } from "../collections/Images/endpoints/getByID";
-import { convertPageToEndpointPage } from "../collections/Pages/endpoints/getBySlugEndpoint";
-import { convertRecorderToEndpointRecorder } from "../collections/Recorders/endpoints/getByID";
+import { convertRecorderToEndpointRecorderPreview } from "../collections/Recorders/endpoints/getByID";
 import { convertVideoToEndpointVideo } from "../collections/Videos/endpoints/getByID";
 import {
   AttributeTypes,
@@ -26,6 +23,7 @@ import {
   EndpointRole,
   EndpointScanImage,
   EndpointSource,
+  EndpointSourcePreview,
   EndpointTag,
   PayloadImage,
 } from "../sdk";
@@ -50,6 +48,7 @@ import {
   isDefined,
   isEmpty,
   isImage,
+  isNotEmpty,
   isPayloadArrayType,
   isPayloadImage,
   isPayloadType,
@@ -57,9 +56,10 @@ import {
   isVideo,
 } from "./asserts";
 
-const convertTagToEndpointTag = ({ slug, page, translations }: Tag): EndpointTag => ({
+const convertTagToEndpointTag = ({ id, slug, page, translations }: Tag): EndpointTag => ({
+  id,
   slug,
-  ...(page && isPayloadType(page) ? { page: convertPageToEndpointPage(page) } : {}),
+  ...(page && isPayloadType(page) ? { page: { slug: page.slug } } : {}),
   translations: translations.map(({ language, name }) => ({
     language: isPayloadType(language) ? language.id : language,
     name,
@@ -134,6 +134,7 @@ export const convertRTCToEndpointRTC = (
   };
 };
 
+// TODO: Handle URL sources
 export const convertSourceToEndpointSource = ({
   collectibles,
   folders,
@@ -147,11 +148,39 @@ export const convertSourceToEndpointSource = ({
 }): EndpointSource[] => {
   const result: EndpointSource[] = [];
 
+  const convertFolderToEndpointSourcePreview = ({
+    id,
+    slug,
+    translations,
+  }: Folder): EndpointSourcePreview => ({
+    id,
+    slug,
+    translations: translations.map(({ language, name }) => ({
+      language: isPayloadType(language) ? language.id : language,
+      title: name,
+    })),
+  });
+
+  const convertCollectibleToEndpointSourcePreview = ({
+    id,
+    slug,
+    translations,
+  }: Collectible): EndpointSourcePreview => ({
+    id,
+    slug,
+    translations: translations.map(({ language, title, pretitle, subtitle }) => ({
+      language: isPayloadType(language) ? language.id : language,
+      title,
+      ...(isNotEmpty(pretitle) ? { pretitle } : {}),
+      ...(isNotEmpty(subtitle) ? { subtitle } : {}),
+    })),
+  });
+
   if (collectibles && isPayloadArrayType(collectibles)) {
     collectibles.filter(isPublished).forEach((collectible) => {
       result.push({
         type: "collectible",
-        collectible: convertCollectibleToEndpointCollectible(collectible),
+        collectible: convertCollectibleToEndpointSourcePreview(collectible),
       });
     });
   }
@@ -160,7 +189,7 @@ export const convertSourceToEndpointSource = ({
     scans.filter(isPublished).forEach((collectible) => {
       result.push({
         type: "scans",
-        collectible: convertCollectibleToEndpointCollectible(collectible),
+        collectible: convertCollectibleToEndpointSourcePreview(collectible),
       });
     });
   }
@@ -169,7 +198,7 @@ export const convertSourceToEndpointSource = ({
     gallery.filter(isPublished).forEach((collectible) => {
       result.push({
         type: "gallery",
-        collectible: convertCollectibleToEndpointCollectible(collectible),
+        collectible: convertCollectibleToEndpointSourcePreview(collectible),
       });
     });
   }
@@ -178,7 +207,7 @@ export const convertSourceToEndpointSource = ({
     folders.forEach((folder) => {
       result.push({
         type: "folder",
-        folder: convertFolderToEndpointFolder(folder),
+        folder: convertFolderToEndpointSourcePreview(folder),
       });
     });
   }
@@ -198,7 +227,8 @@ export const getDomainFromUrl = (url: string): string => {
 export const getLanguageId = (language: string | Language) =>
   typeof language === "object" ? language.id : language;
 
-const convertRoleToEndpointRole = ({ icon, translations }: CreditsRole): EndpointRole => ({
+const convertRoleToEndpointRole = ({ id, icon, translations }: CreditsRole): EndpointRole => ({
+  id,
   icon: icon ?? "material-symbols:person",
   translations: translations.map(({ language, name }) => ({
     language: getLanguageId(language),
@@ -212,7 +242,7 @@ export const convertCreditsToEndpointCredits = (credits?: Credits | null): Endpo
     return [
       {
         role: convertRoleToEndpointRole(role),
-        recorders: recorders.map(convertRecorderToEndpointRecorder),
+        recorders: recorders.map(convertRecorderToEndpointRecorderPreview),
       },
     ];
   }) ?? [];
@@ -229,8 +259,9 @@ const convertAttributeToEndpointAttribute = (
     case "numberBlock": {
       const { name, number } = attribute;
       if (!isPayloadType(name)) return;
-      const { slug, icon, translations } = name;
+      const { id, slug, icon, translations } = name;
       return {
+        id,
         slug,
         icon: icon ?? "material-symbols:category",
         translations: translations.map(({ language, name }) => ({
@@ -246,8 +277,9 @@ const convertAttributeToEndpointAttribute = (
       const { name, text } = attribute;
       if (!isPayloadType(name)) return;
       if (isEmpty(text)) return;
-      const { slug, icon, translations } = name;
+      const { id, slug, icon, translations } = name;
       return {
+        id,
         slug,
         icon: icon ?? "material-symbols:category",
         translations: translations.map(({ language, name }) => ({
@@ -264,9 +296,10 @@ const convertAttributeToEndpointAttribute = (
       if (!isPayloadType(name)) return;
       if (!isPayloadArrayType(tags)) return;
       if (tags.length === 0) return;
-      const { slug, icon, translations } = name;
+      const { id, slug, icon, translations } = name;
 
       return {
+        id,
         slug,
         icon: icon ?? "material-symbols:category",
         translations: translations.map(({ language, name }) => ({
@@ -307,14 +340,14 @@ export const convertSizesToPayloadImages = (
     images.push(smallestImage);
   }
 
-
   return images;
 };
 
 export const convertScanToEndpointScanImage = (
-  { url, width, height, mimeType, filename, filesize, sizes }: Scan & PayloadImage,
+  { id, url, width, height, mimeType, filename, filesize, sizes }: Scan & PayloadImage,
   index: string
 ): EndpointScanImage => ({
+  id,
   index,
   url,
   width,
@@ -335,6 +368,7 @@ export const convertScanToEndpointScanImage = (
 });
 
 export const convertMediaThumbnailToEndpointMediaThumbnail = ({
+  id,
   url,
   width,
   height,
@@ -343,6 +377,7 @@ export const convertMediaThumbnailToEndpointMediaThumbnail = ({
   filesize,
   sizes,
 }: MediaThumbnail & PayloadImage): EndpointMediaThumbnail => ({
+  id,
   url,
   width,
   height,

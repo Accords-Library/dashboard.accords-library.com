@@ -3,7 +3,7 @@ import { Collections } from "../../../constants";
 import { EndpointWebsiteConfig } from "../../../sdk";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isImage, isPayloadType } from "../../../utils/asserts";
-import { convertFolderToEndpointFolder } from "../../Folders/endpoints/getBySlugEndpoint";
+import { convertFolderToEndpointFolderPreview } from "../../Folders/endpoints/getBySlugEndpoint";
 import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 
 export const getConfigEndpoint: CollectionEndpoint = {
@@ -57,7 +57,7 @@ export const getConfigEndpoint: CollectionEndpoint = {
           homeFolders?.flatMap(({ folder, darkThumbnail, lightThumbnail }) => {
             if (!isPayloadType(folder)) return [];
             return {
-              ...convertFolderToEndpointFolder(folder),
+              ...convertFolderToEndpointFolderPreview(folder),
               ...(isImage(darkThumbnail)
                 ? { darkThumbnail: convertImageToEndpointImage(darkThumbnail) }
                 : {}),

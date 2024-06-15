@@ -10,31 +10,37 @@ import { Currency, Language } from "./types/collections";
 
 // END MOCKING SECTION
 
-export type EndpointFolder = {
+export type EndpointFolderPreview = {
+  id: string;
   slug: string;
   icon?: string;
   translations: {
     language: string;
-    name: string;
-    description?: RichTextContent;
+    title: string;
   }[];
+};
+
+export type EndpointFolder = EndpointFolderPreview & {
+  translations: (EndpointFolderPreview["translations"][number] & {
+    description?: RichTextContent;
+  })[];
   sections:
-    | { type: "single"; subfolders: EndpointFolder[] }
+    | { type: "single"; subfolders: EndpointFolderPreview[] }
     | {
         type: "multiple";
         sections: {
           translations: { language: string; name: string }[];
-          subfolders: EndpointFolder[];
+          subfolders: EndpointFolderPreview[];
         }[];
       };
   files: (
     | {
         relationTo: Collections.Collectibles;
-        value: EndpointCollectible;
+        value: EndpointCollectiblePreview;
       }
     | {
         relationTo: Collections.Pages;
-        value: EndpointPage;
+        value: EndpointPagePreview;
       }
     | {
         relationTo: Collections.Images;
@@ -55,7 +61,7 @@ export type EndpointFolder = {
 export type EndpointWebsiteConfig = {
   home: {
     backgroundImage?: EndpointImage;
-    folders: (EndpointFolder & {
+    folders: (EndpointFolderPreview & {
       lightThumbnail?: EndpointImage;
       darkThumbnail?: EndpointImage;
     })[];
@@ -73,9 +79,12 @@ export type EndpointWebsiteConfig = {
   defaultOpenGraphImage?: EndpointImage;
 };
 
-export type EndpointRecorder = {
+export type EndpointRecorderPreview = {
   id: string;
   username: string;
+};
+
+export type EndpointRecorder = EndpointRecorderPreview & {
   avatar?: EndpointImage;
   translations: {
     language: string;
@@ -93,8 +102,9 @@ export type EndpointWording = {
 };
 
 export type EndpointTag = {
+  id: string;
   slug: string;
-  page?: EndpointPage;
+  page?: { slug: string };
   translations: {
     language: string;
     name: string;
@@ -102,6 +112,7 @@ export type EndpointTag = {
 };
 
 export type EndpointGenericAttribute = {
+  id: string;
   slug: string;
   icon: string;
   translations: {
@@ -131,6 +142,7 @@ export type EndpointAttribute =
   | EndpointTagsAttribute;
 
 export type EndpointRole = {
+  id: string;
   icon: string;
   translations: {
     language: string;
@@ -140,32 +152,39 @@ export type EndpointRole = {
 
 export type EndpointCredit = {
   role: EndpointRole;
-  recorders: EndpointRecorder[];
+  recorders: EndpointRecorderPreview[];
 };
 
-export type EndpointPage = {
+export type EndpointPagePreview = {
+  id: string;
   slug: string;
   thumbnail?: EndpointImage;
   attributes: EndpointAttribute[];
-  backgroundImage?: EndpointImage;
   translations: {
     language: string;
     pretitle?: string;
     title: string;
     subtitle?: string;
+  }[];
+  updatedAt: string;
+};
+
+export type EndpointPage = EndpointPagePreview & {
+  backgroundImage?: EndpointImage;
+  translations: (EndpointPagePreview["translations"][number] & {
     sourceLanguage: string;
     summary?: RichTextContent;
     content: RichTextContent;
     credits: EndpointCredit[];
     toc: TableOfContentEntry[];
-  }[];
+  })[];
   createdAt: string;
-  updatedAt: string;
-  updatedBy?: EndpointRecorder;
+  updatedBy?: EndpointRecorderPreview;
   parentPages: EndpointSource[];
 };
 
-export type EndpointCollectible = {
+export type EndpointCollectiblePreview = {
+  id: string;
   slug: string;
   thumbnail?: EndpointImage;
   translations: {
@@ -173,20 +192,25 @@ export type EndpointCollectible = {
     pretitle?: string;
     title: string;
     subtitle?: string;
-    description?: RichTextContent;
   }[];
   attributes: EndpointAttribute[];
   releaseDate?: string;
   languages: string[];
+  price?: {
+    amount: number;
+    currency: string;
+  };
+};
+
+export type EndpointCollectible = EndpointCollectiblePreview & {
+  translations: (EndpointCollectiblePreview["translations"][number] & {
+    description?: RichTextContent;
+  })[];
   backgroundImage?: EndpointImage;
   nature: CollectibleNature;
   gallery?: { count: number; thumbnail: EndpointImage };
   scans?: { count: number; thumbnail: EndpointScanImage };
   urls: { url: string; label: string }[];
-  price?: {
-    amount: number;
-    currency: string;
-  };
   size?: {
     width: number;
     height: number;
@@ -198,12 +222,12 @@ export type EndpointCollectible = {
     bindingType?: CollectibleBindingTypes;
     pageOrder?: CollectiblePageOrders;
   };
-  subitems: EndpointCollectible[];
+  subitems: EndpointCollectiblePreview[];
   contents: {
     content:
       | {
           relationTo: Collections.Pages;
-          value: EndpointPage;
+          value: EndpointPagePreview;
         }
       | {
           relationTo: Collections.Audios;
@@ -244,7 +268,7 @@ export type EndpointCollectible = {
   }[];
   createdAt: string;
   updatedAt: string;
-  updatedBy?: EndpointRecorder;
+  updatedBy?: EndpointRecorderPreview;
   parentPages: EndpointSource[];
 };
 
@@ -377,20 +401,26 @@ export type EndpointChronologyEvent = {
   }[];
 };
 
+export type EndpointSourcePreview = {
+  id: string;
+  slug: string;
+  translations: { language: string; pretitle?: string; title: string; subtitle?: string }[];
+};
+
 export type EndpointSource =
   | { type: "url"; url: string; label: string }
   | {
       type: "collectible";
-      collectible: EndpointCollectible;
+      collectible: EndpointSourcePreview;
       range?:
         | { type: "page"; page: number }
         | { type: "timestamp"; timestamp: string }
         | { type: "custom"; translations: { language: string; note: string }[] };
     }
-  | { type: "page"; page: EndpointPage }
-  | { type: "folder"; folder: EndpointFolder }
-  | { type: "scans"; collectible: EndpointCollectible }
-  | { type: "gallery"; collectible: EndpointCollectible };
+  | { type: "page"; page: EndpointSourcePreview }
+  | { type: "folder"; folder: EndpointSourcePreview }
+  | { type: "scans"; collectible: EndpointSourcePreview }
+  | { type: "gallery"; collectible: EndpointSourcePreview };
 
 export type EndpointMedia = {
   id: string;
@@ -450,6 +480,7 @@ export type EndpointMediaThumbnail = PayloadImage & {
 };
 
 export type PayloadMedia = {
+  id: string;
   url: string;
   mimeType: string;
   filename: string;

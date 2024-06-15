@@ -1,6 +1,6 @@
 import payload from "payload";
 import { Collections } from "../../../constants";
-import { EndpointRecorder } from "../../../sdk";
+import { EndpointRecorder, EndpointRecorderPreview } from "../../../sdk";
 import { Recorder } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isImage, isPayloadType } from "../../../utils/asserts";
@@ -38,21 +38,26 @@ export const getByID: CollectionEndpoint = {
   },
 };
 
-export const convertRecorderToEndpointRecorder = ({
+export const convertRecorderToEndpointRecorderPreview = ({
   id,
-  languages,
   username,
-  avatar,
   anonymize,
-  translations,
-}: Recorder): EndpointRecorder => ({
+}: Recorder): EndpointRecorderPreview => ({
   id,
-  languages: languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
   username: anonymize ? `Recorder#${id.substring(0, 5)}` : username,
-  ...(isImage(avatar) ? { avatar: convertImageToEndpointImage(avatar) } : {}),
-  translations:
-    translations?.map(({ language, biography }) => ({
-      language: isPayloadType(language) ? language.id : language,
-      biography: convertRTCToEndpointRTC(biography),
-    })) ?? [],
 });
+
+const convertRecorderToEndpointRecorder = (recorder: Recorder): EndpointRecorder => {
+  const { languages, avatar, translations } = recorder;
+  return {
+    ...convertRecorderToEndpointRecorderPreview(recorder),
+    languages:
+      languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
+    ...(isImage(avatar) ? { avatar: convertImageToEndpointImage(avatar) } : {}),
+    translations:
+      translations?.map(({ language, biography }) => ({
+        language: isPayloadType(language) ? language.id : language,
+        biography: convertRTCToEndpointRTC(biography),
+      })) ?? [],
+  };
+};

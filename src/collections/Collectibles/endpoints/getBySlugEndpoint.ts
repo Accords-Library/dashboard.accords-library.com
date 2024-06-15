@@ -1,6 +1,6 @@
 import { CollectibleNature, Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointCollectible } from "../../../sdk";
+import { EndpointCollectible, EndpointCollectiblePreview } from "../../../sdk";
 import { Collectible } from "../../../types/collections";
 import {
   isAudio,
@@ -21,8 +21,8 @@ import {
 } from "../../../utils/endpoints";
 import { convertAudioToEndpointAudio } from "../../Audios/endpoints/getByID";
 import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
-import { convertPageToEndpointPage } from "../../Pages/endpoints/getBySlugEndpoint";
-import { convertRecorderToEndpointRecorder } from "../../Recorders/endpoints/getByID";
+import { convertPageToEndpointPagePreview } from "../../Pages/endpoints/getBySlugEndpoint";
+import { convertRecorderToEndpointRecorderPreview } from "../../Recorders/endpoints/getByID";
 import { convertVideoToEndpointVideo } from "../../Videos/endpoints/getByID";
 
 export const getBySlugEndpoint = createGetByEndpoint({
@@ -32,48 +32,63 @@ export const getBySlugEndpoint = createGetByEndpoint({
   handler: (collectible) => convertCollectibleToEndpointCollectible(collectible),
 });
 
-export const convertCollectibleToEndpointCollectible = ({
-  nature,
-  urls,
-  subitems,
-  gallery: rawGallery,
-  contents,
+export const convertCollectibleToEndpointCollectiblePreview = ({
+  id,
   priceEnabled,
   price,
-  size,
-  sizeEnabled,
-  weight,
-  weightEnabled,
-  pageInfo,
-  pageInfoEnabled,
-  parentItems,
-  folders,
-  backgroundImage,
   slug,
   thumbnail,
   translations,
   releaseDate,
   languages,
-  scans: rawScans,
   attributes,
-  createdAt,
-  updatedAt,
-  scansEnabled,
-  updatedBy,
-}: Collectible): EndpointCollectible => {
+}: Collectible): EndpointCollectiblePreview => ({
+  id,
+  slug,
+  ...(isImage(thumbnail) ? { thumbnail: convertImageToEndpointImage(thumbnail) } : {}),
+  translations:
+    translations?.map(({ language, title, pretitle, subtitle }) => ({
+      language: isPayloadType(language) ? language.id : language,
+      title,
+      ...(isNotEmpty(pretitle) ? { pretitle } : {}),
+      ...(isNotEmpty(subtitle) ? { subtitle } : {}),
+    })) ?? [],
+  attributes: convertAttributesToEndpointAttributes(attributes),
+  ...(isDefined(releaseDate) ? { releaseDate } : {}),
+  languages: languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
+  ...handlePrice(price, priceEnabled),
+});
+
+const convertCollectibleToEndpointCollectible = (collectible: Collectible): EndpointCollectible => {
+  const {
+    nature,
+    urls,
+    subitems,
+    gallery: rawGallery,
+    contents,
+    priceEnabled,
+    price,
+    size,
+    sizeEnabled,
+    weight,
+    weightEnabled,
+    pageInfo,
+    pageInfoEnabled,
+    parentItems,
+    folders,
+    backgroundImage,
+    translations,
+    scans: rawScans,
+    createdAt,
+    updatedAt,
+    scansEnabled,
+    updatedBy,
+  } = collectible;
   const gallery = handleGallery(rawGallery);
   const scans = scansEnabled ? handleScans(rawScans) : undefined;
 
   return {
-    slug,
-    languages:
-      languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
-    ...(isDefined(releaseDate) ? { releaseDate } : {}),
-    ...(isImage(thumbnail) ? { thumbnail: convertImageToEndpointImage(thumbnail) } : {}),
-    ...(isImage(backgroundImage)
-      ? { backgroundImage: convertImageToEndpointImage(backgroundImage) }
-      : {}),
-    attributes: convertAttributesToEndpointAttributes(attributes),
+    ...convertCollectibleToEndpointCollectiblePreview(collectible),
     translations:
       translations?.map(({ language, title, description, pretitle, subtitle }) => ({
         language: isPayloadType(language) ? language.id : language,
@@ -82,22 +97,25 @@ export const convertCollectibleToEndpointCollectible = ({
         ...(isNotEmpty(subtitle) ? { subtitle } : {}),
         ...(isNotEmpty(description) ? { description } : {}),
       })) ?? [],
-    contents: handleContents(contents),
+    ...(isImage(backgroundImage)
+      ? { backgroundImage: convertImageToEndpointImage(backgroundImage) }
+      : {}),
+    nature: nature === "Physical" ? CollectibleNature.Physical : CollectibleNature.Digital,
     ...(gallery ? { gallery } : {}),
     ...(scans ? { scans } : {}),
-    nature: nature === "Physical" ? CollectibleNature.Physical : CollectibleNature.Digital,
-    subitems: isPayloadArrayType(subitems)
-      ? subitems.filter(isPublished).map(convertCollectibleToEndpointCollectible)
-      : [],
     urls: urls?.map(({ url }) => ({ url, label: getDomainFromUrl(url) })) ?? [],
-    ...(weightEnabled && isDefined(weight) ? { weight: weight.amount } : {}),
     ...handleSize(size, sizeEnabled),
+    ...(weightEnabled && isDefined(weight) ? { weight: weight.amount } : {}),
     ...handlePageInfo(pageInfo, pageInfoEnabled),
+    subitems: isPayloadArrayType(subitems)
+      ? subitems.filter(isPublished).map(convertCollectibleToEndpointCollectiblePreview)
+      : [],
+    contents: handleContents(contents),
     ...handlePrice(price, priceEnabled),
     createdAt,
     updatedAt,
     ...(isPayloadType(updatedBy)
-      ? { updatedBy: convertRecorderToEndpointRecorder(updatedBy) }
+      ? { updatedBy: convertRecorderToEndpointRecorderPreview(updatedBy) }
       : {}),
     parentPages: convertSourceToEndpointSource({ collectibles: parentItems, folders }),
   };
@@ -172,7 +190,7 @@ const handleScans = (scans: Collectible["scans"]): EndpointCollectible["scans"] 
 
   const thumbnail = result?.[0];
   if (!thumbnail) return;
-  
+
   return {
     count: totalCount,
     thumbnail: convertScanToEndpointScanImage(thumbnail.image, thumbnail.index),
@@ -230,7 +248,10 @@ const handleContents = (contents: Collectible["contents"]): EndpointCollectible[
 
         case Collections.Pages:
           return isPayloadType(content.value) && isPublished(content.value)
-            ? { relationTo: Collections.Pages, value: convertPageToEndpointPage(content.value) }
+            ? {
+                relationTo: Collections.Pages,
+                value: convertPageToEndpointPagePreview(content.value),
+              }
             : undefined;
 
         case Collections.Audios:

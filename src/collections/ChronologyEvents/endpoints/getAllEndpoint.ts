@@ -5,8 +5,8 @@ import { ChronologyEvent, CollectibleBlock } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isDefined, isNotEmpty, isPayloadType } from "../../../utils/asserts";
 import { convertCreditsToEndpointCredits, getDomainFromUrl } from "../../../utils/endpoints";
-import { convertCollectibleToEndpointCollectible } from "../../Collectibles/endpoints/getBySlugEndpoint";
-import { convertPageToEndpointPage } from "../../Pages/endpoints/getBySlugEndpoint";
+import { convertCollectibleToEndpointCollectiblePreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
+import { convertPageToEndpointPagePreview } from "../../Pages/endpoints/getBySlugEndpoint";
 
 export const getAllEndpoint: CollectionEndpoint = {
   method: "get",
@@ -89,7 +89,7 @@ const handleSources = (sources: ChronologyEvent["events"][number]["sources"]): E
           if (!isPayloadType(source.collectible)) return [];
           return {
             type: "collectible",
-            collectible: convertCollectibleToEndpointCollectible(source.collectible),
+            collectible: convertCollectibleToEndpointCollectiblePreview(source.collectible),
             ...(isDefined(range) ? { range } : {}),
           };
 
@@ -97,7 +97,7 @@ const handleSources = (sources: ChronologyEvent["events"][number]["sources"]): E
           if (!isPayloadType(source.page)) return [];
           return {
             type: "page",
-            page: convertPageToEndpointPage(source.page),
+            page: convertPageToEndpointPagePreview(source.page),
           };
 
         case "urlBlock":
