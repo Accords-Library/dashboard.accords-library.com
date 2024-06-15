@@ -44,15 +44,15 @@ export type EndpointFolder = EndpointFolderPreview & {
       }
     | {
         relationTo: Collections.Images;
-        value: EndpointImage;
+        value: EndpointImagePreview;
       }
     | {
         relationTo: Collections.Audios;
-        value: EndpointAudio;
+        value: EndpointAudioPreview;
       }
     | {
         relationTo: Collections.Videos;
-        value: EndpointVideo;
+        value: EndpointVideoPreview;
       }
   )[];
   parentPages: EndpointSource[];
@@ -231,11 +231,11 @@ export type EndpointCollectible = EndpointCollectiblePreview & {
         }
       | {
           relationTo: Collections.Audios;
-          value: EndpointAudio;
+          value: EndpointAudioPreview;
         }
       | {
           relationTo: Collections.Videos;
-          value: EndpointVideo;
+          value: EndpointVideoPreview;
         }
       | {
           relationTo: Collections.GenericContents;
@@ -420,23 +420,35 @@ export type EndpointSource =
   | { type: "scans"; collectible: EndpointSourcePreview }
   | { type: "gallery"; collectible: EndpointSourcePreview };
 
-export type EndpointMedia = {
+export type EndpointMediaPreview = {
   id: string;
   url: string;
   filename: string;
   mimeType: string;
-  filesize: number;
-  updatedAt: string;
-  createdAt: string;
   attributes: EndpointAttribute[];
   translations: {
     language: string;
     pretitle?: string;
     title: string;
     subtitle?: string;
-    description?: RichTextContent;
   }[];
+};
+
+export type EndpointMedia = EndpointMediaPreview & {
+  filesize: number;
+  updatedAt: string;
+  createdAt: string;
+  translations: (EndpointMediaPreview["translations"][number] & {
+    description?: RichTextContent;
+  })[];
   credits: EndpointCredit[];
+};
+
+export type EndpointImagePreview = EndpointMediaPreview & {
+  width: number;
+  height: number;
+  sizes: PayloadImage[];
+  openGraph?: PayloadImage;
 };
 
 export type EndpointImage = EndpointMedia & {
@@ -446,8 +458,22 @@ export type EndpointImage = EndpointMedia & {
   openGraph?: PayloadImage;
 };
 
+export type EndpointAudioPreview = EndpointMediaPreview & {
+  thumbnail?: EndpointPayloadImage;
+  duration: number;
+};
+
 export type EndpointAudio = EndpointMedia & {
   thumbnail?: EndpointPayloadImage;
+  duration: number;
+};
+
+export type EndpointVideoPreview = EndpointMediaPreview & {
+  thumbnail?: EndpointPayloadImage;
+  subtitles: {
+    language: string;
+    url: string;
+  }[];
   duration: number;
 };
 

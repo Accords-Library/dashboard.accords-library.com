@@ -1,6 +1,6 @@
 import payload from "payload";
 import { Collections } from "../../../constants";
-import { EndpointVideo, PayloadMedia } from "../../../sdk";
+import { EndpointVideo, EndpointVideoPreview, PayloadMedia } from "../../../sdk";
 import { Video } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import {
@@ -55,51 +55,31 @@ export const getByID: CollectionEndpoint = {
   },
 };
 
-export const convertVideoToEndpointVideo = ({
+export const convertVideoToEndpointVideoPreview = ({
   url,
   attributes,
   translations,
   mimeType,
-  createdAt,
-  updatedAt,
   filename,
-  filesize,
   duration,
   id,
   thumbnail,
-  platform,
-  platformEnabled,
-  credits,
-}: Video & PayloadMedia): EndpointVideo => ({
-  url,
-  attributes: convertAttributesToEndpointAttributes(attributes),
-  createdAt,
-  filename,
-  filesize,
+}: Video & PayloadMedia): EndpointVideoPreview => ({
   id,
+  url,
+  filename,
   mimeType,
-  updatedAt,
+  attributes: convertAttributesToEndpointAttributes(attributes),
   translations:
-    translations?.map(({ language, title, pretitle, subtitle, description }) => ({
+    translations?.map(({ language, title, pretitle, subtitle }) => ({
       language: getLanguageId(language),
       ...(isNotEmpty(pretitle) ? { pretitle } : {}),
       title,
       ...(isNotEmpty(subtitle) ? { subtitle } : {}),
-      ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
     })) ?? [],
-
   duration,
   ...(isMediaThumbnail(thumbnail)
     ? { thumbnail: convertMediaThumbnailToEndpointPayloadImage(thumbnail) }
-    : {}),
-  ...(platformEnabled && isDefined(platform) && isPayloadType(platform.channel)
-    ? {
-        platform: {
-          channel: platform.channel,
-          publishedDate: platform.publishedDate,
-          url: platform.url,
-        },
-      }
     : {}),
   subtitles:
     translations.flatMap(({ language, subfile }) => {
@@ -112,5 +92,34 @@ export const convertVideoToEndpointVideo = ({
         return [];
       return { language: getLanguageId(language), url: subfile.url };
     }) ?? [],
-  credits: convertCreditsToEndpointCredits(credits),
 });
+
+const convertVideoToEndpointVideo = (video: Video & PayloadMedia): EndpointVideo => {
+  const { translations, createdAt, updatedAt, filesize, platform, platformEnabled, credits } =
+    video;
+
+  return {
+    ...convertVideoToEndpointVideoPreview(video),
+    createdAt,
+    filesize,
+    updatedAt,
+    translations:
+      translations?.map(({ language, title, pretitle, subtitle, description }) => ({
+        language: getLanguageId(language),
+        ...(isNotEmpty(pretitle) ? { pretitle } : {}),
+        title,
+        ...(isNotEmpty(subtitle) ? { subtitle } : {}),
+        ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
+      })) ?? [],
+    ...(platformEnabled && isDefined(platform) && isPayloadType(platform.channel)
+      ? {
+          platform: {
+            channel: platform.channel,
+            publishedDate: platform.publishedDate,
+            url: platform.url,
+          },
+        }
+      : {}),
+    credits: convertCreditsToEndpointCredits(credits),
+  };
+};

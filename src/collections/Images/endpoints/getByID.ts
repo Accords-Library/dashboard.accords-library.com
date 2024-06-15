@@ -1,6 +1,6 @@
 import payload from "payload";
 import { Collections } from "../../../constants";
-import { EndpointImage, PayloadImage } from "../../../sdk";
+import { EndpointImage, EndpointImagePreview, PayloadImage } from "../../../sdk";
 import { Image } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isImage, isNotEmpty, isPayloadImage } from "../../../utils/asserts";
@@ -47,40 +47,32 @@ export const getByID: CollectionEndpoint = {
   },
 };
 
-export const convertImageToEndpointImage = ({
+export const convertImageToEndpointImagePreview = ({
   url,
   width,
   height,
   attributes,
   translations,
   mimeType,
-  createdAt,
-  updatedAt,
   filename,
   filesize,
   id,
-  credits,
   sizes,
-}: Image & PayloadImage): EndpointImage => ({
-  url,
-  width,
-  height,
-  attributes: convertAttributesToEndpointAttributes(attributes),
-  createdAt,
-  filename,
-  filesize,
+}: Image & PayloadImage): EndpointImagePreview => ({
   id,
+  url,
+  filename,
   mimeType,
-  updatedAt,
+  attributes: convertAttributesToEndpointAttributes(attributes),
   translations:
-    translations?.map(({ language, title, pretitle, subtitle, description }) => ({
+    translations?.map(({ language, title, pretitle, subtitle }) => ({
       language: getLanguageId(language),
       ...(isNotEmpty(pretitle) ? { pretitle } : {}),
       title,
       ...(isNotEmpty(subtitle) ? { subtitle } : {}),
-      ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
     })) ?? [],
-  credits: convertCreditsToEndpointCredits(credits),
+  width,
+  height,
   sizes: convertSizesToPayloadImages(
     [
       sizes?.["200w"],
@@ -96,3 +88,22 @@ export const convertImageToEndpointImage = ({
   ),
   ...(isPayloadImage(sizes?.og) ? { openGraph: sizes.og } : {}),
 });
+
+export const convertImageToEndpointImage = (image: Image & PayloadImage): EndpointImage => {
+  const { translations, createdAt, updatedAt, filesize, credits } = image;
+  return {
+    ...convertImageToEndpointImagePreview(image),
+    createdAt,
+    filesize,
+    updatedAt,
+    translations:
+      translations?.map(({ language, title, pretitle, subtitle, description }) => ({
+        language: getLanguageId(language),
+        ...(isNotEmpty(pretitle) ? { pretitle } : {}),
+        title,
+        ...(isNotEmpty(subtitle) ? { subtitle } : {}),
+        ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
+      })) ?? [],
+    credits: convertCreditsToEndpointCredits(credits),
+  };
+};

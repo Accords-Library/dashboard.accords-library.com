@@ -1,7 +1,7 @@
-import { convertAudioToEndpointAudio } from "../collections/Audios/endpoints/getByID";
-import { convertImageToEndpointImage } from "../collections/Images/endpoints/getByID";
+import { convertAudioToEndpointAudioPreview } from "../collections/Audios/endpoints/getByID";
+import { convertImageToEndpointImagePreview } from "../collections/Images/endpoints/getByID";
 import { convertRecorderToEndpointRecorderPreview } from "../collections/Recorders/endpoints/getByID";
-import { convertVideoToEndpointVideo } from "../collections/Videos/endpoints/getByID";
+import { convertVideoToEndpointVideoPreview } from "../collections/Videos/endpoints/getByID";
 import {
   AttributeTypes,
   RichTextBreakBlock,
@@ -110,21 +110,21 @@ export const convertRTCToEndpointRTC = (
             if (!isImage(value)) return errorUploadNode;
             return {
               ...node,
-              value: convertImageToEndpointImage(value),
+              value: convertImageToEndpointImagePreview(value),
             };
           } else if (isUploadNodeAudioNode(node)) {
             const value = node.value as unknown as Audio | string;
             if (!isAudio(value)) return errorUploadNode;
             return {
               ...node,
-              value: convertAudioToEndpointAudio(value),
+              value: convertAudioToEndpointAudioPreview(value),
             };
           } else if (isUploadNodeVideoNode(node)) {
             const value = node.value as unknown as Video | string;
             if (!isVideo(value)) return errorUploadNode;
             return {
               ...node,
-              value: convertVideoToEndpointVideo(value),
+              value: convertVideoToEndpointVideoPreview(value),
             };
           }
         }

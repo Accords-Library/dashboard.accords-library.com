@@ -1,6 +1,6 @@
 import payload from "payload";
 import { Collections } from "../../../constants";
-import { EndpointAudio, PayloadMedia } from "../../../sdk";
+import { EndpointAudio, EndpointAudioPreview, PayloadMedia } from "../../../sdk";
 import { Audio } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isAudio, isMediaThumbnail, isNotEmpty } from "../../../utils/asserts";
@@ -47,39 +47,49 @@ export const getByID: CollectionEndpoint = {
   },
 };
 
-export const convertAudioToEndpointAudio = ({
+export const convertAudioToEndpointAudioPreview = ({
   url,
   attributes,
   translations,
   mimeType,
-  createdAt,
-  updatedAt,
   filename,
-  filesize,
   duration,
   id,
   thumbnail,
-  credits,
-}: Audio & PayloadMedia): EndpointAudio => ({
-  url,
-  attributes: convertAttributesToEndpointAttributes(attributes),
-  createdAt,
-  filename,
-  filesize,
+}: Audio & PayloadMedia): EndpointAudioPreview => ({
   id,
+  url,
+  filename,
   mimeType,
-  updatedAt,
+  attributes: convertAttributesToEndpointAttributes(attributes),
   translations:
-    translations?.map(({ language, title, pretitle, subtitle, description }) => ({
+    translations?.map(({ language, title, pretitle, subtitle }) => ({
       language: getLanguageId(language),
       ...(isNotEmpty(pretitle) ? { pretitle } : {}),
       title,
       ...(isNotEmpty(subtitle) ? { subtitle } : {}),
-      ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
     })) ?? [],
   duration,
   ...(isMediaThumbnail(thumbnail)
     ? { thumbnail: convertMediaThumbnailToEndpointPayloadImage(thumbnail) }
     : {}),
-  credits: convertCreditsToEndpointCredits(credits),
 });
+
+const convertAudioToEndpointAudio = (audio: Audio & PayloadMedia): EndpointAudio => {
+  const { translations, createdAt, updatedAt, filesize, credits } = audio;
+  return {
+    ...convertAudioToEndpointAudioPreview(audio),
+    createdAt,
+    filesize,
+    updatedAt,
+    translations:
+      translations?.map(({ language, title, pretitle, subtitle, description }) => ({
+        language: getLanguageId(language),
+        ...(isNotEmpty(pretitle) ? { pretitle } : {}),
+        title,
+        ...(isNotEmpty(subtitle) ? { subtitle } : {}),
+        ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
+      })) ?? [],
+    credits: convertCreditsToEndpointCredits(credits),
+  };
+};

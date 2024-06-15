@@ -12,11 +12,11 @@ import {
   isVideo,
 } from "../../../utils/asserts";
 import { convertSourceToEndpointSource, getLanguageId } from "../../../utils/endpoints";
-import { convertAudioToEndpointAudio } from "../../Audios/endpoints/getByID";
+import { convertAudioToEndpointAudioPreview } from "../../Audios/endpoints/getByID";
 import { convertCollectibleToEndpointCollectiblePreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
-import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
+import { convertImageToEndpointImagePreview } from "../../Images/endpoints/getByID";
 import { convertPageToEndpointPagePreview } from "../../Pages/endpoints/getBySlugEndpoint";
-import { convertVideoToEndpointVideo } from "../../Videos/endpoints/getByID";
+import { convertVideoToEndpointVideoPreview } from "../../Videos/endpoints/getByID";
 
 export const getBySlugEndpoint = createGetByEndpoint({
   collection: Collections.Folders,
@@ -92,13 +92,19 @@ const convertFolderToEndpointFolder = (folder: Folder): EndpointFolder => {
             ];
           case Collections.Images:
             if (!isImage(value)) return [];
-            return [{ relationTo: Collections.Images, value: convertImageToEndpointImage(value) }];
+            return [
+              { relationTo: Collections.Images, value: convertImageToEndpointImagePreview(value) },
+            ];
           case Collections.Audios:
             if (!isAudio(value)) return [];
-            return [{ relationTo: Collections.Audios, value: convertAudioToEndpointAudio(value) }];
+            return [
+              { relationTo: Collections.Audios, value: convertAudioToEndpointAudioPreview(value) },
+            ];
           case Collections.Videos:
             if (!isVideo(value)) return [];
-            return [{ relationTo: Collections.Videos, value: convertVideoToEndpointVideo(value) }];
+            return [
+              { relationTo: Collections.Videos, value: convertVideoToEndpointVideoPreview(value) },
+            ];
           default:
             return [];
         }

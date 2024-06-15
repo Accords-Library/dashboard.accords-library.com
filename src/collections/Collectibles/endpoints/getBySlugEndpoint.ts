@@ -20,10 +20,10 @@ import {
   convertSourceToEndpointSource,
   getDomainFromUrl,
 } from "../../../utils/endpoints";
-import { convertAudioToEndpointAudio } from "../../Audios/endpoints/getByID";
+import { convertAudioToEndpointAudioPreview } from "../../Audios/endpoints/getByID";
 import { convertPageToEndpointPagePreview } from "../../Pages/endpoints/getBySlugEndpoint";
 import { convertRecorderToEndpointRecorderPreview } from "../../Recorders/endpoints/getByID";
-import { convertVideoToEndpointVideo } from "../../Videos/endpoints/getByID";
+import { convertVideoToEndpointVideoPreview } from "../../Videos/endpoints/getByID";
 
 export const getBySlugEndpoint = createGetByEndpoint({
   collection: Collections.Collectibles,
@@ -256,12 +256,18 @@ const handleContents = (contents: Collectible["contents"]): EndpointCollectible[
 
         case Collections.Audios:
           return isAudio(content.value)
-            ? { relationTo: Collections.Audios, value: convertAudioToEndpointAudio(content.value) }
+            ? {
+                relationTo: Collections.Audios,
+                value: convertAudioToEndpointAudioPreview(content.value),
+              }
             : undefined;
 
         case Collections.Videos:
           return isVideo(content.value)
-            ? { relationTo: Collections.Videos, value: convertVideoToEndpointVideo(content.value) }
+            ? {
+                relationTo: Collections.Videos,
+                value: convertVideoToEndpointVideoPreview(content.value),
+              }
             : undefined;
 
         default:

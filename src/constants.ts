@@ -1,4 +1,4 @@
-import { EndpointAudio, EndpointImage, EndpointVideo } from "./sdk";
+import { EndpointAudioPreview, EndpointImagePreview, EndpointVideoPreview } from "./sdk";
 import type { BreakBlock, SectionBlock, TranscriptBlock } from "./types/collections";
 
 // END MOCKING SECTION
@@ -144,17 +144,17 @@ export interface RichTextUploadNode extends RichTextNode {
 
 export interface RichTextUploadImageNode extends RichTextUploadNode {
   relationTo: Collections.Images;
-  value: EndpointImage;
+  value: EndpointImagePreview;
 }
 
 export interface RichTextUploadVideoNode extends RichTextUploadNode {
   relationTo: Collections.Videos;
-  value: EndpointVideo;
+  value: EndpointVideoPreview;
 }
 
 export interface RichTextUploadAudioNode extends RichTextUploadNode {
   relationTo: Collections.Audios;
-  value: EndpointAudio;
+  value: EndpointAudioPreview;
 }
 
 export interface RichTextTextNode extends RichTextNode {
