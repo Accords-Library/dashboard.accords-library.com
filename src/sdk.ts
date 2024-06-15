@@ -628,5 +628,6 @@ export const getPayloadSDK = ({
       await request(payloadApiUrl(Collections.Videos, `id/${id}`)),
     getRecorderByID: async (id: string): Promise<EndpointRecorder> =>
       await request(payloadApiUrl(Collections.Recorders, `id/${id}`)),
+    request: async (url: string): Promise<any> => await request(url),
   };
 };
