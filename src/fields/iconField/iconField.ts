@@ -11,7 +11,7 @@ export const iconField = (props: Props): TextField => ({
   type: "text",
   admin: {
     description:
-      "Select an icon from here: https://icones.js.org/collection/material-symbols. Only outline and regular variants are usable on the website.",
+      "Select an icon from here: https://icones.js.org/collection/material-symbols. Only regular variants are usable on the website.",
   },
   validate: (value) => {
     if (isEmpty(value)) return true;

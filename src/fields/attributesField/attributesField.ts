@@ -7,6 +7,9 @@ type AttributesFieldProps = Omit<BlockField, "type" | "blocks">;
 
 export const attributesField = ({ ...props }: AttributesFieldProps): BlockField => ({
   ...props,
+  admin: {
+    description: "The order is important. Try to place the most relevant tags first.",
+  },
   type: "blocks",
   blocks: [tagsBlock, numberBlock, textBlock],
 });
