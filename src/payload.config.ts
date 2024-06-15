@@ -27,6 +27,7 @@ import { Wordings } from "./collections/Wordings/Wordings";
 import { Icon } from "./components/Icon";
 import { Logo } from "./components/Logo";
 import { Collections } from "./constants";
+import { getAllPathsEndpoint } from "./endpoints/getAllPathsEndpoint";
 import { createEditor } from "./utils/editor";
 
 const configuredFtpAdapter = sftpAdapter({
@@ -84,6 +85,7 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(__dirname, "types/collections.ts"),
   },
+  endpoints: [getAllPathsEndpoint],
   graphQL: {
     disable: true,
   },
