@@ -14,7 +14,7 @@ import {
   isNodeUploadNode,
   isUploadNodeAudioNode,
   isUploadNodeImageNode,
-  isUploadNodeVideoNode,
+  isUploadNodeVideoNode
 } from "../constants";
 import {
   EndpointAttribute,
@@ -76,6 +76,11 @@ export const convertRTCToEndpointRTC = (
       ...others,
       children: children.map((node) => {
         if (isNodeBlockNode(node)) {
+          // Remove ids in blocks to avoid considering them when caching
+          if ("id" in node.fields) {
+            delete node.fields.id;
+          }
+
           // Add anchor hash on section block (TOC)
           if (isBlockNodeSectionBlock(node)) {
             index++;
