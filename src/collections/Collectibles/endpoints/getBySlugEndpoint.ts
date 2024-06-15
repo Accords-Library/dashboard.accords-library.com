@@ -15,12 +15,12 @@ import {
 } from "../../../utils/asserts";
 import {
   convertAttributesToEndpointAttributes,
+  convertImageToEndpointPayloadImage,
   convertScanToEndpointScanImage,
   convertSourceToEndpointSource,
   getDomainFromUrl,
 } from "../../../utils/endpoints";
 import { convertAudioToEndpointAudio } from "../../Audios/endpoints/getByID";
-import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 import { convertPageToEndpointPagePreview } from "../../Pages/endpoints/getBySlugEndpoint";
 import { convertRecorderToEndpointRecorderPreview } from "../../Recorders/endpoints/getByID";
 import { convertVideoToEndpointVideo } from "../../Videos/endpoints/getByID";
@@ -45,7 +45,7 @@ export const convertCollectibleToEndpointCollectiblePreview = ({
 }: Collectible): EndpointCollectiblePreview => ({
   id,
   slug,
-  ...(isImage(thumbnail) ? { thumbnail: convertImageToEndpointImage(thumbnail) } : {}),
+  ...(isImage(thumbnail) ? { thumbnail: convertImageToEndpointPayloadImage(thumbnail) } : {}),
   translations:
     translations?.map(({ language, title, pretitle, subtitle }) => ({
       language: isPayloadType(language) ? language.id : language,
@@ -98,7 +98,7 @@ const convertCollectibleToEndpointCollectible = (collectible: Collectible): Endp
         ...(isNotEmpty(description) ? { description } : {}),
       })) ?? [],
     ...(isImage(backgroundImage)
-      ? { backgroundImage: convertImageToEndpointImage(backgroundImage) }
+      ? { backgroundImage: convertImageToEndpointPayloadImage(backgroundImage) }
       : {}),
     nature: nature === "Physical" ? CollectibleNature.Physical : CollectibleNature.Digital,
     ...(gallery ? { gallery } : {}),
@@ -162,7 +162,7 @@ const handlePageInfo = (
 const handleGallery = (gallery: Collectible["gallery"]): EndpointCollectible["gallery"] => {
   const thumbnail = gallery?.[0]?.image;
   if (!thumbnail || !isImage(thumbnail)) return;
-  return { count: gallery.length, thumbnail: convertImageToEndpointImage(thumbnail) };
+  return { count: gallery.length, thumbnail: convertImageToEndpointPayloadImage(thumbnail) };
 };
 
 const handleScans = (scans: Collectible["scans"]): EndpointCollectible["scans"] => {

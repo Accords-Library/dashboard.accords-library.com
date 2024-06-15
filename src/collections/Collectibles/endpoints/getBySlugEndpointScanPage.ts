@@ -3,12 +3,11 @@ import { Collections } from "../../../constants";
 import { EndpointCollectibleScanPage } from "../../../sdk";
 import { Collectible, Scan } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
-import { isDefined, isImage, isNotEmpty, isPayloadType, isScan } from "../../../utils/asserts";
+import { isDefined, isNotEmpty, isPayloadType, isScan } from "../../../utils/asserts";
 import {
   convertScanToEndpointScanImage,
   convertSourceToEndpointSource,
 } from "../../../utils/endpoints";
-import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 
 export const getBySlugEndpointScanPage: CollectionEndpoint = {
   path: "/slug/:slug/scans/:index",
@@ -57,9 +56,6 @@ export const getBySlugEndpointScanPage: CollectionEndpoint = {
       image: convertScanToEndpointScanImage(scan, index),
       parentPages: convertSourceToEndpointSource({ scans: [collectible] }),
       slug,
-      ...(isImage(collectible.thumbnail)
-        ? { thumbnail: convertImageToEndpointImage(collectible.thumbnail) }
-        : {}),
       translations:
         collectible.translations?.map(({ language, title, description, pretitle, subtitle }) => ({
           language: isPayloadType(language) ? language.id : language,

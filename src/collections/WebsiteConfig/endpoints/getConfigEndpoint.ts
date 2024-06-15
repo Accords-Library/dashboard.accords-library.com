@@ -3,8 +3,8 @@ import { Collections } from "../../../constants";
 import { EndpointWebsiteConfig } from "../../../sdk";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isImage, isPayloadType } from "../../../utils/asserts";
+import { convertImageToEndpointPayloadImage } from "../../../utils/endpoints";
 import { convertFolderToEndpointFolderPreview } from "../../Folders/endpoints/getBySlugEndpoint";
-import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 
 export const getConfigEndpoint: CollectionEndpoint = {
   method: "get",
@@ -51,7 +51,7 @@ export const getConfigEndpoint: CollectionEndpoint = {
     const endpointWebsiteConfig: EndpointWebsiteConfig = {
       home: {
         ...(isImage(homeBackgroundImage)
-          ? { backgroundImage: convertImageToEndpointImage(homeBackgroundImage) }
+          ? { backgroundImage: convertImageToEndpointPayloadImage(homeBackgroundImage) }
           : {}),
         folders:
           homeFolders?.flatMap(({ folder, darkThumbnail, lightThumbnail }) => {
@@ -59,17 +59,17 @@ export const getConfigEndpoint: CollectionEndpoint = {
             return {
               ...convertFolderToEndpointFolderPreview(folder),
               ...(isImage(darkThumbnail)
-                ? { darkThumbnail: convertImageToEndpointImage(darkThumbnail) }
+                ? { darkThumbnail: convertImageToEndpointPayloadImage(darkThumbnail) }
                 : {}),
               ...(isImage(lightThumbnail)
-                ? { lightThumbnail: convertImageToEndpointImage(lightThumbnail) }
+                ? { lightThumbnail: convertImageToEndpointPayloadImage(lightThumbnail) }
                 : {}),
             };
           }) ?? [],
       },
       timeline: {
         ...(isImage(timelineBackgroundImage)
-          ? { backgroundImage: convertImageToEndpointImage(timelineBackgroundImage) }
+          ? { backgroundImage: convertImageToEndpointPayloadImage(timelineBackgroundImage) }
           : {}),
         breaks: timeline?.breaks ?? [],
         eventCount,
@@ -84,7 +84,7 @@ export const getConfigEndpoint: CollectionEndpoint = {
           }) ?? [],
       },
       ...(isImage(defaultOpenGraphImage)
-        ? { defaultOpenGraphImage: convertImageToEndpointImage(defaultOpenGraphImage) }
+        ? { defaultOpenGraphImage: convertImageToEndpointPayloadImage(defaultOpenGraphImage) }
         : {}),
     };
     res.status(200).json(endpointWebsiteConfig);

@@ -7,7 +7,7 @@ import { isAudio, isMediaThumbnail, isNotEmpty } from "../../../utils/asserts";
 import {
   convertAttributesToEndpointAttributes,
   convertCreditsToEndpointCredits,
-  convertMediaThumbnailToEndpointMediaThumbnail,
+  convertMediaThumbnailToEndpointPayloadImage,
   convertRTCToEndpointRTC,
   getLanguageId,
 } from "../../../utils/endpoints";
@@ -79,7 +79,7 @@ export const convertAudioToEndpointAudio = ({
     })) ?? [],
   duration,
   ...(isMediaThumbnail(thumbnail)
-    ? { thumbnail: convertMediaThumbnailToEndpointMediaThumbnail(thumbnail) }
+    ? { thumbnail: convertMediaThumbnailToEndpointPayloadImage(thumbnail) }
     : {}),
   credits: convertCreditsToEndpointCredits(credits),
 });

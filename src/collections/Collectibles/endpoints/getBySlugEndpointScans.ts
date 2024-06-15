@@ -5,10 +5,10 @@ import { Collectible } from "../../../types/collections";
 import { isImage, isNotEmpty, isPayloadType, isScan } from "../../../utils/asserts";
 import {
   convertCreditsToEndpointCredits,
+  convertImageToEndpointPayloadImage,
   convertScanToEndpointScanImage,
   convertSourceToEndpointSource,
 } from "../../../utils/endpoints";
-import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 
 export const getBySlugEndpointScans = createGetByEndpoint({
   collection: Collections.Collectibles,
@@ -27,7 +27,7 @@ export const getBySlugEndpointScans = createGetByEndpoint({
           ...(isNotEmpty(subtitle) ? { subtitle } : {}),
           ...(isNotEmpty(description) ? { description } : {}),
         })) ?? [],
-      ...(isImage(thumbnail) ? { thumbnail: convertImageToEndpointImage(thumbnail) } : {}),
+      ...(isImage(thumbnail) ? { thumbnail: convertImageToEndpointPayloadImage(thumbnail) } : {}),
       ...(scansEnabled && scans ? handleScans(scans) : { credits: [], pages: [] }),
       parentPages: convertSourceToEndpointSource({ collectibles: [collectible] }),
     };

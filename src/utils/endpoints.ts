@@ -19,7 +19,7 @@ import {
 import {
   EndpointAttribute,
   EndpointCredit,
-  EndpointMediaThumbnail,
+  EndpointPayloadImage,
   EndpointRole,
   EndpointScanImage,
   EndpointSource,
@@ -367,7 +367,40 @@ export const convertScanToEndpointScanImage = (
   ),
 });
 
-export const convertMediaThumbnailToEndpointMediaThumbnail = ({
+export const convertImageToEndpointPayloadImage = ({
+  url,
+  width,
+  height,
+  mimeType,
+  filename,
+  filesize,
+  id,
+  sizes,
+}: Image & PayloadImage): EndpointPayloadImage => ({
+  filename,
+  filesize,
+  height,
+  id,
+  mimeType,
+  sizes: convertSizesToPayloadImages(
+    [
+      sizes?.["200w"],
+      sizes?.["320w"],
+      sizes?.["480w"],
+      sizes?.["800w"],
+      sizes?.["1280w"],
+      sizes?.["1920w"],
+      sizes?.["2560w"],
+      { url, width, height, filename, filesize, mimeType },
+    ],
+    [200, 320, 480, 800, 1280, 1920, 2560]
+  ),
+  url,
+  width,
+  ...(isPayloadImage(sizes?.og) ? { openGraph: sizes.og } : {}),
+});
+
+export const convertMediaThumbnailToEndpointPayloadImage = ({
   id,
   url,
   width,
@@ -376,7 +409,7 @@ export const convertMediaThumbnailToEndpointMediaThumbnail = ({
   filename,
   filesize,
   sizes,
-}: MediaThumbnail & PayloadImage): EndpointMediaThumbnail => ({
+}: MediaThumbnail & PayloadImage): EndpointPayloadImage => ({
   id,
   url,
   width,

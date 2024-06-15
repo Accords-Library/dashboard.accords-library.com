@@ -4,8 +4,10 @@ import { EndpointRecorder, EndpointRecorderPreview } from "../../../sdk";
 import { Recorder } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isImage, isPayloadType } from "../../../utils/asserts";
-import { convertRTCToEndpointRTC } from "../../../utils/endpoints";
-import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
+import {
+  convertImageToEndpointPayloadImage,
+  convertRTCToEndpointRTC,
+} from "../../../utils/endpoints";
 
 export const getByID: CollectionEndpoint = {
   method: "get",
@@ -53,7 +55,7 @@ const convertRecorderToEndpointRecorder = (recorder: Recorder): EndpointRecorder
     ...convertRecorderToEndpointRecorderPreview(recorder),
     languages:
       languages?.map((language) => (isPayloadType(language) ? language.id : language)) ?? [],
-    ...(isImage(avatar) ? { avatar: convertImageToEndpointImage(avatar) } : {}),
+    ...(isImage(avatar) ? { avatar: convertImageToEndpointPayloadImage(avatar) } : {}),
     translations:
       translations?.map(({ language, biography }) => ({
         language: isPayloadType(language) ? language.id : language,

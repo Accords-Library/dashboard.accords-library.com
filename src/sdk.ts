@@ -60,14 +60,14 @@ export type EndpointFolder = EndpointFolderPreview & {
 
 export type EndpointWebsiteConfig = {
   home: {
-    backgroundImage?: EndpointImage;
+    backgroundImage?: EndpointPayloadImage;
     folders: (EndpointFolderPreview & {
-      lightThumbnail?: EndpointImage;
-      darkThumbnail?: EndpointImage;
+      lightThumbnail?: EndpointPayloadImage;
+      darkThumbnail?: EndpointPayloadImage;
     })[];
   };
   timeline: {
-    backgroundImage?: EndpointImage;
+    backgroundImage?: EndpointPayloadImage;
     breaks: number[];
     eventCount: number;
     eras: {
@@ -76,7 +76,7 @@ export type EndpointWebsiteConfig = {
       name: string;
     }[];
   };
-  defaultOpenGraphImage?: EndpointImage;
+  defaultOpenGraphImage?: EndpointPayloadImage;
 };
 
 export type EndpointRecorderPreview = {
@@ -85,7 +85,7 @@ export type EndpointRecorderPreview = {
 };
 
 export type EndpointRecorder = EndpointRecorderPreview & {
-  avatar?: EndpointImage;
+  avatar?: EndpointPayloadImage;
   translations: {
     language: string;
     biography: RichTextContent;
@@ -158,7 +158,7 @@ export type EndpointCredit = {
 export type EndpointPagePreview = {
   id: string;
   slug: string;
-  thumbnail?: EndpointImage;
+  thumbnail?: EndpointPayloadImage;
   attributes: EndpointAttribute[];
   translations: {
     language: string;
@@ -170,7 +170,7 @@ export type EndpointPagePreview = {
 };
 
 export type EndpointPage = EndpointPagePreview & {
-  backgroundImage?: EndpointImage;
+  backgroundImage?: EndpointPayloadImage;
   translations: (EndpointPagePreview["translations"][number] & {
     sourceLanguage: string;
     summary?: RichTextContent;
@@ -186,7 +186,7 @@ export type EndpointPage = EndpointPagePreview & {
 export type EndpointCollectiblePreview = {
   id: string;
   slug: string;
-  thumbnail?: EndpointImage;
+  thumbnail?: EndpointPayloadImage;
   translations: {
     language: string;
     pretitle?: string;
@@ -206,10 +206,10 @@ export type EndpointCollectible = EndpointCollectiblePreview & {
   translations: (EndpointCollectiblePreview["translations"][number] & {
     description?: RichTextContent;
   })[];
-  backgroundImage?: EndpointImage;
+  backgroundImage?: EndpointPayloadImage;
   nature: CollectibleNature;
-  gallery?: { count: number; thumbnail: EndpointImage };
-  scans?: { count: number; thumbnail: EndpointScanImage };
+  gallery?: { count: number; thumbnail: EndpointPayloadImage };
+  scans?: { count: number; thumbnail: EndpointPayloadImage };
   urls: { url: string; label: string }[];
   size?: {
     width: number;
@@ -274,7 +274,7 @@ export type EndpointCollectible = EndpointCollectiblePreview & {
 
 export type EndpointCollectibleScans = {
   slug: string;
-  thumbnail?: EndpointImage;
+  thumbnail?: EndpointPayloadImage;
   translations: {
     language: string;
     pretitle?: string;
@@ -324,7 +324,7 @@ export type EndpointCollectibleScans = {
 
 export type EndpointCollectibleGallery = {
   slug: string;
-  thumbnail?: EndpointImage;
+  thumbnail?: EndpointPayloadImage;
   translations: {
     language: string;
     pretitle?: string;
@@ -332,13 +332,12 @@ export type EndpointCollectibleGallery = {
     subtitle?: string;
     description?: RichTextContent;
   }[];
-  images: EndpointImage[];
+  images: EndpointPayloadImage[];
   parentPages: EndpointSource[];
 };
 
 export type EndpointCollectibleGalleryImage = {
   slug: string;
-  thumbnail?: EndpointImage;
   translations: {
     language: string;
     pretitle?: string;
@@ -354,7 +353,6 @@ export type EndpointCollectibleGalleryImage = {
 
 export type EndpointCollectibleScanPage = {
   slug: string;
-  thumbnail?: EndpointImage;
   translations: {
     language: string;
     pretitle?: string;
@@ -449,12 +447,12 @@ export type EndpointImage = EndpointMedia & {
 };
 
 export type EndpointAudio = EndpointMedia & {
-  thumbnail?: EndpointMediaThumbnail;
+  thumbnail?: EndpointPayloadImage;
   duration: number;
 };
 
 export type EndpointVideo = EndpointMedia & {
-  thumbnail?: EndpointMediaThumbnail;
+  thumbnail?: EndpointPayloadImage;
   subtitles: {
     language: string;
     url: string;
@@ -474,7 +472,7 @@ export type EndpointVideo = EndpointMedia & {
   duration: number;
 };
 
-export type EndpointMediaThumbnail = PayloadImage & {
+export type EndpointPayloadImage = PayloadImage & {
   sizes: PayloadImage[];
   openGraph?: PayloadImage;
 };

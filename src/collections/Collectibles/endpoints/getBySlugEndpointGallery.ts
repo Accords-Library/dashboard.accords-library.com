@@ -2,8 +2,10 @@ import { Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { EndpointCollectibleGallery } from "../../../sdk";
 import { isImage, isNotEmpty, isPayloadType } from "../../../utils/asserts";
-import { convertSourceToEndpointSource } from "../../../utils/endpoints";
-import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
+import {
+  convertImageToEndpointPayloadImage,
+  convertSourceToEndpointSource,
+} from "../../../utils/endpoints";
 
 export const getBySlugEndpointGallery = createGetByEndpoint({
   collection: Collections.Collectibles,
@@ -22,10 +24,10 @@ export const getBySlugEndpointGallery = createGetByEndpoint({
           ...(isNotEmpty(subtitle) ? { subtitle } : {}),
           ...(isNotEmpty(description) ? { description } : {}),
         })) ?? [],
-      ...(isImage(thumbnail) ? { thumbnail: convertImageToEndpointImage(thumbnail) } : {}),
+      ...(isImage(thumbnail) ? { thumbnail: convertImageToEndpointPayloadImage(thumbnail) } : {}),
       images:
         gallery?.flatMap(({ image }) =>
-          isImage(image) ? convertImageToEndpointImage(image) : []
+          isImage(image) ? convertImageToEndpointPayloadImage(image) : []
         ) ?? [],
       parentPages: convertSourceToEndpointSource({ collectibles: [collectible] }),
     };

@@ -54,9 +54,6 @@ export const getBySlugEndpointGalleryImage: CollectionEndpoint = {
       image: convertImageToEndpointImage(image),
       parentPages: convertSourceToEndpointSource({ gallery: [collectible] }),
       slug,
-      ...(isImage(collectible.thumbnail)
-        ? { thumbnail: convertImageToEndpointImage(collectible.thumbnail) }
-        : {}),
       translations:
         collectible.translations?.map(({ language, title, description, pretitle, subtitle }) => ({
           language: isPayloadType(language) ? language.id : language,

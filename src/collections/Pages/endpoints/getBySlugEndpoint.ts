@@ -13,10 +13,10 @@ import { isImage, isNotEmpty, isPayloadType } from "../../../utils/asserts";
 import {
   convertAttributesToEndpointAttributes,
   convertCreditsToEndpointCredits,
+  convertImageToEndpointPayloadImage,
   convertRTCToEndpointRTC,
   convertSourceToEndpointSource,
 } from "../../../utils/endpoints";
-import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 import { convertRecorderToEndpointRecorderPreview } from "../../Recorders/endpoints/getByID";
 
 export const getBySlugEndpoint = createGetByEndpoint({
@@ -35,7 +35,7 @@ export const convertPageToEndpointPagePreview = ({
 }: Page): EndpointPagePreview => ({
   id,
   slug,
-  ...(isImage(thumbnail) ? { thumbnail: convertImageToEndpointImage(thumbnail) } : {}),
+  ...(isImage(thumbnail) ? { thumbnail: convertImageToEndpointPayloadImage(thumbnail) } : {}),
   attributes: convertAttributesToEndpointAttributes(attributes),
   translations: translations.map(({ language, title, pretitle, subtitle }) => ({
     language: isPayloadType(language) ? language.id : language,
@@ -52,7 +52,7 @@ const convertPageToEndpointPage = (page: Page): EndpointPage => {
   return {
     ...convertPageToEndpointPagePreview(page),
     ...(isImage(backgroundImage)
-      ? { backgroundImage: convertImageToEndpointImage(backgroundImage) }
+      ? { backgroundImage: convertImageToEndpointPayloadImage(backgroundImage) }
       : {}),
     translations: translations.map(
       ({ content, language, sourceLanguage, title, pretitle, subtitle, summary, credits }) => ({
