@@ -1,6 +1,6 @@
 import { CollectionBeforeChangeHook, CollectionConfig, RelationshipField } from "payload/types";
 import { Collections } from "../constants";
-import { BuildCollectionConfig } from "./collectionConfig";
+import { BuildCollectionConfig, buildCollectionConfig } from "./collectionConfig";
 
 const fields = { updatedBy: "updatedBy" };
 
@@ -19,17 +19,16 @@ const updatedByField = (): RelationshipField => ({
 
 type BuildVersionedCollectionConfig = Omit<BuildCollectionConfig, "timestamps" | "versions">;
 
-export const buildVersionedCollectionConfig = ({
-  hooks: { beforeChange, ...otherHooks } = {},
-  fields,
-  ...otherParams
-}: BuildVersionedCollectionConfig): CollectionConfig => ({
-  ...otherParams,
-  timestamps: true,
-  versions: { drafts: { autosave: true } },
-  hooks: {
-    ...otherHooks,
-    beforeChange: [...(beforeChange ?? []), beforeChangeUpdatedBy],
-  },
-  fields: [...fields, updatedByField()],
-});
+export const buildVersionedCollectionConfig = (
+  config: BuildVersionedCollectionConfig
+): CollectionConfig =>
+  buildCollectionConfig({
+    ...config,
+    timestamps: true,
+    versions: { drafts: { autosave: true } },
+    hooks: {
+      ...config.hooks,
+      beforeChange: [...(config.hooks?.beforeChange ?? []), beforeChangeUpdatedBy],
+    },
+    fields: [...config.fields, updatedByField()],
+  });

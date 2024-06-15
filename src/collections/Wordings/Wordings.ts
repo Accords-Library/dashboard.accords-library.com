@@ -4,7 +4,6 @@ import { QuickFilters, languageBasedFilters } from "../../components/QuickFilter
 import { CollectionGroups, Collections } from "../../constants";
 import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
-import { afterOperationWebhook } from "../../hooks/afterOperationWebhook";
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { getAllEndpoint } from "./endpoints/getAllEndpoint";
@@ -42,9 +41,6 @@ export const Wordings: CollectionConfig = buildCollectionConfig({
   access: {
     create: mustBeAdmin,
     delete: mustBeAdmin,
-  },
-  hooks: {
-    afterOperation: [afterOperationWebhook],
   },
   endpoints: [getAllEndpoint],
   fields: [

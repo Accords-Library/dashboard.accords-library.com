@@ -86,6 +86,20 @@ export enum AttributeTypes {
   Tags = "Tags",
 }
 
+/* WEB HOOKS */
+
+export interface WebHookMessage {
+  collection: Collections;
+  operation: WebHookOperationType;
+  id?: string;
+}
+
+export enum WebHookOperationType {
+  create = "create",
+  update = "update",
+  delete = "delete",
+}
+
 /* RICH TEXT */
 
 export type RichTextContent = {

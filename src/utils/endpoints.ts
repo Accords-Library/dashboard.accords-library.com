@@ -14,7 +14,7 @@ import {
   isNodeUploadNode,
   isUploadNodeAudioNode,
   isUploadNodeImageNode,
-  isUploadNodeVideoNode
+  isUploadNodeVideoNode,
 } from "../constants";
 import {
   EndpointAttribute,

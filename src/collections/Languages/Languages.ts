@@ -2,7 +2,6 @@ import { text } from "payload/dist/fields/validations";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { shownOnlyToAdmin } from "../../accesses/collections/shownOnlyToAdmin";
 import { CollectionGroups, Collections } from "../../constants";
-import { afterOperationWebhook } from "../../hooks/afterOperationWebhook";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
@@ -28,9 +27,6 @@ export const Languages = buildCollectionConfig({
     hidden: shownOnlyToAdmin,
   },
   access: { create: mustBeAdmin, update: mustBeAdmin, delete: mustBeAdmin },
-  hooks: {
-    afterOperation: [afterOperationWebhook],
-  },
   timestamps: false,
   endpoints: [importFromStrapi, getAllEndpoint],
   fields: [
