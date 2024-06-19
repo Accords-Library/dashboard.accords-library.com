@@ -3,7 +3,7 @@ import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { CollectionGroups, Collections } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
-import { afterChangeWebhook } from "../../hooks/afterChangeWebhook";
+import { globalAfterChangeWebhook } from "../../hooks/afterOperationWebhook";
 import { getConfigEndpoint } from "./endpoints/getConfigEndpoint";
 
 const fields = {
@@ -32,7 +32,7 @@ export const WebsiteConfig: GlobalConfig = {
   access: { update: mustBeAdmin, read: mustBeAdmin },
   endpoints: [getConfigEndpoint],
   hooks: {
-    afterChange: [afterChangeWebhook],
+    afterChange: [globalAfterChangeWebhook],
   },
   fields: [
     rowField([

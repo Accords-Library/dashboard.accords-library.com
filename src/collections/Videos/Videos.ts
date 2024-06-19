@@ -5,6 +5,8 @@ import { creditsField } from "../../fields/creditsField/creditsField";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
+import { Video } from "../../types/collections";
+import { isPayloadType } from "../../utils/asserts";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { createEditor } from "../../utils/editor";
 import { getByID } from "./endpoints/getByID";
@@ -127,4 +129,12 @@ export const Videos = buildCollectionConfig({
       ],
     }),
   ],
+  custom: {
+    getBackPropagatedRelationships: ({ platform, platformEnabled }: Video) => {
+      if (!platform || !platformEnabled) {
+        return [];
+      }
+      return [isPayloadType(platform.channel) ? platform.channel.id : platform.channel];
+    },
+  },
 });

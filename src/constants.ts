@@ -88,18 +88,12 @@ export enum AttributeTypes {
 
 /* WEB HOOKS */
 
-export interface WebHookMessage {
+export type AfterOperationWebHookMessage = {
   collection: Collections;
-  operation: WebHookOperationType;
   id?: string;
-}
-
-export enum WebHookOperationType {
-  create = "create",
-  update = "update",
-  delete = "delete",
-}
-
+  addedDependantIds: string[];
+  urls: string[];
+};
 /* RICH TEXT */
 
 export type RichTextContent = {

@@ -4,6 +4,8 @@ import { iconField } from "../../fields/iconField/iconField";
 import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
+import { Folder } from "../../types/collections";
+import { isPayloadType } from "../../utils/asserts";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { createEditor } from "../../utils/editor";
 import { getBySlugEndpoint } from "./endpoints/getBySlugEndpoint";
@@ -109,4 +111,21 @@ export const Folders = buildCollectionConfig({
       hasMany: true,
     },
   ],
+
+  custom: {
+    getBackPropagatedRelationships: ({ files, sections }: Folder) => {
+      const result: string[] = [];
+      files?.forEach(({ relationTo, value }) => {
+        if (relationTo === "collectibles" || relationTo === "pages") {
+          result.push(isPayloadType(value) ? value.id : value);
+        }
+      });
+      sections?.forEach(({ subfolders }) =>
+        subfolders?.forEach((folder) => {
+          result.push(isPayloadType(folder) ? folder.id : folder);
+        })
+      );
+      return result;
+    },
+  },
 });

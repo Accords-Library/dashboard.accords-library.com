@@ -22,6 +22,11 @@ export const getAllPathsEndpoint: Endpoint = {
       depth: 0,
       pagination: false,
       user: req.user,
+      where: {
+        _status: {
+          equals: "published",
+        },
+      },
     });
 
     const pages = await payload.find({
@@ -29,6 +34,11 @@ export const getAllPathsEndpoint: Endpoint = {
       depth: 0,
       pagination: false,
       user: req.user,
+      where: {
+        _status: {
+          equals: "published",
+        },
+      },
     });
 
     const folders = await payload.find({
@@ -66,6 +76,18 @@ export const getAllPathsEndpoint: Endpoint = {
       user: req.user,
     });
 
+    const chronologyEvents = await payload.find({
+      collection: Collections.ChronologyEvents,
+      depth: 0,
+      pagination: false,
+      user: req.user,
+      where: {
+        _status: {
+          equals: "published",
+        },
+      },
+    });
+
     const result: EndpointAllPaths = {
       collectibles: collectibles.docs.map(({ slug }) => slug),
       pages: pages.docs.map(({ slug }) => slug),
@@ -74,6 +96,7 @@ export const getAllPathsEndpoint: Endpoint = {
       audios: audios.docs.map(({ id }) => id),
       images: images.docs.map(({ id }) => id),
       recorders: recorders.docs.map(({ id }) => id),
+      chronologyEvents: chronologyEvents.docs.map(({ id }) => id),
     };
 
     return res.status(200).send(result);
