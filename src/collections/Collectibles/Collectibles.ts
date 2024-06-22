@@ -113,6 +113,8 @@ const fields = {
   contents: "contents",
   contentsContent: "content",
 
+  files: "files",
+
   pageInfo: "pageInfo",
   pageInfoBindingType: "bindingType",
   pageInfoPageCount: "pageCount",
@@ -229,7 +231,7 @@ export const Collectibles = buildVersionedCollectionConfig({
               type: "array",
               admin: {
                 description:
-                  "Additional images of the item (unboxing, on shelf, promotional images...)",
+                  "Additional images of the collectible (e.g: unboxing, on shelf, promotional images...)",
               },
               labels: { singular: "Image", plural: "Images" },
               fields: [
@@ -444,7 +446,7 @@ export const Collectibles = buildVersionedCollectionConfig({
               label: "URLs",
               type: "array",
               admin: {
-                description: "Links to official websites where to get/buy the item.",
+                description: "Links to official websites where to get/buy the collectible.",
               },
               fields: [{ name: fields.urlsUrl, type: "text", required: true }],
             },
@@ -567,33 +569,27 @@ export const Collectibles = buildVersionedCollectionConfig({
           label: "Contents",
           fields: [
             rowField([
-              backPropagationField({
-                name: fields.folders,
-                relationTo: Collections.Folders,
-                hasMany: true,
-                where: ({ id }) => ({
-                  and: [
-                    { "files.value": { equals: id } },
-                    { "files.relationTo": { equals: Collections.Collectibles } },
-                  ] as Where[],
-                }),
-                admin: {
-                  description: `You can go to the "Folders" collection to include this collectible in a folder.`,
-                },
-              }),
-              backPropagationField({
-                name: fields.parentItems,
-                relationTo: Collections.Collectibles,
-                hasMany: true,
-                where: ({ id }) => ({ [fields.subitems]: { equals: id } }),
-              }),
               {
                 name: fields.subitems,
                 type: "relationship",
                 hasMany: true,
                 relationTo: Collections.Collectibles,
+                admin: {
+                  description:
+                    "Collectibles that are part of this collectible (e.g: artbook in a collector's edition, booklet in a CD...)",
+                },
+              },
+              {
+                name: fields.files,
+                type: "relationship",
+                hasMany: true,
+                relationTo: Collections.Files,
+                admin: {
+                  description: "Files related to the collectible (e.g: zip of all the scans)",
+                },
               },
             ]),
+
             {
               name: fields.contents,
               type: "array",
@@ -699,6 +695,29 @@ export const Collectibles = buildVersionedCollectionConfig({
                 },
               ],
             },
+
+            rowField([
+              backPropagationField({
+                name: fields.folders,
+                relationTo: Collections.Folders,
+                hasMany: true,
+                where: ({ id }) => ({
+                  and: [
+                    { "files.value": { equals: id } },
+                    { "files.relationTo": { equals: Collections.Collectibles } },
+                  ] as Where[],
+                }),
+                admin: {
+                  description: `You can go to the "Folders" collection to include this collectible in a folder.`,
+                },
+              }),
+              backPropagationField({
+                name: fields.parentItems,
+                relationTo: Collections.Collectibles,
+                hasMany: true,
+                where: ({ id }) => ({ [fields.subitems]: { equals: id } }),
+              }),
+            ]),
           ],
         },
       ],

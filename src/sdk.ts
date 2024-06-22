@@ -54,6 +54,10 @@ export type EndpointFolder = EndpointFolderPreview & {
         relationTo: Collections.Videos;
         value: EndpointVideoPreview;
       }
+    | {
+        relationTo: Collections.Files;
+        value: EndpointFilePreview;
+      }
   )[];
   parentPages: EndpointSource[];
 };
@@ -223,6 +227,7 @@ export type EndpointCollectible = EndpointCollectiblePreview & {
     pageOrder?: CollectiblePageOrders;
   };
   subitems: EndpointCollectiblePreview[];
+  files: EndpointFilePreview[];
   contents: {
     content:
       | {
@@ -498,6 +503,16 @@ export type EndpointVideo = EndpointMedia & {
   duration: number;
 };
 
+export type EndpointFilePreview = EndpointMediaPreview & {
+  filesize: number;
+  thumbnail?: EndpointPayloadImage;
+};
+
+export type EndpointFile = EndpointMedia & {
+  filesize: number;
+  thumbnail?: EndpointPayloadImage;
+};
+
 export type EndpointPayloadImage = PayloadImage & {
   sizes: PayloadImage[];
   openGraph?: PayloadImage;
@@ -523,6 +538,7 @@ export type EndpointAllPaths = {
   videos: string[];
   audios: string[];
   images: string[];
+  files: string[];
   recorders: string[];
   chronologyEvents: string[];
 };
@@ -565,6 +581,7 @@ export const getSDKEndpoint = {
   getImageByIDEndpoint: (id: string) => `/${Collections.Images}/id/${id}`,
   getAudioByIDEndpoint: (id: string) => `/${Collections.Audios}/id/${id}`,
   getVideoByIDEndpoint: (id: string) => `/${Collections.Videos}/id/${id}`,
+  getFileByIDEndpoint: (id: string) => `/${Collections.Files}/id/${id}`,
   getRecorderByIDEndpoint: (id: string) => `/${Collections.Recorders}/id/${id}`,
   getAllPathsEndpoint: () => `/all-paths`,
   getLoginEndpoint: () => `/${Collections.Recorders}/login`,
@@ -659,6 +676,8 @@ export const getPayloadSDK = ({
       await request(getSDKEndpoint.getAudioByIDEndpoint(id)),
     getVideoByID: async (id: string): Promise<EndpointVideo> =>
       await request(getSDKEndpoint.getVideoByIDEndpoint(id)),
+    getFileByID: async (id: string): Promise<EndpointFile> =>
+      await request(getSDKEndpoint.getFileByIDEndpoint(id)),
     getRecorderByID: async (id: string): Promise<EndpointRecorder> =>
       await request(getSDKEndpoint.getRecorderByIDEndpoint(id)),
     getAllPaths: async (): Promise<EndpointAllPaths> =>

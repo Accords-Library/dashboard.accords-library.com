@@ -5,6 +5,7 @@ import { Folder, Language } from "../../../types/collections";
 import {
   isAudio,
   isDefined,
+  isFile,
   isImage,
   isNotEmpty,
   isPayloadType,
@@ -14,6 +15,7 @@ import {
 import { convertSourceToEndpointSource, getLanguageId } from "../../../utils/endpoints";
 import { convertAudioToEndpointAudioPreview } from "../../Audios/endpoints/getByID";
 import { convertCollectibleToEndpointCollectiblePreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
+import { convertFileToEndpointFilePreview } from "../../Files/endpoints/getByID";
 import { convertImageToEndpointImagePreview } from "../../Images/endpoints/getByID";
 import { convertPageToEndpointPagePreview } from "../../Pages/endpoints/getBySlugEndpoint";
 import { convertVideoToEndpointVideoPreview } from "../../Videos/endpoints/getByID";
@@ -104,6 +106,11 @@ const convertFolderToEndpointFolder = (folder: Folder): EndpointFolder => {
             if (!isVideo(value)) return [];
             return [
               { relationTo: Collections.Videos, value: convertVideoToEndpointVideoPreview(value) },
+            ];
+          case Collections.Files:
+            if (!isFile(value)) return [];
+            return [
+              { relationTo: Collections.Files, value: convertFileToEndpointFilePreview(value) },
             ];
           default:
             return [];

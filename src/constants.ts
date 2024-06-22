@@ -10,6 +10,7 @@ export enum Collections {
   Collectibles = "collectibles",
   CreditsRole = "credits-roles",
   Currencies = "currencies",
+  Files = "files",
   Folders = "folders",
   GenericContents = "generic-contents",
   Images = "images",

@@ -31,6 +31,7 @@ export const Recorders = buildCollectionConfig({
   defaultSort: fields.username,
   admin: {
     useAsTitle: fields.username,
+    preview: ({ id }) => `${process.env.PAYLOAD_PUBLIC_FRONTEND_BASE_URL}/en/recorders/${id}`,
     description:
       "Recorders are contributors of the Accord's Library project. Ask an admin to create a \
       Recorder here to be able to credit them in other collections.",

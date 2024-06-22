@@ -107,6 +107,7 @@ export const Folders = buildCollectionConfig({
         Collections.Videos,
         Collections.Images,
         Collections.Audios,
+        Collections.Files,
       ],
       hasMany: true,
     },

@@ -5,6 +5,7 @@ import { Collectible } from "../../../types/collections";
 import {
   isAudio,
   isDefined,
+  isFile,
   isImage,
   isNotEmpty,
   isPayloadArrayType,
@@ -21,6 +22,7 @@ import {
   getDomainFromUrl,
 } from "../../../utils/endpoints";
 import { convertAudioToEndpointAudioPreview } from "../../Audios/endpoints/getByID";
+import { convertFileToEndpointFilePreview } from "../../Files/endpoints/getByID";
 import { convertPageToEndpointPagePreview } from "../../Pages/endpoints/getBySlugEndpoint";
 import { convertRecorderToEndpointRecorderPreview } from "../../Recorders/endpoints/getByID";
 import { convertVideoToEndpointVideoPreview } from "../../Videos/endpoints/getByID";
@@ -64,6 +66,7 @@ const convertCollectibleToEndpointCollectible = (collectible: Collectible): Endp
     nature,
     urls,
     subitems,
+    files,
     gallery: rawGallery,
     contents,
     priceEnabled,
@@ -110,6 +113,11 @@ const convertCollectibleToEndpointCollectible = (collectible: Collectible): Endp
     subitems: isPayloadArrayType(subitems)
       ? subitems.filter(isPublished).map(convertCollectibleToEndpointCollectiblePreview)
       : [],
+    files:
+      files?.flatMap((file) => {
+        if (!isPayloadType(file) || !isFile(file)) return [];
+        return convertFileToEndpointFilePreview(file);
+      }) ?? [],
     contents: handleContents(contents),
     ...handlePrice(price, priceEnabled),
     createdAt,

@@ -10,6 +10,7 @@ import { ChronologyEvents } from "./collections/ChronologyEvents/ChronologyEvent
 import { Collectibles } from "./collections/Collectibles/Collectibles";
 import { CreditsRoles } from "./collections/CreditsRoles/CreditsRoles";
 import { Currencies } from "./collections/Currencies/Currencies";
+import { Files } from "./collections/Files/Files";
 import { Folders } from "./collections/Folders/Folders";
 import { GenericContents } from "./collections/GenericContents/GenericContents";
 import { Images } from "./collections/Images/Images";
@@ -30,7 +31,7 @@ import { Collections } from "./constants";
 import { getAllPathsEndpoint } from "./endpoints/getAllPathsEndpoint";
 import { createEditor } from "./utils/editor";
 
-const configuredFtpAdapter = sftpAdapter({
+const configuredSftpAdapter = sftpAdapter({
   connectOptions: {
     host: process.env.SFTP_HOST,
     username: process.env.SFTP_USERNAME,
@@ -66,6 +67,7 @@ export default buildConfig({
     Videos,
     VideosSubtitles,
     VideosChannels,
+    Files,
     Scans,
 
     Tags,
@@ -96,17 +98,22 @@ export default buildConfig({
     cloudStorage({
       collections: {
         [Collections.Videos]: {
-          adapter: configuredFtpAdapter,
+          adapter: configuredSftpAdapter,
           disableLocalStorage: true,
           disablePayloadAccessControl: true,
         },
         [Collections.VideosSubtitles]: {
-          adapter: configuredFtpAdapter,
+          adapter: configuredSftpAdapter,
           disableLocalStorage: true,
           disablePayloadAccessControl: true,
         },
         [Collections.Audios]: {
-          adapter: configuredFtpAdapter,
+          adapter: configuredSftpAdapter,
+          disableLocalStorage: true,
+          disablePayloadAccessControl: true,
+        },
+        [Collections.Files]: {
+          adapter: configuredSftpAdapter,
           disableLocalStorage: true,
           disablePayloadAccessControl: true,
         },

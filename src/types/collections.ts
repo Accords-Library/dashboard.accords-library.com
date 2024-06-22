@@ -30,6 +30,7 @@ export interface Config {
     videos: Video;
     "videos-subtitles": VideoSubtitle;
     "videos-channels": VideosChannel;
+    files: File;
     scans: Scan;
     tags: Tag;
     attributes: Attribute;
@@ -414,6 +415,10 @@ export interface Folder {
             relationTo: "audios";
             value: string | Audio;
           }
+        | {
+            relationTo: "files";
+            value: string | File;
+          }
       )[]
     | null;
   updatedAt: string;
@@ -536,9 +541,8 @@ export interface Collectible {
     bindingType?: ("Paperback" | "Hardcover") | null;
     pageOrder?: ("Left to right" | "Right to left") | null;
   };
-  folders?: (string | Folder)[] | null;
-  parentItems?: (string | Collectible)[] | null;
   subitems?: (string | Collectible)[] | null;
+  files?: (string | File)[] | null;
   contents?:
     | {
         content:
@@ -603,6 +607,8 @@ export interface Collectible {
         id?: string | null;
       }[]
     | null;
+  folders?: (string | Folder)[] | null;
+  parentItems?: (string | Collectible)[] | null;
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
@@ -676,49 +682,35 @@ export interface Currency {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "generic-contents".
+ * via the `definition` "files".
  */
-export interface GenericContent {
+export interface File {
   id: string;
-  name: string;
-  translations: {
-    language: string | Language;
-    name: string;
-    id?: string | null;
-  }[];
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "audios".
- */
-export interface Audio {
-  id: string;
-  duration: number;
   thumbnail?: string | MediaThumbnail | null;
-  translations: {
-    language: string | Language;
-    pretitle?: string | null;
-    title: string;
-    subtitle?: string | null;
-    description?: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
+  translations?:
+    | {
+        language: string | Language;
+        pretitle?: string | null;
+        title: string;
+        subtitle?: string | null;
+        description?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ("ltr" | "rtl") | null;
+            format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+            indent: number;
+            version: number;
+          };
           [k: string]: unknown;
-        }[];
-        direction: ("ltr" | "rtl") | null;
-        format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    id?: string | null;
-  }[];
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
   attributes?: (TagsBlock | NumberBlock | TextBlock)[] | null;
   credits?: Credits;
   updatedAt: string;
@@ -822,6 +814,64 @@ export interface MediaThumbnail {
       filename?: string | null;
     };
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "generic-contents".
+ */
+export interface GenericContent {
+  id: string;
+  name: string;
+  translations: {
+    language: string | Language;
+    name: string;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audios".
+ */
+export interface Audio {
+  id: string;
+  duration: number;
+  thumbnail?: string | MediaThumbnail | null;
+  translations: {
+    language: string | Language;
+    pretitle?: string | null;
+    title: string;
+    subtitle?: string | null;
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ("ltr" | "rtl") | null;
+        format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    id?: string | null;
+  }[];
+  attributes?: (TagsBlock | NumberBlock | TextBlock)[] | null;
+  credits?: Credits;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

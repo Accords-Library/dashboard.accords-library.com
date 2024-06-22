@@ -69,6 +69,13 @@ export const getAllPathsEndpoint: Endpoint = {
       user: req.user,
     });
 
+    const files = await payload.find({
+      collection: Collections.Files,
+      depth: 0,
+      pagination: false,
+      user: req.user,
+    });
+
     const recorders = await payload.find({
       collection: Collections.Recorders,
       depth: 0,
@@ -95,6 +102,7 @@ export const getAllPathsEndpoint: Endpoint = {
       videos: videos.docs.map(({ id }) => id),
       audios: audios.docs.map(({ id }) => id),
       images: images.docs.map(({ id }) => id),
+      files: files.docs.map(({ id }) => id),
       recorders: recorders.docs.map(({ id }) => id),
       chronologyEvents: chronologyEvents.docs.map(({ id }) => id),
     };

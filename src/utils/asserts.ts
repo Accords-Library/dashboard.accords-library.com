@@ -1,6 +1,6 @@
 import { RichTextContent, isNodeParagraphNode } from "../constants";
 import { PayloadImage, PayloadMedia } from "../sdk";
-import { Audio, Image, MediaThumbnail, Scan, Video } from "../types/collections";
+import { Audio, File, Image, MediaThumbnail, Scan, Video } from "../types/collections";
 
 export const isDefined = <T>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined;
@@ -54,6 +54,9 @@ export const isPayloadImage = (image: unknown): image is PayloadImage => {
 
 export const isVideo = (video: string | Video | null | undefined): video is PayloadMedia & Video =>
   isPayloadMedia(video);
+
+export const isFile = (file: string | File | null | undefined): file is PayloadMedia & File =>
+  isPayloadMedia(file);
 
 export const isAudio = (video: string | Audio | null | undefined): video is PayloadMedia & Audio =>
   isPayloadMedia(video);
