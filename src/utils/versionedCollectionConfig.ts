@@ -25,7 +25,7 @@ export const buildVersionedCollectionConfig = (
   buildCollectionConfig({
     ...config,
     timestamps: true,
-    versions: { drafts: { autosave: true } },
+    versions: { drafts: { autosave: { interval: 10_000 } } },
     hooks: {
       ...config.hooks,
       beforeChange: [...(config.hooks?.beforeChange ?? []), beforeChangeUpdatedBy],
