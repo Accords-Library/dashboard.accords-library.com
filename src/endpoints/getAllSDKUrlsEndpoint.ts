@@ -102,19 +102,19 @@ export const getAllSDKUrlsEndpoint: Endpoint = {
       getSDKEndpoint.getCurrenciesEndpoint(),
       getSDKEndpoint.getWordingsEndpoint(),
 
-      ...collectibles.docs.flatMap((doc) =>
-        getSDKUrlsForDocument(Collections.Collectibles, doc)
-      ),
-      ...pages.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Pages, doc)),
       ...folders.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Folders, doc)),
+      ...pages.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Pages, doc)),
+      ...chronologyEvents.docs.flatMap((doc) =>
+        getSDKUrlsForDocument(Collections.ChronologyEvents, doc)
+      ),
       ...videos.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Videos, doc)),
       ...audios.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Audios, doc)),
       ...images.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Images, doc)),
       ...files.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Files, doc)),
-      ...recorders.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Recorders, doc)),
-      ...chronologyEvents.docs.flatMap((doc) =>
-        getSDKUrlsForDocument(Collections.ChronologyEvents, doc)
+      ...collectibles.docs.flatMap((doc) =>
+        getSDKUrlsForDocument(Collections.Collectibles, doc)
       ),
+      ...recorders.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Recorders, doc)),
     ]);
 
     const result: EndpointAllSDKUrls = {
