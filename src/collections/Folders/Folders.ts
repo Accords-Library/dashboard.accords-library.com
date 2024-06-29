@@ -9,6 +9,7 @@ import { isPayloadType } from "../../utils/asserts";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { createEditor } from "../../utils/editor";
 import { getBySlugEndpoint } from "./endpoints/getBySlugEndpoint";
+import { getSlugsEndpoint } from "./endpoints/getSlugsEndpoint";
 
 const fields = {
   slug: "slug",
@@ -42,7 +43,7 @@ export const Folders = buildCollectionConfig({
       "Folders provide a way to structure our content. A folder can contain subfolders and/or files.",
     preview: ({ slug }) => `${process.env.PAYLOAD_PUBLIC_FRONTEND_BASE_URL}/en/folders/${slug}`,
   },
-  endpoints: [getBySlugEndpoint],
+  endpoints: [getBySlugEndpoint, getSlugsEndpoint],
   fields: [
     rowField([
       slugField({ name: fields.slug }),

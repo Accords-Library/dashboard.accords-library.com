@@ -17,6 +17,7 @@ import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
 import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { getBySlugEndpoint } from "./endpoints/getBySlugEndpoint";
+import { getSlugsEndpoint } from "./endpoints/getSlugsEndpoint";
 
 const fields = {
   slug: "slug",
@@ -69,7 +70,7 @@ export const Pages = buildVersionedCollectionConfig({
       ]),
     },
   },
-  endpoints: [getBySlugEndpoint],
+  endpoints: [getBySlugEndpoint, getSlugsEndpoint],
   fields: [
     slugField({ name: fields.slug }),
     rowField([

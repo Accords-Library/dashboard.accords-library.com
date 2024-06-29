@@ -111,9 +111,7 @@ export const getAllSDKUrlsEndpoint: Endpoint = {
       ...audios.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Audios, doc)),
       ...images.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Images, doc)),
       ...files.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Files, doc)),
-      ...collectibles.docs.flatMap((doc) =>
-        getSDKUrlsForDocument(Collections.Collectibles, doc)
-      ),
+      ...collectibles.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Collectibles, doc)),
       ...recorders.docs.flatMap((doc) => getSDKUrlsForDocument(Collections.Recorders, doc)),
     ]);
 
