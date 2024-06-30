@@ -2,6 +2,7 @@ import { text } from "payload/dist/fields/validations";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
 import { shownOnlyToAdmin } from "../../accesses/collections/shownOnlyToAdmin";
 import { CollectionGroups, Collections } from "../../constants";
+import { rowField } from "../../fields/rowField/rowField";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
@@ -9,6 +10,7 @@ import { importFromStrapi } from "./endpoints/importFromStrapi";
 const fields = {
   id: "id",
   name: "name",
+  selectable: "selectable",
 } as const satisfies Record<string, string>;
 
 export const Languages = buildCollectionConfig({
@@ -20,7 +22,7 @@ export const Languages = buildCollectionConfig({
   defaultSort: fields.name,
   admin: {
     useAsTitle: fields.name,
-    defaultColumns: [fields.name, fields.id],
+    defaultColumns: [fields.name, fields.id, fields.selectable],
     disableDuplicate: true,
     group: CollectionGroups.Meta,
     pagination: { defaultLimit: 100 },
@@ -43,11 +45,24 @@ export const Languages = buildCollectionConfig({
         return text(value, options);
       },
     },
-    {
-      name: fields.name,
-      type: "text",
-      unique: true,
-      required: true,
-    },
+    rowField([
+      {
+        name: fields.name,
+        type: "text",
+        unique: true,
+        required: true,
+      },
+      {
+        name: fields.selectable,
+        type: "checkbox",
+        defaultValue: false,
+        required: true,
+        admin: {
+          description:
+            "Check this box to make the language available to visitors on the website.\
+            Make sure wordings have been translated in that language before making it selectable.",
+        },
+      },
+    ]),
   ],
 });
