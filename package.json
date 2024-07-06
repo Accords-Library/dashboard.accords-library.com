@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@fontsource/vollkorn": "5.0.20",
-    "@iconify-json/material-symbols": "^1.1.82",
+    "@iconify-json/material-symbols": "^1.1.83",
     "@payloadcms/bundler-webpack": "1.0.7",
     "@payloadcms/db-mongodb": "1.5.2",
     "@payloadcms/richtext-lexical": "0.11.2",
