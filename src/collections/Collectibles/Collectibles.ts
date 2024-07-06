@@ -28,7 +28,6 @@ import { getBySlugEndpointGallery } from "./endpoints/getBySlugEndpointGallery";
 import { getBySlugEndpointGalleryImage } from "./endpoints/getBySlugEndpointGalleryImage";
 import { getBySlugEndpointScanPage } from "./endpoints/getBySlugEndpointScanPage";
 import { getBySlugEndpointScans } from "./endpoints/getBySlugEndpointScans";
-import { getSlugsEndpoint } from "./endpoints/getSlugsEndpoint";
 
 const fields = {
   status: "_status",
@@ -152,7 +151,6 @@ export const Collectibles = buildVersionedCollectionConfig({
     getBySlugEndpointScanPage,
     getBySlugEndpointGallery,
     getBySlugEndpointGalleryImage,
-    getSlugsEndpoint,
   ],
   fields: [
     {

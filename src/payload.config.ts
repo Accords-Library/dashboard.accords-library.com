@@ -28,6 +28,7 @@ import { Wordings } from "./collections/Wordings/Wordings";
 import { Icon } from "./components/Icon";
 import { Logo } from "./components/Logo";
 import { Collections } from "./constants";
+import { getAllIds } from "./endpoints/getAllIdsEndpoint";
 import { getAllSDKUrlsEndpoint } from "./endpoints/getAllSDKUrlsEndpoint";
 import { createEditor } from "./utils/editor";
 
@@ -87,7 +88,7 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(__dirname, "types/collections.ts"),
   },
-  endpoints: [getAllSDKUrlsEndpoint],
+  endpoints: [getAllSDKUrlsEndpoint, getAllIds],
   graphQL: {
     disable: true,
   },

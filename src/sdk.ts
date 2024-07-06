@@ -535,19 +535,28 @@ export type EndpointAllSDKUrls = {
   urls: string[];
 };
 
+export type EndpointAllIds = {
+  collectibles: { slugs: string[] };
+  pages: { slugs: string[] };
+  folders: { slugs: string[] };
+  videos: { ids: string[] };
+  audios: { ids: string[] };
+  images: { ids: string[] };
+  files: { ids: string[] };
+  recorders: { ids: string[] };
+  chronologyEvents: { ids: string[] };
+};
+
 // SDK
 
 export const getSDKEndpoint = {
   getConfigEndpoint: () => `/globals/${Collections.WebsiteConfig}/config`,
   getFolderEndpoint: (slug: string) => `/${Collections.Folders}/slug/${slug}`,
-  getFolderSlugsEndpoint: () => `/${Collections.Folders}/slugs`,
   getLanguagesEndpoint: () => `/${Collections.Languages}/all`,
   getCurrenciesEndpoint: () => `/${Collections.Currencies}/all`,
   getWordingsEndpoint: () => `/${Collections.Wordings}/all`,
   getPageEndpoint: (slug: string) => `/${Collections.Pages}/slug/${slug}`,
-  getPageSlugsEndpoint: () => `/${Collections.Pages}/slugs`,
   getCollectibleEndpoint: (slug: string) => `/${Collections.Collectibles}/slug/${slug}`,
-  getCollectibleSlugsEndpoint: () => `/${Collections.Collectibles}/slugs`,
   getCollectibleScansEndpoint: (slug: string) => `/${Collections.Collectibles}/slug/${slug}/scans`,
   getCollectibleScanPageEndpoint: (slug: string, index: string) =>
     `/${Collections.Collectibles}/slug/${slug}/scans/${index}`,
@@ -563,6 +572,7 @@ export const getSDKEndpoint = {
   getFileByIDEndpoint: (id: string) => `/${Collections.Files}/id/${id}`,
   getRecorderByIDEndpoint: (id: string) => `/${Collections.Recorders}/id/${id}`,
   getAllSDKUrlsEndpoint: () => `/all-sdk-urls`,
+  getAllIds: () => `/all-ids`,
   getLoginEndpoint: () => `/${Collections.Recorders}/login`,
 };
 
@@ -652,9 +662,6 @@ export class PayloadSDK {
   async getFolder(slug: string): Promise<PayloadSDKResponse<EndpointFolder>> {
     return await this.request(getSDKEndpoint.getFolderEndpoint(slug));
   }
-  async getFolderSlugs(): Promise<PayloadSDKResponse<string[]>> {
-    return await this.request(getSDKEndpoint.getFolderSlugsEndpoint());
-  }
   async getLanguages(): Promise<PayloadSDKResponse<Language[]>> {
     return await this.request(getSDKEndpoint.getLanguagesEndpoint());
   }
@@ -667,14 +674,8 @@ export class PayloadSDK {
   async getPage(slug: string): Promise<PayloadSDKResponse<EndpointPage>> {
     return await this.request(getSDKEndpoint.getPageEndpoint(slug));
   }
-  async getPageSlugs(): Promise<PayloadSDKResponse<string[]>> {
-    return await this.request(getSDKEndpoint.getPageSlugsEndpoint());
-  }
   async getCollectible(slug: string): Promise<PayloadSDKResponse<EndpointCollectible>> {
     return await this.request(getSDKEndpoint.getCollectibleEndpoint(slug));
-  }
-  async getCollectibleSlugs(): Promise<PayloadSDKResponse<string[]>> {
-    return await this.request(getSDKEndpoint.getCollectibleSlugsEndpoint());
   }
   async getCollectibleScans(slug: string): Promise<PayloadSDKResponse<EndpointCollectibleScans>> {
     return await this.request(getSDKEndpoint.getCollectibleScansEndpoint(slug));
@@ -719,5 +720,8 @@ export class PayloadSDK {
   }
   async getAllSdkUrls(): Promise<PayloadSDKResponse<EndpointAllSDKUrls>> {
     return await this.request(getSDKEndpoint.getAllSDKUrlsEndpoint());
+  }
+  async getAllIds(): Promise<PayloadSDKResponse<EndpointAllIds>> {
+    return await this.request(getSDKEndpoint.getAllIds());
   }
 }
