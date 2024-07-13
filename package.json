@@ -18,7 +18,7 @@
     "fetch-submodules": "cd src/shared && git pull && cd ../..",
     "precommit": "npm run fetch-submodules && npm run generate:types && npm run prettier && npm run unused-exports && npm run tsc",
     "upgrade": "ncu",
-    "prod": "rm -rf build && rm -rf dist && npm ci && npm run precommit && npm run build && npm run serve"
+    "prod": "rm -rf build && rm -rf dist && npm ci && npm run build && npm run serve"
   },
   "dependencies": {
     "@fontsource/vollkorn": "5.0.20",
