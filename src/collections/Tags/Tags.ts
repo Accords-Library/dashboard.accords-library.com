@@ -1,10 +1,10 @@
 import { CollectionConfig } from "payload/types";
-import { CollectionGroups, Collections } from "../../constants";
-import { rowField } from "../../fields/rowField/rowField";
-import { slugField } from "../../fields/slugField/slugField";
-import { translatedFields } from "../../fields/translatedFields/translatedFields";
-import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
-import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { rowField } from "src/fields/rowField/rowField";
+import { slugField } from "src/fields/slugField/slugField";
+import { translatedFields } from "src/fields/translatedFields/translatedFields";
+import { beforeDuplicateAddCopyTo } from "src/hooks/beforeDuplicateAddCopyTo";
+import { Collections, CollectionGroups } from "src/shared/payload/constants";
+import { buildCollectionConfig } from "src/utils/collectionConfig";
 
 const fields = {
   slug: "slug",

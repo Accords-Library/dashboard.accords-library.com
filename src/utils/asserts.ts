@@ -1,6 +1,7 @@
-import { RichTextContent, isNodeParagraphNode } from "../constants";
-import { PayloadImage, PayloadMedia } from "../sdk";
-import { Audio, File, Image, MediaThumbnail, Scan, Video } from "../types/collections";
+import { PayloadImage, PayloadMedia } from "src/shared/payload/endpoint-types";
+import { RichTextContent, isNodeParagraphNode } from "src/shared/payload/rich-text";
+import { Scan, MediaThumbnail, Video, Image, Audio } from "src/types/collections";
+import { File } from "src/types/collections";
 
 export const isDefined = <T>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined;

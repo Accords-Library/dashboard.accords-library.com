@@ -12,10 +12,11 @@
     "serve": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.config.js NODE_ENV=production node dist/server.js",
     "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png}\" dist/ && copyfiles -u 1 \"src/sdk.ts\" dist/ && copyfiles -u 1 \"src/constants.ts\" dist/ && copyfiles -u 1 \"src/types/collections.ts\" dist/",
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
-    "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport='src/payload.config.ts;src/constants.ts;src/sdk.ts;src/types/collections.ts'",
+    "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport='src/payload.config.ts;src/types/collections.ts;src/shared/*'",
     "prettier": "prettier --list-different --end-of-line auto --write src",
     "tsc": "tsc --noEmit",
-    "precommit": "npm run generate:types && npm run prettier && npm run unused-exports && npm run tsc",
+    "fetch-submodules": "cd src/shared && git pull && cd ../..",
+    "precommit": "npm run fetch-submodules && npm run generate:types && npm run prettier && npm run unused-exports && npm run tsc",
     "upgrade": "ncu",
     "prod": "rm -rf build && rm -rf dist && npm ci && npm run precommit && npm run build && npm run serve"
   },
@@ -46,6 +47,8 @@
     "prettier": "3.3.2",
     "ts-node": "10.9.2",
     "ts-unused-exports": "10.1.0",
+    "tsconfig-paths": "^4.2.0",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "5.4.5"
   }
 }

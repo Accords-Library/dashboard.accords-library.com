@@ -1,7 +1,7 @@
 import React from "react";
-import { Language } from "../../types/collections";
-import { isDefined } from "../../utils/asserts";
-import { formatLanguageCode } from "../../utils/string";
+import { Language } from "src/types/collections";
+import { isDefined } from "src/utils/asserts";
+import { formatLanguageCode } from "src/utils/string";
 
 interface Props {
   cellData: { language?: string | Language; title?: string }[];

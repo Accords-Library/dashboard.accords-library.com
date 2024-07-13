@@ -1,5 +1,5 @@
 import { TextField } from "payload/types";
-import { isUndefined } from "../../utils/asserts";
+import { isUndefined } from "src/utils/asserts";
 
 type Props = Omit<TextField, "type" | "hasMany" | "minRows" | "maxRows">;
 

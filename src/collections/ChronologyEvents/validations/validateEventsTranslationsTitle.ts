@@ -1,6 +1,6 @@
 import { Validate } from "payload/types";
-import { ChronologyEvent } from "../../../types/collections";
-import { isEmpty } from "../../../utils/asserts";
+import { ChronologyEvent } from "src/types/collections";
+import { isEmpty } from "src/utils/asserts";
 
 export const validateEventsTranslationsTitle: Validate<
   string | undefined,

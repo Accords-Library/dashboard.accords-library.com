@@ -1,9 +1,11 @@
 {
-  "css.lint.unknownAtRules": "ignore",
   "editor.rulers": [100],
+  "editor.tabSize": 2,
   "typescript.preferences.importModuleSpecifier": "non-relative",
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.organizeImports": "explicit"
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "package.json": ".git*, package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, .ncurc.*, .nvmrc, *.config.cjs, *.config.js, *.config.ts, *config.json, .*ignore",
+    ".env": ".env.*",
+    "README.md": "*.md"
   }
 }

@@ -1,13 +1,13 @@
-import { CollectionGroups, Collections } from "../../constants";
-import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
-import { iconField } from "../../fields/iconField/iconField";
-import { rowField } from "../../fields/rowField/rowField";
-import { slugField } from "../../fields/slugField/slugField";
-import { translatedFields } from "../../fields/translatedFields/translatedFields";
-import { Folder } from "../../types/collections";
-import { isPayloadType } from "../../utils/asserts";
-import { buildCollectionConfig } from "../../utils/collectionConfig";
-import { createEditor } from "../../utils/editor";
+import { backPropagationField } from "src/fields/backPropagationField/backPropagationField";
+import { iconField } from "src/fields/iconField/iconField";
+import { rowField } from "src/fields/rowField/rowField";
+import { slugField } from "src/fields/slugField/slugField";
+import { translatedFields } from "src/fields/translatedFields/translatedFields";
+import { Collections, CollectionGroups } from "src/shared/payload/constants";
+import { Folder } from "src/types/collections";
+import { isPayloadType } from "src/utils/asserts";
+import { buildCollectionConfig } from "src/utils/collectionConfig";
+import { createEditor } from "src/utils/editor";
 import { getBySlugEndpoint } from "./endpoints/getBySlugEndpoint";
 
 const fields = {

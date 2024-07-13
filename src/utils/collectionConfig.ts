@@ -1,7 +1,7 @@
 import { GeneratedTypes } from "payload";
 import { CollectionConfig } from "payload/types";
-import { afterDeleteWebhook, collectionAfterChangeWebhook } from "../hooks/afterOperationWebhook";
-import { formatToPascalCase } from "./string";
+import { collectionAfterChangeWebhook, afterDeleteWebhook } from "src/hooks/afterOperationWebhook";
+import { formatToPascalCase } from "src/utils/string";
 
 type CollectionConfigWithPlugins = CollectionConfig;
 

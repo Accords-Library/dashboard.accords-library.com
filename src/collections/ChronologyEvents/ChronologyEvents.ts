@@ -1,15 +1,4 @@
 import { CollectionConfig } from "payload/types";
-import {
-  QuickFilters,
-  languageBasedFilters,
-  publishStatusFilters,
-} from "../../components/QuickFilters";
-import { CollectionGroups, Collections } from "../../constants";
-import { creditsField } from "../../fields/creditsField/creditsField";
-import { rowField } from "../../fields/rowField/rowField";
-import { translatedFields } from "../../fields/translatedFields/translatedFields";
-import { createEditor } from "../../utils/editor";
-import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { collectibleBlock } from "./blocks/collectibleBlock";
 import { pageBlock } from "./blocks/contentBlock";
 import { urlBlock } from "./blocks/urlBlock";
@@ -20,6 +9,17 @@ import { beforeValidatePopulateNameField } from "./hooks/beforeValidatePopulateN
 import { validateDate } from "./validations/validateDate";
 import { validateEventsTranslationsDescription } from "./validations/validateEventsTranslationsDescription";
 import { validateEventsTranslationsTitle } from "./validations/validateEventsTranslationsTitle";
+import {
+  QuickFilters,
+  languageBasedFilters,
+  publishStatusFilters,
+} from "src/components/QuickFilters";
+import { creditsField } from "src/fields/creditsField/creditsField";
+import { rowField } from "src/fields/rowField/rowField";
+import { translatedFields } from "src/fields/translatedFields/translatedFields";
+import { Collections, CollectionGroups } from "src/shared/payload/constants";
+import { createEditor } from "src/utils/editor";
+import { buildVersionedCollectionConfig } from "src/utils/versionedCollectionConfig";
 
 const fields = {
   name: "name",

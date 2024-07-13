@@ -1,5 +1,5 @@
 import { Block } from "payload/types";
-import { BreakBlockType } from "../constants";
+import { BreakBlockType } from "src/shared/payload/constants";
 
 export const breakBlock: Block = {
   slug: "breakBlock",

@@ -1,13 +1,10 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
-import { EndpointRecorder, EndpointRecorderPreview } from "../../../sdk";
-import { Recorder } from "../../../types/collections";
-import { CollectionEndpoint } from "../../../types/payload";
-import { isImage, isPayloadType } from "../../../utils/asserts";
-import {
-  convertImageToEndpointPayloadImage,
-  convertRTCToEndpointRTC,
-} from "../../../utils/endpoints";
+import { Collections } from "src/shared/payload/constants";
+import { EndpointRecorderPreview, EndpointRecorder } from "src/shared/payload/endpoint-types";
+import { Recorder } from "src/types/collections";
+import { CollectionEndpoint } from "src/types/payload";
+import { isPayloadType, isImage } from "src/utils/asserts";
+import { convertImageToEndpointPayloadImage, convertRTCToEndpointRTC } from "src/utils/endpoints";
 
 export const getByID: CollectionEndpoint = {
   method: "get",

@@ -1,7 +1,7 @@
 import { Block } from "payload/types";
-import { createEditor } from "../utils/editor";
-import { breakBlock } from "./breakBlock";
-import { transcriptBlock } from "./transcriptBlock";
+import { breakBlock } from "src/blocks/breakBlock";
+import { transcriptBlock } from "src/blocks/transcriptBlock";
+import { createEditor } from "src/utils/editor";
 
 const generateRecursiveSectionBlock = (depth = 1, maxDepth = 5): Block => ({
   slug: "sectionBlock",

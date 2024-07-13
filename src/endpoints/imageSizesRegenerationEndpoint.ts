@@ -1,5 +1,5 @@
 import payload from "payload";
-import { CollectionEndpoint } from "../types/payload";
+import { CollectionEndpoint } from "src/types/payload";
 
 export const createImageSizesRegenerationEndpoint = (
   collection: "images" | "scans" | "media-thumbnails"

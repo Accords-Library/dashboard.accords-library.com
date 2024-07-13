@@ -1,8 +1,8 @@
 import payload, { GeneratedTypes } from "payload";
 import QueryString from "qs";
-import { Recorder } from "../types/collections";
-import { CollectionEndpoint } from "../types/payload";
-import { isDefined } from "../utils/asserts";
+import { Recorder } from "src/types/collections";
+import { CollectionEndpoint } from "src/types/payload";
+import { isDefined } from "src/utils/asserts";
 
 const getAllStrapiEntries = async (collectionSlug: string, params: Object): Promise<any[]> => {
   let page = 1;

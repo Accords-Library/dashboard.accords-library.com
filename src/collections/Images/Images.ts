@@ -1,15 +1,15 @@
-import { Collections } from "../../constants";
-import { createImageSizesRegenerationEndpoint } from "../../endpoints/imageSizesRegenerationEndpoint";
-import { attributesField } from "../../fields/attributesField/attributesField";
-import { creditsField } from "../../fields/creditsField/creditsField";
-import { rowField } from "../../fields/rowField/rowField";
-import { translatedFields } from "../../fields/translatedFields/translatedFields";
-import { createEditor } from "../../utils/editor";
+import { createImageSizesRegenerationEndpoint } from "src/endpoints/imageSizesRegenerationEndpoint";
+import { attributesField } from "src/fields/attributesField/attributesField";
+import { creditsField } from "src/fields/creditsField/creditsField";
+import { rowField } from "src/fields/rowField/rowField";
+import { translatedFields } from "src/fields/translatedFields/translatedFields";
+import { Collections } from "src/shared/payload/constants";
+import { createEditor } from "src/utils/editor";
 import {
   buildImageCollectionConfig,
   generateOpenGraphSize,
   generateWebpSize,
-} from "../../utils/imageCollectionConfig";
+} from "src/utils/imageCollectionConfig";
 import { getByID } from "./endpoints/getByID";
 
 const fields = {

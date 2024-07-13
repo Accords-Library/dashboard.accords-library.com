@@ -1,8 +1,8 @@
-import { Collections } from "../../../constants";
-import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImportEndpoint";
-import { StrapiLanguage } from "../../../types/strapi";
-import { isDefined, isUndefined } from "../../../utils/asserts";
-import { plainTextToLexical } from "../../../utils/string";
+import { createStrapiImportEndpoint } from "src/endpoints/createStrapiImportEndpoint";
+import { Collections } from "src/shared/payload/constants";
+import { StrapiLanguage } from "src/types/strapi";
+import { isUndefined, isDefined } from "src/utils/asserts";
+import { plainTextToLexical } from "src/utils/string";
 
 type StrapiChronologyItem = {
   year: number;

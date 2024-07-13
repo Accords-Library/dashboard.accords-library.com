@@ -1,9 +1,9 @@
 import { CollectionConfig } from "payload/types";
-import { CollectionGroups, Collections } from "../../constants";
-import { iconField } from "../../fields/iconField/iconField";
-import { slugField } from "../../fields/slugField/slugField";
-import { translatedFields } from "../../fields/translatedFields/translatedFields";
-import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { iconField } from "src/fields/iconField/iconField";
+import { slugField } from "src/fields/slugField/slugField";
+import { translatedFields } from "src/fields/translatedFields/translatedFields";
+import { Collections, CollectionGroups } from "src/shared/payload/constants";
+import { buildCollectionConfig } from "src/utils/collectionConfig";
 
 const fields = {
   slug: "slug",

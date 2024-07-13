@@ -1,6 +1,6 @@
 import payload, { GeneratedTypes } from "payload";
-import { CollectionEndpoint } from "../types/payload";
-import { isPublished } from "../utils/asserts";
+import { CollectionEndpoint } from "src/types/payload";
+import { isPublished } from "src/utils/asserts";
 
 interface Params<C extends keyof GeneratedTypes["collections"], R> {
   collection: C;

@@ -1,14 +1,14 @@
-import { Collections } from "../../../constants";
-import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointCollectibleScans } from "../../../sdk";
-import { Collectible } from "../../../types/collections";
-import { isImage, isNotEmpty, isPayloadType, isScan } from "../../../utils/asserts";
+import { createGetByEndpoint } from "src/endpoints/createGetByEndpoint";
+import { Collections } from "src/shared/payload/constants";
+import { EndpointCollectibleScans } from "src/shared/payload/endpoint-types";
+import { Collectible } from "src/types/collections";
+import { isPayloadType, isNotEmpty, isImage, isScan } from "src/utils/asserts";
 import {
-  convertCreditsToEndpointCredits,
   convertImageToEndpointPayloadImage,
-  convertScanToEndpointScanImage,
   convertSourceToEndpointSource,
-} from "../../../utils/endpoints";
+  convertCreditsToEndpointCredits,
+  convertScanToEndpointScanImage,
+} from "src/utils/endpoints";
 
 export const getBySlugEndpointScans = createGetByEndpoint({
   collection: Collections.Collectibles,

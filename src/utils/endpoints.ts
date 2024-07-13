@@ -1,60 +1,60 @@
-import { convertAudioToEndpointAudioPreview } from "../collections/Audios/endpoints/getByID";
-import { convertImageToEndpointImagePreview } from "../collections/Images/endpoints/getByID";
-import { convertRecorderToEndpointRecorderPreview } from "../collections/Recorders/endpoints/getByID";
-import { convertVideoToEndpointVideoPreview } from "../collections/Videos/endpoints/getByID";
+import { convertAudioToEndpointAudioPreview } from "src/collections/Audios/endpoints/getByID";
+import { convertImageToEndpointImagePreview } from "src/collections/Images/endpoints/getByID";
+import { convertRecorderToEndpointRecorderPreview } from "src/collections/Recorders/endpoints/getByID";
+import { convertVideoToEndpointVideoPreview } from "src/collections/Videos/endpoints/getByID";
+import { AttributeTypes } from "src/shared/payload/constants";
 import {
-  AttributeTypes,
-  RichTextBreakBlock,
-  RichTextContent,
-  RichTextSectionBlock,
-  RichTextUploadNode,
-  isBlockNodeBreakBlock,
-  isBlockNodeSectionBlock,
-  isNodeBlockNode,
-  isNodeUploadNode,
-  isUploadNodeAudioNode,
-  isUploadNodeImageNode,
-  isUploadNodeVideoNode,
-} from "../constants";
-import {
-  EndpointAttribute,
-  EndpointCredit,
-  EndpointPayloadImage,
-  EndpointRole,
-  EndpointScanImage,
+  EndpointTag,
   EndpointSource,
   EndpointSourcePreview,
-  EndpointTag,
+  EndpointRole,
+  EndpointCredit,
+  EndpointAttribute,
   PayloadImage,
-} from "../sdk";
+  EndpointScanImage,
+  EndpointPayloadImage,
+} from "src/shared/payload/endpoint-types";
 import {
-  Audio,
-  Collectible,
-  Credits,
-  CreditsRole,
-  Folder,
+  RichTextContent,
+  isNodeBlockNode,
+  isBlockNodeSectionBlock,
+  RichTextSectionBlock,
+  isBlockNodeBreakBlock,
+  RichTextBreakBlock,
+  isNodeUploadNode,
+  RichTextUploadNode,
+  isUploadNodeImageNode,
+  isUploadNodeAudioNode,
+  isUploadNodeVideoNode,
+} from "src/shared/payload/rich-text";
+import {
   Image,
-  Language,
-  MediaThumbnail,
-  NumberBlock,
-  Scan,
-  Tag,
-  TagsBlock,
-  TextBlock,
+  Audio,
   Video,
-} from "../types/collections";
+  Collectible,
+  Folder,
+  Language,
+  CreditsRole,
+  Credits,
+  TagsBlock,
+  NumberBlock,
+  TextBlock,
+  Scan,
+  MediaThumbnail,
+  Tag,
+} from "src/types/collections";
 import {
-  isAudio,
-  isDefined,
-  isEmpty,
+  isPayloadType,
   isImage,
+  isAudio,
+  isVideo,
   isNotEmpty,
   isPayloadArrayType,
-  isPayloadImage,
-  isPayloadType,
   isPublished,
-  isVideo,
-} from "./asserts";
+  isDefined,
+  isEmpty,
+  isPayloadImage,
+} from "src/utils/asserts";
 
 const convertTagToEndpointTag = ({ id, slug, page, translations }: Tag): EndpointTag => ({
   id,

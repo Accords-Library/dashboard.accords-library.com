@@ -1,11 +1,10 @@
 import { text } from "payload/dist/fields/validations";
-import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
-import { shownOnlyToAdmin } from "../../accesses/collections/shownOnlyToAdmin";
-import { CollectionGroups, Collections } from "../../constants";
-import { rowField } from "../../fields/rowField/rowField";
-import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { getAllEndpoint } from "./endpoints/getAllEndpoint";
-import { importFromStrapi } from "./endpoints/importFromStrapi";
+import { shownOnlyToAdmin } from "src/accesses/collections/shownOnlyToAdmin";
+import { mustBeAdmin } from "src/accesses/fields/mustBeAdmin";
+import { rowField } from "src/fields/rowField/rowField";
+import { Collections, CollectionGroups } from "src/shared/payload/constants";
+import { buildCollectionConfig } from "src/utils/collectionConfig";
 
 const fields = {
   id: "id",
@@ -30,7 +29,7 @@ export const Languages = buildCollectionConfig({
   },
   access: { create: mustBeAdmin, update: mustBeAdmin, delete: mustBeAdmin },
   timestamps: false,
-  endpoints: [importFromStrapi, getAllEndpoint],
+  endpoints: [getAllEndpoint],
   fields: [
     {
       name: fields.id,

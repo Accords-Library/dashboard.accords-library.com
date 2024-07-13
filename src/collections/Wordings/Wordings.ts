@@ -1,12 +1,12 @@
 import { CollectionConfig } from "payload/types";
-import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
-import { QuickFilters, languageBasedFilters } from "../../components/QuickFilters";
-import { CollectionGroups, Collections } from "../../constants";
-import { rowField } from "../../fields/rowField/rowField";
-import { translatedFields } from "../../fields/translatedFields/translatedFields";
-import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
-import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { getAllEndpoint } from "./endpoints/getAllEndpoint";
+import { mustBeAdmin } from "src/accesses/fields/mustBeAdmin";
+import { QuickFilters, languageBasedFilters } from "src/components/QuickFilters";
+import { rowField } from "src/fields/rowField/rowField";
+import { translatedFields } from "src/fields/translatedFields/translatedFields";
+import { beforeDuplicateAddCopyTo } from "src/hooks/beforeDuplicateAddCopyTo";
+import { Collections, CollectionGroups } from "src/shared/payload/constants";
+import { buildCollectionConfig } from "src/utils/collectionConfig";
 
 const fields = {
   name: "name",

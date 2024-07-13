@@ -1,7 +1,7 @@
 import payload from "payload";
 import { Endpoint } from "payload/config";
-import { Collections } from "../constants";
-import { EndpointAllIds } from "../sdk";
+import { Collections } from "src/shared/payload/constants";
+import { EndpointAllIds } from "src/shared/payload/endpoint-types";
 
 export const getAllIds: Endpoint = {
   method: "get",

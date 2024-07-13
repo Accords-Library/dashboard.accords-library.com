@@ -1,23 +1,26 @@
+import { convertRecorderToEndpointRecorderPreview } from "src/collections/Recorders/endpoints/getByID";
+import { createGetByEndpoint } from "src/endpoints/createGetByEndpoint";
+import { Collections, BreakBlockType } from "src/shared/payload/constants";
 import {
-  BreakBlockType,
-  Collections,
+  EndpointPagePreview,
+  EndpointPage,
+  TableOfContentEntry,
+} from "src/shared/payload/endpoint-types";
+import {
   RichTextContent,
-  isBlockNodeBreakBlock,
-  isBlockNodeSectionBlock,
   isNodeBlockNode,
-} from "../../../constants";
-import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointPage, EndpointPagePreview, TableOfContentEntry } from "../../../sdk";
-import { Page } from "../../../types/collections";
-import { isImage, isNotEmpty, isPayloadType } from "../../../utils/asserts";
+  isBlockNodeSectionBlock,
+  isBlockNodeBreakBlock,
+} from "src/shared/payload/rich-text";
+import { Page } from "src/types/collections";
+import { isImage, isPayloadType, isNotEmpty } from "src/utils/asserts";
 import {
-  convertAttributesToEndpointAttributes,
-  convertCreditsToEndpointCredits,
   convertImageToEndpointPayloadImage,
+  convertAttributesToEndpointAttributes,
   convertRTCToEndpointRTC,
+  convertCreditsToEndpointCredits,
   convertSourceToEndpointSource,
-} from "../../../utils/endpoints";
-import { convertRecorderToEndpointRecorderPreview } from "../../Recorders/endpoints/getByID";
+} from "src/utils/endpoints";
 
 export const getBySlugEndpoint = createGetByEndpoint({
   collection: Collections.Pages,

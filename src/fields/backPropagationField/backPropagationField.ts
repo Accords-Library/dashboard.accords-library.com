@@ -1,7 +1,7 @@
 import payload, { GeneratedTypes } from "payload";
 import { FieldBase, SingleRelationshipField } from "payload/dist/fields/config/types";
 import { Where } from "payload/types";
-import { isEmpty } from "../../utils/asserts";
+import { isEmpty } from "src/utils/asserts";
 
 type BackPropagationField = FieldBase & {
   where: (data: any) => Where;

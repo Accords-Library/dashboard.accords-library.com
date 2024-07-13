@@ -1,33 +1,33 @@
 import { RowLabelArgs } from "payload/dist/admin/components/forms/RowLabel/types";
 import { Where } from "payload/types";
-import {
-  CollectibleBindingTypes,
-  CollectibleNature,
-  CollectiblePageOrders,
-  CollectionGroups,
-  Collections,
-} from "../../constants";
-import { attributesField } from "../../fields/attributesField/attributesField";
-import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
-import { componentField } from "../../fields/componentField/componentField";
-import { creditsField } from "../../fields/creditsField/creditsField";
-import { imageField } from "../../fields/imageField/imageField";
-import { rowField } from "../../fields/rowField/rowField";
-import { slugField } from "../../fields/slugField/slugField";
-import { translatedFields } from "../../fields/translatedFields/translatedFields";
-import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
-import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
-import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
-import { Collectible } from "../../types/collections";
-import { isPayloadType } from "../../utils/asserts";
-import { createEditor } from "../../utils/editor";
-import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { RowLabel } from "./components/RowLabel";
 import { getBySlugEndpoint } from "./endpoints/getBySlugEndpoint";
 import { getBySlugEndpointGallery } from "./endpoints/getBySlugEndpointGallery";
 import { getBySlugEndpointGalleryImage } from "./endpoints/getBySlugEndpointGalleryImage";
 import { getBySlugEndpointScanPage } from "./endpoints/getBySlugEndpointScanPage";
 import { getBySlugEndpointScans } from "./endpoints/getBySlugEndpointScans";
+import { attributesField } from "src/fields/attributesField/attributesField";
+import { backPropagationField } from "src/fields/backPropagationField/backPropagationField";
+import { componentField } from "src/fields/componentField/componentField";
+import { creditsField } from "src/fields/creditsField/creditsField";
+import { imageField } from "src/fields/imageField/imageField";
+import { rowField } from "src/fields/rowField/rowField";
+import { slugField } from "src/fields/slugField/slugField";
+import { translatedFields } from "src/fields/translatedFields/translatedFields";
+import { beforeDuplicateAddCopyTo } from "src/hooks/beforeDuplicateAddCopyTo";
+import { beforeDuplicatePiping } from "src/hooks/beforeDuplicatePiping";
+import { beforeDuplicateUnpublish } from "src/hooks/beforeDuplicateUnpublish";
+import {
+  Collections,
+  CollectionGroups,
+  CollectibleNature,
+  CollectibleBindingTypes,
+  CollectiblePageOrders,
+} from "src/shared/payload/constants";
+import { Collectible } from "src/types/collections";
+import { isPayloadType } from "src/utils/asserts";
+import { createEditor } from "src/utils/editor";
+import { buildVersionedCollectionConfig } from "src/utils/versionedCollectionConfig";
 
 const fields = {
   status: "_status",

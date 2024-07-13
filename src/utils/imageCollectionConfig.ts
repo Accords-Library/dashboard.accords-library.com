@@ -1,8 +1,8 @@
 import { ImageSize } from "payload/dist/uploads/types";
 import { CollectionConfig } from "payload/types";
-import { publicAccess } from "../accesses/publicAccess";
-import { CollectionGroups } from "../constants";
-import { BuildCollectionConfig, buildCollectionConfig } from "./collectionConfig";
+import { publicAccess } from "src/accesses/publicAccess";
+import { CollectionGroups } from "src/shared/payload/constants";
+import { BuildCollectionConfig, buildCollectionConfig } from "src/utils/collectionConfig";
 
 const fields = {
   filename: "filename",

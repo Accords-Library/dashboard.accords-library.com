@@ -1,11 +1,11 @@
-import { shownOnlyToAdmin } from "../../accesses/collections/shownOnlyToAdmin";
-import { Collections } from "../../constants";
-import { createImageSizesRegenerationEndpoint } from "../../endpoints/imageSizesRegenerationEndpoint";
+import { shownOnlyToAdmin } from "src/accesses/collections/shownOnlyToAdmin";
+import { createImageSizesRegenerationEndpoint } from "src/endpoints/imageSizesRegenerationEndpoint";
+import { Collections } from "src/shared/payload/constants";
 import {
   buildImageCollectionConfig,
   generateOpenGraphSize,
   generateWebpSize,
-} from "../../utils/imageCollectionConfig";
+} from "src/utils/imageCollectionConfig";
 
 const fields = {
   filename: "filename",

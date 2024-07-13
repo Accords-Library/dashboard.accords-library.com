@@ -1,6 +1,6 @@
 import { icons } from "@iconify-json/material-symbols";
 import { TextField } from "payload/types";
-import { isEmpty } from "../../utils/asserts";
+import { isEmpty } from "src/utils/asserts";
 
 type Props = Omit<TextField, "type" | "hasMany" | "maxRows" | "minRows">;
 

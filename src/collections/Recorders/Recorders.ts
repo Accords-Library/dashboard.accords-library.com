@@ -1,16 +1,16 @@
-import { mustBeAdmin as mustBeAdminForCollections } from "../../accesses/collections/mustBeAdmin";
-import { mustBeAdminOrSelf } from "../../accesses/collections/mustBeAdminOrSelf";
-import { mustBeAdmin as mustBeAdminForFields } from "../../accesses/fields/mustBeAdmin";
-import { QuickFilters } from "../../components/QuickFilters";
-import { CollectionGroups, Collections, RecordersRoles } from "../../constants";
-import { imageField } from "../../fields/imageField/imageField";
-import { rowField } from "../../fields/rowField/rowField";
-import { translatedFields } from "../../fields/translatedFields/translatedFields";
-import { buildCollectionConfig } from "../../utils/collectionConfig";
-import { createEditor } from "../../utils/editor";
+import { mustBeAdminOrSelf } from "src/accesses/collections/mustBeAdminOrSelf";
+import { QuickFilters } from "src/components/QuickFilters";
+import { imageField } from "src/fields/imageField/imageField";
+import { rowField } from "src/fields/rowField/rowField";
+import { translatedFields } from "src/fields/translatedFields/translatedFields";
+import { Collections, CollectionGroups, RecordersRoles } from "src/shared/payload/constants";
+import { buildCollectionConfig } from "src/utils/collectionConfig";
+import { createEditor } from "src/utils/editor";
 import { getByID } from "./endpoints/getByID";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
 import { beforeLoginMustHaveAtLeastOneRole } from "./hooks/beforeLoginMustHaveAtLeastOneRole";
+import { mustBeAdmin as mustBeAdminForCollections } from "src/accesses/collections/mustBeAdmin";
+import { mustBeAdmin as mustBeAdminForFields } from "src/accesses/fields/mustBeAdmin";
 
 const fields = {
   username: "username",

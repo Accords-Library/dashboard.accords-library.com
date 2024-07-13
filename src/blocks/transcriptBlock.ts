@@ -1,6 +1,6 @@
 import { Block } from "payload/types";
-import { cueBlock } from "./cueBlock";
-import { lineBlock } from "./lineBlock";
+import { cueBlock } from "src/blocks/cueBlock";
+import { lineBlock } from "src/blocks/lineBlock";
 
 export const transcriptBlock: Block = {
   slug: "transcriptBlock",

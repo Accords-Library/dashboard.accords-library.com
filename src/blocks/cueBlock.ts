@@ -1,5 +1,5 @@
 import { Block } from "payload/types";
-import { createEditor } from "../utils/editor";
+import { createEditor } from "src/utils/editor";
 
 export const cueBlock: Block = {
   slug: "cueBlock",

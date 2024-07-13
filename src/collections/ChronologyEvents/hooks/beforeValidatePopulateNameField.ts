@@ -1,6 +1,6 @@
 import { FieldHook } from "payload/dist/fields/config/types";
-import { ChronologyEvent } from "../../../types/collections";
-import { isDefined, isUndefined } from "../../../utils/asserts";
+import { ChronologyEvent } from "src/types/collections";
+import { isUndefined, isDefined } from "src/utils/asserts";
 
 export const beforeValidatePopulateNameField: FieldHook<
   ChronologyEvent,

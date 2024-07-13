@@ -1,7 +1,7 @@
 import { BlockField } from "payload/dist/fields/config/types";
-import { numberBlock } from "../../blocks/attributeBlocks/numberBlock";
-import { tagsBlock } from "../../blocks/attributeBlocks/tagsBlock";
-import { textBlock } from "../../blocks/attributeBlocks/textBlock";
+import { numberBlock } from "src/blocks/attributeBlocks/numberBlock";
+import { tagsBlock } from "src/blocks/attributeBlocks/tagsBlock";
+import { textBlock } from "src/blocks/attributeBlocks/textBlock";
 
 type AttributesFieldProps = Omit<BlockField, "type" | "blocks">;
 

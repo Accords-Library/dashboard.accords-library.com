@@ -1,31 +1,31 @@
-import { CollectibleNature, Collections } from "../../../constants";
-import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointCollectible, EndpointCollectiblePreview } from "../../../sdk";
-import { Collectible } from "../../../types/collections";
+import { convertAudioToEndpointAudioPreview } from "src/collections/Audios/endpoints/getByID";
+import { convertFileToEndpointFilePreview } from "src/collections/Files/endpoints/getByID";
+import { convertPageToEndpointPagePreview } from "src/collections/Pages/endpoints/getBySlugEndpoint";
+import { convertRecorderToEndpointRecorderPreview } from "src/collections/Recorders/endpoints/getByID";
+import { convertVideoToEndpointVideoPreview } from "src/collections/Videos/endpoints/getByID";
+import { createGetByEndpoint } from "src/endpoints/createGetByEndpoint";
+import { Collections, CollectibleNature } from "src/shared/payload/constants";
+import { EndpointCollectiblePreview, EndpointCollectible } from "src/shared/payload/endpoint-types";
+import { Collectible } from "src/types/collections";
 import {
-  isAudio,
-  isDefined,
-  isFile,
   isImage,
-  isNotEmpty,
-  isPayloadArrayType,
   isPayloadType,
+  isNotEmpty,
+  isDefined,
+  isPayloadArrayType,
   isPublished,
+  isFile,
   isScan,
+  isAudio,
   isVideo,
-} from "../../../utils/asserts";
+} from "src/utils/asserts";
 import {
-  convertAttributesToEndpointAttributes,
   convertImageToEndpointPayloadImage,
-  convertScanToEndpointScanImage,
-  convertSourceToEndpointSource,
+  convertAttributesToEndpointAttributes,
   getDomainFromUrl,
-} from "../../../utils/endpoints";
-import { convertAudioToEndpointAudioPreview } from "../../Audios/endpoints/getByID";
-import { convertFileToEndpointFilePreview } from "../../Files/endpoints/getByID";
-import { convertPageToEndpointPagePreview } from "../../Pages/endpoints/getBySlugEndpoint";
-import { convertRecorderToEndpointRecorderPreview } from "../../Recorders/endpoints/getByID";
-import { convertVideoToEndpointVideoPreview } from "../../Videos/endpoints/getByID";
+  convertSourceToEndpointSource,
+  convertScanToEndpointScanImage,
+} from "src/utils/endpoints";
 
 export const getBySlugEndpoint = createGetByEndpoint({
   collection: Collections.Collectibles,

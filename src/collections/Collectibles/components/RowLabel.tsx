@@ -1,6 +1,6 @@
 import React from "react";
+import { isDefined } from "src/utils/asserts";
 import styled from "styled-components";
-import { isDefined } from "../../../utils/asserts";
 
 interface Props {
   page?: number;

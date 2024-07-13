@@ -1,5 +1,5 @@
 import { CollapsibleField, Condition, Field } from "payload/types";
-import { capitalize } from "../../utils/string";
+import { capitalize } from "src/utils/string";
 
 type Props = {
   name: string;

@@ -1,7 +1,7 @@
 import { Props } from "payload/components/views/Cell";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { isUndefined } from "../../utils/asserts";
+import { isUndefined } from "src/utils/asserts";
 
 export const Cell = ({ cellData, field, rowData, collection }: Props): JSX.Element => {
   const [imageURL, setImageURL] = useState<string>();

@@ -1,8 +1,8 @@
 import React from "react";
+import { Language } from "src/types/collections";
+import { isDefined } from "src/utils/asserts";
+import { formatLanguageCode, shortenEllipsis } from "src/utils/string";
 import styled from "styled-components";
-import { Language } from "../../types/collections";
-import { isDefined } from "../../utils/asserts";
-import { formatLanguageCode, shortenEllipsis } from "../../utils/string";
 
 interface Props {
   language?: Language | string;

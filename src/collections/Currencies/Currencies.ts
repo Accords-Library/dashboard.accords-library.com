@@ -1,10 +1,10 @@
 import { text } from "payload/dist/fields/validations";
-import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
-import { shownOnlyToAdmin } from "../../accesses/collections/shownOnlyToAdmin";
-import { CollectionGroups, Collections } from "../../constants";
-import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 import { importFromStrapi } from "./endpoints/importFromStrapi";
+import { shownOnlyToAdmin } from "src/accesses/collections/shownOnlyToAdmin";
+import { mustBeAdmin } from "src/accesses/fields/mustBeAdmin";
+import { Collections, CollectionGroups } from "src/shared/payload/constants";
+import { buildCollectionConfig } from "src/utils/collectionConfig";
 
 const fields = {
   id: "id",

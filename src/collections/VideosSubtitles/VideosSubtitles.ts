@@ -1,6 +1,6 @@
-import { shownOnlyToAdmin } from "../../accesses/collections/shownOnlyToAdmin";
-import { CollectionGroups, Collections } from "../../constants";
-import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { shownOnlyToAdmin } from "src/accesses/collections/shownOnlyToAdmin";
+import { Collections, CollectionGroups } from "src/shared/payload/constants";
+import { buildCollectionConfig } from "src/utils/collectionConfig";
 
 export const VideosSubtitles = buildCollectionConfig({
   slug: Collections.VideosSubtitles,

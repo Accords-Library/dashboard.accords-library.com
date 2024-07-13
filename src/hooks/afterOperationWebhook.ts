@@ -3,9 +3,10 @@ import {
   AfterChangeHook as CollectionAfterChangeHook,
 } from "payload/dist/collections/config/types";
 import { AfterChangeHook as GlobalAfterChangeHook } from "payload/dist/globals/config/types";
-import { AfterOperationWebHookMessage, Collections } from "../constants";
-import { getSDKUrlsForDocument } from "../endpoints/getAllSDKUrlsEndpoint";
-import { getAddedBackPropagationRelationships } from "../fields/backPropagationField/backPropagationUtils";
+import { getSDKUrlsForDocument } from "src/endpoints/getAllSDKUrlsEndpoint";
+import { getAddedBackPropagationRelationships } from "src/fields/backPropagationField/backPropagationUtils";
+import { Collections } from "src/shared/payload/constants";
+import { AfterOperationWebHookMessage } from "src/shared/payload/webhooks";
 
 export const globalAfterChangeWebhook: GlobalAfterChangeHook = async ({
   global,

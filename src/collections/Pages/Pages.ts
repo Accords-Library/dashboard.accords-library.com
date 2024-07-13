@@ -1,22 +1,22 @@
 import { Where } from "payload/types";
-import { breakBlock } from "../../blocks/breakBlock";
-import { sectionBlock } from "../../blocks/sectionBlock";
-import { transcriptBlock } from "../../blocks/transcriptBlock";
-import { QuickFilters, publishStatusFilters } from "../../components/QuickFilters";
-import { CollectionGroups, Collections } from "../../constants";
-import { attributesField } from "../../fields/attributesField/attributesField";
-import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
-import { creditsField } from "../../fields/creditsField/creditsField";
-import { imageField } from "../../fields/imageField/imageField";
-import { rowField } from "../../fields/rowField/rowField";
-import { slugField } from "../../fields/slugField/slugField";
-import { translatedFields } from "../../fields/translatedFields/translatedFields";
-import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
-import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
-import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
-import { createEditor } from "../../utils/editor";
-import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { getBySlugEndpoint } from "./endpoints/getBySlugEndpoint";
+import { breakBlock } from "src/blocks/breakBlock";
+import { sectionBlock } from "src/blocks/sectionBlock";
+import { transcriptBlock } from "src/blocks/transcriptBlock";
+import { QuickFilters, publishStatusFilters } from "src/components/QuickFilters";
+import { attributesField } from "src/fields/attributesField/attributesField";
+import { backPropagationField } from "src/fields/backPropagationField/backPropagationField";
+import { creditsField } from "src/fields/creditsField/creditsField";
+import { imageField } from "src/fields/imageField/imageField";
+import { rowField } from "src/fields/rowField/rowField";
+import { slugField } from "src/fields/slugField/slugField";
+import { translatedFields } from "src/fields/translatedFields/translatedFields";
+import { beforeDuplicateAddCopyTo } from "src/hooks/beforeDuplicateAddCopyTo";
+import { beforeDuplicatePiping } from "src/hooks/beforeDuplicatePiping";
+import { beforeDuplicateUnpublish } from "src/hooks/beforeDuplicateUnpublish";
+import { Collections, CollectionGroups } from "src/shared/payload/constants";
+import { createEditor } from "src/utils/editor";
+import { buildVersionedCollectionConfig } from "src/utils/versionedCollectionConfig";
 
 const fields = {
   slug: "slug",

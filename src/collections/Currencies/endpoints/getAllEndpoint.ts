@@ -1,7 +1,7 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
-import { Currency } from "../../../types/collections";
-import { CollectionEndpoint } from "../../../types/payload";
+import { Collections } from "src/shared/payload/constants";
+import { Currency } from "src/types/collections";
+import { CollectionEndpoint } from "src/types/payload";
 
 export const getAllEndpoint: CollectionEndpoint = {
   method: "get",

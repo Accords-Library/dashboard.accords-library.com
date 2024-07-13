@@ -1,7 +1,7 @@
 import { User } from "payload/auth";
-import { RecordersRoles } from "../../constants";
-import { Recorder } from "../../types/collections";
-import { isDefined, isUndefined } from "../../utils/asserts";
+import { RecordersRoles } from "src/shared/payload/constants";
+import { Recorder } from "src/types/collections";
+import { isUndefined, isDefined } from "src/utils/asserts";
 
 export const shownOnlyToAdmin = ({ user }: { user: User }): boolean => {
   if (isUndefined(user)) return false;

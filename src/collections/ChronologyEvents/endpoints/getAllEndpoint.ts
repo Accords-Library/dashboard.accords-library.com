@@ -1,12 +1,12 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
-import { EndpointChronologyEvent, EndpointSource } from "../../../sdk";
-import { ChronologyEvent, CollectibleBlock } from "../../../types/collections";
-import { CollectionEndpoint } from "../../../types/payload";
-import { isDefined, isNotEmpty, isPayloadType } from "../../../utils/asserts";
-import { convertCreditsToEndpointCredits, getDomainFromUrl } from "../../../utils/endpoints";
-import { convertCollectibleToEndpointCollectiblePreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
-import { convertPageToEndpointPagePreview } from "../../Pages/endpoints/getBySlugEndpoint";
+import { convertCollectibleToEndpointCollectiblePreview } from "src/collections/Collectibles/endpoints/getBySlugEndpoint";
+import { convertPageToEndpointPagePreview } from "src/collections/Pages/endpoints/getBySlugEndpoint";
+import { Collections } from "src/shared/payload/constants";
+import { EndpointChronologyEvent, EndpointSource } from "src/shared/payload/endpoint-types";
+import { ChronologyEvent, CollectibleBlock } from "src/types/collections";
+import { CollectionEndpoint } from "src/types/payload";
+import { isDefined, isPayloadType, isNotEmpty } from "src/utils/asserts";
+import { convertCreditsToEndpointCredits, getDomainFromUrl } from "src/utils/endpoints";
 
 export const getAllEndpoint: CollectionEndpoint = {
   method: "get",

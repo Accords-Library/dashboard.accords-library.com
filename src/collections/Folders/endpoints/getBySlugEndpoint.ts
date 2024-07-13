@@ -1,24 +1,24 @@
-import { Collections } from "../../../constants";
-import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointFolder, EndpointFolderPreview } from "../../../sdk";
-import { Folder, Language } from "../../../types/collections";
+import { convertAudioToEndpointAudioPreview } from "src/collections/Audios/endpoints/getByID";
+import { convertCollectibleToEndpointCollectiblePreview } from "src/collections/Collectibles/endpoints/getBySlugEndpoint";
+import { convertFileToEndpointFilePreview } from "src/collections/Files/endpoints/getByID";
+import { convertImageToEndpointImagePreview } from "src/collections/Images/endpoints/getByID";
+import { convertPageToEndpointPagePreview } from "src/collections/Pages/endpoints/getBySlugEndpoint";
+import { convertVideoToEndpointVideoPreview } from "src/collections/Videos/endpoints/getByID";
+import { createGetByEndpoint } from "src/endpoints/createGetByEndpoint";
+import { Collections } from "src/shared/payload/constants";
+import { EndpointFolderPreview, EndpointFolder } from "src/shared/payload/endpoint-types";
+import { Folder, Language } from "src/types/collections";
 import {
-  isAudio,
   isDefined,
-  isFile,
-  isImage,
   isNotEmpty,
   isPayloadType,
   isPublished,
+  isImage,
+  isAudio,
   isVideo,
-} from "../../../utils/asserts";
-import { convertSourceToEndpointSource, getLanguageId } from "../../../utils/endpoints";
-import { convertAudioToEndpointAudioPreview } from "../../Audios/endpoints/getByID";
-import { convertCollectibleToEndpointCollectiblePreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
-import { convertFileToEndpointFilePreview } from "../../Files/endpoints/getByID";
-import { convertImageToEndpointImagePreview } from "../../Images/endpoints/getByID";
-import { convertPageToEndpointPagePreview } from "../../Pages/endpoints/getBySlugEndpoint";
-import { convertVideoToEndpointVideoPreview } from "../../Videos/endpoints/getByID";
+  isFile,
+} from "src/utils/asserts";
+import { getLanguageId, convertSourceToEndpointSource } from "src/utils/endpoints";
 
 export const getBySlugEndpoint = createGetByEndpoint({
   collection: Collections.Folders,

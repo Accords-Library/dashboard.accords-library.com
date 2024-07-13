@@ -1,6 +1,6 @@
 import { CollectionBeforeChangeHook, CollectionConfig, RelationshipField } from "payload/types";
-import { Collections } from "../constants";
-import { BuildCollectionConfig, buildCollectionConfig } from "./collectionConfig";
+import { Collections } from "src/shared/payload/constants";
+import { BuildCollectionConfig, buildCollectionConfig } from "src/utils/collectionConfig";
 
 const fields = { updatedBy: "updatedBy" };
 

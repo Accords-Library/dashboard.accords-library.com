@@ -1,11 +1,11 @@
 import { CollectionConfig } from "payload/types";
-import { mustBeAdmin } from "../../accesses/fields/mustBeAdmin";
-import { AttributeTypes, CollectionGroups, Collections } from "../../constants";
-import { iconField } from "../../fields/iconField/iconField";
-import { rowField } from "../../fields/rowField/rowField";
-import { slugField } from "../../fields/slugField/slugField";
-import { translatedFields } from "../../fields/translatedFields/translatedFields";
-import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { mustBeAdmin } from "src/accesses/fields/mustBeAdmin";
+import { iconField } from "src/fields/iconField/iconField";
+import { rowField } from "src/fields/rowField/rowField";
+import { slugField } from "src/fields/slugField/slugField";
+import { translatedFields } from "src/fields/translatedFields/translatedFields";
+import { Collections, CollectionGroups, AttributeTypes } from "src/shared/payload/constants";
+import { buildCollectionConfig } from "src/utils/collectionConfig";
 
 const fields = {
   slug: "slug",

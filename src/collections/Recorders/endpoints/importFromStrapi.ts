@@ -1,10 +1,10 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
-import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImportEndpoint";
-import { Recorder } from "../../../types/collections";
-import { StrapiImage, StrapiLanguage } from "../../../types/strapi";
-import { isDefined } from "../../../utils/asserts";
-import { uploadStrapiImage } from "../../../utils/localApi";
+import { createStrapiImportEndpoint } from "src/endpoints/createStrapiImportEndpoint";
+import { Collections } from "src/shared/payload/constants";
+import { Recorder } from "src/types/collections";
+import { StrapiImage, StrapiLanguage } from "src/types/strapi";
+import { isDefined } from "src/utils/asserts";
+import { uploadStrapiImage } from "src/utils/localApi";
 
 type StrapiRecorder = {
   username: string;

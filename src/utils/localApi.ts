@@ -1,6 +1,6 @@
 import payload, { GeneratedTypes } from "payload";
-import { StrapiImage } from "../types/strapi";
-import { isDefined } from "./asserts";
+import { StrapiImage } from "src/types/strapi";
+import { isDefined } from "src/utils/asserts";
 
 type UploadStrapiImage = {
   image: StrapiImage;

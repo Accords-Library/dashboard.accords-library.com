@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { Validate } from "payload/types";
-import { ChronologyEvent } from "../../../types/collections";
-import { isUndefined } from "../../../utils/asserts";
+import { ChronologyEvent } from "src/types/collections";
+import { isUndefined } from "src/utils/asserts";
 
 export const validateDate: Validate<ChronologyEvent["date"] | undefined> = (date) => {
   if (isUndefined(date)) return "This field is required.";

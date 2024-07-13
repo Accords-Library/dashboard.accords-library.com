@@ -1,16 +1,20 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
-import { EndpointAudio, EndpointAudioPreview, PayloadMedia } from "../../../sdk";
-import { Audio } from "../../../types/collections";
-import { CollectionEndpoint } from "../../../types/payload";
-import { isAudio, isMediaThumbnail, isNotEmpty } from "../../../utils/asserts";
+import { Collections } from "src/shared/payload/constants";
+import {
+  PayloadMedia,
+  EndpointAudioPreview,
+  EndpointAudio,
+} from "src/shared/payload/endpoint-types";
+import { CollectionEndpoint } from "src/types/payload";
+import { isAudio, isNotEmpty, isMediaThumbnail } from "src/utils/asserts";
 import {
   convertAttributesToEndpointAttributes,
-  convertCreditsToEndpointCredits,
+  getLanguageId,
   convertMediaThumbnailToEndpointPayloadImage,
   convertRTCToEndpointRTC,
-  getLanguageId,
-} from "../../../utils/endpoints";
+  convertCreditsToEndpointCredits,
+} from "src/utils/endpoints";
+import { Audio } from "src/types/collections";
 
 export const getByID: CollectionEndpoint = {
   method: "get",

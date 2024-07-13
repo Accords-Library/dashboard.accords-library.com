@@ -1,24 +1,28 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
-import { EndpointVideo, EndpointVideoPreview, PayloadMedia } from "../../../sdk";
-import { Video } from "../../../types/collections";
-import { CollectionEndpoint } from "../../../types/payload";
+import { Collections } from "src/shared/payload/constants";
 import {
-  isDefined,
-  isEmpty,
-  isMediaThumbnail,
-  isNotEmpty,
-  isPayloadType,
-  isUndefined,
+  PayloadMedia,
+  EndpointVideoPreview,
+  EndpointVideo,
+} from "src/shared/payload/endpoint-types";
+import { Video } from "src/types/collections";
+import { CollectionEndpoint } from "src/types/payload";
+import {
   isVideo,
-} from "../../../utils/asserts";
+  isNotEmpty,
+  isMediaThumbnail,
+  isUndefined,
+  isPayloadType,
+  isEmpty,
+  isDefined,
+} from "src/utils/asserts";
 import {
   convertAttributesToEndpointAttributes,
-  convertCreditsToEndpointCredits,
+  getLanguageId,
   convertMediaThumbnailToEndpointPayloadImage,
   convertRTCToEndpointRTC,
-  getLanguageId,
-} from "../../../utils/endpoints";
+  convertCreditsToEndpointCredits,
+} from "src/utils/endpoints";
 
 export const getByID: CollectionEndpoint = {
   method: "get",

@@ -1,8 +1,8 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
-import { EndpointWording } from "../../../sdk";
-import { CollectionEndpoint } from "../../../types/payload";
-import { isPayloadType } from "../../../utils/asserts";
+import { Collections } from "src/shared/payload/constants";
+import { EndpointWording } from "src/shared/payload/endpoint-types";
+import { CollectionEndpoint } from "src/types/payload";
+import { isPayloadType } from "src/utils/asserts";
 
 export const getAllEndpoint: CollectionEndpoint = {
   method: "get",

@@ -4,33 +4,34 @@ import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import path from "path";
 import { buildConfig } from "payload/config";
 import { sftpAdapter } from "payloadcms-sftp-storage";
-import { Attributes } from "./collections/Attributes/Attributes";
-import { Audios } from "./collections/Audios/Audios";
-import { ChronologyEvents } from "./collections/ChronologyEvents/ChronologyEvents";
-import { Collectibles } from "./collections/Collectibles/Collectibles";
-import { CreditsRoles } from "./collections/CreditsRoles/CreditsRoles";
-import { Currencies } from "./collections/Currencies/Currencies";
-import { Files } from "./collections/Files/Files";
-import { Folders } from "./collections/Folders/Folders";
-import { GenericContents } from "./collections/GenericContents/GenericContents";
-import { Images } from "./collections/Images/Images";
-import { Languages } from "./collections/Languages/Languages";
-import { MediaThumbnails } from "./collections/MediaThumbnails/MediaThumbnails";
-import { Pages } from "./collections/Pages/Pages";
-import { Recorders } from "./collections/Recorders/Recorders";
-import { Scans } from "./collections/Scans/Scans";
-import { Tags } from "./collections/Tags/Tags";
-import { Videos } from "./collections/Videos/Videos";
-import { VideosChannels } from "./collections/VideosChannels/VideosChannels";
-import { VideosSubtitles } from "./collections/VideosSubtitles/VideosSubtitles";
-import { WebsiteConfig } from "./collections/WebsiteConfig/WebsiteConfig";
-import { Wordings } from "./collections/Wordings/Wordings";
-import { Icon } from "./components/Icon";
-import { Logo } from "./components/Logo";
-import { Collections } from "./constants";
-import { getAllIds } from "./endpoints/getAllIdsEndpoint";
-import { getAllSDKUrlsEndpoint } from "./endpoints/getAllSDKUrlsEndpoint";
-import { createEditor } from "./utils/editor";
+import { Attributes } from "src/collections/Attributes/Attributes";
+import { Audios } from "src/collections/Audios/Audios";
+import { ChronologyEvents } from "src/collections/ChronologyEvents/ChronologyEvents";
+import { Collectibles } from "src/collections/Collectibles/Collectibles";
+import { CreditsRoles } from "src/collections/CreditsRoles/CreditsRoles";
+import { Currencies } from "src/collections/Currencies/Currencies";
+import { Files } from "src/collections/Files/Files";
+import { Folders } from "src/collections/Folders/Folders";
+import { GenericContents } from "src/collections/GenericContents/GenericContents";
+import { Images } from "src/collections/Images/Images";
+import { Languages } from "src/collections/Languages/Languages";
+import { MediaThumbnails } from "src/collections/MediaThumbnails/MediaThumbnails";
+import { Pages } from "src/collections/Pages/Pages";
+import { Recorders } from "src/collections/Recorders/Recorders";
+import { Scans } from "src/collections/Scans/Scans";
+import { Tags } from "src/collections/Tags/Tags";
+import { Videos } from "src/collections/Videos/Videos";
+import { VideosChannels } from "src/collections/VideosChannels/VideosChannels";
+import { VideosSubtitles } from "src/collections/VideosSubtitles/VideosSubtitles";
+import { WebsiteConfig } from "src/collections/WebsiteConfig/WebsiteConfig";
+import { Wordings } from "src/collections/Wordings/Wordings";
+import { Icon } from "src/components/Icon";
+import { Logo } from "src/components/Logo";
+import { getAllIds } from "src/endpoints/getAllIdsEndpoint";
+import { getAllSDKUrlsEndpoint } from "src/endpoints/getAllSDKUrlsEndpoint";
+import { Collections } from "src/shared/payload/constants";
+import { createEditor } from "src/utils/editor";
+// import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
 
 const configuredSftpAdapter = sftpAdapter({
   connectOptions: {
@@ -54,6 +55,22 @@ export default buildConfig({
     },
     css: path.resolve(__dirname, "styles.scss"),
     bundler: webpackBundler(),
+    webpack: (config) => ({
+      ...config,
+      resolve: {
+        ...config.resolve,
+        // plugins: [
+        //   ...(config.resolve?.plugins ?? []),
+        //   new TsconfigPathsPlugin({
+        //     /* options: see below */
+        //   }),
+        // ],
+        alias: {
+          ...config.resolve?.alias,
+          "src/": path.resolve(__dirname, "src"),
+        },
+      },
+    }),
   },
   editor: createEditor({}),
   collections: [

@@ -1,5 +1,5 @@
 import { Block } from "payload/types";
-import { Collections } from "../../../constants";
+import { Collections } from "src/shared/payload/constants";
 
 export const pageBlock: Block = {
   slug: "pageBlock",

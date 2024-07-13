@@ -1,11 +1,11 @@
-import { Collections } from "../../../constants";
-import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointCollectibleGallery } from "../../../sdk";
-import { isImage, isNotEmpty, isPayloadType } from "../../../utils/asserts";
+import { createGetByEndpoint } from "src/endpoints/createGetByEndpoint";
+import { Collections } from "src/shared/payload/constants";
+import { EndpointCollectibleGallery } from "src/shared/payload/endpoint-types";
+import { isPayloadType, isNotEmpty, isImage } from "src/utils/asserts";
 import {
   convertImageToEndpointPayloadImage,
   convertSourceToEndpointSource,
-} from "../../../utils/endpoints";
+} from "src/utils/endpoints";
 
 export const getBySlugEndpointGallery = createGetByEndpoint({
   collection: Collections.Collectibles,
