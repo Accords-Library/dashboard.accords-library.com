@@ -1,5 +1,5 @@
-import { Collections } from "../../../constants";
 import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImportEndpoint";
+import { Collections } from "../../../shared/payload/constants";
 import { StrapiLanguage } from "../../../types/strapi";
 import { isDefined, isUndefined } from "../../../utils/asserts";
 import { plainTextToLexical } from "../../../utils/string";

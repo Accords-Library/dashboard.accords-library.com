@@ -1,8 +1,8 @@
 import { CollectionConfig } from "payload/types";
-import { CollectionGroups, Collections } from "../../constants";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { rowField } from "../../fields/rowField/rowField";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { Collections, CollectionGroups } from "../../shared/payload/constants";
 
 const fields = {
   url: "url",

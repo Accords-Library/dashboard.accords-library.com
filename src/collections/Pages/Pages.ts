@@ -3,7 +3,6 @@ import { breakBlock } from "../../blocks/breakBlock";
 import { sectionBlock } from "../../blocks/sectionBlock";
 import { transcriptBlock } from "../../blocks/transcriptBlock";
 import { QuickFilters, publishStatusFilters } from "../../components/QuickFilters";
-import { CollectionGroups, Collections } from "../../constants";
 import { attributesField } from "../../fields/attributesField/attributesField";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { creditsField } from "../../fields/creditsField/creditsField";
@@ -17,6 +16,7 @@ import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
 import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { getBySlugEndpoint } from "./endpoints/getBySlugEndpoint";
+import { Collections, CollectionGroups } from "../../shared/payload/constants";
 
 const fields = {
   slug: "slug",

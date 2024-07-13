@@ -4,7 +4,6 @@ import {
   languageBasedFilters,
   publishStatusFilters,
 } from "../../components/QuickFilters";
-import { CollectionGroups, Collections } from "../../constants";
 import { creditsField } from "../../fields/creditsField/creditsField";
 import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
@@ -20,6 +19,7 @@ import { beforeValidatePopulateNameField } from "./hooks/beforeValidatePopulateN
 import { validateDate } from "./validations/validateDate";
 import { validateEventsTranslationsDescription } from "./validations/validateEventsTranslationsDescription";
 import { validateEventsTranslationsTitle } from "./validations/validateEventsTranslationsTitle";
+import { Collections, CollectionGroups } from "../../shared/payload/constants";
 
 const fields = {
   name: "name",

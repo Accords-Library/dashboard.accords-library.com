@@ -1,6 +1,4 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
-import { EndpointCollectibleScanPage } from "../../../sdk";
 import { Collectible, Scan } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isDefined, isNotEmpty, isPayloadType, isScan } from "../../../utils/asserts";
@@ -8,6 +6,8 @@ import {
   convertScanToEndpointScanImage,
   convertSourceToEndpointSource,
 } from "../../../utils/endpoints";
+import { Collections } from "../../../shared/payload/constants";
+import { EndpointCollectibleScanPage } from "../../../shared/payload/endpoint-types";
 
 export const getBySlugEndpointScanPage: CollectionEndpoint = {
   path: "/slug/:slug/scans/:index",

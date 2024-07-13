@@ -1,6 +1,6 @@
-import { Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointCollectibleGallery } from "../../../sdk";
+import { Collections } from "../../../shared/payload/constants";
+import { EndpointCollectibleGallery } from "../../../shared/payload/endpoint-types";
 import { isImage, isNotEmpty, isPayloadType } from "../../../utils/asserts";
 import {
   convertImageToEndpointPayloadImage,

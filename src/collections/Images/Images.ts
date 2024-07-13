@@ -1,9 +1,9 @@
-import { Collections } from "../../constants";
 import { createImageSizesRegenerationEndpoint } from "../../endpoints/imageSizesRegenerationEndpoint";
 import { attributesField } from "../../fields/attributesField/attributesField";
 import { creditsField } from "../../fields/creditsField/creditsField";
 import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
+import { Collections } from "../../shared/payload/constants";
 import { createEditor } from "../../utils/editor";
 import {
   buildImageCollectionConfig,

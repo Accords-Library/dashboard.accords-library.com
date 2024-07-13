@@ -1,10 +1,10 @@
 import { CollectionConfig } from "payload/types";
 import { QuickFilters, languageBasedFilters } from "../../components/QuickFilters";
-import { CollectionGroups, Collections } from "../../constants";
 import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
+import { Collections, CollectionGroups } from "../../shared/payload/constants";
 
 const fields = {
   name: "name",

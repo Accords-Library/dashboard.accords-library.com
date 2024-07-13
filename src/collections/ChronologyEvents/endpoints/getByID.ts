@@ -1,7 +1,7 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
 import { CollectionEndpoint } from "../../../types/payload";
 import { eventToEndpointEvent } from "./getAllEndpoint";
+import { Collections } from "../../../shared/payload/constants";
 
 export const getByID: CollectionEndpoint = {
   method: "get",

@@ -1,9 +1,9 @@
-import { CollectionGroups, Collections } from "../../constants";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { iconField } from "../../fields/iconField/iconField";
 import { rowField } from "../../fields/rowField/rowField";
 import { slugField } from "../../fields/slugField/slugField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
+import { Collections, CollectionGroups } from "../../shared/payload/constants";
 import { Folder } from "../../types/collections";
 import { isPayloadType } from "../../utils/asserts";
 import { buildCollectionConfig } from "../../utils/collectionConfig";

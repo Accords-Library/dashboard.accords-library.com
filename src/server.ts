@@ -1,10 +1,9 @@
 import "dotenv/config";
 import express from "express";
-import { readFileSync } from "fs";
 import path from "path";
 import payload from "payload";
-import { Collections, RecordersRoles } from "./constants";
 import { isDefined, isUndefined } from "./utils/asserts";
+import { Collections, RecordersRoles } from "./shared/payload/constants";
 
 const app = express();
 
@@ -57,33 +56,6 @@ const start = async () => {
 
   // Add your own express routes here
   app.use("/public", express.static(path.join(__dirname, "../public")));
-
-  app.get("/api/sdk", (_, res) => {
-    const removeMockingSection = (text: string): string => {
-      const lines = text.split("\n");
-      const endMockingLine = lines.findIndex((line) => line === "// END MOCKING SECTION") ?? 0;
-      return lines.slice(endMockingLine + 1).join("\n");
-    };
-
-    const removeDeclare = (text: string): string => {
-      const lines = text.split("\n");
-      const startDeclareLine = lines.findIndex((line) => line.startsWith("declare module")) ?? 0;
-      return lines.slice(0, startDeclareLine).join("\n");
-    };
-
-    const result = [];
-
-    result.push(removeDeclare(readFileSync(path.join(__dirname, "types/collections.ts"), "utf-8")));
-
-    result.push("/////////////// CONSTANTS ///////////////");
-    result.push(removeMockingSection(readFileSync(path.join(__dirname, "constants.ts"), "utf-8")));
-
-    result.push("////////////////// SDK //////////////////");
-    result.push(removeMockingSection(readFileSync(path.join(__dirname, "sdk.ts"), "utf-8")));
-
-    res.type("text/plain");
-    res.send(result.join("\n\n"));
-  });
 
   app.get("/robots.txt", (_, res) => {
     res.type("text/plain");

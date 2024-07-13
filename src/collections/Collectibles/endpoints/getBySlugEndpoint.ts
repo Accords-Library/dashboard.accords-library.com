@@ -1,6 +1,9 @@
-import { CollectibleNature, Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointCollectible, EndpointCollectiblePreview } from "../../../sdk";
+import { Collections, CollectibleNature } from "../../../shared/payload/constants";
+import {
+  EndpointCollectiblePreview,
+  EndpointCollectible,
+} from "../../../shared/payload/endpoint-types";
 import { Collectible } from "../../../types/collections";
 import {
   isAudio,

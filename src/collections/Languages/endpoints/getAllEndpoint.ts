@@ -1,7 +1,7 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
 import { Language } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
+import { Collections } from "../../../shared/payload/constants";
 
 export const getAllEndpoint: CollectionEndpoint = {
   method: "get",

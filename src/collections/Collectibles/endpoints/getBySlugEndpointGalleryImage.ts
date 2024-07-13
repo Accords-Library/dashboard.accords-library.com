@@ -1,11 +1,11 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
-import { EndpointCollectibleGalleryImage } from "../../../sdk";
 import { Collectible, Image } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isDefined, isImage, isNotEmpty, isPayloadType } from "../../../utils/asserts";
 import { convertSourceToEndpointSource } from "../../../utils/endpoints";
 import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
+import { Collections } from "../../../shared/payload/constants";
+import { EndpointCollectibleGalleryImage } from "../../../shared/payload/endpoint-types";
 
 export const getBySlugEndpointGalleryImage: CollectionEndpoint = {
   path: "/slug/:slug/gallery/:index",

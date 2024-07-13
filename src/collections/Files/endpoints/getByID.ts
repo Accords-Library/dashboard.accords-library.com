@@ -1,6 +1,4 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
-import { EndpointFile, EndpointFilePreview, PayloadMedia } from "../../../sdk";
 import { File } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isFile, isMediaThumbnail, isNotEmpty } from "../../../utils/asserts";
@@ -11,6 +9,12 @@ import {
   convertRTCToEndpointRTC,
   getLanguageId,
 } from "../../../utils/endpoints";
+import { Collections } from "../../../shared/payload/constants";
+import {
+  PayloadMedia,
+  EndpointFilePreview,
+  EndpointFile,
+} from "../../../shared/payload/endpoint-types";
 
 export const getByID: CollectionEndpoint = {
   method: "get",

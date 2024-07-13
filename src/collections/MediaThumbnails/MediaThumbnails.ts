@@ -1,6 +1,6 @@
 import { shownOnlyToAdmin } from "../../accesses/collections/shownOnlyToAdmin";
-import { Collections } from "../../constants";
 import { createImageSizesRegenerationEndpoint } from "../../endpoints/imageSizesRegenerationEndpoint";
+import { Collections } from "../../shared/payload/constants";
 import {
   buildImageCollectionConfig,
   generateOpenGraphSize,

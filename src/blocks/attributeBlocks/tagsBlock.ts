@@ -1,6 +1,6 @@
 import { Block } from "payload/types";
-import { AttributeTypes, Collections } from "../../constants";
 import { rowField } from "../../fields/rowField/rowField";
+import { Collections, AttributeTypes } from "../../shared/payload/constants";
 
 export const tagsBlock: Block = {
   slug: "tagsBlock",

@@ -2,10 +2,10 @@ import { mustBeAdmin as mustBeAdminForCollections } from "../../accesses/collect
 import { mustBeAdminOrSelf } from "../../accesses/collections/mustBeAdminOrSelf";
 import { mustBeAdmin as mustBeAdminForFields } from "../../accesses/fields/mustBeAdmin";
 import { QuickFilters } from "../../components/QuickFilters";
-import { CollectionGroups, Collections, RecordersRoles } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
+import { Collections, CollectionGroups, RecordersRoles } from "../../shared/payload/constants";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { createEditor } from "../../utils/editor";
 import { getByID } from "./endpoints/getByID";

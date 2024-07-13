@@ -1,10 +1,10 @@
-import { CollectionGroups, Collections } from "../../constants";
 import { attributesField } from "../../fields/attributesField/attributesField";
 import { componentField } from "../../fields/componentField/componentField";
 import { creditsField } from "../../fields/creditsField/creditsField";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
+import { Collections, CollectionGroups } from "../../shared/payload/constants";
 import { Video } from "../../types/collections";
 import { isPayloadType } from "../../utils/asserts";
 import { buildCollectionConfig } from "../../utils/collectionConfig";

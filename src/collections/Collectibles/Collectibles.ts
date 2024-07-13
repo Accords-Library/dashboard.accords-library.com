@@ -1,12 +1,5 @@
 import { RowLabelArgs } from "payload/dist/admin/components/forms/RowLabel/types";
 import { Where } from "payload/types";
-import {
-  CollectibleBindingTypes,
-  CollectibleNature,
-  CollectiblePageOrders,
-  CollectionGroups,
-  Collections,
-} from "../../constants";
 import { attributesField } from "../../fields/attributesField/attributesField";
 import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { componentField } from "../../fields/componentField/componentField";
@@ -28,6 +21,13 @@ import { getBySlugEndpointGallery } from "./endpoints/getBySlugEndpointGallery";
 import { getBySlugEndpointGalleryImage } from "./endpoints/getBySlugEndpointGalleryImage";
 import { getBySlugEndpointScanPage } from "./endpoints/getBySlugEndpointScanPage";
 import { getBySlugEndpointScans } from "./endpoints/getBySlugEndpointScans";
+import {
+  Collections,
+  CollectionGroups,
+  CollectibleNature,
+  CollectibleBindingTypes,
+  CollectiblePageOrders,
+} from "../../shared/payload/constants";
 
 const fields = {
   status: "_status",

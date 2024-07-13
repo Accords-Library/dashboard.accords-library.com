@@ -2,31 +2,31 @@ import { convertAudioToEndpointAudioPreview } from "../collections/Audios/endpoi
 import { convertImageToEndpointImagePreview } from "../collections/Images/endpoints/getByID";
 import { convertRecorderToEndpointRecorderPreview } from "../collections/Recorders/endpoints/getByID";
 import { convertVideoToEndpointVideoPreview } from "../collections/Videos/endpoints/getByID";
+import { AttributeTypes } from "../shared/payload/constants";
 import {
-  AttributeTypes,
-  RichTextBreakBlock,
-  RichTextContent,
-  RichTextSectionBlock,
-  RichTextUploadNode,
-  isBlockNodeBreakBlock,
-  isBlockNodeSectionBlock,
-  isNodeBlockNode,
-  isNodeUploadNode,
-  isUploadNodeAudioNode,
-  isUploadNodeImageNode,
-  isUploadNodeVideoNode,
-} from "../constants";
-import {
-  EndpointAttribute,
-  EndpointCredit,
-  EndpointPayloadImage,
-  EndpointRole,
-  EndpointScanImage,
+  EndpointTag,
   EndpointSource,
   EndpointSourcePreview,
-  EndpointTag,
+  EndpointRole,
+  EndpointCredit,
+  EndpointAttribute,
   PayloadImage,
-} from "../sdk";
+  EndpointScanImage,
+  EndpointPayloadImage,
+} from "../shared/payload/endpoint-types";
+import {
+  RichTextContent,
+  isNodeBlockNode,
+  isBlockNodeSectionBlock,
+  RichTextSectionBlock,
+  isBlockNodeBreakBlock,
+  RichTextBreakBlock,
+  isNodeUploadNode,
+  RichTextUploadNode,
+  isUploadNodeImageNode,
+  isUploadNodeAudioNode,
+  isUploadNodeVideoNode,
+} from "../shared/payload/rich-text";
 import {
   Audio,
   Collectible,

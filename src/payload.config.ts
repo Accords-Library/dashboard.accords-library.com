@@ -27,10 +27,10 @@ import { WebsiteConfig } from "./collections/WebsiteConfig/WebsiteConfig";
 import { Wordings } from "./collections/Wordings/Wordings";
 import { Icon } from "./components/Icon";
 import { Logo } from "./components/Logo";
-import { Collections } from "./constants";
 import { getAllIds } from "./endpoints/getAllIdsEndpoint";
 import { getAllSDKUrlsEndpoint } from "./endpoints/getAllSDKUrlsEndpoint";
 import { createEditor } from "./utils/editor";
+import { Collections } from "./shared/payload/constants";
 
 const configuredSftpAdapter = sftpAdapter({
   connectOptions: {

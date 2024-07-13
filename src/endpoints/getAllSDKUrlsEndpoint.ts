@@ -1,8 +1,9 @@
 import payload from "payload";
 import { Endpoint } from "payload/config";
-import { Collections } from "../constants";
-import { EndpointAllSDKUrls, getSDKEndpoint } from "../sdk";
 import { Collectible } from "../types/collections";
+import { Collections } from "../shared/payload/constants";
+import { EndpointAllSDKUrls } from "../shared/payload/endpoint-types";
+import { getSDKEndpoint } from "../shared/payload/sdk";
 
 export const getAllSDKUrlsEndpoint: Endpoint = {
   method: "get",

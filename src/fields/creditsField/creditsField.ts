@@ -1,9 +1,9 @@
 import { array } from "payload/dist/fields/validations";
 import { ArrayField } from "payload/types";
-import { Collections } from "../../constants";
 import { Credits } from "../../types/collections";
 import { hasDuplicates, isDefined, isPayloadType, isUndefined } from "../../utils/asserts";
 import { rowField } from "../rowField/rowField";
+import { Collections } from "../../shared/payload/constants";
 
 type Props = Omit<ArrayField, "type" | "fields">;
 

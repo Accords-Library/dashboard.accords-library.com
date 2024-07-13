@@ -1,9 +1,9 @@
-import { CollectionGroups, Collections } from "../../constants";
 import { attributesField } from "../../fields/attributesField/attributesField";
 import { creditsField } from "../../fields/creditsField/creditsField";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { translatedFields } from "../../fields/translatedFields/translatedFields";
+import { CollectionGroups, Collections } from "../../shared/payload/constants";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { createEditor } from "../../utils/editor";
 import { getByID } from "./endpoints/getByID";

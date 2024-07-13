@@ -1,13 +1,16 @@
-import {
-  BreakBlockType,
-  Collections,
-  RichTextContent,
-  isBlockNodeBreakBlock,
-  isBlockNodeSectionBlock,
-  isNodeBlockNode,
-} from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointPage, EndpointPagePreview, TableOfContentEntry } from "../../../sdk";
+import { Collections, BreakBlockType } from "../../../shared/payload/constants";
+import {
+  EndpointPagePreview,
+  EndpointPage,
+  TableOfContentEntry,
+} from "../../../shared/payload/endpoint-types";
+import {
+  RichTextContent,
+  isNodeBlockNode,
+  isBlockNodeSectionBlock,
+  isBlockNodeBreakBlock,
+} from "../../../shared/payload/rich-text";
 import { Page } from "../../../types/collections";
 import { isImage, isNotEmpty, isPayloadType } from "../../../utils/asserts";
 import {

@@ -3,7 +3,7 @@ import QueryString from "qs";
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { LanguageCodes } from "../constants";
+import { LanguageCodes } from "../shared/payload/constants";
 
 type Props = {
   slug: string;

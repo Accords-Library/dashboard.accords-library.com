@@ -1,6 +1,4 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
-import { EndpointImage, EndpointImagePreview, PayloadImage } from "../../../sdk";
 import { Image } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isImage, isNotEmpty, isPayloadImage } from "../../../utils/asserts";
@@ -11,6 +9,12 @@ import {
   convertSizesToPayloadImages,
   getLanguageId,
 } from "../../../utils/endpoints";
+import { Collections } from "../../../shared/payload/constants";
+import {
+  PayloadImage,
+  EndpointImagePreview,
+  EndpointImage,
+} from "../../../shared/payload/endpoint-types";
 
 export const getByID: CollectionEndpoint = {
   method: "get",

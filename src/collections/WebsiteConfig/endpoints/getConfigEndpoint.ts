@@ -1,10 +1,10 @@
 import payload from "payload";
-import { Collections } from "../../../constants";
-import { EndpointWebsiteConfig } from "../../../sdk";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isImage, isPayloadType } from "../../../utils/asserts";
 import { convertImageToEndpointPayloadImage } from "../../../utils/endpoints";
 import { convertFolderToEndpointFolderPreview } from "../../Folders/endpoints/getBySlugEndpoint";
+import { Collections } from "../../../shared/payload/constants";
+import { EndpointWebsiteConfig } from "../../../shared/payload/endpoint-types";
 
 export const getConfigEndpoint: CollectionEndpoint = {
   method: "get",

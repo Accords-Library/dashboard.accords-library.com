@@ -1,5 +1,5 @@
 import { shownOnlyToAdmin } from "../../accesses/collections/shownOnlyToAdmin";
-import { CollectionGroups, Collections } from "../../constants";
+import { Collections, CollectionGroups } from "../../shared/payload/constants";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 
 export const VideosSubtitles = buildCollectionConfig({

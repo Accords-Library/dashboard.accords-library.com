@@ -1,6 +1,6 @@
 import tags from "language-tags";
-import { RichTextContent } from "../constants";
 import { isUndefined } from "./asserts";
+import { RichTextContent } from "../shared/payload/rich-text";
 
 export const shortenEllipsis = (text: string, length: number): string =>
   text.length - 3 > length ? `${text.substring(0, length)}...` : text;

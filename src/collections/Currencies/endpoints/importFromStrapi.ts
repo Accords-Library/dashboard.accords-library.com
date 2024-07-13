@@ -1,5 +1,5 @@
-import { Collections } from "../../../constants";
 import { createStrapiImportEndpoint } from "../../../endpoints/createStrapiImportEndpoint";
+import { Collections } from "../../../shared/payload/constants";
 
 type StrapiLanguage = {
   code: string;

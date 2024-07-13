@@ -1,6 +1,6 @@
-import { Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointCollectibleScans } from "../../../sdk";
+import { Collections } from "../../../shared/payload/constants";
+import { EndpointCollectibleScans } from "../../../shared/payload/endpoint-types";
 import { Collectible } from "../../../types/collections";
 import { isImage, isNotEmpty, isPayloadType, isScan } from "../../../utils/asserts";
 import {

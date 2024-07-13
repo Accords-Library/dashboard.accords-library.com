@@ -1,10 +1,10 @@
 import { GlobalConfig } from "payload/types";
 import { mustBeAdmin } from "../../accesses/collections/mustBeAdmin";
-import { CollectionGroups, Collections } from "../../constants";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { globalAfterChangeWebhook } from "../../hooks/afterOperationWebhook";
 import { getConfigEndpoint } from "./endpoints/getConfigEndpoint";
+import { Collections, CollectionGroups } from "../../shared/payload/constants";
 
 const fields = {
   homeBackgroundImage: "homeBackgroundImage",

@@ -1,11 +1,11 @@
 import { RowLabelArgs } from "payload/dist/admin/components/forms/RowLabel/types";
 import { array } from "payload/dist/fields/validations";
 import { ArrayField, Field } from "payload/types";
-import { Collections } from "../../constants";
 import { hasDuplicates, isDefined, isUndefined } from "../../utils/asserts";
 import { rowField } from "../rowField/rowField";
 import { Cell } from "./Cell";
 import { RowLabel } from "./RowLabel";
+import { Collections } from "../../shared/payload/constants";
 
 const fieldsNames = {
   language: "language",

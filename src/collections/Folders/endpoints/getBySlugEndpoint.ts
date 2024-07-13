@@ -1,6 +1,6 @@
-import { Collections } from "../../../constants";
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
-import { EndpointFolder, EndpointFolderPreview } from "../../../sdk";
+import { Collections } from "../../../shared/payload/constants";
+import { EndpointFolderPreview, EndpointFolder } from "../../../shared/payload/endpoint-types";
 import { Folder, Language } from "../../../types/collections";
 import {
   isAudio,

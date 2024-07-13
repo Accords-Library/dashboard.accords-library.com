@@ -1,6 +1,6 @@
 import { Block } from "payload/types";
-import { Collections } from "../../../constants";
 import { translatedFields } from "../../../fields/translatedFields/translatedFields";
+import { Collections } from "../../../shared/payload/constants";
 
 export const collectibleBlock: Block = {
   slug: "collectibleBlock",
