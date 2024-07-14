@@ -6,7 +6,7 @@ export const shortenEllipsis = (text: string, length: number): string =>
   text.length - 3 > length ? `${text.substring(0, length)}...` : text;
 
 export const formatLanguageCode = (code: string): string =>
-  tags(code).valid() ? tags(code).language()?.descriptions()[0] ?? code : code;
+  tags(code).valid() ? (tags(code).language()?.descriptions()[0] ?? code) : code;
 
 export const capitalize = (string: string): string => {
   const [firstLetter, ...otherLetters] = string;

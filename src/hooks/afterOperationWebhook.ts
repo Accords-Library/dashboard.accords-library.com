@@ -68,14 +68,21 @@ export const afterDeleteWebhook: AfterDeleteHook = async ({ collection, doc }) =
 };
 
 const sendWebhookMessage = async (message: AfterOperationWebHookMessage) => {
-  await fetch(`${process.env.WEB_HOOK_URI}/collection-operation`, {
-    headers: {
-      Authorization: `Bearer ${process.env.WEB_HOOK_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(message),
-    method: "POST",
-  }).catch((e) => {
+  try {
+    await Promise.all(
+      [process.env.WEB_SERVER_HOOK_URL, process.env.MEILISEARCH_HOOK_URL].flatMap((url) => {
+        if (!url) return;
+        return fetch(url, {
+          headers: {
+            Authorization: `Bearer ${process.env.WEB_SERVER_HOOK_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(message),
+          method: "POST",
+        });
+      })
+    );
+  } catch (e) {
     console.warn("Error while sending webhook", e);
-  });
+  }
 };
