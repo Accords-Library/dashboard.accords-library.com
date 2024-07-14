@@ -67,19 +67,14 @@ export const afterDeleteWebhook: AfterDeleteHook = async ({ collection, doc }) =
   return doc;
 };
 
-if (!process.env.WEB_SERVER_HOOK_URL) throw new Error("Missing WEB_SERVER_HOOK_URL");
-if (!process.env.WEB_SERVER_HOOK_TOKEN) throw new Error("Missing WEB_SERVER_HOOK_TOKEN");
-if (!process.env.MEILISEARCH_HOOK_URL) throw new Error("Missing MEILISEARCH_HOOK_URL");
-if (!process.env.MEILISEARCH_HOOK_TOKEN) throw new Error("Missing MEILISEARCH_HOOK_TOKEN");
-
 const webhookTargets: { url: string; token: string }[] = [
   {
-    url: process.env.WEB_SERVER_HOOK_URL,
-    token: process.env.WEB_SERVER_HOOK_TOKEN,
+    url: process.env.WEB_SERVER_HOOK_URL ?? "",
+    token: process.env.WEB_SERVER_HOOK_TOKEN ?? "",
   },
   {
-    url: process.env.MEILISEARCH_HOOK_URL,
-    token: process.env.MEILISEARCH_HOOK_TOKEN,
+    url: process.env.MEILISEARCH_HOOK_URL ?? "",
+    token: process.env.MEILISEARCH_HOOK_TOKEN ?? "",
   },
 ];
 
