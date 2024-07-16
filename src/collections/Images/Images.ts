@@ -36,6 +36,7 @@ export const Images = buildImageCollectionConfig({
   admin: {
     preview: ({ id }) => `${process.env.PAYLOAD_PUBLIC_FRONTEND_BASE_URL}/en/images/${id}`,
     defaultColumns: [fields.filename, fields.posts, fields.updatedAt],
+    useAsTitle: fields.filename,
   },
   upload: {
     imageSizes: [

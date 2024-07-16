@@ -17,6 +17,7 @@ export const Scans = buildImageCollectionConfig({
     plural: "Scans",
   },
   admin: {
+    useAsTitle: fields.filename,
     defaultColumns: [fields.filename, fields.updatedAt],
     hidden: shownOnlyToAdmin,
   },

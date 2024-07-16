@@ -31,6 +31,7 @@ export const Audios = buildCollectionConfig({
   admin: {
     group: CollectionGroups.Media,
     preview: ({ id }) => `${process.env.PAYLOAD_PUBLIC_FRONTEND_BASE_URL}/en/audios/${id}`,
+    useAsTitle: fields.filename,
     defaultColumns: [
       fields.filename,
       fields.thumbnail,

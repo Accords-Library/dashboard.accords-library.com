@@ -40,6 +40,7 @@ export const Videos = buildCollectionConfig({
   labels: { singular: "Video", plural: "Videos" },
   defaultSort: fields.filename,
   admin: {
+    useAsTitle: fields.filename,
     group: CollectionGroups.Media,
     preview: ({ id }) => `${process.env.PAYLOAD_PUBLIC_FRONTEND_BASE_URL}/en/videos/${id}`,
     defaultColumns: [
