@@ -124,7 +124,7 @@ export const getAllSDKUrlsEndpoint: Endpoint = {
   },
 };
 
-export const getSDKUrlsForDocument = (collection: Collections, doc: any): string[] => {
+const getSDKUrlsForDocument = (collection: Collections, doc: any): string[] => {
   switch (collection) {
     case Collections.WebsiteConfig:
       return [getSDKEndpoint.getConfigEndpoint()];

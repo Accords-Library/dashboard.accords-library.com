@@ -20,8 +20,8 @@ import {
 import {
   convertAttributesToEndpointAttributes,
   convertImageToEndpointPayloadImage,
+  convertRelationshipsToEndpointRelations,
   convertScanToEndpointScanImage,
-  convertSourceToEndpointSource,
   getDomainFromUrl,
 } from "../../../utils/endpoints";
 import { convertAudioToEndpointAudioPreview } from "../../Audios/endpoints/getByID";
@@ -29,12 +29,13 @@ import { convertFileToEndpointFilePreview } from "../../Files/endpoints/getByID"
 import { convertPageToEndpointPagePreview } from "../../Pages/endpoints/getBySlugEndpoint";
 import { convertRecorderToEndpointRecorderPreview } from "../../Recorders/endpoints/getByID";
 import { convertVideoToEndpointVideoPreview } from "../../Videos/endpoints/getByID";
+import { findIncomingRelationships } from "payloadcms-relationships";
 
 export const getBySlugEndpoint = createGetByEndpoint({
   collection: Collections.Collectibles,
   attribute: "slug",
   depth: 3,
-  handler: (collectible) => convertCollectibleToEndpointCollectible(collectible),
+  handler: async (collectible) => await convertCollectibleToEndpointCollectible(collectible),
 });
 
 export const convertCollectibleToEndpointCollectiblePreview = ({
@@ -64,8 +65,11 @@ export const convertCollectibleToEndpointCollectiblePreview = ({
   ...handlePrice(price, priceEnabled),
 });
 
-const convertCollectibleToEndpointCollectible = (collectible: Collectible): EndpointCollectible => {
+const convertCollectibleToEndpointCollectible = async (
+  collectible: Collectible
+): Promise<EndpointCollectible> => {
   const {
+    id,
     nature,
     urls,
     subitems,
@@ -80,8 +84,6 @@ const convertCollectibleToEndpointCollectible = (collectible: Collectible): Endp
     weightEnabled,
     pageInfo,
     pageInfoEnabled,
-    parentItems,
-    folders,
     backgroundImage,
     translations,
     scans: rawScans,
@@ -128,7 +130,9 @@ const convertCollectibleToEndpointCollectible = (collectible: Collectible): Endp
     ...(isPayloadType(updatedBy)
       ? { updatedBy: convertRecorderToEndpointRecorderPreview(updatedBy) }
       : {}),
-    parentPages: convertSourceToEndpointSource({ collectibles: parentItems, folders }),
+    backlinks: convertRelationshipsToEndpointRelations(
+      await findIncomingRelationships(Collections.Collectibles, id)
+    ),
   };
 };
 

@@ -6,7 +6,11 @@ import { convertCreditsToEndpointCredits, getDomainFromUrl } from "../../../util
 import { convertCollectibleToEndpointCollectiblePreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
 import { convertPageToEndpointPagePreview } from "../../Pages/endpoints/getBySlugEndpoint";
 import { Collections } from "../../../shared/payload/constants";
-import { EndpointChronologyEvent, EndpointSource } from "../../../shared/payload/endpoint-types";
+import {
+  EndpointChronologyEvent,
+  EndpointCollectibleRelationRange,
+  EndpointRelation,
+} from "../../../shared/payload/endpoint-types";
 
 export const getAllEndpoint: CollectionEndpoint = {
   method: "get",
@@ -48,13 +52,13 @@ export const getAllEndpoint: CollectionEndpoint = {
         if (aDay !== bDay) return aDay - bDay;
         return 0;
       })
-      .map<EndpointChronologyEvent>(eventToEndpointEvent);
+      .map<EndpointChronologyEvent>(convertEventToEndpointEvent);
 
     res.status(200).json(events);
   },
 };
 
-export const eventToEndpointEvent = ({
+export const convertEventToEndpointEvent = ({
   date: { year, day, month },
   events,
   id,
@@ -80,24 +84,26 @@ export const eventToEndpointEvent = ({
   })),
 });
 
-const handleSources = (sources: ChronologyEvent["events"][number]["sources"]): EndpointSource[] => {
+const handleSources = (
+  sources: ChronologyEvent["events"][number]["sources"]
+): EndpointRelation[] => {
   return (
-    sources?.flatMap<EndpointSource>((source) => {
+    sources?.flatMap<EndpointRelation>((source) => {
       switch (source.blockType) {
         case "collectibleBlock":
           const range = handleRange(source.range);
           if (!isPayloadType(source.collectible)) return [];
           return {
-            type: "collectible",
-            collectible: convertCollectibleToEndpointCollectiblePreview(source.collectible),
+            type: Collections.Collectibles,
+            value: convertCollectibleToEndpointCollectiblePreview(source.collectible),
             ...(isDefined(range) ? { range } : {}),
           };
 
         case "pageBlock":
           if (!isPayloadType(source.page)) return [];
           return {
-            type: "page",
-            page: convertPageToEndpointPagePreview(source.page),
+            type: Collections.Pages,
+            value: convertPageToEndpointPagePreview(source.page),
           };
 
         case "urlBlock":
@@ -113,7 +119,7 @@ const handleSources = (sources: ChronologyEvent["events"][number]["sources"]): E
 
 const handleRange = (
   rawRange: CollectibleBlock["range"]
-): Extract<EndpointSource, { type: "collectible" }>["range"] => {
+): EndpointCollectibleRelationRange | undefined => {
   const range = rawRange?.[0];
 
   switch (range?.blockType) {

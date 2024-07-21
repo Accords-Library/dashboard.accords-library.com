@@ -1,18 +1,22 @@
 import { convertAudioToEndpointAudioPreview } from "../collections/Audios/endpoints/getByID";
+import { convertEventToEndpointEvent } from "../collections/ChronologyEvents/endpoints/getAllEndpoint";
+import { convertCollectibleToEndpointCollectiblePreview } from "../collections/Collectibles/endpoints/getBySlugEndpoint";
+import { convertFileToEndpointFilePreview } from "../collections/Files/endpoints/getByID";
+import { convertFolderToEndpointFolderPreview } from "../collections/Folders/endpoints/getBySlugEndpoint";
 import { convertImageToEndpointImagePreview } from "../collections/Images/endpoints/getByID";
+import { convertPageToEndpointPagePreview } from "../collections/Pages/endpoints/getBySlugEndpoint";
 import { convertRecorderToEndpointRecorderPreview } from "../collections/Recorders/endpoints/getByID";
 import { convertVideoToEndpointVideoPreview } from "../collections/Videos/endpoints/getByID";
-import { AttributeTypes } from "../shared/payload/constants";
+import { AttributeTypes, Collections } from "../shared/payload/constants";
 import {
   EndpointTag,
-  EndpointSource,
-  EndpointSourcePreview,
   EndpointRole,
   EndpointCredit,
   EndpointAttribute,
   PayloadImage,
   EndpointScanImage,
   EndpointPayloadImage,
+  EndpointRelation,
 } from "../shared/payload/endpoint-types";
 import {
   RichTextContent,
@@ -29,14 +33,13 @@ import {
 } from "../shared/payload/rich-text";
 import {
   Audio,
-  Collectible,
   Credits,
   CreditsRole,
-  Folder,
   Image,
   Language,
   MediaThumbnail,
   NumberBlock,
+  Relationship,
   Scan,
   Tag,
   TagsBlock,
@@ -47,12 +50,11 @@ import {
   isAudio,
   isDefined,
   isEmpty,
+  isFile,
   isImage,
-  isNotEmpty,
   isPayloadArrayType,
   isPayloadImage,
   isPayloadType,
-  isPublished,
   isVideo,
 } from "./asserts";
 
@@ -139,86 +141,64 @@ export const convertRTCToEndpointRTC = (
   };
 };
 
-// TODO: Handle URL sources
-export const convertSourceToEndpointSource = ({
-  collectibles,
-  folders,
-  gallery,
-  scans,
-}: {
-  collectibles?: (string | Collectible)[] | null | undefined;
-  scans?: (string | Collectible)[] | null | undefined;
-  gallery?: (string | Collectible)[] | null | undefined;
-  folders?: (string | Folder)[] | null | undefined;
-}): EndpointSource[] => {
-  const result: EndpointSource[] = [];
+export const convertRelationshipsToEndpointRelations = (
+  relationships: Relationship["incomingRelations"] | Relationship["outgoingRelations"]
+): EndpointRelation[] =>
+  relationships?.flatMap<EndpointRelation>(({ relationTo, value }) => {
+    if (!isPayloadType(value)) return [];
+    switch (relationTo) {
+      case Collections.Folders:
+        return { type: Collections.Folders, value: convertFolderToEndpointFolderPreview(value) };
 
-  const convertFolderToEndpointSourcePreview = ({
-    id,
-    slug,
-    translations,
-  }: Folder): EndpointSourcePreview => ({
-    id,
-    slug,
-    translations: translations.map(({ language, name }) => ({
-      language: isPayloadType(language) ? language.id : language,
-      title: name,
-    })),
-  });
+      case Collections.Pages:
+        return { type: Collections.Pages, value: convertPageToEndpointPagePreview(value) };
 
-  const convertCollectibleToEndpointSourcePreview = ({
-    id,
-    slug,
-    translations,
-  }: Collectible): EndpointSourcePreview => ({
-    id,
-    slug,
-    translations: translations.map(({ language, title, pretitle, subtitle }) => ({
-      language: isPayloadType(language) ? language.id : language,
-      title,
-      ...(isNotEmpty(pretitle) ? { pretitle } : {}),
-      ...(isNotEmpty(subtitle) ? { subtitle } : {}),
-    })),
-  });
+      case Collections.Collectibles:
+        return {
+          type: Collections.Collectibles,
+          value: convertCollectibleToEndpointCollectiblePreview(value),
+        };
 
-  if (collectibles && isPayloadArrayType(collectibles)) {
-    collectibles.filter(isPublished).forEach((collectible) => {
-      result.push({
-        type: "collectible",
-        collectible: convertCollectibleToEndpointSourcePreview(collectible),
-      });
-    });
-  }
+      case Collections.Images:
+        if (!isImage(value)) return [];
+        return { type: Collections.Images, value: convertImageToEndpointImagePreview(value) };
 
-  if (scans && isPayloadArrayType(scans)) {
-    scans.filter(isPublished).forEach((collectible) => {
-      result.push({
-        type: "scans",
-        collectible: convertCollectibleToEndpointSourcePreview(collectible),
-      });
-    });
-  }
+      case Collections.Videos:
+        if (!isVideo(value)) return [];
+        return { type: Collections.Videos, value: convertVideoToEndpointVideoPreview(value) };
 
-  if (gallery && isPayloadArrayType(gallery)) {
-    gallery.filter(isPublished).forEach((collectible) => {
-      result.push({
-        type: "gallery",
-        collectible: convertCollectibleToEndpointSourcePreview(collectible),
-      });
-    });
-  }
+      case Collections.Audios:
+        if (!isAudio(value)) return [];
+        return { type: Collections.Audios, value: convertAudioToEndpointAudioPreview(value) };
 
-  if (folders && isPayloadArrayType(folders)) {
-    folders.forEach((folder) => {
-      result.push({
-        type: "folder",
-        folder: convertFolderToEndpointSourcePreview(folder),
-      });
-    });
-  }
+      case Collections.Files:
+        if (!isFile(value)) return [];
+        return { type: Collections.Files, value: convertFileToEndpointFilePreview(value) };
 
-  return result;
-};
+      case Collections.Recorders:
+        return {
+          type: Collections.Recorders,
+          value: convertRecorderToEndpointRecorderPreview(value),
+        };
+
+      case Collections.ChronologyEvents:
+        return { type: Collections.ChronologyEvents, value: convertEventToEndpointEvent(value) };
+
+      case Collections.MediaThumbnails:
+      case Collections.VideosSubtitles:
+      case Collections.VideosChannels:
+      case Collections.Scans:
+      case Collections.Tags:
+      case Collections.Attributes:
+      case Collections.CreditsRole:
+      case Collections.Languages:
+      case Collections.Currencies:
+      case Collections.Wordings:
+      case Collections.GenericContents:
+      default:
+        return [];
+    }
+  }) ?? [];
 
 export const getDomainFromUrl = (url: string): string => {
   const urlObject = new URL(url);

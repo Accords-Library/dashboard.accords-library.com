@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import path from "path";
 import payload from "payload";
-import { isDefined, isUndefined } from "./utils/asserts";
+import { isUndefined } from "./utils/asserts";
 import { Collections, RecordersRoles } from "./shared/payload/constants";
 
 const app = express();
@@ -28,29 +28,30 @@ const start = async () => {
     express: app,
     onInit: async () => {
       payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
-      const recorders = await payload.find({ collection: Collections.Recorders });
 
-      // If no recorders, we seed some initial data
-      if (
-        isDefined(process.env.SEEDING_ADMIN_EMAIL) &&
-        isDefined(process.env.SEEDING_ADMIN_PASSWORD) &&
-        isDefined(process.env.SEEDING_ADMIN_USERNAME)
-      ) {
-        if (recorders.docs.length === 0) {
-          payload.logger.info("Seeding some initial data");
+      const seedFirstUser = async () => {
+        const recorders = await payload.find({ collection: Collections.Recorders });
 
-          await payload.create({
-            collection: Collections.Recorders,
-            data: {
-              email: process.env.SEEDING_ADMIN_EMAIL,
-              password: process.env.SEEDING_ADMIN_PASSWORD,
-              username: process.env.SEEDING_ADMIN_USERNAME,
-              role: [RecordersRoles.Admin, RecordersRoles.Api],
-              anonymize: false,
-            },
-          });
-        }
-      }
+        if (recorders.docs.length > 0) return;
+        if (isUndefined(process.env.SEEDING_ADMIN_EMAIL)) return;
+        if (isUndefined(process.env.SEEDING_ADMIN_PASSWORD)) return;
+        if (isUndefined(process.env.SEEDING_ADMIN_USERNAME)) return;
+
+        payload.logger.info("Seeding your first user");
+
+        await payload.create({
+          collection: Collections.Recorders,
+          data: {
+            email: process.env.SEEDING_ADMIN_EMAIL,
+            password: process.env.SEEDING_ADMIN_PASSWORD,
+            username: process.env.SEEDING_ADMIN_USERNAME,
+            role: [RecordersRoles.Admin, RecordersRoles.Api],
+            anonymize: false,
+          },
+        });
+      };
+
+      await seedFirstUser();
     },
   });
 

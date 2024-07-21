@@ -6,6 +6,7 @@ import {
   convertAttributesToEndpointAttributes,
   convertCreditsToEndpointCredits,
   convertRTCToEndpointRTC,
+  convertRelationshipsToEndpointRelations,
   convertSizesToPayloadImages,
   getLanguageId,
 } from "../../../utils/endpoints";
@@ -15,6 +16,7 @@ import {
   EndpointImagePreview,
   EndpointImage,
 } from "../../../shared/payload/endpoint-types";
+import { findIncomingRelationships } from "payloadcms-relationships";
 
 export const getByID: CollectionEndpoint = {
   method: "get",
@@ -44,7 +46,7 @@ export const getByID: CollectionEndpoint = {
         return res.sendStatus(404);
       }
 
-      return res.status(200).json(convertImageToEndpointImage(result));
+      return res.status(200).json(await convertImageToEndpointImage(result));
     } catch {
       return res.sendStatus(404);
     }
@@ -93,8 +95,10 @@ export const convertImageToEndpointImagePreview = ({
   ...(isPayloadImage(sizes?.og) ? { openGraph: sizes.og } : {}),
 });
 
-export const convertImageToEndpointImage = (image: Image & PayloadImage): EndpointImage => {
-  const { translations, createdAt, updatedAt, filesize, credits } = image;
+export const convertImageToEndpointImage = async (
+  image: Image & PayloadImage
+): Promise<EndpointImage> => {
+  const { translations, createdAt, updatedAt, filesize, credits, id } = image;
   return {
     ...convertImageToEndpointImagePreview(image),
     createdAt,
@@ -109,5 +113,8 @@ export const convertImageToEndpointImage = (image: Image & PayloadImage): Endpoi
         ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
       })) ?? [],
     credits: convertCreditsToEndpointCredits(credits),
+    backlinks: convertRelationshipsToEndpointRelations(
+      await findIncomingRelationships(Collections.Images, id)
+    ),
   };
 };

@@ -7,6 +7,7 @@ import {
   convertCreditsToEndpointCredits,
   convertMediaThumbnailToEndpointPayloadImage,
   convertRTCToEndpointRTC,
+  convertRelationshipsToEndpointRelations,
   getLanguageId,
 } from "../../../utils/endpoints";
 import { Collections } from "../../../shared/payload/constants";
@@ -15,6 +16,7 @@ import {
   EndpointFilePreview,
   EndpointFile,
 } from "../../../shared/payload/endpoint-types";
+import { findIncomingRelationships } from "payloadcms-relationships";
 
 export const getByID: CollectionEndpoint = {
   method: "get",
@@ -44,7 +46,7 @@ export const getByID: CollectionEndpoint = {
         return res.sendStatus(404);
       }
 
-      return res.status(200).json(convertFileToEndpointFile(result));
+      return res.status(200).json(await convertFileToEndpointFile(result));
     } catch {
       return res.sendStatus(404);
     }
@@ -79,8 +81,8 @@ export const convertFileToEndpointFilePreview = ({
     : {}),
 });
 
-const convertFileToEndpointFile = (file: File & PayloadMedia): EndpointFile => {
-  const { translations, createdAt, updatedAt, filesize, credits } = file;
+const convertFileToEndpointFile = async (file: File & PayloadMedia): Promise<EndpointFile> => {
+  const { translations, createdAt, updatedAt, filesize, credits, id } = file;
 
   return {
     ...convertFileToEndpointFilePreview(file),
@@ -96,5 +98,8 @@ const convertFileToEndpointFile = (file: File & PayloadMedia): EndpointFile => {
         ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
       })) ?? [],
     credits: convertCreditsToEndpointCredits(credits),
+    backlinks: convertRelationshipsToEndpointRelations(
+      await findIncomingRelationships(Collections.Files, id)
+    ),
   };
 };

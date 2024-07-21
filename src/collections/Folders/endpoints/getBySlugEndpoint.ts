@@ -1,4 +1,5 @@
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
+import { findIncomingRelationships } from "payloadcms-relationships";
 import { Collections } from "../../../shared/payload/constants";
 import { EndpointFolderPreview, EndpointFolder } from "../../../shared/payload/endpoint-types";
 import { Folder, Language } from "../../../types/collections";
@@ -12,7 +13,7 @@ import {
   isPublished,
   isVideo,
 } from "../../../utils/asserts";
-import { convertSourceToEndpointSource, getLanguageId } from "../../../utils/endpoints";
+import { convertRelationshipsToEndpointRelations, getLanguageId } from "../../../utils/endpoints";
 import { convertAudioToEndpointAudioPreview } from "../../Audios/endpoints/getByID";
 import { convertCollectibleToEndpointCollectiblePreview } from "../../Collectibles/endpoints/getBySlugEndpoint";
 import { convertFileToEndpointFilePreview } from "../../Files/endpoints/getByID";
@@ -43,8 +44,8 @@ export const convertFolderToEndpointFolderPreview = ({
     })) ?? [],
 });
 
-const convertFolderToEndpointFolder = (folder: Folder): EndpointFolder => {
-  const { translations, sections, files, parentFolders } = folder;
+const convertFolderToEndpointFolder = async (folder: Folder): Promise<EndpointFolder> => {
+  const { translations, sections, files, id } = folder;
 
   return {
     ...convertFolderToEndpointFolderPreview(folder),
@@ -116,7 +117,9 @@ const convertFolderToEndpointFolder = (folder: Folder): EndpointFolder => {
             return [];
         }
       }) ?? [],
-    parentPages: convertSourceToEndpointSource({ folders: parentFolders }),
+    backlinks: convertRelationshipsToEndpointRelations(
+      await findIncomingRelationships(Collections.Folders, id)
+    ),
   };
 };
 

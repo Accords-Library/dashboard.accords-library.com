@@ -1,5 +1,4 @@
 import { CollectionConfig } from "payload/types";
-import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { rowField } from "../../fields/rowField/rowField";
 import { buildCollectionConfig } from "../../utils/collectionConfig";
 import { Collections, CollectionGroups } from "../../shared/payload/constants";
@@ -31,11 +30,5 @@ export const VideosChannels: CollectionConfig = buildCollectionConfig({
       { name: fields.title, type: "text", required: true },
       { name: fields.subscribers, type: "number", required: true },
     ]),
-    backPropagationField({
-      name: fields.videos,
-      relationTo: Collections.Videos,
-      hasMany: true,
-      where: ({ id }) => ({ "platform.channel": { equals: id } }),
-    }),
   ],
 });

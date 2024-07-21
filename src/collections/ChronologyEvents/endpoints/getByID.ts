@@ -1,6 +1,6 @@
 import payload from "payload";
 import { CollectionEndpoint } from "../../../types/payload";
-import { eventToEndpointEvent } from "./getAllEndpoint";
+import { convertEventToEndpointEvent } from "./getAllEndpoint";
 import { Collections } from "../../../shared/payload/constants";
 
 export const getByID: CollectionEndpoint = {
@@ -27,7 +27,7 @@ export const getByID: CollectionEndpoint = {
         id: req.params.id,
       });
 
-      return res.status(200).json(eventToEndpointEvent(result));
+      return res.status(200).json(convertEventToEndpointEvent(result));
     } catch {
       return res.sendStatus(404);
     }

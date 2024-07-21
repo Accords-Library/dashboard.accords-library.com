@@ -15,6 +15,7 @@ import {
   convertCreditsToEndpointCredits,
   convertMediaThumbnailToEndpointPayloadImage,
   convertRTCToEndpointRTC,
+  convertRelationshipsToEndpointRelations,
   getLanguageId,
 } from "../../../utils/endpoints";
 import { Collections } from "../../../shared/payload/constants";
@@ -23,6 +24,7 @@ import {
   EndpointVideoPreview,
   EndpointVideo,
 } from "../../../shared/payload/endpoint-types";
+import { findIncomingRelationships } from "payloadcms-relationships";
 
 export const getByID: CollectionEndpoint = {
   method: "get",
@@ -52,7 +54,7 @@ export const getByID: CollectionEndpoint = {
         return res.sendStatus(404);
       }
 
-      return res.status(200).json(convertVideoToEndpointVideo(result));
+      return res.status(200).json(await convertVideoToEndpointVideo(result));
     } catch {
       return res.sendStatus(404);
     }
@@ -98,8 +100,8 @@ export const convertVideoToEndpointVideoPreview = ({
     }) ?? [],
 });
 
-const convertVideoToEndpointVideo = (video: Video & PayloadMedia): EndpointVideo => {
-  const { translations, createdAt, updatedAt, filesize, platform, platformEnabled, credits } =
+const convertVideoToEndpointVideo = async (video: Video & PayloadMedia): Promise<EndpointVideo> => {
+  const { translations, createdAt, updatedAt, filesize, platform, platformEnabled, credits, id } =
     video;
 
   return {
@@ -125,5 +127,8 @@ const convertVideoToEndpointVideo = (video: Video & PayloadMedia): EndpointVideo
         }
       : {}),
     credits: convertCreditsToEndpointCredits(credits),
+    backlinks: convertRelationshipsToEndpointRelations(
+      await findIncomingRelationships(Collections.Videos, id)
+    ),
   };
 };

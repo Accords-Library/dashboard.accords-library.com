@@ -2,12 +2,10 @@ import payload from "payload";
 import { Collectible, Scan } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isDefined, isNotEmpty, isPayloadType, isScan } from "../../../utils/asserts";
-import {
-  convertScanToEndpointScanImage,
-  convertSourceToEndpointSource,
-} from "../../../utils/endpoints";
+import { convertScanToEndpointScanImage } from "../../../utils/endpoints";
 import { Collections } from "../../../shared/payload/constants";
 import { EndpointCollectibleScanPage } from "../../../shared/payload/endpoint-types";
+import { convertCollectibleToEndpointCollectiblePreview } from "./getBySlugEndpoint";
 
 export const getBySlugEndpointScanPage: CollectionEndpoint = {
   path: "/slug/:slug/scans/:index",
@@ -54,7 +52,6 @@ export const getBySlugEndpointScanPage: CollectionEndpoint = {
 
     const scanPage: EndpointCollectibleScanPage = {
       image: convertScanToEndpointScanImage(scan, index),
-      parentPages: convertSourceToEndpointSource({ scans: [collectible] }),
       slug,
       translations:
         collectible.translations?.map(({ language, title, description, pretitle, subtitle }) => ({
@@ -66,6 +63,12 @@ export const getBySlugEndpointScanPage: CollectionEndpoint = {
         })) ?? [],
       ...(isDefined(previousIndex) ? { previousIndex } : {}),
       ...(isDefined(nextIndex) ? { nextIndex } : {}),
+      backlinks: [
+        {
+          type: Collections.Collectibles,
+          value: convertCollectibleToEndpointCollectiblePreview(collectible),
+        },
+      ],
     };
 
     res.status(200).send(scanPage);

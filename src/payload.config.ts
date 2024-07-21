@@ -31,6 +31,9 @@ import { getAllIds } from "./endpoints/getAllIdsEndpoint";
 import { getAllSDKUrlsEndpoint } from "./endpoints/getAllSDKUrlsEndpoint";
 import { createEditor } from "./utils/editor";
 import { Collections } from "./shared/payload/constants";
+import { relationshipsPlugin } from "payloadcms-relationships";
+import { shownOnlyToAdmin } from "./accesses/collections/shownOnlyToAdmin";
+import { mustBeAdmin } from "./accesses/fields/mustBeAdmin";
 
 const configuredSftpAdapter = sftpAdapter({
   connectOptions: {
@@ -96,6 +99,19 @@ export default buildConfig({
     skip: () => true,
   },
   plugins: [
+    relationshipsPlugin({
+      collectionConfig: {
+        admin: {
+          hidden: shownOnlyToAdmin,
+        },
+        access: {
+          update: mustBeAdmin,
+          create: mustBeAdmin,
+          delete: mustBeAdmin,
+        },
+      },
+    }),
+
     cloudStorage({
       collections: {
         [Collections.Videos]: {

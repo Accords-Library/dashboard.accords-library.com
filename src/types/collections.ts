@@ -40,6 +40,7 @@ export interface Config {
     currencies: Currency;
     wordings: Wording;
     "generic-contents": GenericContent;
+    relationships: Relationship;
     "payload-preferences": PayloadPreference;
     "payload-migrations": PayloadMigration;
   };
@@ -96,8 +97,6 @@ export interface Page {
     credits?: Credits;
     id?: string | null;
   }[];
-  folders?: (string | Folder)[] | null;
-  collectibles?: (string | Collectible)[] | null;
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
@@ -354,79 +353,6 @@ export interface Recorder {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "folders".
- */
-export interface Folder {
-  id: string;
-  slug: string;
-  icon?: string | null;
-  parentFolders?: (string | Folder)[] | null;
-  translations: {
-    language: string | Language;
-    name: string;
-    description?: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ("ltr" | "rtl") | null;
-        format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    id?: string | null;
-  }[];
-  sections?:
-    | {
-        translations?:
-          | {
-              language: string | Language;
-              name: string;
-              id?: string | null;
-            }[]
-          | null;
-        subfolders?: (string | Folder)[] | null;
-        id?: string | null;
-      }[]
-    | null;
-  files?:
-    | (
-        | {
-            relationTo: "collectibles";
-            value: string | Collectible;
-          }
-        | {
-            relationTo: "pages";
-            value: string | Page;
-          }
-        | {
-            relationTo: "videos";
-            value: string | Video;
-          }
-        | {
-            relationTo: "images";
-            value: string | Image;
-          }
-        | {
-            relationTo: "audios";
-            value: string | Audio;
-          }
-        | {
-            relationTo: "files";
-            value: string | File;
-          }
-      )[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collectibles".
  */
 export interface Collectible {
@@ -608,8 +534,6 @@ export interface Collectible {
         id?: string | null;
       }[]
     | null;
-  folders?: (string | Folder)[] | null;
-  parentItems?: (string | Collectible)[] | null;
   updatedBy: string | Recorder;
   updatedAt: string;
   createdAt: string;
@@ -951,7 +875,78 @@ export interface VideosChannel {
   url: string;
   title: string;
   subscribers: number;
-  videos?: (string | Video)[] | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "folders".
+ */
+export interface Folder {
+  id: string;
+  slug: string;
+  icon?: string | null;
+  translations: {
+    language: string | Language;
+    name: string;
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ("ltr" | "rtl") | null;
+        format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    id?: string | null;
+  }[];
+  sections?:
+    | {
+        translations?:
+          | {
+              language: string | Language;
+              name: string;
+              id?: string | null;
+            }[]
+          | null;
+        subfolders?: (string | Folder)[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  files?:
+    | (
+        | {
+            relationTo: "collectibles";
+            value: string | Collectible;
+          }
+        | {
+            relationTo: "pages";
+            value: string | Page;
+          }
+        | {
+            relationTo: "videos";
+            value: string | Video;
+          }
+        | {
+            relationTo: "images";
+            value: string | Image;
+          }
+        | {
+            relationTo: "audios";
+            value: string | Audio;
+          }
+        | {
+            relationTo: "files";
+            value: string | File;
+          }
+      )[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1081,6 +1076,260 @@ export interface Wording {
   }[];
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "relationships".
+ */
+export interface Relationship {
+  id: string;
+  document:
+    | {
+        relationTo: "pages";
+        value: string | Page;
+      }
+    | {
+        relationTo: "collectibles";
+        value: string | Collectible;
+      }
+    | {
+        relationTo: "folders";
+        value: string | Folder;
+      }
+    | {
+        relationTo: "chronology-events";
+        value: string | ChronologyEvent;
+      }
+    | {
+        relationTo: "images";
+        value: string | Image;
+      }
+    | {
+        relationTo: "audios";
+        value: string | Audio;
+      }
+    | {
+        relationTo: "media-thumbnails";
+        value: string | MediaThumbnail;
+      }
+    | {
+        relationTo: "videos";
+        value: string | Video;
+      }
+    | {
+        relationTo: "videos-subtitles";
+        value: string | VideoSubtitle;
+      }
+    | {
+        relationTo: "videos-channels";
+        value: string | VideosChannel;
+      }
+    | {
+        relationTo: "files";
+        value: string | File;
+      }
+    | {
+        relationTo: "scans";
+        value: string | Scan;
+      }
+    | {
+        relationTo: "tags";
+        value: string | Tag;
+      }
+    | {
+        relationTo: "attributes";
+        value: string | Attribute;
+      }
+    | {
+        relationTo: "credits-roles";
+        value: string | CreditsRole;
+      }
+    | {
+        relationTo: "recorders";
+        value: string | Recorder;
+      }
+    | {
+        relationTo: "languages";
+        value: string | Language;
+      }
+    | {
+        relationTo: "currencies";
+        value: string | Currency;
+      }
+    | {
+        relationTo: "wordings";
+        value: string | Wording;
+      }
+    | {
+        relationTo: "generic-contents";
+        value: string | GenericContent;
+      };
+  incomingRelations?:
+    | (
+        | {
+            relationTo: "pages";
+            value: string | Page;
+          }
+        | {
+            relationTo: "collectibles";
+            value: string | Collectible;
+          }
+        | {
+            relationTo: "folders";
+            value: string | Folder;
+          }
+        | {
+            relationTo: "chronology-events";
+            value: string | ChronologyEvent;
+          }
+        | {
+            relationTo: "images";
+            value: string | Image;
+          }
+        | {
+            relationTo: "audios";
+            value: string | Audio;
+          }
+        | {
+            relationTo: "media-thumbnails";
+            value: string | MediaThumbnail;
+          }
+        | {
+            relationTo: "videos";
+            value: string | Video;
+          }
+        | {
+            relationTo: "videos-subtitles";
+            value: string | VideoSubtitle;
+          }
+        | {
+            relationTo: "videos-channels";
+            value: string | VideosChannel;
+          }
+        | {
+            relationTo: "files";
+            value: string | File;
+          }
+        | {
+            relationTo: "scans";
+            value: string | Scan;
+          }
+        | {
+            relationTo: "tags";
+            value: string | Tag;
+          }
+        | {
+            relationTo: "attributes";
+            value: string | Attribute;
+          }
+        | {
+            relationTo: "credits-roles";
+            value: string | CreditsRole;
+          }
+        | {
+            relationTo: "recorders";
+            value: string | Recorder;
+          }
+        | {
+            relationTo: "languages";
+            value: string | Language;
+          }
+        | {
+            relationTo: "currencies";
+            value: string | Currency;
+          }
+        | {
+            relationTo: "wordings";
+            value: string | Wording;
+          }
+        | {
+            relationTo: "generic-contents";
+            value: string | GenericContent;
+          }
+      )[]
+    | null;
+  outgoingRelations: (
+    | {
+        relationTo: "pages";
+        value: string | Page;
+      }
+    | {
+        relationTo: "collectibles";
+        value: string | Collectible;
+      }
+    | {
+        relationTo: "folders";
+        value: string | Folder;
+      }
+    | {
+        relationTo: "chronology-events";
+        value: string | ChronologyEvent;
+      }
+    | {
+        relationTo: "images";
+        value: string | Image;
+      }
+    | {
+        relationTo: "audios";
+        value: string | Audio;
+      }
+    | {
+        relationTo: "media-thumbnails";
+        value: string | MediaThumbnail;
+      }
+    | {
+        relationTo: "videos";
+        value: string | Video;
+      }
+    | {
+        relationTo: "videos-subtitles";
+        value: string | VideoSubtitle;
+      }
+    | {
+        relationTo: "videos-channels";
+        value: string | VideosChannel;
+      }
+    | {
+        relationTo: "files";
+        value: string | File;
+      }
+    | {
+        relationTo: "scans";
+        value: string | Scan;
+      }
+    | {
+        relationTo: "tags";
+        value: string | Tag;
+      }
+    | {
+        relationTo: "attributes";
+        value: string | Attribute;
+      }
+    | {
+        relationTo: "credits-roles";
+        value: string | CreditsRole;
+      }
+    | {
+        relationTo: "recorders";
+        value: string | Recorder;
+      }
+    | {
+        relationTo: "languages";
+        value: string | Language;
+      }
+    | {
+        relationTo: "currencies";
+        value: string | Currency;
+      }
+    | {
+        relationTo: "wordings";
+        value: string | Wording;
+      }
+    | {
+        relationTo: "generic-contents";
+        value: string | GenericContent;
+      }
+  )[];
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

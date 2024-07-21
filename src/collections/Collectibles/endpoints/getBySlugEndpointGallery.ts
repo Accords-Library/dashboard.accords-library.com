@@ -2,10 +2,8 @@ import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
 import { Collections } from "../../../shared/payload/constants";
 import { EndpointCollectibleGallery } from "../../../shared/payload/endpoint-types";
 import { isImage, isNotEmpty, isPayloadType } from "../../../utils/asserts";
-import {
-  convertImageToEndpointPayloadImage,
-  convertSourceToEndpointSource,
-} from "../../../utils/endpoints";
+import { convertImageToEndpointPayloadImage } from "../../../utils/endpoints";
+import { convertCollectibleToEndpointCollectiblePreview } from "./getBySlugEndpoint";
 
 export const getBySlugEndpointGallery = createGetByEndpoint({
   collection: Collections.Collectibles,
@@ -29,7 +27,12 @@ export const getBySlugEndpointGallery = createGetByEndpoint({
         gallery?.flatMap(({ image }) =>
           isImage(image) ? convertImageToEndpointPayloadImage(image) : []
         ) ?? [],
-      parentPages: convertSourceToEndpointSource({ collectibles: [collectible] }),
+      backlinks: [
+        {
+          type: Collections.Collectibles,
+          value: convertCollectibleToEndpointCollectiblePreview(collectible),
+        },
+      ],
     };
   },
 });

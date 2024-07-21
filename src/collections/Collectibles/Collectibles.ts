@@ -1,7 +1,5 @@
 import { RowLabelArgs } from "payload/dist/admin/components/forms/RowLabel/types";
-import { Where } from "payload/types";
 import { attributesField } from "../../fields/attributesField/attributesField";
-import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { componentField } from "../../fields/componentField/componentField";
 import { creditsField } from "../../fields/creditsField/creditsField";
 import { imageField } from "../../fields/imageField/imageField";
@@ -11,8 +9,6 @@ import { translatedFields } from "../../fields/translatedFields/translatedFields
 import { beforeDuplicateAddCopyTo } from "../../hooks/beforeDuplicateAddCopyTo";
 import { beforeDuplicatePiping } from "../../hooks/beforeDuplicatePiping";
 import { beforeDuplicateUnpublish } from "../../hooks/beforeDuplicateUnpublish";
-import { Collectible } from "../../types/collections";
-import { isPayloadType } from "../../utils/asserts";
 import { createEditor } from "../../utils/editor";
 import { buildVersionedCollectionConfig } from "../../utils/versionedCollectionConfig";
 import { RowLabel } from "./components/RowLabel";
@@ -695,42 +691,9 @@ export const Collectibles = buildVersionedCollectionConfig({
                 },
               ],
             },
-
-            rowField([
-              backPropagationField({
-                name: fields.folders,
-                relationTo: Collections.Folders,
-                hasMany: true,
-                where: ({ id }) => ({
-                  and: [
-                    { "files.value": { equals: id } },
-                    { "files.relationTo": { equals: Collections.Collectibles } },
-                  ] as Where[],
-                }),
-                admin: {
-                  description: `You can go to the "Folders" collection to include this collectible in a folder.`,
-                },
-              }),
-              backPropagationField({
-                name: fields.parentItems,
-                relationTo: Collections.Collectibles,
-                hasMany: true,
-                where: ({ id }) => ({ [fields.subitems]: { equals: id } }),
-              }),
-            ]),
           ],
         },
       ],
     },
   ],
-  custom: {
-    getBackPropagatedRelationships: ({ subitems, contents }: Collectible) => {
-      const result: string[] = [];
-      subitems?.forEach((subitem) => result.push(isPayloadType(subitem) ? subitem.id : subitem));
-      contents?.forEach(({ content: { relationTo, value } }) => {
-        if (relationTo === "pages") result.push(isPayloadType(value) ? value.id : value);
-      });
-      return result;
-    },
-  },
 });

@@ -2,10 +2,10 @@ import payload from "payload";
 import { Collectible, Image } from "../../../types/collections";
 import { CollectionEndpoint } from "../../../types/payload";
 import { isDefined, isImage, isNotEmpty, isPayloadType } from "../../../utils/asserts";
-import { convertSourceToEndpointSource } from "../../../utils/endpoints";
 import { convertImageToEndpointImage } from "../../Images/endpoints/getByID";
 import { Collections } from "../../../shared/payload/constants";
 import { EndpointCollectibleGalleryImage } from "../../../shared/payload/endpoint-types";
+import { convertCollectibleToEndpointCollectiblePreview } from "./getBySlugEndpoint";
 
 export const getBySlugEndpointGalleryImage: CollectionEndpoint = {
   path: "/slug/:slug/gallery/:index",
@@ -51,8 +51,7 @@ export const getBySlugEndpointGalleryImage: CollectionEndpoint = {
     const nextIndex = getNextIndex(index, collectible.gallery);
 
     const scanPage: EndpointCollectibleGalleryImage = {
-      image: convertImageToEndpointImage(image),
-      parentPages: convertSourceToEndpointSource({ gallery: [collectible] }),
+      image: await convertImageToEndpointImage(image),
       slug,
       translations:
         collectible.translations?.map(({ language, title, description, pretitle, subtitle }) => ({
@@ -64,6 +63,12 @@ export const getBySlugEndpointGalleryImage: CollectionEndpoint = {
         })) ?? [],
       ...(isDefined(previousIndex) ? { previousIndex } : {}),
       ...(isDefined(nextIndex) ? { nextIndex } : {}),
+      backlinks: [
+        {
+          type: Collections.Collectibles,
+          value: convertCollectibleToEndpointCollectiblePreview(collectible),
+        },
+      ],
     };
 
     res.status(200).send(scanPage);

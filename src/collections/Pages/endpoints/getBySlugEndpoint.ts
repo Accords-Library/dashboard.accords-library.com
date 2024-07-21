@@ -1,4 +1,5 @@
 import { createGetByEndpoint } from "../../../endpoints/createGetByEndpoint";
+import { findIncomingRelationships } from "payloadcms-relationships";
 import { Collections, BreakBlockType } from "../../../shared/payload/constants";
 import {
   EndpointPagePreview,
@@ -18,7 +19,7 @@ import {
   convertCreditsToEndpointCredits,
   convertImageToEndpointPayloadImage,
   convertRTCToEndpointRTC,
-  convertSourceToEndpointSource,
+  convertRelationshipsToEndpointRelations,
 } from "../../../utils/endpoints";
 import { convertRecorderToEndpointRecorderPreview } from "../../Recorders/endpoints/getByID";
 
@@ -49,8 +50,8 @@ export const convertPageToEndpointPagePreview = ({
   updatedAt,
 });
 
-const convertPageToEndpointPage = (page: Page): EndpointPage => {
-  const { translations, collectibles, folders, backgroundImage, createdAt, updatedBy } = page;
+const convertPageToEndpointPage = async (page: Page): Promise<EndpointPage> => {
+  const { translations, backgroundImage, createdAt, updatedBy, id } = page;
 
   return {
     ...convertPageToEndpointPagePreview(page),
@@ -74,7 +75,9 @@ const convertPageToEndpointPage = (page: Page): EndpointPage => {
     ...(isPayloadType(updatedBy)
       ? { updatedBy: convertRecorderToEndpointRecorderPreview(updatedBy) }
       : {}),
-    parentPages: convertSourceToEndpointSource({ collectibles, folders }),
+    backlinks: convertRelationshipsToEndpointRelations(
+      await findIncomingRelationships(Collections.Pages, id)
+    ),
   };
 };
 

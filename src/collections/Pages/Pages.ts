@@ -1,10 +1,8 @@
-import { Where } from "payload/types";
 import { breakBlock } from "../../blocks/breakBlock";
 import { sectionBlock } from "../../blocks/sectionBlock";
 import { transcriptBlock } from "../../blocks/transcriptBlock";
 import { QuickFilters, publishStatusFilters } from "../../components/QuickFilters";
 import { attributesField } from "../../fields/attributesField/attributesField";
-import { backPropagationField } from "../../fields/backPropagationField/backPropagationField";
 import { creditsField } from "../../fields/creditsField/creditsField";
 import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
@@ -125,29 +123,5 @@ export const Pages = buildVersionedCollectionConfig({
         creditsField({ name: fields.credits }),
       ],
     }),
-    rowField([
-      backPropagationField({
-        name: fields.folders,
-        relationTo: Collections.Folders,
-        hasMany: true,
-        where: ({ id }) => ({
-          and: [
-            { "files.value": { equals: id } },
-            { "files.relationTo": { equals: Collections.Pages } },
-          ] as Where[],
-        }),
-      }),
-      backPropagationField({
-        name: fields.collectibles,
-        hasMany: true,
-        relationTo: Collections.Collectibles,
-        where: ({ id }) => ({
-          and: [
-            { "contents.content.value": { equals: id } },
-            { "contents.content.relationTo": { equals: Collections.Pages } },
-          ] as Where[],
-        }),
-      }),
-    ]),
   ],
 });

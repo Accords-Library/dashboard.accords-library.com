@@ -7,8 +7,8 @@ import {
   convertCreditsToEndpointCredits,
   convertImageToEndpointPayloadImage,
   convertScanToEndpointScanImage,
-  convertSourceToEndpointSource,
 } from "../../../utils/endpoints";
+import { convertCollectibleToEndpointCollectiblePreview } from "./getBySlugEndpoint";
 
 export const getBySlugEndpointScans = createGetByEndpoint({
   collection: Collections.Collectibles,
@@ -29,7 +29,12 @@ export const getBySlugEndpointScans = createGetByEndpoint({
         })) ?? [],
       ...(isImage(thumbnail) ? { thumbnail: convertImageToEndpointPayloadImage(thumbnail) } : {}),
       ...(scansEnabled && scans ? handleScans(scans) : { credits: [], pages: [] }),
-      parentPages: convertSourceToEndpointSource({ collectibles: [collectible] }),
+      backlinks: [
+        {
+          type: Collections.Collectibles,
+          value: convertCollectibleToEndpointCollectiblePreview(collectible),
+        },
+      ],
     };
   },
 });

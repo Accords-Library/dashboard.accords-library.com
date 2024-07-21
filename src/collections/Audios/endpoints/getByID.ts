@@ -7,6 +7,7 @@ import {
   convertCreditsToEndpointCredits,
   convertMediaThumbnailToEndpointPayloadImage,
   convertRTCToEndpointRTC,
+  convertRelationshipsToEndpointRelations,
   getLanguageId,
 } from "../../../utils/endpoints";
 import { Collections } from "../../../shared/payload/constants";
@@ -15,6 +16,7 @@ import {
   EndpointAudioPreview,
   EndpointAudio,
 } from "../../../shared/payload/endpoint-types";
+import { findIncomingRelationships } from "payloadcms-relationships";
 
 export const getByID: CollectionEndpoint = {
   method: "get",
@@ -44,7 +46,7 @@ export const getByID: CollectionEndpoint = {
         return res.sendStatus(404);
       }
 
-      return res.status(200).json(convertAudioToEndpointAudio(result));
+      return res.status(200).json(await convertAudioToEndpointAudio(result));
     } catch {
       return res.sendStatus(404);
     }
@@ -79,8 +81,8 @@ export const convertAudioToEndpointAudioPreview = ({
     : {}),
 });
 
-const convertAudioToEndpointAudio = (audio: Audio & PayloadMedia): EndpointAudio => {
-  const { translations, createdAt, updatedAt, filesize, credits } = audio;
+const convertAudioToEndpointAudio = async (audio: Audio & PayloadMedia): Promise<EndpointAudio> => {
+  const { translations, createdAt, updatedAt, filesize, credits, id } = audio;
   return {
     ...convertAudioToEndpointAudioPreview(audio),
     createdAt,
@@ -95,5 +97,8 @@ const convertAudioToEndpointAudio = (audio: Audio & PayloadMedia): EndpointAudio
         ...(isNotEmpty(description) ? { description: convertRTCToEndpointRTC(description) } : {}),
       })) ?? [],
     credits: convertCreditsToEndpointCredits(credits),
+    backlinks: convertRelationshipsToEndpointRelations(
+      await findIncomingRelationships(Collections.Audios, id)
+    ),
   };
 };
