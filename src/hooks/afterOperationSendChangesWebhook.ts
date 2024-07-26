@@ -306,8 +306,8 @@ export const getEndpointChangesForCollectible = ({
 
     // TODO: Add other changes for cover, obi, dustjacket...
 
-    scans.pages?.forEach((_, indexNumber) => {
-      const index = indexNumber.toString();
+    scans.pages?.forEach(({ page }) => {
+      const index = page.toString();
       changes.push({
         type: SDKEndpointNames.getCollectibleScanPage,
         slug,
