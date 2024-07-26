@@ -1,11 +1,27 @@
 import payload from "payload";
 import { Endpoint } from "payload/config";
 import { Collections } from "../shared/payload/constants";
-import { EndpointAllIds } from "../shared/payload/endpoint-types";
+import { EndpointChange } from "../shared/payload/webhooks";
+import {
+  getEndpointChangesForAudio,
+  getEndpointChangesForChronologyEvent,
+  getEndpointChangesForCollectible,
+  getEndpointChangesForCurrency,
+  getEndpointChangesForFile,
+  getEndpointChangesForFolder,
+  getEndpointChangesForImage,
+  getEndpointChangesForLanguage,
+  getEndpointChangesForPage,
+  getEndpointChangesForRecorder,
+  getEndpointChangesForVideo,
+  getEndpointChangesForWebsiteConfig,
+  getEndpointChangesForWording,
+} from "../hooks/afterOperationSendChangesWebhook";
+import { uniqueBy } from "../utils/array";
 
-export const getAllIds: Endpoint = {
+export const getAllEndpoint: Endpoint = {
   method: "get",
-  path: "/all-ids",
+  path: "/all",
   handler: async (req, res) => {
     if (!req.user) {
       return res.status(403).send({
@@ -95,18 +111,22 @@ export const getAllIds: Endpoint = {
       },
     });
 
-    const result: EndpointAllIds = {
-      collectibles: { slugs: collectibles.docs.map(({ slug }) => slug) },
-      pages: { slugs: pages.docs.map(({ slug }) => slug) },
-      folders: { slugs: folders.docs.map(({ slug }) => slug) },
-      videos: { ids: videos.docs.map(({ id }) => id) },
-      audios: { ids: audios.docs.map(({ id }) => id) },
-      images: { ids: images.docs.map(({ id }) => id) },
-      files: { ids: files.docs.map(({ id }) => id) },
-      recorders: { ids: recorders.docs.map(({ id }) => id) },
-      chronologyEvents: { ids: chronologyEvents.docs.map(({ id }) => id) },
-    };
+    const result: EndpointChange[] = [
+      ...getEndpointChangesForWebsiteConfig(),
+      ...getEndpointChangesForLanguage(),
+      ...getEndpointChangesForCurrency(),
+      ...getEndpointChangesForWording(),
+      ...folders.docs.flatMap(getEndpointChangesForFolder),
+      ...pages.docs.flatMap(getEndpointChangesForPage),
+      ...collectibles.docs.flatMap(getEndpointChangesForCollectible),
+      ...audios.docs.flatMap(getEndpointChangesForAudio),
+      ...images.docs.flatMap(getEndpointChangesForImage),
+      ...videos.docs.flatMap(getEndpointChangesForVideo),
+      ...files.docs.flatMap(getEndpointChangesForFile),
+      ...recorders.docs.flatMap(getEndpointChangesForRecorder),
+      ...chronologyEvents.docs.flatMap(getEndpointChangesForChronologyEvent),
+    ];
 
-    return res.status(200).send(result);
+    return res.status(200).send(uniqueBy(result, ({ url }) => url));
   },
 };

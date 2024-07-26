@@ -1,20 +1,17 @@
 import { Collections } from "../shared/payload/constants";
-import { getSDKEndpoint } from "../shared/payload/sdk";
+import { SDKEndpointNames, getSDKEndpoint } from "../shared/payload/sdk";
 import { EndpointChange } from "../shared/payload/webhooks";
 import {
   Audio,
   ChronologyEvent,
   Collectible,
-  Currency,
   File,
   Folder,
   Image,
-  Language,
   Page,
   Recorder,
   Relationship,
   Video,
-  Wording,
 } from "../types/collections";
 import { isPayloadType } from "../utils/asserts";
 import { AfterChangeHook, AfterDeleteHook } from "payload/dist/collections/config/types";
@@ -55,7 +52,7 @@ export const globalAfterChangeSendChangesWebhook: GlobalAfterChangeHook = async 
 
   switch (global.slug as keyof GeneratedTypes["globals"]) {
     case Collections.WebsiteConfig:
-      changes.push({ type: "getConfig", url: getSDKEndpoint.getConfigEndpoint() });
+      changes.push(...getEndpointChangesForWebsiteConfig());
       break;
 
     default:
@@ -133,13 +130,13 @@ const getEndpointChangesFromDocument = ({
       return getEndpointChangesForChronologyEvent(value);
 
     case Collections.Languages:
-      return getEndpointChangesForLanguage(value);
+      return getEndpointChangesForLanguage();
 
     case Collections.Currencies:
-      return getEndpointChangesForCurrency(value);
+      return getEndpointChangesForCurrency();
 
     case Collections.Wordings:
-      return getEndpointChangesForWording(value);
+      return getEndpointChangesForWording();
 
     case Collections.Attributes:
     case Collections.CreditsRole:
@@ -248,27 +245,34 @@ const getEndpointChangesFromOutgoingRelation = ({
   }
 };
 
-const getEndpointChangesForFolder = ({ slug }: Folder): EndpointChange[] => [
-  { type: "getFolder", slug, url: getSDKEndpoint.getFolderEndpoint(slug) },
+export const getEndpointChangesForWebsiteConfig = (): EndpointChange[] => [
+  {
+    type: SDKEndpointNames.getWebsiteConfig,
+    url: getSDKEndpoint.getWebsiteConfig(),
+  },
 ];
 
-const getEndpointChangesForLanguage = (_: Language): EndpointChange[] => [
-  { type: "getLanguages", url: getSDKEndpoint.getLanguagesEndpoint() },
+export const getEndpointChangesForFolder = ({ slug }: Folder): EndpointChange[] => [
+  { type: SDKEndpointNames.getFolder, slug, url: getSDKEndpoint.getFolder(slug) },
 ];
 
-const getEndpointChangesForCurrency = (_: Currency): EndpointChange[] => [
-  { type: "getCurrencies", url: getSDKEndpoint.getCurrenciesEndpoint() },
+export const getEndpointChangesForLanguage = (): EndpointChange[] => [
+  { type: SDKEndpointNames.getLanguages, url: getSDKEndpoint.getLanguages() },
 ];
 
-const getEndpointChangesForWording = (_: Wording): EndpointChange[] => [
-  { type: "getWordings", url: getSDKEndpoint.getWordingsEndpoint() },
+export const getEndpointChangesForCurrency = (): EndpointChange[] => [
+  { type: SDKEndpointNames.getCurrencies, url: getSDKEndpoint.getCurrencies() },
 ];
 
-const getEndpointChangesForPage = ({ slug }: Page): EndpointChange[] => [
-  { type: "getPage", slug, url: getSDKEndpoint.getPageEndpoint(slug) },
+export const getEndpointChangesForWording = (): EndpointChange[] => [
+  { type: SDKEndpointNames.getWordings, url: getSDKEndpoint.getWordings() },
 ];
 
-const getEndpointChangesForCollectible = ({
+export const getEndpointChangesForPage = ({ slug }: Page): EndpointChange[] => [
+  { type: SDKEndpointNames.getPage, slug, url: getSDKEndpoint.getPage(slug) },
+];
+
+export const getEndpointChangesForCollectible = ({
   slug,
   gallery,
   scans,
@@ -278,26 +282,26 @@ const getEndpointChangesForCollectible = ({
 
   if (gallery && gallery.length > 0) {
     changes.push({
-      type: "getCollectibleGallery",
+      type: SDKEndpointNames.getCollectibleGallery,
       slug,
-      url: getSDKEndpoint.getCollectibleGalleryEndpoint(slug),
+      url: getSDKEndpoint.getCollectibleGallery(slug),
     });
     gallery.forEach((_, indexNumber) => {
       const index = indexNumber.toString();
       changes.push({
-        type: "getCollectibleGalleryImage",
+        type: SDKEndpointNames.getCollectibleGalleryImage,
         slug,
         index: index,
-        url: getSDKEndpoint.getCollectibleGalleryImageEndpoint(slug, index),
+        url: getSDKEndpoint.getCollectibleGalleryImage(slug, index),
       });
     });
   }
 
   if (scans && scansEnabled) {
     changes.push({
-      type: "getCollectibleScans",
+      type: SDKEndpointNames.getCollectibleScans,
       slug,
-      url: getSDKEndpoint.getCollectibleScansEndpoint(slug),
+      url: getSDKEndpoint.getCollectibleScans(slug),
     });
 
     // TODO: Add other changes for cover, obi, dustjacket...
@@ -305,10 +309,10 @@ const getEndpointChangesForCollectible = ({
     scans.pages?.forEach((_, indexNumber) => {
       const index = indexNumber.toString();
       changes.push({
-        type: "getCollectibleScanPage",
+        type: SDKEndpointNames.getCollectibleScanPage,
         slug,
         index: index,
-        url: getSDKEndpoint.getCollectibleScanPageEndpoint(slug, index),
+        url: getSDKEndpoint.getCollectibleScanPage(slug, index),
       });
     });
   }
@@ -316,35 +320,35 @@ const getEndpointChangesForCollectible = ({
   return changes;
 };
 
-const getEndpointChangesForAudio = ({ id }: Audio): EndpointChange[] => [
-  { type: "getAudioByID", id, url: getSDKEndpoint.getAudioByIDEndpoint(id) },
+export const getEndpointChangesForAudio = ({ id }: Audio): EndpointChange[] => [
+  { type: SDKEndpointNames.getAudioByID, id, url: getSDKEndpoint.getAudioByID(id) },
 ];
 
-const getEndpointChangesForImage = ({ id }: Image): EndpointChange[] => [
-  { type: "getImageByID", id, url: getSDKEndpoint.getImageByIDEndpoint(id) },
+export const getEndpointChangesForImage = ({ id }: Image): EndpointChange[] => [
+  { type: SDKEndpointNames.getImageByID, id, url: getSDKEndpoint.getImageByID(id) },
 ];
 
-const getEndpointChangesForVideo = ({ id }: Video): EndpointChange[] => [
-  { type: "getVideoByID", id, url: getSDKEndpoint.getVideoByIDEndpoint(id) },
+export const getEndpointChangesForVideo = ({ id }: Video): EndpointChange[] => [
+  { type: SDKEndpointNames.getVideoByID, id, url: getSDKEndpoint.getVideoByID(id) },
 ];
 
-const getEndpointChangesForFile = ({ id }: File): EndpointChange[] => [
-  { type: "getFileByID", id, url: getSDKEndpoint.getFileByIDEndpoint(id) },
+export const getEndpointChangesForFile = ({ id }: File): EndpointChange[] => [
+  { type: SDKEndpointNames.getFileByID, id, url: getSDKEndpoint.getFileByID(id) },
 ];
 
-const getEndpointChangesForRecorder = ({ id }: Recorder): EndpointChange[] => [
-  { type: "getRecorderByID", id, url: getSDKEndpoint.getRecorderByIDEndpoint(id) },
+export const getEndpointChangesForRecorder = ({ id }: Recorder): EndpointChange[] => [
+  { type: SDKEndpointNames.getRecorderByID, id, url: getSDKEndpoint.getRecorderByID(id) },
 ];
 
-const getEndpointChangesForChronologyEvent = ({ id }: ChronologyEvent): EndpointChange[] => [
+export const getEndpointChangesForChronologyEvent = ({ id }: ChronologyEvent): EndpointChange[] => [
   {
-    type: "getChronologyEventByID",
+    type: SDKEndpointNames.getChronologyEventByID,
     id,
-    url: getSDKEndpoint.getChronologyEventByIDEndpoint(id),
+    url: getSDKEndpoint.getChronologyEventByID(id),
   },
   {
-    type: "getChronologyEvents",
-    url: getSDKEndpoint.getChronologyEventsEndpoint(),
+    type: SDKEndpointNames.getChronologyEvents,
+    url: getSDKEndpoint.getChronologyEvents(),
   },
 ];
 

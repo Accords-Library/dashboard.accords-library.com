@@ -27,8 +27,7 @@ import { WebsiteConfig } from "./collections/WebsiteConfig/WebsiteConfig";
 import { Wordings } from "./collections/Wordings/Wordings";
 import { Icon } from "./components/Icon";
 import { Logo } from "./components/Logo";
-import { getAllIds } from "./endpoints/getAllIdsEndpoint";
-import { getAllSDKUrlsEndpoint } from "./endpoints/getAllSDKUrlsEndpoint";
+import { getAllEndpoint } from "./endpoints/getAllEndpoint";
 import { createEditor } from "./utils/editor";
 import { Collections } from "./shared/payload/constants";
 import { relationshipsPlugin } from "payloadcms-relationships";
@@ -92,7 +91,7 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(__dirname, "types/collections.ts"),
   },
-  endpoints: [getAllSDKUrlsEndpoint, getAllIds],
+  endpoints: [getAllEndpoint],
   graphQL: {
     disable: true,
   },
