@@ -4,6 +4,7 @@ import { imageField } from "../../fields/imageField/imageField";
 import { rowField } from "../../fields/rowField/rowField";
 import { getConfigEndpoint } from "./endpoints/getConfigEndpoint";
 import { Collections, CollectionGroups } from "../../shared/payload/constants";
+import { globalAfterChangeSendChangesWebhook } from "../../hooks/afterOperationSendChangesWebhook";
 
 const fields = {
   homeBackgroundImage: "homeBackgroundImage",
@@ -30,6 +31,9 @@ export const WebsiteConfig: GlobalConfig = {
   },
   access: { update: mustBeAdmin, read: mustBeAdmin },
   endpoints: [getConfigEndpoint],
+  hooks: {
+    afterChange: [globalAfterChangeSendChangesWebhook],
+  },
   fields: [
     rowField([
       {
