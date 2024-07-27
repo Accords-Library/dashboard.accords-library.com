@@ -13,47 +13,64 @@ import {
   Relationship,
   Video,
 } from "../types/collections";
-import { isPayloadType } from "../utils/asserts";
+import { isDefined, isPayloadType } from "../utils/asserts";
 import {
   AfterChangeHook,
   AfterDeleteHook,
+  BeforeChangeHook,
   BeforeDeleteHook,
 } from "payload/dist/collections/config/types";
 import { GeneratedTypes } from "payload";
 import { uniqueBy } from "../utils/array";
 import { GlobalAfterChangeHook } from "payload/types";
 import { findRelationByID } from "payloadcms-relationships/dist/utils";
-import { RelationshipRemoved } from "payloadcms-relationships";
 
-export const afterOutgoingRelationRemovedSendChangesWebhook = async ({
-  removedOutgoingRelations,
-}: RelationshipRemoved) => {
-  const changes: EndpointChange[] = [];
+export const beforeChangePrepareChanges: BeforeChangeHook = async ({
+  collection,
+  originalDoc,
+  context,
+  data,
+}) => {
+  if ("_status" in data && data._status === "draft") return data;
+  if (!originalDoc) return data;
 
-  removedOutgoingRelations?.forEach((relation) =>
-    changes.push(...getEndpointChangesFromOutgoingRelation(relation))
+  context.beforeChangeChanges = await getChanges(
+    collection.slug as keyof GeneratedTypes["collections"],
+    originalDoc
   );
 
-  await sendWebhookMessage(uniqueBy(changes, ({ url }) => url));
+  return data;
 };
 
-export const afterChangeSendChangesWebhook: AfterChangeHook = async ({ doc, collection }) => {
+export const afterChangeSendChangesWebhook: AfterChangeHook = async ({
+  doc,
+  collection,
+  context,
+}) => {
   if ("_status" in doc && doc._status === "draft") return doc;
 
   const changes = await getChanges(collection.slug as keyof GeneratedTypes["collections"], doc);
-  await sendWebhookMessage(changes);
+  const previousChanges = context.beforeChangeChanges as EndpointChange[] | undefined;
 
+  if (isDefined(previousChanges)) {
+    await sendWebhookMessage(uniqueBy([...previousChanges, ...changes], ({ url }) => url));
+  } else {
+    await sendWebhookMessage(changes);
+  }
+ 
   return doc;
 };
 
 export const beforeDeletePrepareChanges: BeforeDeleteHook = async ({ id, collection, context }) => {
-  const changes = await getChanges(collection.slug as keyof GeneratedTypes["collections"], { id });
-  context.beforeDeleteChanges = changes;
+  context.beforeDeleteChanges = await getChanges(
+    collection.slug as keyof GeneratedTypes["collections"],
+    { id }
+  );
 };
 
 export const afterDeleteSendChangesWebhook: AfterDeleteHook = async ({ doc, context }) => {
   const changes = context.beforeDeleteChanges as EndpointChange[] | undefined;
-  if (changes) {
+  if (isDefined(changes)) {
     await sendWebhookMessage(changes);
   }
   return doc;

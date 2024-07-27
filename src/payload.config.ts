@@ -33,7 +33,6 @@ import { Collections } from "./shared/payload/constants";
 import { relationshipsPlugin } from "payloadcms-relationships";
 import { shownOnlyToAdmin } from "./accesses/collections/shownOnlyToAdmin";
 import { mustBeAdmin } from "./accesses/fields/mustBeAdmin";
-import { afterOutgoingRelationRemovedSendChangesWebhook } from "./hooks/afterOperationSendChangesWebhook";
 
 const configuredSftpAdapter = sftpAdapter({
   connectOptions: {
@@ -111,7 +110,6 @@ export default buildConfig({
           delete: mustBeAdmin,
         },
       },
-      onOutgoingRelationRemoved: afterOutgoingRelationRemovedSendChangesWebhook,
     }),
 
     cloudStorage({

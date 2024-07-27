@@ -4,6 +4,7 @@ import { formatToPascalCase } from "./string";
 import {
   afterChangeSendChangesWebhook,
   afterDeleteSendChangesWebhook,
+  beforeChangePrepareChanges,
   beforeDeletePrepareChanges,
 } from "../hooks/afterOperationSendChangesWebhook";
 
@@ -22,6 +23,7 @@ export const buildCollectionConfig = (config: BuildCollectionConfig): Collection
   typescript: { interface: formatToPascalCase(config.labels.singular) },
   hooks: {
     ...config.hooks,
+    beforeChange: [...(config.hooks?.beforeChange ?? []), beforeChangePrepareChanges],
     afterChange: [...(config.hooks?.afterChange ?? []), afterChangeSendChangesWebhook],
     beforeDelete: [...(config.hooks?.beforeDelete ?? []), beforeDeletePrepareChanges],
     afterDelete: [...(config.hooks?.afterDelete ?? []), afterDeleteSendChangesWebhook],
