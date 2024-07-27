@@ -4,13 +4,14 @@ import { formatToPascalCase } from "./string";
 import {
   afterChangeSendChangesWebhook,
   afterDeleteSendChangesWebhook,
+  beforeDeletePrepareChanges,
 } from "../hooks/afterOperationSendChangesWebhook";
 
 type CollectionConfigWithPlugins = CollectionConfig;
 
 export type BuildCollectionConfig = Omit<
   CollectionConfigWithPlugins,
-  "slug" | "typescript" | "labels" | "custom"
+  "slug" | "typescript" | "labels"
 > & {
   slug: keyof GeneratedTypes["collections"];
   labels: { singular: string; plural: string };
@@ -22,6 +23,7 @@ export const buildCollectionConfig = (config: BuildCollectionConfig): Collection
   hooks: {
     ...config.hooks,
     afterChange: [...(config.hooks?.afterChange ?? []), afterChangeSendChangesWebhook],
+    beforeDelete: [...(config.hooks?.beforeDelete ?? []), beforeDeletePrepareChanges],
     afterDelete: [...(config.hooks?.afterDelete ?? []), afterDeleteSendChangesWebhook],
   },
 });

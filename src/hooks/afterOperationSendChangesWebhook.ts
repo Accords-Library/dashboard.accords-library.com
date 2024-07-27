@@ -14,7 +14,11 @@ import {
   Video,
 } from "../types/collections";
 import { isPayloadType } from "../utils/asserts";
-import { AfterChangeHook, AfterDeleteHook } from "payload/dist/collections/config/types";
+import {
+  AfterChangeHook,
+  AfterDeleteHook,
+  BeforeDeleteHook,
+} from "payload/dist/collections/config/types";
 import { GeneratedTypes } from "payload";
 import { uniqueBy } from "../utils/array";
 import { GlobalAfterChangeHook } from "payload/types";
@@ -35,12 +39,23 @@ export const afterOutgoingRelationRemovedSendChangesWebhook = async ({
 
 export const afterChangeSendChangesWebhook: AfterChangeHook = async ({ doc, collection }) => {
   if ("_status" in doc && doc._status === "draft") return doc;
-  await commonLogic(collection.slug as keyof GeneratedTypes["collections"], doc);
+
+  const changes = await getChanges(collection.slug as keyof GeneratedTypes["collections"], doc);
+  await sendWebhookMessage(changes);
+
   return doc;
 };
 
-export const afterDeleteSendChangesWebhook: AfterDeleteHook = async ({ doc, collection }) => {
-  await commonLogic(collection.slug as keyof GeneratedTypes["collections"], doc);
+export const beforeDeletePrepareChanges: BeforeDeleteHook = async ({ id, collection, context }) => {
+  const changes = await getChanges(collection.slug as keyof GeneratedTypes["collections"], { id });
+  context.beforeDeleteChanges = changes;
+};
+
+export const afterDeleteSendChangesWebhook: AfterDeleteHook = async ({ doc, context }) => {
+  const changes = context.beforeDeleteChanges as EndpointChange[] | undefined;
+  if (changes) {
+    await sendWebhookMessage(changes);
+  }
   return doc;
 };
 
@@ -62,17 +77,20 @@ export const globalAfterChangeSendChangesWebhook: GlobalAfterChangeHook = async 
   return doc;
 };
 
-const commonLogic = async (slug: keyof GeneratedTypes["collections"], doc: any) => {
-  if (slug === "relationships") return doc;
-  if (slug === "payload-migrations") return doc;
-  if (slug === "payload-preferences") return doc;
+const getChanges = async (
+  slug: keyof GeneratedTypes["collections"],
+  doc: any
+): Promise<EndpointChange[]> => {
+  if (slug === "relationships") return [];
+  if (slug === "payload-migrations") return [];
+  if (slug === "payload-preferences") return [];
 
   let relation: Relationship;
   try {
     relation = await findRelationByID(slug, doc.id);
   } catch (e) {
     relation = {
-      id: doc.id,
+      id: "",
       document: {
         relationTo: slug,
         value: doc,
@@ -91,7 +109,7 @@ const commonLogic = async (slug: keyof GeneratedTypes["collections"], doc: any) 
     changes.push(...getEndpointChangesFromOutgoingRelation(relation))
   );
 
-  await sendWebhookMessage(uniqueBy(changes, ({ url }) => url));
+  return uniqueBy(changes, ({ url }) => url);
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -382,6 +400,10 @@ const sendWebhookMessage = async (changes: EndpointChange[]) => {
       })
     );
   } catch (e) {
-    console.warn("Error while sending webhook", e);
+    if (e instanceof Error) {
+      console.warn("Error while sending webhook", e.message);
+    } else {
+      console.warn("Error while sending webhook", e);
+    }
   }
 };
