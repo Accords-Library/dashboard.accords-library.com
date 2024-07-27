@@ -298,6 +298,12 @@ export const getEndpointChangesForCollectible = ({
 }: Collectible): EndpointChange[] => {
   const changes: EndpointChange[] = [];
 
+  changes.push({
+    type: SDKEndpointNames.getCollectible,
+    slug,
+    url: getSDKEndpoint.getCollectible(slug),
+  });
+
   if (gallery && gallery.length > 0) {
     changes.push({
       type: SDKEndpointNames.getCollectibleGallery,
