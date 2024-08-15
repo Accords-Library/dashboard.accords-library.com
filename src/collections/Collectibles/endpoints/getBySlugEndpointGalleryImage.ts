@@ -66,6 +66,7 @@ export const getBySlugEndpointGalleryImage: CollectionEndpoint = {
       backlinks: [
         {
           type: Collections.Collectibles,
+          subpage: "gallery",
           value: convertCollectibleToEndpointCollectiblePreview(collectible),
         },
       ],

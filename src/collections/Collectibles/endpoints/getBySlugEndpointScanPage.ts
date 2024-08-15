@@ -66,6 +66,7 @@ export const getBySlugEndpointScanPage: CollectionEndpoint = {
       backlinks: [
         {
           type: Collections.Collectibles,
+          subpage: "scans",
           value: convertCollectibleToEndpointCollectiblePreview(collectible),
         },
       ],
