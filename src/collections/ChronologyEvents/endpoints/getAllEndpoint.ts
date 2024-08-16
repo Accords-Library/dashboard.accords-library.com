@@ -109,8 +109,10 @@ const handleSources = (
         case "urlBlock":
           return {
             type: "url",
-            url: source.url,
-            label: getDomainFromUrl(source.url),
+            value: {
+              url: source.url,
+              label: getDomainFromUrl(source.url),
+            },
           };
       }
     }) ?? []

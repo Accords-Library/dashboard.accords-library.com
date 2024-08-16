@@ -95,6 +95,7 @@ export interface Page {
       [k: string]: unknown;
     };
     credits?: Credits;
+    sourceUrls?: string[] | null;
     id?: string | null;
   }[];
   updatedBy: string | Recorder;

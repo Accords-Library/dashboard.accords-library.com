@@ -20,6 +20,7 @@ import {
   convertImageToEndpointPayloadImage,
   convertRTCToEndpointRTC,
   convertRelationshipsToEndpointRelations,
+  getDomainFromUrl,
 } from "../../../utils/endpoints";
 import { convertRecorderToEndpointRecorderPreview } from "../../Recorders/endpoints/getByID";
 
@@ -59,7 +60,17 @@ const convertPageToEndpointPage = async (page: Page): Promise<EndpointPage> => {
       ? { backgroundImage: convertImageToEndpointPayloadImage(backgroundImage) }
       : {}),
     translations: translations.map(
-      ({ content, language, sourceLanguage, title, pretitle, subtitle, summary, credits }) => ({
+      ({
+        content,
+        language,
+        sourceLanguage,
+        title,
+        pretitle,
+        subtitle,
+        summary,
+        credits,
+        sourceUrls,
+      }) => ({
         language: isPayloadType(language) ? language.id : language,
         sourceLanguage: isPayloadType(sourceLanguage) ? sourceLanguage.id : sourceLanguage,
         ...(isNotEmpty(pretitle) ? { pretitle } : {}),
@@ -69,6 +80,11 @@ const convertPageToEndpointPage = async (page: Page): Promise<EndpointPage> => {
         content: convertRTCToEndpointRTC(content),
         toc: handleToc(content),
         credits: convertCreditsToEndpointCredits(credits),
+        sourceUrls:
+          sourceUrls?.map((url) => ({
+            url,
+            label: getDomainFromUrl(url),
+          })) ?? [],
       })
     ),
     createdAt,

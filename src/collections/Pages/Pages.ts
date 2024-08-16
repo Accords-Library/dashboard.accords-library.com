@@ -29,8 +29,7 @@ const fields = {
   summary: "summary",
   content: "content",
   credits: "credits",
-  collectibles: "collectibles",
-  folders: "folders",
+  sourceUrls: "sourceUrls",
 } as const satisfies Record<string, string>;
 
 export const Pages = buildVersionedCollectionConfig({
@@ -42,13 +41,7 @@ export const Pages = buildVersionedCollectionConfig({
   defaultSort: fields.slug,
   admin: {
     useAsTitle: fields.slug,
-    defaultColumns: [
-      fields.slug,
-      fields.thumbnail,
-      fields.backgroundImage,
-      fields.translations,
-      fields.folders,
-    ],
+    defaultColumns: [fields.slug, fields.thumbnail, fields.backgroundImage, fields.translations],
     group: CollectionGroups.Collections,
     preview: ({ slug }) => `${process.env.PAYLOAD_PUBLIC_FRONTEND_BASE_URL}/en/pages/${slug}`,
     components: {
@@ -121,6 +114,17 @@ export const Pages = buildVersionedCollectionConfig({
           }),
         },
         creditsField({ name: fields.credits }),
+        {
+          name: fields.sourceUrls,
+          label: "Source URLs",
+          type: "text",
+          hasMany: true,
+          admin: {
+            description:
+              "If the content originates from an external source (e.g: fandom.com, an online interview...) you can add a link to the original page(s) here",
+            width: "50%",
+          },
+        },
       ],
     }),
   ],
