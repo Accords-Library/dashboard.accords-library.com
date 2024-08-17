@@ -12,7 +12,7 @@ export const VideosSubtitles = buildCollectionConfig({
     hidden: shownOnlyToAdmin,
   },
   upload: {
-    mimeTypes: ["text/*"],
+    // mimeTypes: ["text/*"], Disable because of a bug on Chrome windows where the MIME is detected as application/octet-stream instead of text/vtt or text/plain
     disableLocalStorage: true,
   },
   timestamps: false,
